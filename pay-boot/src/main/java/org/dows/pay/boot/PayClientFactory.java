@@ -1,7 +1,6 @@
 package org.dows.pay.boot;
 
 import com.alipay.api.AlipayClient;
-import org.dows.pay.boot.PayClientBuilder;
 import org.dows.pay.boot.config.PayClientConfig;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -21,7 +20,7 @@ import java.util.stream.Collectors;
 public class PayClientFactory {
     private static final Map<String, PayClientConfig> PCM = new HashMap<>();
     @NestedConfigurationProperty
-    private List<PayClientConfig> payClientConfigs;
+    private List<PayClientConfig> clientConfigs;
     /**
      * SpringBoot获取当前环境代码,Spring获取当前环境代码
      */
@@ -38,7 +37,7 @@ public class PayClientFactory {
         //todo 从数据查询客户端配置列表payClientConfigService.selectAll(profiles);
         List<PayClientConfig> payClientConfigList = null;
         //PCM.putAll(payClientConfigList.stream().collect(Collectors.toMap(PayClientConfig::getAppId, Function.identity())));
-        PCM.putAll(payClientConfigs.stream().collect(Collectors.toMap(PayClientConfig::getAppId, Function.identity())));
+        PCM.putAll(clientConfigs.stream().collect(Collectors.toMap(PayClientConfig::getAppId, Function.identity())));
     }
 
     /**

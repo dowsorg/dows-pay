@@ -1,6 +1,6 @@
 dows:
   pay:
-    channel-configs:
+    client-configs:
       - env: prd
         channelCode: alipay
         privateKey:
