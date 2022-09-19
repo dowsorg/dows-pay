@@ -9,6 +9,7 @@ import com.alipay.api.response.AlipayOpenMiniVersionOnlineResponse;
 import com.alipay.api.response.AlipayOpenMiniVersionUploadResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.dows.pay.api.PayHandler;
 import org.springframework.stereotype.Service;
 
 /**
@@ -37,7 +38,8 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class MiniHandler {
+@PayHandler(channelCode = "alipay")
+public class AlipayMiniHandler {
 
     private final AlipayClient alipayClient;
     private final AlipayClient certAlipayClient;

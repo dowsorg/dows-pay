@@ -8,6 +8,7 @@ import com.alipay.api.request.AlipayOpenAuthTokenAppRequest;
 import com.alipay.api.response.AlipayOpenAuthTokenAppResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.dows.pay.api.PayHandler;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,7 +24,8 @@ import java.io.IOException;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class CallbackHandler {
+@PayHandler(channelCode = "alipay")
+public class AlipayCallbackHandler {
     private final AlipayClient alipayClient;
     private final AlipayClient certAlipayClient;
 

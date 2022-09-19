@@ -8,17 +8,10 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>pay-alipay</artifactId>
-    <!--    <modules>
-            <module>alipay-api</module>
-            <module>alipay-impl</module>
-        </modules>-->
+
 
     <dependencies>
-        <dependency>
-            <groupId>org.dows.saas</groupId>
-            <artifactId>pay-api</artifactId>
-            <version>20220701</version>
-        </dependency>
+
 
         <dependency>
             <groupId>com.alibaba</groupId>

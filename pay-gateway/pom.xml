@@ -10,4 +10,13 @@
     <artifactId>pay-gateway</artifactId>
 
 
+    <dependencies>
+        <dependency>
+            <groupId>org.dows.saas</groupId>
+            <artifactId>pay-boot</artifactId>
+            <version>20220701</version>
+        </dependency>
+
+    </dependencies>
+
 </project>
