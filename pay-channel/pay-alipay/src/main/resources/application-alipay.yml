@@ -1,0 +1,35 @@
+dows:
+  pay:
+    channel-configs:
+      - env: prd
+        channelCode: alipay
+        privateKey:
+        payPublicKey:
+        appId:
+        serviceUrl: https://openapi.alipay.com/gateway.do
+        charset: UTF-8
+        signType: RSA2
+        format: json
+        certModel:
+        #应用公钥证书路径
+        appCertPath:
+        #支付宝公钥证书文件路径
+        payCertPath:
+        #支付宝CA根证书文件路径
+        payRootCertPath:
+      - env: test
+        channelCode: alipay
+        privateKey:
+        payPublicKey:
+        appId:
+        serviceUrl: https://openapi.alipay.com/gateway.do
+        charset: UTF-8
+        signType: RSA2
+        format: json
+        certModel:
+        #应用公钥证书路径
+        appCertPath:
+        #支付宝公钥证书文件路径
+        payCertPath:
+        #支付宝CA根证书文件路径
+        payRootCertPath:

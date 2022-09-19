@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>dows-parent</artifactId>
+        <groupId>org.dows.framework</groupId>
+        <version>20220701</version>
+    </parent>
+
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.dows.saas</groupId>
     <artifactId>dows-pay</artifactId>
@@ -16,14 +22,27 @@
     </properties>
 
     <modules>
+        <module>pay-api</module>
         <module>pay-channel</module>
         <module>pay-crud</module>
         <module>pay-gateway</module>
         <module>pay-sdk</module>
+        <module>pay-account</module>
+        <module>pay-boot</module>
+        <module>pay-rest</module>
     </modules>
 
 
-
+    <dependencies>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+    </dependencies>
 
 
 </project>
