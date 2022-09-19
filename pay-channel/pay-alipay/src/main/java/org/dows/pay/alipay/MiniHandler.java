@@ -1,14 +1,10 @@
-package org.dows.pay.alipay.biz;
+package org.dows.pay.alipay;
 
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
-import com.alipay.api.domain.AlipayOpenMiniIsvQueryModel;
 import com.alipay.api.domain.AlipayOpenMiniVersionOnlineModel;
 import com.alipay.api.domain.AlipayOpenMiniVersionUploadModel;
-import com.alipay.api.domain.CreateMiniRequest;
 import com.alipay.api.request.*;
-import com.alipay.api.response.AlipayOpenMiniIsvCreateResponse;
-import com.alipay.api.response.AlipayOpenMiniIsvQueryResponse;
 import com.alipay.api.response.AlipayOpenMiniVersionOnlineResponse;
 import com.alipay.api.response.AlipayOpenMiniVersionUploadResponse;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +37,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class MiniBiz {
+public class MiniHandler {
 
     private final AlipayClient alipayClient;
     private final AlipayClient certAlipayClient;

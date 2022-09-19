@@ -1,4 +1,4 @@
-package org.dows.pay.alipay.biz;
+package org.dows.pay.alipay;
 
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class IsvBiz {
+public class IsvHandler {
 
     private final AlipayClient alipayClient;
     private final AlipayClient certAlipayClient;

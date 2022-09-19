@@ -27,7 +27,6 @@
         <module>pay-crud</module>
         <module>pay-gateway</module>
         <module>pay-sdk</module>
-        <module>pay-account</module>
         <module>pay-boot</module>
         <module>pay-rest</module>
     </modules>

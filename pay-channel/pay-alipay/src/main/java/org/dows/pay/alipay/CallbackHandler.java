@@ -1,4 +1,4 @@
-package org.dows.pay.alipay.biz;
+package org.dows.pay.alipay;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alipay.api.AlipayApiException;
@@ -23,7 +23,7 @@ import java.io.IOException;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class CallbackBiz {
+public class CallbackHandler {
     private final AlipayClient alipayClient;
     private final AlipayClient certAlipayClient;
 
