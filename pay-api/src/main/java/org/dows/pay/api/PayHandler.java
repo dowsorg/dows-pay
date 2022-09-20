@@ -1,10 +1,8 @@
 package org.dows.pay.api;
 
-import java.lang.annotation.*;
+public interface PayHandler {
 
-@Target({ElementType.TYPE})
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-public @interface PayHandler {
-    String channelCode();
+    String getChannel();
+
+
 }

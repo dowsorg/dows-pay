@@ -10,7 +10,7 @@ import com.alipay.api.response.AlipayOpenMiniIsvCreateResponse;
 import com.alipay.api.response.AlipayOpenMiniIsvQueryResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.dows.pay.api.PayHandler;
+import org.dows.pay.api.annotation.PayMapping;
 import org.springframework.stereotype.Service;
 
 /**
@@ -19,8 +19,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-@PayHandler(channelCode = "alipay")
-public class AlipayIsvHandler {
+public class AlipayIsvHandler extends AbstractAlipayHandler {
 
     private final AlipayClient alipayClient;
     private final AlipayClient certAlipayClient;
@@ -28,9 +27,12 @@ public class AlipayIsvHandler {
     /**
      * 申请/创建小程序
      *
-     * @param createMiniRequest
+     * @param
      */
-    public void createIsvMini(CreateMiniRequest createMiniRequest) {
+    @PayMapping(method = "", argNames = "")
+    public void createIsvMini() {
+
+        CreateMiniRequest createMiniRequest = new CreateMiniRequest();
         AlipayOpenMiniIsvCreateRequest request = new AlipayOpenMiniIsvCreateRequest();
         request.setBizModel(createMiniRequest);
         try {
@@ -49,7 +51,10 @@ public class AlipayIsvHandler {
      * 查询该订单协助创建小程序的情况
      * 服务商调用 alipay.open.mini.isv.query 接口，传入 order_no（订单编号）参数，
      */
-    public void queryIsvMini(AlipayOpenMiniIsvQueryModel alipayOpenMiniIsvQueryModel) {
+    @PayMapping(method = "", argNames = "")
+    public void queryIsvMini() {
+
+        AlipayOpenMiniIsvQueryModel alipayOpenMiniIsvQueryModel = new AlipayOpenMiniIsvQueryModel();
         AlipayOpenMiniIsvQueryRequest request = new AlipayOpenMiniIsvQueryRequest();
         request.setBizModel(alipayOpenMiniIsvQueryModel);
         AlipayOpenMiniIsvQueryResponse response = null;

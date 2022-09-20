@@ -38,8 +38,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-@PayHandler(channelCode = "alipay")
-public class AlipayMiniHandler {
+public class AlipayMiniHandler  extends AbstractAlipayHandler  {
 
     private final AlipayClient alipayClient;
     private final AlipayClient certAlipayClient;

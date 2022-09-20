@@ -8,7 +8,7 @@ import com.alipay.api.request.AlipayOpenAuthTokenAppRequest;
 import com.alipay.api.response.AlipayOpenAuthTokenAppResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.dows.pay.api.PayHandler;
+import org.dows.pay.api.annotation.PayMapping;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,15 +24,17 @@ import java.io.IOException;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-@PayHandler(channelCode = "alipay")
-public class AlipayCallbackHandler {
+public class AlipayCallbackHandler extends AbstractAlipayHandler {
     private final AlipayClient alipayClient;
     private final AlipayClient certAlipayClient;
+
+
 
     /**
      * todo 商家授权成功回调，内部数据处理逻辑
      * 代商家创建小程序后，商家授权成功，由支付宝平台发起回调, 这里解析返回字符串参数，并返回AppAuthToken
      */
+    @PayMapping(method = "", argNames = "")
     public String onIsvMiniMerchantAccredit(String content) {
         JSONObject jsonObject = JSONObject.parseObject(content);
         JSONObject bizContent = jsonObject.getJSONObject("biz_content");
@@ -49,6 +51,7 @@ public class AlipayCallbackHandler {
      * @return
      * @throws IOException
      */
+    @PayMapping(method = "", argNames = "")
     public String onPaySuccess(HttpServletRequest request) {
 
 
@@ -63,6 +66,7 @@ public class AlipayCallbackHandler {
      * @param appAuthCode
      * @throws AlipayApiException
      */
+    @PayMapping(method = "", argNames = "")
     public void onAuthorization(String appId, String appAuthCode) throws AlipayApiException {
         AlipayOpenAuthTokenAppRequest alipayOpenAuthTokenAppRequest = new AlipayOpenAuthTokenAppRequest();
 

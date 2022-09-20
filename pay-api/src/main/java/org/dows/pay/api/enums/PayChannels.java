@@ -1,4 +1,4 @@
-package org.dows.pay.api;
+package org.dows.pay.api.enums;
 
 public enum PayChannels {
 

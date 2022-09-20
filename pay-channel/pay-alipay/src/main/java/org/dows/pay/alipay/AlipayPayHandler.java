@@ -7,8 +7,7 @@ import org.dows.pay.api.PayHandler;
  * 当面付：https://open.alipay.com/api/detail?code=I1080300001000041016
  * app付款：https://open.alipay.com/api/detail?code=I1080300001000041313
  */
-@PayHandler(channelCode = "alipay")
-public class AlipayPayHandler {
+public class AlipayPayHandler  extends AbstractAlipayHandler  {
 
 
 }
