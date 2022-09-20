@@ -40,20 +40,18 @@ import org.springframework.stereotype.Service;
 @Service
 public class AlipayMiniHandler  extends AbstractAlipayHandler  {
 
-    private final AlipayClient alipayClient;
-    private final AlipayClient certAlipayClient;
-
-
     /**
      * 上传小程序模板
      * https://opendocs.alipay.com/mini/03l8bz
      * alipay.open.mini.version.upload(小程序基于模板上传版本)
      */
-    public void upoadMini(AlipayOpenMiniVersionUploadModel alipayOpenMiniVersionUploadModel) {
+    public void upoadMini() {
+
+        AlipayOpenMiniVersionUploadModel alipayOpenMiniVersionUploadModel = new AlipayOpenMiniVersionUploadModel();
         AlipayOpenMiniVersionUploadRequest request = new AlipayOpenMiniVersionUploadRequest();
         request.setBizModel(alipayOpenMiniVersionUploadModel);
         try {
-            AlipayOpenMiniVersionUploadResponse response = alipayClient.execute(request);
+            AlipayOpenMiniVersionUploadResponse response = getAlipayClient("").execute(request);
             if (response.isSuccess()) {
                 System.out.println("调用成功");
             } else {
@@ -83,13 +81,15 @@ public class AlipayMiniHandler  extends AbstractAlipayHandler  {
      * https://opendocs.alipay.com/mini/03l21p
      * alipay.open.mini.version.online(小程序上架)
      */
-    public void onlineMini(AlipayOpenMiniVersionOnlineModel alipayOpenMiniVersionOnlineModel) {
+    public void onlineMini() {
+
+        AlipayOpenMiniVersionOnlineModel alipayOpenMiniVersionOnlineModel = new AlipayOpenMiniVersionOnlineModel();
         AlipayOpenMiniVersionOnlineRequest request = new AlipayOpenMiniVersionOnlineRequest();
         request.setBizModel(alipayOpenMiniVersionOnlineModel);
 
         AlipayOpenMiniVersionOnlineResponse response = null;
         try {
-            response = alipayClient.execute(request);
+            response =  getAlipayClient("").execute(request);
         } catch (AlipayApiException e) {
             throw new RuntimeException(e);
         }

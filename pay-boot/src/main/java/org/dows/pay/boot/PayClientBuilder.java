@@ -4,7 +4,7 @@ import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.CertAlipayRequest;
 import com.alipay.api.DefaultAlipayClient;
-import org.dows.pay.boot.config.PayClientConfig;
+import org.dows.pay.boot.config.PayClientProperties;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -13,7 +13,7 @@ public class PayClientBuilder {
     /**
      * 普通公钥方式
      */
-    public static AlipayClient buildClient(PayClientConfig config) {
+    public static AlipayClient buildClient(PayClientProperties config) {
         AlipayClient alipayClient = new DefaultAlipayClient(
                 config.getServiceUrl(),
                 config.getAppId(),
@@ -32,7 +32,7 @@ public class PayClientBuilder {
      * @return {@link AlipayClient}  支付宝支付配置
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public static AlipayClient buildCertClient(PayClientConfig alipayProperties) throws AlipayApiException {
+    public static AlipayClient buildCertClient(PayClientProperties alipayProperties) throws AlipayApiException {
         CertAlipayRequest certAlipayRequest = new CertAlipayRequest();
         certAlipayRequest.setAppId(alipayProperties.getAppId());
         certAlipayRequest.setCertPath(alipayProperties.getAppCertPath());

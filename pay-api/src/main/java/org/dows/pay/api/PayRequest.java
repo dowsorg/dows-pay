@@ -2,12 +2,20 @@ package org.dows.pay.api;
 
 public interface PayRequest<T extends PayResponse> {
 
+
     /**
-     * 获取支付方法名
+     * 获取租户号或商户号
      *
      * @return
      */
-    String getMehtod();
+    String getTenantId();
+
+    /**
+     * 获取应用ID
+     *
+     * @return
+     */
+    String getAppId();
 
     /**
      * 获取支付通道
@@ -16,6 +24,13 @@ public interface PayRequest<T extends PayResponse> {
      */
     String getChannel();
 
+    /**
+     * 获取支付方法名
+     *
+     * @return
+     */
+    String getMethod();
+
 
     /**
      * 获取支付参数
@@ -23,7 +38,6 @@ public interface PayRequest<T extends PayResponse> {
      * @return
      */
     String getParams();
-
 
 
     Class<T> getResponseClass();
@@ -35,7 +49,7 @@ public interface PayRequest<T extends PayResponse> {
      * @return
      */
     default String getPayNamespace() {
-        return getChannel() + "." + getMehtod();
+        return getMethod() + "." + getChannel();
     }
 
 

@@ -2,13 +2,13 @@ package org.dows.pay.alipay;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alipay.api.AlipayApiException;
-import com.alipay.api.AlipayClient;
 import com.alipay.api.domain.AlipayOpenAuthTokenAppModel;
 import com.alipay.api.request.AlipayOpenAuthTokenAppRequest;
 import com.alipay.api.response.AlipayOpenAuthTokenAppResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dows.pay.api.annotation.PayMapping;
+import org.dows.pay.api.enums.PayMethods;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,16 +25,13 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @Service
 public class AlipayCallbackHandler extends AbstractAlipayHandler {
-    private final AlipayClient alipayClient;
-    private final AlipayClient certAlipayClient;
-
 
 
     /**
      * todo 商家授权成功回调，内部数据处理逻辑
      * 代商家创建小程序后，商家授权成功，由支付宝平台发起回调, 这里解析返回字符串参数，并返回AppAuthToken
      */
-    @PayMapping(method = "", argNames = "")
+    @PayMapping(method = PayMethods.ON_ISV_MERCHANT_ACCREDIT)
     public String onIsvMiniMerchantAccredit(String content) {
         JSONObject jsonObject = JSONObject.parseObject(content);
         JSONObject bizContent = jsonObject.getJSONObject("biz_content");
@@ -51,7 +48,6 @@ public class AlipayCallbackHandler extends AbstractAlipayHandler {
      * @return
      * @throws IOException
      */
-    @PayMapping(method = "", argNames = "")
     public String onPaySuccess(HttpServletRequest request) {
 
 
@@ -66,7 +62,6 @@ public class AlipayCallbackHandler extends AbstractAlipayHandler {
      * @param appAuthCode
      * @throws AlipayApiException
      */
-    @PayMapping(method = "", argNames = "")
     public void onAuthorization(String appId, String appAuthCode) throws AlipayApiException {
         AlipayOpenAuthTokenAppRequest alipayOpenAuthTokenAppRequest = new AlipayOpenAuthTokenAppRequest();
 
@@ -75,7 +70,9 @@ public class AlipayCallbackHandler extends AbstractAlipayHandler {
         alipayOpenAuthTokenAppModel.setGrantType("authorization_code");
 
         alipayOpenAuthTokenAppRequest.setBizModel(alipayOpenAuthTokenAppModel);
-        AlipayOpenAuthTokenAppResponse alipayOpenAuthTokenAppResponse = alipayClient.execute(alipayOpenAuthTokenAppRequest);
+        AlipayOpenAuthTokenAppResponse alipayOpenAuthTokenAppResponse =
+                getAlipayClient(appId).execute(alipayOpenAuthTokenAppRequest);
+
         String appAuthToken = alipayOpenAuthTokenAppResponse.getAppAuthToken();
         String appRefreshToken = alipayOpenAuthTokenAppResponse.getAppRefreshToken();
 

@@ -31,6 +31,8 @@ public class PayProxy {
 
 
     public void invoke(PayRequest payRequest) {
+
+
         try {
             method.invoke(payHandler,payRequest);
         } catch (IllegalAccessException e) {

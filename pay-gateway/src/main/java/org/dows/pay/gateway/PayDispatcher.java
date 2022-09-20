@@ -33,15 +33,15 @@ public class PayDispatcher implements ApplicationContextAware {
                         PayProxy payProxy = PayProxy.builder()
                                 .beanName(k)
                                 .beanMethodName(m.getName())
-
-                                .payMethodName(payMapping.method())
-                                .payArgNames(payMapping.argNames())
+                                // todo 后期做对象及字段的自动转换和映射
+                                .payMethodName(payMapping.method().getNamespace())
+                                .payArgNames(payMapping.method().getArgNames())
 
                                 .channel(v.getChannel().toLowerCase())
                                 .payHandler(v)
                                 .method(m)
                                 .build();
-                        String payMethodNamespace = payProxy.getChannel() + "." + payProxy.getPayMethodName();
+                        String payMethodNamespace = payProxy.getPayMethodName() + "." + payProxy.getChannel();
                         payProxyMap.put(payMethodNamespace, payProxy);
                     });
         });
@@ -51,6 +51,12 @@ public class PayDispatcher implements ApplicationContextAware {
         if (payProxyMap.size() < 1) {
             log.error("请配置路由表");
         }
+
+
+        // todo 做支付请求流水记录数据落es->租户-应用-通道-方法-参数-响应-状态-处理返回值的状态
+        payRequest.getAppId();
+
+
         PayProxy payProxy = payProxyMap.get(payRequest.getPayNamespace());
         payProxy.invoke(payRequest);
         return Response.ok();

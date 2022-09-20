@@ -11,9 +11,22 @@
 
 
     <dependencies>
+
         <dependency>
             <groupId>org.dows.saas</groupId>
             <artifactId>pay-boot</artifactId>
+            <version>20220701</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.dows.saas</groupId>
+            <artifactId>pay-alipay</artifactId>
+            <version>20220701</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.dows.saas</groupId>
+            <artifactId>pay-weixin</artifactId>
             <version>20220701</version>
         </dependency>
 
