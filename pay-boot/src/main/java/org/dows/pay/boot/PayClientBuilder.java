@@ -46,4 +46,38 @@ public class PayClientBuilder {
         AlipayClient alipayClient = new DefaultAlipayClient(certAlipayRequest);
         return alipayClient;
     }
+
+
+    /**
+     * 普通公钥方式
+     */
+    public static AlipayClient buildWeixinClient(PayClientProperties config) {
+        AlipayClient alipayClient = new DefaultAlipayClient(
+                config.getServiceUrl(),
+                config.getAppId(),
+                config.getPrivateKey(),
+                config.getFormat(),
+                config.getCharset(),
+                config.getPayPublicKey(),
+                config.getSignType());
+        return alipayClient;
+    }
+
+
+    public static AlipayClient buildCertWeixinClient(PayClientProperties alipayProperties) throws AlipayApiException {
+        CertAlipayRequest certAlipayRequest = new CertAlipayRequest();
+        certAlipayRequest.setAppId(alipayProperties.getAppId());
+        certAlipayRequest.setCertPath(alipayProperties.getAppCertPath());
+        certAlipayRequest.setAlipayPublicCertPath(alipayProperties.getPayCertPath());
+        certAlipayRequest.setRootCertPath(alipayProperties.getPayRootCertPath());
+        certAlipayRequest.setServerUrl(alipayProperties.getServiceUrl());
+        certAlipayRequest.setPrivateKey(alipayProperties.getPrivateKey());
+        certAlipayRequest.setFormat(alipayProperties.getFormat());
+        certAlipayRequest.setCharset(alipayProperties.getCharset());
+        certAlipayRequest.setSignType(alipayProperties.getSignType());
+        AlipayClient alipayClient = new DefaultAlipayClient(certAlipayRequest);
+        return alipayClient;
+    }
+
+
 }
