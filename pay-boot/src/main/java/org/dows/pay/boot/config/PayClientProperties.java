@@ -22,7 +22,7 @@ public class PayClientProperties {
     private String charset = "UTF-8";
     private String signType = "RSA2";
     private String format = "json";
-    private Boolean certModel;
+    private int certModel;
     // 应用公钥证书路径
     private String appCertPath;
     //支付宝公钥证书文件路径

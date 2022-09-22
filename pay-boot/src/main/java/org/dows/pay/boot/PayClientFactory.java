@@ -64,17 +64,13 @@ public class PayClientFactory {
      */
     public static AlipayClient getAlipayClient(String appId) {
         PayClientProperties payClientProperties = PCM.get(appId + "@" + PayChannels.ALIPAY.name().toLowerCase());
-        AlipayClient alipayClient = PayClientBuilder.buildClient(payClientProperties);
-        return alipayClient;
+        if (payClientProperties.getCertModel() == 0) {
+            return PayClientBuilder.buildClient(payClientProperties);
+        } else if (payClientProperties.getCertModel() == 1) {
+            return PayClientBuilder.buildCertClient(payClientProperties);
+        }
+        return null;
     }
-
-
-    public static AlipayClient getCertAlipayClient(String appId) throws AlipayApiException {
-        PayClientProperties payClientProperties = PCM.get(appId + "@" + PayChannels.ALIPAY.name().toLowerCase());
-        AlipayClient alipayClient = PayClientBuilder.buildCertClient(payClientProperties);
-        return alipayClient;
-    }
-
 
 
     public static AlipayClient getWeixinClient(String appId) {

@@ -15,7 +15,8 @@ public abstract class AbstractWeixinHandler implements PayHandler {
      * @return
      */
     protected AlipayClient getWeixinClient(String appId) {
-        return PayClientFactory.getAlipayClient(appId);
+        return PayClientFactory.getWeixinClient(appId);
+
     }
 
     /**
@@ -26,7 +27,7 @@ public abstract class AbstractWeixinHandler implements PayHandler {
      * @throws AlipayApiException
      */
     protected AlipayClient getCertWeixinClient(String appId) throws AlipayApiException {
-        return PayClientFactory.getCertAlipayClient(appId);
+        return PayClientFactory.getWeixinClient(appId);
     }
 
 

@@ -1,21 +1,28 @@
 package org.dows.pay.alipay;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.json.JSONUtil;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.domain.AlipayOpenMiniIsvQueryModel;
 import com.alipay.api.domain.CreateMiniRequest;
+import com.alipay.api.internal.mapping.ApiField;
 import com.alipay.api.request.AlipayOpenMiniIsvCreateRequest;
 import com.alipay.api.request.AlipayOpenMiniIsvQueryRequest;
 import com.alipay.api.response.AlipayOpenMiniIsvCreateResponse;
 import com.alipay.api.response.AlipayOpenMiniIsvQueryResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.dows.pay.api.PayHandler;
 import org.dows.pay.api.PayRequest;
+import org.dows.pay.api.annotation.ParamName;
 import org.dows.pay.api.annotation.PayMapping;
 import org.dows.pay.api.enums.PayMethods;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * 代理商户作业相关业务逻辑，如：代开通或代创建小程序，其他等...
@@ -33,13 +40,14 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
     @PayMapping(method = PayMethods.ISV_CREATE)
     public void createIsvMini(PayRequest payRequest) {
 
-        CreateMiniRequest createMiniRequest = new CreateMiniRequest();
+        CreateMiniRequest createMiniRequest = JSONUtil.toBean(payRequest.getParams(), CreateMiniRequest.class);
         AlipayOpenMiniIsvCreateRequest request = new AlipayOpenMiniIsvCreateRequest();
         request.setBizModel(createMiniRequest);
         try {
             AlipayOpenMiniIsvCreateResponse response =
-                    getAlipayClient(payRequest.getAppId()).execute(request);
+                    getAlipayClient(payRequest.getAppId()).certificateExecute(request);
             // todo 做处理
+            log.info("收到响应请求:{}", response);
 
 
         } catch (AlipayApiException e) {
