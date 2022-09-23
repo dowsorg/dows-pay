@@ -17,6 +17,7 @@ import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -28,7 +29,9 @@ public class PayClientFactory {
     private final PayClientConfig payClientConfig;
     private static final Map<String, PayClientProperties> PCM = new HashMap<>();
 
+    private static final Map<String, AlipayClient> ALIPAY_CLIENT_MAP = new ConcurrentHashMap<>();
 
+    private static final Map<String, AlipayClient> WEIXIN_CLIENT_MAP = new ConcurrentHashMap<>();
     /**
      * SpringBoot获取当前环境代码,Spring获取当前环境代码
      */
@@ -63,27 +66,34 @@ public class PayClientFactory {
      * @return
      */
     public static AlipayClient getAlipayClient(String appId) {
+        AlipayClient client = ALIPAY_CLIENT_MAP.get(appId);
+        if (client != null) {
+            return client;
+        }
         PayClientProperties payClientProperties = PCM.get(appId + "@" + PayChannels.ALIPAY.name().toLowerCase());
         if (payClientProperties.getCertModel() == 0) {
-            return PayClientBuilder.buildClient(payClientProperties);
+            client = PayClientBuilder.buildClient(payClientProperties);
         } else if (payClientProperties.getCertModel() == 1) {
-            return PayClientBuilder.buildCertClient(payClientProperties);
+            client = PayClientBuilder.buildCertClient(payClientProperties);
         }
-        return null;
+        ALIPAY_CLIENT_MAP.put(appId, client);
+        return client;
     }
 
 
     public static AlipayClient getWeixinClient(String appId) {
+        AlipayClient client = WEIXIN_CLIENT_MAP.get(appId);
+        if (client != null) {
+            return client;
+        }
         PayClientProperties payClientProperties = PCM.get(appId + "@" + PayChannels.ALIPAY.name().toLowerCase());
-        AlipayClient alipayClient = PayClientBuilder.buildClient(payClientProperties);
-        return alipayClient;
-    }
-
-
-    public static AlipayClient getCertWeixinClient(String appId) throws AlipayApiException {
-        PayClientProperties payClientProperties = PCM.get(appId + "@" + PayChannels.WEIXIN.name().toLowerCase());
-        AlipayClient alipayClient = PayClientBuilder.buildCertClient(payClientProperties);
-        return alipayClient;
+        if (payClientProperties.getCertModel() == 0) {
+            client = PayClientBuilder.buildClient(payClientProperties);
+        } else if (payClientProperties.getCertModel() == 1) {
+            client = PayClientBuilder.buildCertClient(payClientProperties);
+        }
+        WEIXIN_CLIENT_MAP.put(appId, client);
+        return client;
     }
 
 

@@ -4,9 +4,9 @@ import lombok.Getter;
 
 public enum PayMethods {
 
-    ISV_CREATE("dows.pay.isv.create", "", "代理商代商户开通ISV支付"),
-    ISV_QUERY("dows.pay.isv.query", "", "代理商代商户查询ISV开通结果"),
-    ON_ISV_MERCHANT_ACCREDIT("dows.pay.isv.merchant.accredit", "", "商户授权代理商通道发起的回调")
+    ISV_CREATE("dows.pay.isv.create", "", "isv服务商代商户创建小程序"),
+    ISV_QUERY("dows.pay.isv.query", "", "isv查询代商家创建小程序记录"),
+    ON_MERCHANT_CONFIRMED("dows.pay.merchant.confirmed", "", "商户确认服务商代创建小程序结果通知")
 
 
 

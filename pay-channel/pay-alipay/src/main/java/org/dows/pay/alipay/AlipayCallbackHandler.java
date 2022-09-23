@@ -31,7 +31,7 @@ public class AlipayCallbackHandler extends AbstractAlipayHandler {
      * todo 商家授权成功回调，内部数据处理逻辑
      * 代商家创建小程序后，商家授权成功，由支付宝平台发起回调, 这里解析返回字符串参数，并返回AppAuthToken
      */
-    @PayMapping(method = PayMethods.ON_ISV_MERCHANT_ACCREDIT)
+    @PayMapping(method = PayMethods.ON_MERCHANT_CONFIRMED)
     public String onIsvMiniMerchantAccredit(String content) {
         JSONObject jsonObject = JSONObject.parseObject(content);
         JSONObject bizContent = jsonObject.getJSONObject("biz_content");
