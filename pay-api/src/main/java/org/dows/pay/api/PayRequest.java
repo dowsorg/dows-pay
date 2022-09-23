@@ -1,5 +1,7 @@
 package org.dows.pay.api;
 
+import java.util.Map;
+
 public interface PayRequest<T extends PayResponse> {
 
 
@@ -37,7 +39,7 @@ public interface PayRequest<T extends PayResponse> {
      *
      * @return
      */
-    String getParams();
+    Map<String,Object> getParams();
 
 
     Class<T> getResponseClass();

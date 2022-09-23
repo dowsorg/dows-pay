@@ -9,6 +9,8 @@ import org.dows.pay.api.PayRequest;
 import org.dows.pay.api.annotation.ParamName;
 import org.dows.pay.api.resonse.PayIsvResponse;
 
+import java.util.Map;
+
 @Data
 @ToString
 @Builder
@@ -32,7 +34,7 @@ public class PayIsvRequest implements PayRequest<PayIsvResponse> {
     private String method;
     @ApiModelProperty("json参数体")
     @ParamName("biz_params")
-    private String params;
+    private Map<String,Object> params;
     private Class<PayIsvResponse> responseClass;
 
 }

@@ -5,8 +5,11 @@ import com.alipay.api.AlipayClient;
 import org.dows.pay.api.PayHandler;
 import org.dows.pay.api.enums.PayChannels;
 import org.dows.pay.boot.PayClientFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class AbstractWeixinHandler implements PayHandler {
+    @Autowired
+    private PayClientFactory payClientFactory;
 
     /**
      * todo 改换成微信的
@@ -15,19 +18,8 @@ public abstract class AbstractWeixinHandler implements PayHandler {
      * @return
      */
     protected AlipayClient getWeixinClient(String appId) {
-        return PayClientFactory.getWeixinClient(appId);
+        return payClientFactory.getWeixinClient(appId);
 
-    }
-
-    /**
-     * todo 改成微信的
-     *
-     * @param appId
-     * @return
-     * @throws AlipayApiException
-     */
-    protected AlipayClient getCertWeixinClient(String appId) throws AlipayApiException {
-        return PayClientFactory.getWeixinClient(appId);
     }
 
 

@@ -1,28 +1,22 @@
 package org.dows.pay.alipay;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.json.JSONUtil;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.domain.AlipayOpenMiniIsvQueryModel;
 import com.alipay.api.domain.CreateMiniRequest;
-import com.alipay.api.internal.mapping.ApiField;
 import com.alipay.api.request.AlipayOpenMiniIsvCreateRequest;
 import com.alipay.api.request.AlipayOpenMiniIsvQueryRequest;
 import com.alipay.api.response.AlipayOpenMiniIsvCreateResponse;
 import com.alipay.api.response.AlipayOpenMiniIsvQueryResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.dows.pay.api.message.AlipayMessage;
+import org.dows.pay.api.PayEvent;
 import org.dows.pay.api.PayRequest;
-import org.dows.pay.api.annotation.ParamName;
 import org.dows.pay.api.annotation.PayMapping;
 import org.dows.pay.api.enums.PayMethods;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
-
-import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * 代理商户作业相关业务逻辑，如：代开通或代创建小程序，其他等...
@@ -40,7 +34,7 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
     @PayMapping(method = PayMethods.ISV_CREATE)
     public void createIsvMini(PayRequest payRequest) {
 
-        CreateMiniRequest createMiniRequest = JSONUtil.toBean(payRequest.getParams(), CreateMiniRequest.class);
+        CreateMiniRequest createMiniRequest = BeanUtil.toBean(payRequest.getParams(), CreateMiniRequest.class);
         AlipayOpenMiniIsvCreateRequest request = new AlipayOpenMiniIsvCreateRequest();
         request.setBizModel(createMiniRequest);
         try {
@@ -78,5 +72,23 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
         } else {
             System.out.println("调用失败");
         }
+    }
+
+
+    /**
+     * 商户确认服务商代创建小程序结果通知
+     */
+    @EventListener(value = {PayEvent.class})
+    public void onIsvMerchantConfirmed(PayEvent<AlipayMessage> payEvent) {
+        AlipayMessage payMessage = payEvent.getPayMessage();
+        log.info("处理 alipay.open.mini.merchant.confirmed 事件消息:{}", payMessage);
+        // todo 业务处理
+        String appId = payMessage.getAppId();
+        String msgApi = payMessage.getMsgApi();
+        String msgId = payMessage.getMsgId();
+
+
+        String bizContent = payMessage.getBizContent();
+        log.info("业务响应:bizContent = {}", bizContent);
     }
 }
