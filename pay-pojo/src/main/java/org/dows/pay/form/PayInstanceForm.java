@@ -2,6 +2,7 @@ package org.dows.pay.form;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -14,7 +15,7 @@ import java.util.Date;
  * 支付通道实例(PayInstance)表单
  *
  * @author lait.zhang
- * @since 2022-09-25 09:35:53
+ * @since 2022-09-25 10:14:05
  */
 @SuppressWarnings("serial")
 @Data
@@ -25,7 +26,8 @@ import java.util.Date;
 @NoArgsConstructor
 @ApiModel(value = "PayInstanceForm 表单对象", description = "支付通道实例")
 public class PayInstanceForm implements Serializable {
-    private static final long serialVersionUID = 495114606498731958L;
+    private static final long serialVersionUID = -67623628940191763L;
+    @JsonIgnore
     private Long id;
 
     @ApiModelProperty("支付通道实例编号")
@@ -91,8 +93,10 @@ public class PayInstanceForm implements Serializable {
     @ApiModelProperty("状态")
     private Integer state;
 
+    @JsonIgnore
     private Date dt;
 
+    @JsonIgnore
     private Boolean deleted;
 
 

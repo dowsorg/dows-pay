@@ -1,7 +1,5 @@
 package org.dows.pay.entity;
 
-import java.util.Date;
-
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableLogic;
@@ -14,11 +12,13 @@ import lombok.*;
 import lombok.experimental.Accessors;
 import org.dows.framework.crud.mybatis.CrudEntity;
 
+import java.util.Date;
+
 /**
  * 支付接入申请明细(PayApplyItem)实体类
  *
  * @author lait.zhang
- * @since 2022-09-25 09:55:42
+ * @since 2022-09-25 10:13:09
  */
 @SuppressWarnings("serial")
 @Data
@@ -30,7 +30,7 @@ import org.dows.framework.crud.mybatis.CrudEntity;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @ApiModel(value = "PayApplyItem对象", description = "支付接入申请明细")
 public class PayApplyItem implements CrudEntity {
-    private static final long serialVersionUID = 805320039162058687L;
+    private static final long serialVersionUID = 558438151258918904L;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     @ApiModelProperty("主键")
