@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
  * 支付业务(PayBiz)表服务实现类
  *
  * @author lait.zhang
- * @since 2022-09-25 00:03:06
+ * @since 2022-09-25 09:55:43
  */
 @Service("payBizService")
 public class PayBizServiceImpl extends MybatisCrudServiceImpl<PayBizMapper, PayBiz> implements PayBizService {

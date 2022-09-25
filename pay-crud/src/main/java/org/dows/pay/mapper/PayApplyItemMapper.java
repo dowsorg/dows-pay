@@ -8,7 +8,7 @@ import org.dows.pay.entity.PayApplyItem;
  * 支付接入申请明细(PayApplyItem)表数据库访问层
  *
  * @author lait.zhang
- * @since 2022-09-25 00:03:05
+ * @since 2022-09-25 09:55:42
  */
 @Mapper
 public interface PayApplyItemMapper extends MybatisCrudMapper<PayApplyItem> {

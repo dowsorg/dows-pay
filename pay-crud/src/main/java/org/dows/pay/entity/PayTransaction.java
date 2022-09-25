@@ -18,7 +18,7 @@ import org.dows.framework.crud.mybatis.CrudEntity;
  * 支付交易(PayTransaction)实体类
  *
  * @author lait.zhang
- * @since 2022-09-25 00:03:09
+ * @since 2022-09-25 09:55:44
  */
 @SuppressWarnings("serial")
 @Data
@@ -30,7 +30,7 @@ import org.dows.framework.crud.mybatis.CrudEntity;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @ApiModel(value = "PayTransaction对象", description = "支付交易")
 public class PayTransaction implements CrudEntity {
-    private static final long serialVersionUID = -77778190113535110L;
+    private static final long serialVersionUID = -38326769866006727L;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     @ApiModelProperty("主键")

@@ -8,7 +8,7 @@ import org.dows.pay.entity.PayMerchant;
  * 支付商户(PayMerchant)表数据库访问层
  *
  * @author lait.zhang
- * @since 2022-09-25 00:03:08
+ * @since 2022-09-25 09:55:44
  */
 @Mapper
 public interface PayMerchantMapper extends MybatisCrudMapper<PayMerchant> {

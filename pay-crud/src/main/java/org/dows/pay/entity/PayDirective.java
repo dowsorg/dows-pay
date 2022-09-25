@@ -18,7 +18,7 @@ import org.dows.framework.crud.mybatis.CrudEntity;
  * 支付指令集(PayDirective)实体类
  *
  * @author lait.zhang
- * @since 2022-09-25 00:03:07
+ * @since 2022-09-25 09:55:43
  */
 @SuppressWarnings("serial")
 @Data
@@ -30,7 +30,7 @@ import org.dows.framework.crud.mybatis.CrudEntity;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @ApiModel(value = "PayDirective对象", description = "支付指令集")
 public class PayDirective implements CrudEntity {
-    private static final long serialVersionUID = 389101017676392224L;
+    private static final long serialVersionUID = 162986577796750659L;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     @ApiModelProperty("主键ID")

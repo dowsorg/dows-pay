@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
  * 支付交易明细(PayDetails)表服务实现类
  *
  * @author lait.zhang
- * @since 2022-09-25 00:03:07
+ * @since 2022-09-25 09:55:43
  */
 @Service("payDetailsService")
 public class PayDetailsServiceImpl extends MybatisCrudServiceImpl<PayDetailsMapper, PayDetails> implements PayDetailsService {

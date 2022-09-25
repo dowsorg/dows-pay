@@ -18,7 +18,7 @@ import org.dows.framework.crud.mybatis.CrudEntity;
  * 支付流水(PayWater)实体类
  *
  * @author lait.zhang
- * @since 2022-09-25 00:03:09
+ * @since 2022-09-25 09:55:44
  */
 @SuppressWarnings("serial")
 @Data
@@ -30,7 +30,7 @@ import org.dows.framework.crud.mybatis.CrudEntity;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @ApiModel(value = "PayWater对象", description = "支付流水")
 public class PayWater implements CrudEntity {
-    private static final long serialVersionUID = 882326869343829798L;
+    private static final long serialVersionUID = -56086919126819305L;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     @ApiModelProperty("主键")

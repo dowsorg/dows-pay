@@ -23,6 +23,7 @@
         <module>pay-rest</module>
         <module>pay-application</module>
         <module>pay-biz</module>
+        <module>pay-pojo</module>
     </modules>
 
 </project>

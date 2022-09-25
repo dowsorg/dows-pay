@@ -18,7 +18,7 @@ import org.dows.framework.crud.mybatis.CrudEntity;
  * 支付卡号绑定（后期放在钱包模块）(PayBinded)实体类
  *
  * @author lait.zhang
- * @since 2022-09-25 00:03:06
+ * @since 2022-09-25 09:55:42
  */
 @SuppressWarnings("serial")
 @Data
@@ -30,7 +30,7 @@ import org.dows.framework.crud.mybatis.CrudEntity;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @ApiModel(value = "PayBinded对象", description = "支付卡号绑定（后期放在钱包模块）")
 public class PayBinded implements CrudEntity {
-    private static final long serialVersionUID = 837911143780555991L;
+    private static final long serialVersionUID = 835380644579163180L;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     @ApiModelProperty("主键ID")

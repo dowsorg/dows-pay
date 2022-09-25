@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
  * 支付商户(PayMerchant)表服务实现类
  *
  * @author lait.zhang
- * @since 2022-09-25 00:03:08
+ * @since 2022-09-25 09:55:44
  */
 @Service("payMerchantService")
 public class PayMerchantServiceImpl extends MybatisCrudServiceImpl<PayMerchantMapper, PayMerchant> implements PayMerchantService {

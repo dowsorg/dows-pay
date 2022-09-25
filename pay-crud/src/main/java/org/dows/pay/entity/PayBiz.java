@@ -18,7 +18,7 @@ import org.dows.framework.crud.mybatis.CrudEntity;
  * 支付业务(PayBiz)实体类
  *
  * @author lait.zhang
- * @since 2022-09-25 00:03:06
+ * @since 2022-09-25 09:55:43
  */
 @SuppressWarnings("serial")
 @Data
@@ -30,7 +30,7 @@ import org.dows.framework.crud.mybatis.CrudEntity;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @ApiModel(value = "PayBiz对象", description = "支付业务")
 public class PayBiz implements CrudEntity {
-    private static final long serialVersionUID = 707630889675445399L;
+    private static final long serialVersionUID = -34027456140285205L;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     @ApiModelProperty("主键ID")

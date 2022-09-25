@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
  * 支付交易(PayTransaction)表服务实现类
  *
  * @author lait.zhang
- * @since 2022-09-25 00:03:09
+ * @since 2022-09-25 09:55:44
  */
 @Service("payTransactionService")
 public class PayTransactionServiceImpl extends MybatisCrudServiceImpl<PayTransactionMapper, PayTransaction> implements PayTransactionService {

@@ -18,7 +18,7 @@ import org.dows.framework.crud.mybatis.CrudEntity;
  * 支付接入申请(PayApply)实体类
  *
  * @author lait.zhang
- * @since 2022-09-25 00:03:05
+ * @since 2022-09-25 09:55:42
  */
 @SuppressWarnings("serial")
 @Data
@@ -30,7 +30,7 @@ import org.dows.framework.crud.mybatis.CrudEntity;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @ApiModel(value = "PayApply对象", description = "支付接入申请")
 public class PayApply implements CrudEntity {
-    private static final long serialVersionUID = 157039767099270291L;
+    private static final long serialVersionUID = 792996830322431744L;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     @ApiModelProperty("主键")
@@ -57,9 +57,6 @@ public class PayApply implements CrudEntity {
     @ApiModelProperty("业务名称|业务组名称")
     private String bizName;
 
-    @JsonIgnore
-    @TableLogic
-    @TableField(fill = FieldFill.INSERT)
     @ApiModelProperty("审核是否通过（0:否，1：是）")
     private Boolean checked;
 

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
  * 支付通道账号(PayAccount)表服务实现类
  *
  * @author lait.zhang
- * @since 2022-09-25 00:03:04
+ * @since 2022-09-25 09:55:42
  */
 @Service("payAccountService")
 public class PayAccountServiceImpl extends MybatisCrudServiceImpl<PayAccountMapper, PayAccount> implements PayAccountService {
