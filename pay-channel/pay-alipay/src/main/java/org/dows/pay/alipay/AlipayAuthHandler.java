@@ -1,18 +1,12 @@
 package org.dows.pay.alipay;
 
-import com.alibaba.fastjson.JSONObject;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.domain.AlipayOpenAuthTokenAppModel;
 import com.alipay.api.request.AlipayOpenAuthTokenAppRequest;
 import com.alipay.api.response.AlipayOpenAuthTokenAppResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.dows.pay.api.annotation.PayMapping;
-import org.dows.pay.api.enums.PayMethods;
 import org.springframework.stereotype.Service;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 
 
 /**
@@ -24,35 +18,7 @@ import java.io.IOException;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class AlipayCallbackHandler extends AbstractAlipayHandler {
-
-
-    /**
-     * todo 商家授权成功回调，内部数据处理逻辑
-     * 代商家创建小程序后，商家授权成功，由支付宝平台发起回调, 这里解析返回字符串参数，并返回AppAuthToken
-     */
-    @PayMapping(method = PayMethods.ON_ISV_MERCHANT_CONFIRMED)
-    public String onIsvMiniMerchantAccredit(String content) {
-        JSONObject jsonObject = JSONObject.parseObject(content);
-        JSONObject bizContent = jsonObject.getJSONObject("biz_content");
-        JSONObject detail = bizContent.getJSONObject("detail");
-        String appAuthToken = detail.getString("app_auth_token");
-        return appAuthToken;
-    }
-
-
-    /**
-     * todo 用户支付成功回调，内部数据处理逻辑
-     *
-     * @param request
-     * @return
-     * @throws IOException
-     */
-    public String onPaySuccess(HttpServletRequest request) {
-
-
-        return null;
-    }
+public class AlipayAuthHandler extends AbstractAlipayHandler {
 
 
     /**

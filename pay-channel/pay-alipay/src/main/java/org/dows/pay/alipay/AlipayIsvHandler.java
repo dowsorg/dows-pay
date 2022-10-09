@@ -10,11 +10,11 @@ import com.alipay.api.response.AlipayOpenMiniIsvCreateResponse;
 import com.alipay.api.response.AlipayOpenMiniIsvQueryResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.dows.pay.api.message.AlipayMessage;
 import org.dows.pay.api.PayEvent;
 import org.dows.pay.api.PayRequest;
 import org.dows.pay.api.annotation.PayMapping;
 import org.dows.pay.api.enums.PayMethods;
+import org.dows.pay.api.message.AlipayMessage;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
@@ -38,7 +38,7 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
         request.setBizModel(createMiniRequest);
         AlipayOpenMiniIsvCreateResponse response = null;
         try {
-            response= getAlipayClient(payRequest.getAppId()).certificateExecute(request);
+            response = getAlipayClient(payRequest.getAppId()).certificateExecute(request);
 
         } catch (AlipayApiException e) {
             throw new RuntimeException(e);

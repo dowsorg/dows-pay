@@ -49,6 +49,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class AlipayAgentHandler extends AbstractAlipayHandler  {
 
+
+
+
     /**
      * 开启代商户签约、创建应用事务
      * https://opendocs.alipay.com/isv/02s1f9
