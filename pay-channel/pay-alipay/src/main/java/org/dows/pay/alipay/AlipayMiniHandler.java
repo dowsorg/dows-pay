@@ -1,16 +1,30 @@
 package org.dows.pay.alipay;
 
+import com.alibaba.fastjson.JSONObject;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
+import com.alipay.api.domain.AlipayOpenMiniExperienceCreateModel;
+import com.alipay.api.domain.AlipayOpenMiniVersionAuditCancelModel;
+import com.alipay.api.domain.AlipayOpenMiniVersionOfflineModel;
 import com.alipay.api.domain.AlipayOpenMiniVersionOnlineModel;
 import com.alipay.api.domain.AlipayOpenMiniVersionUploadModel;
 import com.alipay.api.request.*;
+import com.alipay.api.response.AlipayOpenMiniExperienceCreateResponse;
+import com.alipay.api.response.AlipayOpenMiniVersionAuditApplyResponse;
+import com.alipay.api.response.AlipayOpenMiniVersionAuditCancelResponse;
+import com.alipay.api.response.AlipayOpenMiniVersionOfflineResponse;
 import com.alipay.api.response.AlipayOpenMiniVersionOnlineResponse;
 import com.alipay.api.response.AlipayOpenMiniVersionUploadResponse;
+import com.google.common.collect.Maps;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dows.pay.api.PayHandler;
+import org.dows.pay.api.PayRequest;
+import org.dows.pay.api.annotation.PayMapping;
+import org.dows.pay.api.enums.PayMethods;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 /**
  * 小程序相关业务功能
@@ -45,22 +59,22 @@ public class AlipayMiniHandler  extends AbstractAlipayHandler  {
      * https://opendocs.alipay.com/mini/03l8bz
      * alipay.open.mini.version.upload(小程序基于模板上传版本)
      */
-    public void upoadMini() {
-
+    @PayMapping(method = PayMethods.MINI_UPLOAD)
+    public void uploadMini(PayRequest payRequest) {
         AlipayOpenMiniVersionUploadModel alipayOpenMiniVersionUploadModel = new AlipayOpenMiniVersionUploadModel();
         AlipayOpenMiniVersionUploadRequest request = new AlipayOpenMiniVersionUploadRequest();
         request.setBizModel(alipayOpenMiniVersionUploadModel);
+        AlipayOpenMiniVersionUploadResponse response;
         try {
-            AlipayOpenMiniVersionUploadResponse response = getAlipayClient("").execute(request);
-            if (response.isSuccess()) {
-                System.out.println("调用成功");
-            } else {
-                System.out.println("调用失败");
-            }
+            response = getAlipayClient(payRequest.getAppId()).execute(request);
         } catch (AlipayApiException e) {
             throw new RuntimeException(e);
         }
-
+        if (response.isSuccess()) {
+            System.out.println("调用成功");
+        } else {
+            System.out.println("调用失败");
+        }
     }
 
 
@@ -69,9 +83,45 @@ public class AlipayMiniHandler  extends AbstractAlipayHandler  {
      * https://opendocs.alipay.com/mini/03l9bq
      * alipay.open.mini.version.audit.apply(小程序提交审核)
      */
-    public void auditMini() {
+    @PayMapping(method = PayMethods.MINI_APPLY)
+    public void auditMini(PayRequest payRequest) {
         AlipayOpenMiniVersionAuditApplyRequest request = new AlipayOpenMiniVersionAuditApplyRequest();
-        request.setServiceEmail("example@mail.com");
+        AlipayOpenMiniVersionAuditApplyResponse response;
+        try {
+            response = getAlipayClient(payRequest.getAppId()).execute(request);
+        } catch (AlipayApiException e) {
+            throw new RuntimeException(e);
+        }
+        if (response.isSuccess()) {
+            System.out.println("调用成功");
+        } else {
+            System.out.println("调用失败");
+        }
+
+    }
+
+
+    /**
+     * 小程序撤销审核
+     * https://opendocs.alipay.com/mini/03l9br
+     *
+     */
+    @PayMapping(method = PayMethods.MINI_CANCEL)
+    public void auditCancelMini(PayRequest payRequest) {
+        AlipayOpenMiniVersionAuditCancelRequest request = new AlipayOpenMiniVersionAuditCancelRequest();
+        AlipayOpenMiniVersionAuditCancelModel alipayOpenMiniVersionAuditCancelModel = new AlipayOpenMiniVersionAuditCancelModel();
+        request.setBizModel(alipayOpenMiniVersionAuditCancelModel);
+        AlipayOpenMiniVersionAuditCancelResponse response;
+        try {
+            response = getAlipayClient(payRequest.getAppId()).execute(request);
+        } catch (AlipayApiException e) {
+            throw new RuntimeException(e);
+        }
+        if (response.isSuccess()) {
+            System.out.println("调用成功");
+        } else {
+            System.out.println("调用失败");
+        }
 
     }
 
@@ -81,15 +131,60 @@ public class AlipayMiniHandler  extends AbstractAlipayHandler  {
      * https://opendocs.alipay.com/mini/03l21p
      * alipay.open.mini.version.online(小程序上架)
      */
-    public void onlineMini() {
-
+    @PayMapping(method = PayMethods.MINI_ONLINE)
+    public void onlineMini(PayRequest payRequest) {
         AlipayOpenMiniVersionOnlineModel alipayOpenMiniVersionOnlineModel = new AlipayOpenMiniVersionOnlineModel();
         AlipayOpenMiniVersionOnlineRequest request = new AlipayOpenMiniVersionOnlineRequest();
         request.setBizModel(alipayOpenMiniVersionOnlineModel);
-
-        AlipayOpenMiniVersionOnlineResponse response = null;
+        AlipayOpenMiniVersionOnlineResponse response;
         try {
-            response =  getAlipayClient("").execute(request);
+            response = getAlipayClient(payRequest.getAppId()).execute(request);
+        } catch (AlipayApiException e) {
+            throw new RuntimeException(e);
+        }
+        if (response.isSuccess()) {
+            System.out.println("调用成功");
+        } else {
+            System.out.println("调用失败");
+        }
+    }
+
+    /**
+     * 小程序上架
+     * https://opendocs.alipay.com/mini/03l21p
+     * alipay.open.mini.version.online(小程序上架)
+     */
+    @PayMapping(method = PayMethods.MINI_OFFLINE)
+    public void offlineMini(PayRequest payRequest) {
+        AlipayOpenMiniVersionOfflineModel alipayOpenMiniVersionOfflineModel = new AlipayOpenMiniVersionOfflineModel();
+        AlipayOpenMiniVersionOfflineRequest request = new AlipayOpenMiniVersionOfflineRequest();
+        request.setBizModel(alipayOpenMiniVersionOfflineModel);
+        AlipayOpenMiniVersionOfflineResponse response;
+        try {
+            response = getAlipayClient(payRequest.getAppId()).execute(request);
+        } catch (AlipayApiException e) {
+            throw new RuntimeException(e);
+        }
+        if (response.isSuccess()) {
+            System.out.println("调用成功");
+        } else {
+            System.out.println("调用失败");
+        }
+    }
+
+    /**
+     * 小程序生成体验版
+     * https://opendocs.alipay.com/mini/03l9bw
+     *
+     */
+    @PayMapping(method = PayMethods.MINI_CREATE)
+    public void createMini(PayRequest payRequest) {
+        AlipayOpenMiniExperienceCreateModel alipayOpenMiniExperienceCreateModel = new AlipayOpenMiniExperienceCreateModel();
+        AlipayOpenMiniExperienceCreateRequest request = new AlipayOpenMiniExperienceCreateRequest();
+        request.setBizModel(alipayOpenMiniExperienceCreateModel);
+        AlipayOpenMiniExperienceCreateResponse response;
+        try {
+            response = getAlipayClient(payRequest.getAppId()).execute(request);
         } catch (AlipayApiException e) {
             throw new RuntimeException(e);
         }
