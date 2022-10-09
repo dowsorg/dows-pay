@@ -8,20 +8,26 @@ public enum PayMethods {
     ISV_QUERY("dows.pay.isv.query", "", "isv查询代商家创建小程序记录"),
     ON_ISV_MERCHANT_CONFIRMED("dows.pay.merchant.confirmed", "", "商户确认服务商代创建小程序结果通知"),
 
+
+    // agent 相关接口
+    AGENT_CREATE("dows.pay.agent.create", "", "开启代商户签约、创建应用事务"),
+    AGENT_FACETOFACE("dows.pay.agent.facetoface", "", "协助商家申请签约当面付产品"),
+    AGENT_COMMON("dows.pay.agent.common", "", "代签约产品通用接口"),
+    AGENT_CONFIRM("dows.pay.agent.confirm", "", "提交代商户签约、创建应用事务"),
+    AGENT_QUERY("dows.pay.agent.query", "", "查询申请单状态"),
+
     // mini 相关接口
     MINI_UPLOAD("dows.pay.mini.upload", "", "小程序基于模板上传版本"),
     MINI_APPLY("dows.pay.mini.apply", "", "小程序提交审核"),
+    MINI_CANCEL("dows.pay.mini.cancel", "", "小程序撤销审核"),
+    MINI_ONLINE("dows.pay.mini.online", "", "小程序上架"),
+    MINI_OFFLINE("dows.pay.mini.offline", "", "小程序下架"),
+    MINI_CREATE("dows.pay.mini.create", "", "小程序生成体验版"),
+
 
     ON_MINI_AUDITED("dows.pay.mini.audited", "", "小程序审核通过通知"),
     ON_MINI_REJECTED("dows.pay.mini.rejected", "", "小程序审核驳回通知"),
     ON_MINI_PASSED("dows.pay.mini.passed", "", "小程序审核不可营销通知"),
-
-    MINI_ONLINE("dows.pay.mini.online", "", "小程序上架"),
-    MINI_ROLLBACK("dows.pay.mini.rollback", "", "小程序上架"),
-
-    // mini 体验版
-    MINI_EXPERIENCE_CREATE("dows.pay.mini.experience.create", "", "小程序生成体验版"),
-
 
     // 客服
     MINI_SERVICE_CONFIG("dows.pay.mini.service.config", "", "小程序设置客服方式"),

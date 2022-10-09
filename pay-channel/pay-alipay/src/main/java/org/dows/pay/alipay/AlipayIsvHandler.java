@@ -33,21 +33,22 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
      */
     @PayMapping(method = PayMethods.ISV_CREATE)
     public void createIsvMini(PayRequest payRequest) {
-
         CreateMiniRequest createMiniRequest = BeanUtil.toBean(payRequest.getParams(), CreateMiniRequest.class);
         AlipayOpenMiniIsvCreateRequest request = new AlipayOpenMiniIsvCreateRequest();
         request.setBizModel(createMiniRequest);
+        AlipayOpenMiniIsvCreateResponse response = null;
         try {
-            AlipayOpenMiniIsvCreateResponse response =
-                    getAlipayClient(payRequest.getAppId()).certificateExecute(request);
-            // todo 做处理
-            log.info("收到响应请求:{}", response);
-
+            response= getAlipayClient(payRequest.getAppId()).certificateExecute(request);
 
         } catch (AlipayApiException e) {
             throw new RuntimeException(e);
         }
-
+        if (response.isSuccess()) {
+            // todo 保存订单号 返回申请小程序记录表ID 后续通过ID查询
+            System.out.println("调用成功");
+        } else {
+            System.out.println("调用失败");
+        }
     }
 
 
@@ -56,7 +57,7 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
      * 服务商调用 alipay.open.mini.isv.query 接口，传入 order_no（订单编号）参数，
      */
     @PayMapping(method = PayMethods.ISV_QUERY)
-    public void queryIsvMini(PayRequest payRequest) {
+    public String queryIsvMini(PayRequest payRequest) {
 
         AlipayOpenMiniIsvQueryModel alipayOpenMiniIsvQueryModel = new AlipayOpenMiniIsvQueryModel();
         AlipayOpenMiniIsvQueryRequest request = new AlipayOpenMiniIsvQueryRequest();
@@ -69,8 +70,10 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
         }
         if (response.isSuccess()) {
             System.out.println("调用成功");
+            return response.getStatus();
         } else {
-            System.out.println("调用失败");
+            //todo 失败逻辑
+            throw new RuntimeException("调用失败");
         }
     }
 

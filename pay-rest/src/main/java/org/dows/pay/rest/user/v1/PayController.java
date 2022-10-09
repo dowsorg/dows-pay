@@ -4,7 +4,9 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.dows.framework.api.Response;
 import org.dows.pay.api.PayRequest;
+import org.dows.pay.api.PayResponse;
 import org.dows.pay.api.request.PayIsvRequest;
 import org.dows.pay.gateway.PayDispatcher;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,9 +28,8 @@ public class PayController {
 
     @PostMapping("/test")
     @ApiOperation(value = "支付路由")
-    public void dispatcher(@RequestBody PayIsvRequest payRequest) {
-        payDispatcher.dispatcher(payRequest);
-        log.info("...............");
+    public Response<Object> dispatcher(@RequestBody PayIsvRequest payRequest) {
+       return payDispatcher.dispatcher(payRequest);
     }
 
 

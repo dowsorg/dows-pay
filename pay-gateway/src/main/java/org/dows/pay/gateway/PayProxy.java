@@ -30,11 +30,11 @@ public class PayProxy {
     private Method method;
 
 
-    public void invoke(PayRequest payRequest) {
+    public Object invoke(PayRequest payRequest) {
 
 
         try {
-            method.invoke(payHandler,payRequest);
+            return method.invoke(payHandler,payRequest);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         } catch (InvocationTargetException e) {
