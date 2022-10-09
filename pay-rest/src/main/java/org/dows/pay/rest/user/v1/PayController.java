@@ -28,7 +28,7 @@ public class PayController {
 
     @PostMapping("/test")
     @ApiOperation(value = "支付路由")
-    public Response<Object> dispatcher(@RequestBody PayIsvRequest payRequest) {
+    public Response<PayResponse> dispatcher(@RequestBody PayIsvRequest payRequest) {
        return payDispatcher.dispatcher(payRequest);
     }
 

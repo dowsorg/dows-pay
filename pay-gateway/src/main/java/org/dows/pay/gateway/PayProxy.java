@@ -1,9 +1,12 @@
 package org.dows.pay.gateway;
 
+import cn.hutool.json.JSONUtil;
 import lombok.Builder;
 import lombok.Data;
+import org.dows.pay.api.DefaultPayResponse;
 import org.dows.pay.api.PayHandler;
 import org.dows.pay.api.PayRequest;
+import org.dows.pay.api.PayResponse;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -30,11 +33,15 @@ public class PayProxy {
     private Method method;
 
 
-    public Object invoke(PayRequest payRequest) {
-
-
+    public PayResponse invoke(PayRequest payRequest) {
         try {
-            return method.invoke(payHandler,payRequest);
+            Object obj = method.invoke(payHandler, payRequest);
+            if (obj instanceof PayResponse) {
+                return (PayResponse) obj;
+            }
+            DefaultPayResponse defaultPayResponse = new DefaultPayResponse();
+            defaultPayResponse.setBody(JSONUtil.toJsonStr(obj));
+            return defaultPayResponse;
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         } catch (InvocationTargetException e) {

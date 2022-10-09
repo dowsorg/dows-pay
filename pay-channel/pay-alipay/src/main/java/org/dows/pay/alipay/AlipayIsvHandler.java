@@ -1,9 +1,12 @@
 package org.dows.pay.alipay;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.json.JSONUtil;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.alibaba.fastjson.serializer.ValueFilter;
 import com.alipay.api.AlipayApiException;
-import com.alipay.api.domain.AlipayOpenMiniIsvQueryModel;
-import com.alipay.api.domain.CreateMiniRequest;
+import com.alipay.api.domain.*;
 import com.alipay.api.request.AlipayOpenMiniIsvCreateRequest;
 import com.alipay.api.request.AlipayOpenMiniIsvQueryRequest;
 import com.alipay.api.response.AlipayOpenMiniIsvCreateResponse;
@@ -35,6 +38,8 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
     public void createIsvMini(PayRequest payRequest) {
         CreateMiniRequest createMiniRequest = BeanUtil.toBean(payRequest.getParams(), CreateMiniRequest.class);
         AlipayOpenMiniIsvCreateRequest request = new AlipayOpenMiniIsvCreateRequest();
+        //AlipayOpenMiniIsvCreateModel model = new AlipayOpenMiniIsvCreateModel();
+
         request.setBizModel(createMiniRequest);
         AlipayOpenMiniIsvCreateResponse response = null;
         try {
@@ -59,7 +64,7 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
     @PayMapping(method = PayMethods.ISV_QUERY)
     public String queryIsvMini(PayRequest payRequest) {
 
-        AlipayOpenMiniIsvQueryModel alipayOpenMiniIsvQueryModel = new AlipayOpenMiniIsvQueryModel();
+        AlipayOpenMiniIsvQueryModel alipayOpenMiniIsvQueryModel = BeanUtil.toBean(payRequest.getParams(), AlipayOpenMiniIsvQueryModel.class);
         AlipayOpenMiniIsvQueryRequest request = new AlipayOpenMiniIsvQueryRequest();
         request.setBizModel(alipayOpenMiniIsvQueryModel);
         AlipayOpenMiniIsvQueryResponse response = null;
@@ -93,5 +98,10 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
 
         String bizContent = payMessage.getBizContent();
         log.info("业务响应:bizContent = {}", bizContent);
+    }
+
+    public static void main(String[] args) {
+        ValueFilter valueFilter = (o, s, o1) -> o1 == null ? "" : o1;
+        System.out.println(JSON.toJSONString(new AlipayOpenMiniVersionOnlineModel(),valueFilter, SerializerFeature.PrettyFormat));
     }
 }

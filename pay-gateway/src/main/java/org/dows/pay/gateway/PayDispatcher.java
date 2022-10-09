@@ -47,7 +47,7 @@ public class PayDispatcher implements ApplicationContextAware {
         });
     }
 
-    public Response<Object> dispatcher(PayRequest payRequest) {
+    public Response<PayResponse> dispatcher(PayRequest payRequest) {
         if (payProxyMap.size() < 1) {
             log.error("请配置路由表");
         }
