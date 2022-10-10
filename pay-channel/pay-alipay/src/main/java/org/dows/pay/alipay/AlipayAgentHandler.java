@@ -4,16 +4,8 @@ import com.alipay.api.AlipayApiException;
 import com.alipay.api.domain.AlipayOpenAgentConfirmModel;
 import com.alipay.api.domain.AlipayOpenAgentCreateModel;
 import com.alipay.api.domain.AlipayOpenAgentOrderQueryModel;
-import com.alipay.api.request.AlipayOpenAgentCommonSignRequest;
-import com.alipay.api.request.AlipayOpenAgentConfirmRequest;
-import com.alipay.api.request.AlipayOpenAgentCreateRequest;
-import com.alipay.api.request.AlipayOpenAgentFacetofaceSignRequest;
-import com.alipay.api.request.AlipayOpenAgentOrderQueryRequest;
-import com.alipay.api.response.AlipayOpenAgentCommonSignResponse;
-import com.alipay.api.response.AlipayOpenAgentConfirmResponse;
-import com.alipay.api.response.AlipayOpenAgentCreateResponse;
-import com.alipay.api.response.AlipayOpenAgentFacetofaceSignResponse;
-import com.alipay.api.response.AlipayOpenAgentOrderQueryResponse;
+import com.alipay.api.request.*;
+import com.alipay.api.response.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dows.pay.api.PayRequest;
@@ -47,9 +39,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class AlipayAgentHandler extends AbstractAlipayHandler  {
-
-
+public class AlipayAgentHandler extends AbstractAlipayHandler {
 
 
     /**
@@ -174,7 +164,6 @@ public class AlipayAgentHandler extends AbstractAlipayHandler  {
         }
 
     }
-
 
 
 }

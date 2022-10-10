@@ -1,30 +1,15 @@
 package org.dows.pay.alipay;
 
-import com.alibaba.fastjson.JSONObject;
 import com.alipay.api.AlipayApiException;
-import com.alipay.api.AlipayClient;
-import com.alipay.api.domain.AlipayOpenMiniExperienceCreateModel;
-import com.alipay.api.domain.AlipayOpenMiniVersionAuditCancelModel;
-import com.alipay.api.domain.AlipayOpenMiniVersionOfflineModel;
-import com.alipay.api.domain.AlipayOpenMiniVersionOnlineModel;
-import com.alipay.api.domain.AlipayOpenMiniVersionUploadModel;
+import com.alipay.api.domain.*;
 import com.alipay.api.request.*;
-import com.alipay.api.response.AlipayOpenMiniExperienceCreateResponse;
-import com.alipay.api.response.AlipayOpenMiniVersionAuditApplyResponse;
-import com.alipay.api.response.AlipayOpenMiniVersionAuditCancelResponse;
-import com.alipay.api.response.AlipayOpenMiniVersionOfflineResponse;
-import com.alipay.api.response.AlipayOpenMiniVersionOnlineResponse;
-import com.alipay.api.response.AlipayOpenMiniVersionUploadResponse;
-import com.google.common.collect.Maps;
+import com.alipay.api.response.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.dows.pay.api.PayHandler;
 import org.dows.pay.api.PayRequest;
 import org.dows.pay.api.annotation.PayMapping;
 import org.dows.pay.api.enums.PayMethods;
 import org.springframework.stereotype.Service;
-
-import java.util.Map;
 
 /**
  * 小程序相关业务功能
@@ -52,7 +37,7 @@ import java.util.Map;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class AlipayMiniHandler  extends AbstractAlipayHandler  {
+public class AlipayMiniHandler extends AbstractAlipayHandler {
 
     /**
      * 上传小程序模板
@@ -104,7 +89,6 @@ public class AlipayMiniHandler  extends AbstractAlipayHandler  {
     /**
      * 小程序撤销审核
      * https://opendocs.alipay.com/mini/03l9br
-     *
      */
     @PayMapping(method = PayMethods.MINI_CANCEL)
     public void auditCancelMini(PayRequest payRequest) {
@@ -175,7 +159,6 @@ public class AlipayMiniHandler  extends AbstractAlipayHandler  {
     /**
      * 小程序生成体验版
      * https://opendocs.alipay.com/mini/03l9bw
-     *
      */
     @PayMapping(method = PayMethods.MINI_CREATE)
     public void createMini(PayRequest payRequest) {

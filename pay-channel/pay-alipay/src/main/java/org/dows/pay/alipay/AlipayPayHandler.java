@@ -1,7 +1,5 @@
 package org.dows.pay.alipay;
 
-import org.dows.pay.api.PayHandler;
-
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
@@ -10,8 +8,7 @@ import java.io.IOException;
  * 当面付：https://open.alipay.com/api/detail?code=I1080300001000041016
  * app付款：https://open.alipay.com/api/detail?code=I1080300001000041313
  */
-public class AlipayPayHandler  extends AbstractAlipayHandler  {
-
+public class AlipayPayHandler extends AbstractAlipayHandler {
 
 
     /**

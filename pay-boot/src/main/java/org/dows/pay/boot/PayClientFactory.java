@@ -1,7 +1,9 @@
 package org.dows.pay.boot;
 
 import cn.hutool.core.util.StrUtil;
+import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
+import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.msg.AlipayMsgClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -186,6 +188,14 @@ public class PayClientFactory {
         }
         WEIXIN_CLIENT_MAP.put(appId, client);
         return client;
+    }
+
+    public static void main(String[] args) {
+        try {
+            System.out.println(AlipaySignature.getCertSN("E:\\workspaces\\java\\projects\\dows\\dows-pay\\pay-boot\\src\\main\\resources\\alipay\\appCertPublicKey_2021003129694075.crt"));
+        } catch (AlipayApiException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
