@@ -40,7 +40,7 @@ public class PayController {
      * http://3ujk4u.natappfree.cc/
      */
     @PostMapping
-    @ApiOperation(value = "支付网关配置激活")
+    @ApiOperation(value = "支付网关")
     public void gateway(HttpServletRequest request, HttpServletResponse response) {
         //支付宝响应消息
         String responseMsg = "";

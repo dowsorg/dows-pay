@@ -126,6 +126,11 @@ public class PayClientFactory {
         alipayMsgClient.setMessageHandler((msgApi, msgId, bizContent) -> {
             mqListener(appId, msgApi, msgId, bizContent);
         });
+        try {
+            alipayMsgClient.connect();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         return alipayMsgClient;
     }
 
