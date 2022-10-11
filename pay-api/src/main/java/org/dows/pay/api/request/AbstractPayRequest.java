@@ -13,24 +13,30 @@ public abstract class AbstractPayRequest<T extends PayResponse> implements PayRe
 
     @ApiModelProperty("租户或商户编号")
     @ParamName("tenantId")
-    private String tenantId;
+    protected String tenantId;
     @ApiModelProperty("appId")
     @ParamName("appId")
-    private String appId;
+    protected String appId;
     @ApiModelProperty("通道名")
     @ParamName("channel")
-    private String channel;
+    protected String channel;
     @ApiModelProperty("业务方法")
     @ParamName("biz_method")
-    private String method;
+    protected String method;
 
     @ApiModelProperty("json参数体")
     @ParamName("biz_params")
-    private Map<String, Object> params;
+    protected Map<String, Object> params;
 
     @ApiModelProperty("json参数体")
     @ParamName("biz_params")
-    private String bizContent;
+    protected String bizContent;
 
-    private Class<T> responseClass;
+    protected Class<T> responseClass;
+
+    public void autoSet(Map<String, Object> requestParams) {
+        this.tenantId = (String)requestParams.get("tenantId");
+        this.appId = (String)requestParams.get("appId");
+        this.channel = (String)requestParams.get("channel");
+    }
 }
