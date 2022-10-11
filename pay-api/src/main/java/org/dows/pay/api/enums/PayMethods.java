@@ -37,6 +37,17 @@ public enum PayMethods {
     MINI_QR_UNBIND("dows.pay.mini.qrcode.unbind", "", "删除已关联普通二维码"),
 
 
+    // 交易分账相关
+    TRADE_ROYALTY_RELATION_BIND("dows.trade.royalty.relation.bind", "", "分账关系绑定"),
+    TRADE_ROYALTY_RELATION_UNBIND("dows.trade.royalty.relation.unbind", "", "分账关系解绑"),
+    TRADE_ROYALTY_RELATION_QUERY("dows.trade.royalty.relation.query", "", "分账关系查询"),
+
+    TRADE_ROYALTY_RATE_QUERY("dows.trade.royalty.rate.query", "", "分账比例查询"),
+
+    TRADE_ORDER_SETTLE("dows.trade.order.settle", "", "统一收单交易结算接口"),
+    TRADE_ORDER_SETTLE_QUERY("dows.trade.order.settle.query", "", "交易分账查询接口"),
+
+    TRADE_ORDER_SETTLE_NOTIFY("dows.trade.order.settle.notify", "", "交易分账结果通知"),
     ;
 
     @Getter
