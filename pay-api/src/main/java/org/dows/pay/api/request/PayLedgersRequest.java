@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import lombok.*;
 import lombok.experimental.Accessors;
 
+@EqualsAndHashCode
 @Data
 @ToString
 @Builder
