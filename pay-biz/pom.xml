@@ -29,6 +29,11 @@
             <artifactId>pay-crud</artifactId>
             <version>20220701</version>
         </dependency>
+        <dependency>
+            <groupId>org.dows.saas</groupId>
+            <artifactId>pay-pojo</artifactId>
+            <version>20220701</version>
+        </dependency>
     </dependencies>
 
 
