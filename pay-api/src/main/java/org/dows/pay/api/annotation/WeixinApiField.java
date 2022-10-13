@@ -6,5 +6,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface WeixinApiField {
-    String value();
+    String name();
+
+
 }

@@ -31,7 +31,7 @@ import java.util.Set;
 @RequestMapping(value = "/v1")
 @Slf4j
 @RequiredArgsConstructor
-public class PayController {
+public class GatewayRest {
 
 
     private final PayDispatcher payDispatcher;

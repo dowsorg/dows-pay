@@ -14,26 +14,26 @@ public class RelationBingBo implements BizModel {
     /**
      * 支付宝特有：分账接收方方类型。userId：表示是支付宝账号对应的支付宝唯一用户号；loginName：表示是支付宝登录号
      */
-    @AlipayApiField("type")
+    @AlipayApiField(name = "type")
     private String type;
 
     /**
      * 分账接收账号（支付宝|微信等第三方通道账号[账号ID,支付宝账接收方方类型，userId：表示是支付宝账号对应的支付宝唯一用户号；]）
      */
-    @WeixinApiField("")
-    @AlipayApiField("account")
+    @WeixinApiField(name = "")
+    @AlipayApiField(name = "account")
     private String channelAccountNo;
 
     /**
      * 分账接收账号名称（第三方通道账号，如支付宝loginName：表示是支付宝登录号名|微信）
      */
-    @WeixinApiField("")
-    @AlipayApiField("loginName")
+    @WeixinApiField(name = "")
+    @AlipayApiField(name = "loginName")
     private String channelAccountName;
 
-    @AlipayApiField("name")
+    @AlipayApiField(name = "name")
     private String name;
 
-    @AlipayApiField("memo")
+    @AlipayApiField(name = "memo")
     private String memo;
 }

@@ -1,6 +1,5 @@
 package org.dows.pay.alipay;
 
-import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.serializer.ValueFilter;
@@ -37,8 +36,6 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
     }
 
 
-
-
     /**
      * 申请/创建小程序
      *
@@ -48,14 +45,11 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
     public void createIsvMini(PayRequest payRequest) {
         CreateMiniRequest createMiniRequest = new CreateMiniRequest();
         // 自动
-        autoMappingValue(payRequest.getBizModel(), createMiniRequest);
-        //CreateMiniRequest createMiniRequest = BeanUtil.toBean(, CreateMiniRequest.class);
+        autoMappingValue(payRequest, createMiniRequest);
         AlipayOpenMiniIsvCreateRequest request = new AlipayOpenMiniIsvCreateRequest();
         AlipayOpenMiniIsvCreateModel model = new AlipayOpenMiniIsvCreateModel();
         model.setCreateMiniRequest(createMiniRequest);
         request.setBizModel(model);
-
-        //request.setBizModel(createMiniRequest);
         AlipayOpenMiniIsvCreateResponse response = null;
         try {
             response = getAlipayClient(payRequest.getAppId()).certificateExecute(request);
@@ -104,8 +98,9 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
      */
     @PayMapping(method = PayMethods.ISV_QUERY)
     public String queryIsvMini(PayRequest payRequest) {
-
-        AlipayOpenMiniIsvQueryModel alipayOpenMiniIsvQueryModel = BeanUtil.toBean(payRequest.getParams(), AlipayOpenMiniIsvQueryModel.class);
+        AlipayOpenMiniIsvQueryModel alipayOpenMiniIsvQueryModel = new AlipayOpenMiniIsvQueryModel();
+        // 自动映射
+        autoMappingValue(payRequest, alipayOpenMiniIsvQueryModel);
         AlipayOpenMiniIsvQueryRequest request = new AlipayOpenMiniIsvQueryRequest();
         request.setBizModel(alipayOpenMiniIsvQueryModel);
         AlipayOpenMiniIsvQueryResponse response = null;

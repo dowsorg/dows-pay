@@ -2,6 +2,8 @@ package org.dows.pay.alipay;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.alipay.api.AlipayApiException;
+import com.alipay.api.domain.AlipayOpenMiniIsvQueryModel;
+import com.alipay.api.domain.AlipayTradeOrderSettleModel;
 import com.alipay.api.domain.AlipayTradeOrderSettleQueryModel;
 import com.alipay.api.domain.AlipayTradeRoyaltyRateQueryModel;
 import com.alipay.api.request.AlipayTradeOrderSettleQueryRequest;
@@ -36,8 +38,10 @@ public class AlipayRoyaltyQueryHandler extends AbstractAlipayHandler {
      */
     @PayMapping(method = PayMethods.TRADE_ORDER_SETTLE_QUERY)
     public void tradeRoyaltyRateQuery(PayRequest payRequest) {
-        AlipayTradeOrderSettleQueryModel alipayTradeOrderSettleQueryModel =
-                BeanUtil.toBean(payRequest.getParams(), AlipayTradeOrderSettleQueryModel.class);
+        AlipayTradeOrderSettleQueryModel alipayTradeOrderSettleQueryModel =new AlipayTradeOrderSettleQueryModel();
+        // 自动映射
+        autoMappingValue(payRequest, alipayTradeOrderSettleQueryModel);
+
         AlipayTradeOrderSettleQueryRequest request = new AlipayTradeOrderSettleQueryRequest();
         request.setBizModel(alipayTradeOrderSettleQueryModel);
         AlipayTradeOrderSettleQueryResponse response = null;
@@ -64,8 +68,9 @@ public class AlipayRoyaltyQueryHandler extends AbstractAlipayHandler {
      */
     @PayMapping(method = PayMethods.TRADE_ROYALTY_RATE_QUERY)
     public void tradeOrderSettleQuery(PayRequest payRequest) {
-        AlipayTradeRoyaltyRateQueryModel alipayTradeOrderSettleQueryModel =
-                BeanUtil.toBean(payRequest.getParams(), AlipayTradeRoyaltyRateQueryModel.class);
+        AlipayTradeRoyaltyRateQueryModel alipayTradeOrderSettleQueryModel = new AlipayTradeRoyaltyRateQueryModel();
+        // 自动映射
+        autoMappingValue(payRequest, alipayTradeOrderSettleQueryModel);
         AlipayTradeRoyaltyRateQueryRequest request = new AlipayTradeRoyaltyRateQueryRequest();
         request.setBizModel(alipayTradeOrderSettleQueryModel);
         AlipayTradeRoyaltyRateQueryResponse response = null;

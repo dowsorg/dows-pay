@@ -8,6 +8,18 @@ import java.lang.annotation.*;
 public @interface AlipayApiField {
 
 
-    String value();
+    /**
+     * 字段名称
+     *
+     * @return
+     */
+    String name();
+
+    /**
+     * 默认值
+     *
+     * @return
+     */
+    String def() default "";
 
 }

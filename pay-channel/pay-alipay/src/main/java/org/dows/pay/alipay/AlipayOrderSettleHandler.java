@@ -2,6 +2,7 @@ package org.dows.pay.alipay;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.alipay.api.AlipayApiException;
+import com.alipay.api.domain.AlipayOpenMiniIsvQueryModel;
 import com.alipay.api.domain.AlipayTradeOrderSettleModel;
 import com.alipay.api.domain.RoyaltyDetail;
 import com.alipay.api.request.AlipayTradeOrderSettleRequest;
@@ -38,8 +39,11 @@ public class AlipayOrderSettleHandler extends AbstractAlipayHandler {
      */
     @PayMapping(method = PayMethods.TRADE_ORDER_SETTLE)
     public void tradeRoyaltyRelationBind(PayRequest payRequest) {
-        AlipayTradeOrderSettleModel alipayTradeRoyaltyRelationBindModel =
-                BeanUtil.toBean(payRequest.getParams(), AlipayTradeOrderSettleModel.class);
+
+        AlipayTradeOrderSettleModel alipayTradeRoyaltyRelationBindModel = new AlipayTradeOrderSettleModel();
+        // 自动映射
+        autoMappingValue(payRequest, alipayTradeRoyaltyRelationBindModel);
+
         AlipayTradeOrderSettleRequest request = new AlipayTradeOrderSettleRequest();
         request.setBizModel(alipayTradeRoyaltyRelationBindModel);
         AlipayTradeOrderSettleResponse response = null;

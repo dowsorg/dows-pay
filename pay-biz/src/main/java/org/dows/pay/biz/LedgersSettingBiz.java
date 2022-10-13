@@ -52,11 +52,9 @@ public class LedgersSettingBiz {
         RelationBingBo relationBingBo = BeanUtil.copyProperties(entity, RelationBingBo.class);
         // 设置bizModel
         payRequest.setBizModel(relationBingBo);
-        //payRequest.setBizContent(JSONUtil.toJsonStr(entity));
         // 请求分发
         Response<PayResponse> response = payDispatcher.dispatcher(payRequest);
         PayResponse data = response.getData();
-
         log.info("返回结果:{}", data);
     }
 

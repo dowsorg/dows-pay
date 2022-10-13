@@ -5,6 +5,7 @@ import com.alipay.api.AlipayObject;
 import com.alipay.api.internal.mapping.ApiField;
 import org.dows.pay.api.BizModel;
 import org.dows.pay.api.PayHandler;
+import org.dows.pay.api.PayRequest;
 import org.dows.pay.api.enums.PayChannels;
 import org.dows.pay.boot.PayClientFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,11 +25,14 @@ public abstract class AbstractAlipayHandler implements PayHandler {
         return payClientFactory.getAlipayClient(appId);
     }
 
-
-    //    protected AlipayMsgClient getAlipayMsgClient(String appId) {
-//        return PayClientFactory.getAlipayMsgClient(appId);
-//    }
-    protected void autoMappingValue(BizModel bizModel, AlipayObject alipayObject) {
+    /**
+     * 自动填充接口映射值
+     *
+     * @param payRequest
+     * @param alipayObject
+     */
+    protected void autoMappingValue(PayRequest payRequest, AlipayObject alipayObject) {
+        BizModel bizModel = payRequest.getBizModel();
         Map<String, Field> alipayFeilds = bizModel.getAlipayFeilds();
         Map<String, Field> collect = Arrays.stream(alipayObject.getClass().getDeclaredFields())
                 .filter(f -> f.isAnnotationPresent(ApiField.class))
@@ -39,7 +43,7 @@ public abstract class AbstractAlipayHandler implements PayHandler {
             if (bizFiled != null) {
                 try {
                     field.setAccessible(true);
-                    Object ovalue = bizFiled.get(bizModel);
+                    Object ovalue = bizFiled.get(payRequest);
                     field.set(alipayObject, ovalue);
                 } catch (IllegalAccessException e) {
                     throw new RuntimeException(e);
