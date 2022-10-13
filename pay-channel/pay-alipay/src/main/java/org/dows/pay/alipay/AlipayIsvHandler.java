@@ -36,6 +36,9 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
         System.out.println(JSON.toJSONString(new AlipayOpenMiniVersionOnlineModel(), valueFilter, SerializerFeature.PrettyFormat));
     }
 
+
+
+
     /**
      * 申请/创建小程序
      *
@@ -43,7 +46,10 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
      */
     @PayMapping(method = PayMethods.ISV_CREATE)
     public void createIsvMini(PayRequest payRequest) {
-        CreateMiniRequest createMiniRequest = BeanUtil.toBean(payRequest.getParams(), CreateMiniRequest.class);
+        CreateMiniRequest createMiniRequest = new CreateMiniRequest();
+        // 自动
+        autoMappingValue(payRequest.getBizModel(), createMiniRequest);
+        //CreateMiniRequest createMiniRequest = BeanUtil.toBean(, CreateMiniRequest.class);
         AlipayOpenMiniIsvCreateRequest request = new AlipayOpenMiniIsvCreateRequest();
         AlipayOpenMiniIsvCreateModel model = new AlipayOpenMiniIsvCreateModel();
         model.setCreateMiniRequest(createMiniRequest);

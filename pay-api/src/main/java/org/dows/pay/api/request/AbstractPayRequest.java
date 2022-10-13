@@ -69,4 +69,10 @@ public abstract class AbstractPayRequest<T extends PayResponse> implements PayRe
         return this;
     }
 
+    @Override
+    public PayRequest setBizModel(BizModel bizModel) {
+        this.bizModel = bizModel;
+        return this;
+    }
+
 }
