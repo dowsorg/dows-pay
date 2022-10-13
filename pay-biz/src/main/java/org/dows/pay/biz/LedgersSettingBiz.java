@@ -1,18 +1,18 @@
 package org.dows.pay.biz;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.json.JSONUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dows.framework.api.Response;
 import org.dows.pay.api.PayResponse;
 import org.dows.pay.api.request.PayLedgersRequest;
+import org.dows.pay.bo.RelationBingBo;
 import org.dows.pay.entity.PayLedgers;
 import org.dows.pay.form.PayLedgersForm;
 import org.dows.pay.gateway.PayDispatcher;
 import org.dows.pay.service.PayLedgersService;
 import org.springframework.stereotype.Service;
-
-import java.util.Map;
 
 /**
  * 账本设置
@@ -34,37 +34,25 @@ public class LedgersSettingBiz {
         // 根据 params 查询分账配置实体
         PayLedgers entity = payLedgersService.lambdaQuery()
                 .eq(PayLedgers::getAppId, payLedgersForm.getAppId())
+                .eq(PayLedgers::getInstanceNo, payLedgersForm.getInstanceNo())
+                .eq(PayLedgers::getMerchantNo, payLedgersForm.getMerchantNo())
                 .eq(PayLedgers::getAccountId, payLedgersForm.getAccountId())
-
                 .getEntity();
         // 填充分账请求对象
         PayLedgersRequest payRequest = new PayLedgersRequest();
         // todo
         //payRequest.autoSet(params);
-        String isvNo = payLedgersForm.getIsvNo();
-        if(isvNo.equals("alipay")){
+        String channelCode = payLedgersForm.getChannelCode();
+        if (channelCode.equals("alipay")) {
             payRequest.setChannel("alipay");
         } else {
             payRequest.setChannel("weixin");
         }
         payRequest.setMethod("dows.trade.royalty.relation.bind");
-        String account = entity.getChannelAccountNo();
-        //JSONUtil.toJsonStr()
-        String params = "{" +
-                "  \"receiver_list\":[" +
-                "    {" +
-                "      \"type\":\"userId\"," +
-                "      \"account\":"+account+"," +
-                "      \"name\":\"测试名称\"," +
-                "      \"memo\":\"分账给测试商户\"," +
-                "      \"login_name\":\"test@alitest.xyz\"," +
-                "      \"bind_login_name\":\"test@alitest.xyz\"" +
-                "    }" +
-                "  ]," +
-                "  \"out_request_no\":\"2019032200000001\"" +
-                "}";
-
-        payRequest.setBizContent(JSONUtil.toJsonStr(entity));
+        RelationBingBo relationBingBo = BeanUtil.copyProperties(entity, RelationBingBo.class);
+        // 设置bizModel
+        payRequest.setBizModel(relationBingBo);
+        //payRequest.setBizContent(JSONUtil.toJsonStr(entity));
         // 请求分发
         Response<PayResponse> response = payDispatcher.dispatcher(payRequest);
         PayResponse data = response.getData();

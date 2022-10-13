@@ -1,7 +1,5 @@
 package org.dows.pay.api;
 
-import java.util.Map;
-
 public interface PayRequest<T extends PayResponse> {
 
 
@@ -10,20 +8,27 @@ public interface PayRequest<T extends PayResponse> {
      *
      * @return
      */
+    PayRequest setTenantId(String tenantId);
+
     String getTenantId();
+
 
     /**
      * 获取应用ID
      *
      * @return
      */
+    PayRequest setAppId(String appId);
+
     String getAppId();
 
     /**
-     * 获取支付通道
+     * 获取支付通道code
      *
      * @return
      */
+    PayRequest setChannel(String channel);
+
     String getChannel();
 
     /**
@@ -31,6 +36,8 @@ public interface PayRequest<T extends PayResponse> {
      *
      * @return
      */
+    PayRequest setMethod(String method);
+
     String getMethod();
 
 
@@ -39,7 +46,9 @@ public interface PayRequest<T extends PayResponse> {
      *
      * @return
      */
-    Map<String,Object> getParams();
+    PayRequest setBizModel(BizModel bizModel);
+
+    BizModel getBizModel();
 
 
     Class<T> getResponseClass();
