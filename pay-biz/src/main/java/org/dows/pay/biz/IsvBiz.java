@@ -23,16 +23,16 @@ public class IsvBiz {
     public void isvCreate() {
         PayIsvRequest payRequest = new PayIsvRequest();
         // todo
-        String channelCode = payLedgersForm.getChannelCode();
-        if (channelCode.equals("alipay")) {
-            payRequest.setChannel("alipay");
-        } else {
-            payRequest.setChannel("weixin");
-        }
-        payRequest.setMethod(PayMethods.ISV_CREATE.getNamespace());
-        IsvCreateBo isvCreateBo = BeanUtil.copyProperties(entity, IsvCreateBo.class);
-        // 设置bizModel
-        payRequest.setBizModel(isvCreateBo);
+//        String channelCode = payLedgersForm.getChannelCode();
+//        if (channelCode.equals("alipay")) {
+//            payRequest.setChannel("alipay");
+//        } else {
+//            payRequest.setChannel("weixin");
+//        }
+//        payRequest.setMethod(PayMethods.ISV_CREATE.getNamespace());
+//        IsvCreateBo isvCreateBo = BeanUtil.copyProperties(entity, IsvCreateBo.class);
+//        // 设置bizModel
+//        payRequest.setBizModel(isvCreateBo);
         // 请求分发
         Response<PayResponse> response = payDispatcher.dispatcher(payRequest);
         PayResponse data = response.getData();
