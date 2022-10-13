@@ -19,7 +19,7 @@ import java.util.Date;
  * 支付-分账账本(PayLedgers)实体类
  *
  * @author lait.zhang
- * @since 2022-10-11 18:37:36
+ * @since 2022-10-13 14:16:26
  */
 @SuppressWarnings("serial")
 @Data
@@ -31,11 +31,20 @@ import java.util.Date;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @ApiModel(value = "PayLedgers对象", description = "支付-分账账本")
 public class PayLedgers implements CrudEntity {
-    private static final long serialVersionUID = -76669356974233356L;
+    private static final long serialVersionUID = -18348313867081999L;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     @ApiModelProperty("主键")
     private Long id;
+
+    @ApiModelProperty("支付通道实例编号")
+    private String instanceNo;
+
+    @ApiModelProperty("商户号")
+    private String merchantNo;
+
+    @ApiModelProperty("应用ID")
+    private String appId;
 
     @ApiModelProperty("分账接收者ID(统一账号ID)")
     private String accountId;
@@ -46,29 +55,14 @@ public class PayLedgers implements CrudEntity {
     @ApiModelProperty("用户真实名")
     private String userName;
 
-    @ApiModelProperty("分账关系类型（参考微信）， 如： SERVICE_PROVIDER 服务商等分")
-    private String relationType;
+    @ApiModelProperty("通道ID")
+    private String channelId;
 
-    @ApiModelProperty("当选择自定义时，需要录入该字段。 否则为对应的名称")
-    private String relationTypeName;
+    @ApiModelProperty("服务商code")
+    private String channelCode;
 
-    @ApiModelProperty("组ID（便于商户接口使用）")
-    private String receiverGroupId;
-
-    @ApiModelProperty("组名称")
-    private String receiverGroupName;
-
-    @ApiModelProperty("支付接口代码")
-    private String ifCode;
-
-    @ApiModelProperty("商户号")
-    private String merchantNo;
-
-    @ApiModelProperty("应用ID")
-    private String appId;
-
-    @ApiModelProperty("服务商号")
-    private String isvNo;
+    @ApiModelProperty("通道应用ID")
+    private String channelAppId;
 
     @ApiModelProperty("分账接收账号（支付宝|微信等第三方通道账号[账号ID,支付宝账接收方方类型，userId：表示是支付宝账号对应的支付宝唯一用户号；]）")
     private String channelAccountNo;

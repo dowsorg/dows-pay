@@ -8,7 +8,7 @@ import org.dows.pay.entity.PayAllocation;
  * 支付-分账记录(PayAllocation)表数据库访问层
  *
  * @author lait.zhang
- * @since 2022-10-11 18:37:36
+ * @since 2022-10-13 14:16:26
  */
 @Mapper
 public interface PayAllocationMapper extends MybatisCrudMapper<PayAllocation> {

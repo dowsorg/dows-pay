@@ -39,7 +39,8 @@ public class AlipayRoyaltyRelationHandler extends AbstractAlipayHandler {
      */
     @PayMapping(method = PayMethods.TRADE_ROYALTY_RELATION_BIND)
     public void tradeRoyaltyRelationBind(PayRequest payRequest) {
-        AlipayTradeRoyaltyRelationBindModel alipayTradeRoyaltyRelationBindModel = BeanUtil.toBean(payRequest.getParams(), AlipayTradeRoyaltyRelationBindModel.class);
+        AlipayTradeRoyaltyRelationBindModel alipayTradeRoyaltyRelationBindModel =
+                BeanUtil.toBean(payRequest.getParams(), AlipayTradeRoyaltyRelationBindModel.class);
         AlipayTradeRoyaltyRelationBindRequest request = new AlipayTradeRoyaltyRelationBindRequest();
         request.setBizModel(alipayTradeRoyaltyRelationBindModel);
         AlipayTradeRoyaltyRelationBindResponse response = null;

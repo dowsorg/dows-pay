@@ -41,6 +41,29 @@ public class LedgersSettingBiz {
         PayLedgersRequest payRequest = new PayLedgersRequest();
         // todo
         //payRequest.autoSet(params);
+        String isvNo = payLedgersForm.getIsvNo();
+        if(isvNo.equals("alipay")){
+            payRequest.setChannel("alipay");
+        } else {
+            payRequest.setChannel("weixin");
+        }
+        payRequest.setMethod("dows.trade.royalty.relation.bind");
+        String account = entity.getChannelAccountNo();
+        //JSONUtil.toJsonStr()
+        String params = "{" +
+                "  \"receiver_list\":[" +
+                "    {" +
+                "      \"type\":\"userId\"," +
+                "      \"account\":"+account+"," +
+                "      \"name\":\"测试名称\"," +
+                "      \"memo\":\"分账给测试商户\"," +
+                "      \"login_name\":\"test@alitest.xyz\"," +
+                "      \"bind_login_name\":\"test@alitest.xyz\"" +
+                "    }" +
+                "  ]," +
+                "  \"out_request_no\":\"2019032200000001\"" +
+                "}";
+
         payRequest.setBizContent(JSONUtil.toJsonStr(entity));
         // 请求分发
         Response<PayResponse> response = payDispatcher.dispatcher(payRequest);

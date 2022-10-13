@@ -11,8 +11,10 @@ import com.alipay.api.response.AlipayTradeRoyaltyRateQueryResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dows.pay.api.PayRequest;
+import org.dows.pay.api.PayResponse;
 import org.dows.pay.api.annotation.PayMapping;
 import org.dows.pay.api.enums.PayMethods;
+import org.dows.pay.api.request.PayLedgersResponse;
 import org.springframework.stereotype.Service;
 
 /**
@@ -79,6 +81,7 @@ public class AlipayRoyaltyQueryHandler extends AbstractAlipayHandler {
             //todo 失败逻辑
             throw new RuntimeException("调用失败");
         }
+       ///return  PayLedgersResponse
     }
 
 }
