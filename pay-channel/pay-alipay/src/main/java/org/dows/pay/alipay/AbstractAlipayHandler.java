@@ -13,11 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public abstract class AbstractAlipayHandler implements PayHandler {
-
+    protected final Map<Class, Map<String, Field>> ALIPAY_OBJECT_MODLE_FIELD_MAP = new ConcurrentHashMap<>();
     @Autowired
     private PayClientFactory payClientFactory;
 
@@ -34,9 +35,13 @@ public abstract class AbstractAlipayHandler implements PayHandler {
     protected void autoMappingValue(PayRequest payRequest, AlipayObject alipayObject) {
         ChannelBizModel channelBizModel = payRequest.getBizModel();
         Map<String, Field> alipayFeilds = channelBizModel.getAlipayFeilds();
-        Map<String, Field> collect = Arrays.stream(alipayObject.getClass().getDeclaredFields())
-                .filter(f -> f.isAnnotationPresent(ApiField.class))
-                .collect(Collectors.toMap(f -> f.getAnnotation(ApiField.class).value(), Function.identity()));
+        Map<String, Field> collect = ALIPAY_OBJECT_MODLE_FIELD_MAP.get(alipayObject.getClass());
+        if (collect == null) {
+            collect = Arrays.stream(alipayObject.getClass().getDeclaredFields())
+                    .filter(f -> f.isAnnotationPresent(ApiField.class))
+                    .collect(Collectors.toMap(f -> f.getAnnotation(ApiField.class).value(), Function.identity()));
+            ALIPAY_OBJECT_MODLE_FIELD_MAP.put(alipayObject.getClass(), collect);
+        }
         // 根据注解匹配动态设置
         collect.forEach((k, field) -> {
             Field bizFiled = alipayFeilds.get(k);

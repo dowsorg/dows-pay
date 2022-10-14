@@ -1,8 +1,6 @@
 package org.dows.pay.alipay;
 
-import cn.hutool.core.bean.BeanUtil;
 import com.alipay.api.AlipayApiException;
-import com.alipay.api.domain.AlipayOpenMiniIsvQueryModel;
 import com.alipay.api.domain.AlipayTradeOrderSettleModel;
 import com.alipay.api.domain.RoyaltyDetail;
 import com.alipay.api.request.AlipayTradeOrderSettleRequest;
@@ -16,6 +14,10 @@ import org.dows.pay.api.enums.PayMethods;
 import org.dows.pay.api.message.AlipayMessage;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
+
+import java.lang.reflect.Field;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 收单业务(订单分账请求 及其消息通知 > 交易分账结果通知接口)
@@ -38,7 +40,7 @@ public class AlipayOrderSettleHandler extends AbstractAlipayHandler {
      * @return
      */
     @PayMapping(method = PayMethods.TRADE_ORDER_SETTLE)
-    public void tradeRoyaltyRelationBind(PayRequest payRequest) {
+    public void tradeOrderSettle(PayRequest payRequest) {
 
         AlipayTradeOrderSettleModel alipayTradeRoyaltyRelationBindModel = new AlipayTradeOrderSettleModel();
         // 自动映射
@@ -82,9 +84,6 @@ public class AlipayOrderSettleHandler extends AbstractAlipayHandler {
         String appId = payMessage.getAppId();
         String msgApi = payMessage.getMsgApi();
         String msgId = payMessage.getMsgId();
-
-
-
 
 
         String bizContent = payMessage.getBizContent();

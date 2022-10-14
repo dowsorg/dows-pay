@@ -13,6 +13,9 @@ import org.dows.pay.form.IsvQueryForm;
 import org.dows.pay.gateway.PayDispatcher;
 import org.springframework.stereotype.Service;
 
+/**
+ * ISV 代理商业务
+ */
 @Slf4j
 @RequiredArgsConstructor
 @Service

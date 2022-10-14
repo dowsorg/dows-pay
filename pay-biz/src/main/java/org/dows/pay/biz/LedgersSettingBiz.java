@@ -15,7 +15,7 @@ import org.dows.pay.service.PayLedgersService;
 import org.springframework.stereotype.Service;
 
 /**
- * 账本设置
+ * 账本分账关系设置业务
  */
 @Slf4j
 @RequiredArgsConstructor
