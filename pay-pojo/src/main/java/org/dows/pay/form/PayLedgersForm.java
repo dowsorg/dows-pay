@@ -1,15 +1,14 @@
 package org.dows.pay.form;
 
-import java.math.BigDecimal;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import lombok.experimental.Accessors;
+import org.dows.pay.api.BizForm;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.math.BigDecimal;
 
 /**
  * 支付-分账账本(PayLedgers)表单
@@ -25,7 +24,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @ApiModel(value = "PayLedgersForm 表单对象", description = "支付-分账账本")
-public class PayLedgersForm implements Serializable {
+public class PayLedgersForm implements Serializable, BizForm {
     private static final long serialVersionUID = 390177657342931500L;
     @JsonIgnore
     private Long id;
@@ -74,6 +73,12 @@ public class PayLedgersForm implements Serializable {
 
     @JsonIgnore
     private Boolean deleted;
+
+
+    @Override
+    public String getChannel() {
+        return this.channelCode;
+    }
 
 
 }

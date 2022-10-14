@@ -1,6 +1,5 @@
 package org.dows.pay.biz;
 
-
 import cn.hutool.core.bean.BeanUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,16 +27,12 @@ public class IsvBiz {
     public void isvCreate(IsvCreateForm isvCreateForm) {
         PayIsvRequest payRequest = new PayIsvRequest();
         // todo
-        String channelCode = isvCreateForm.getChannel();
-        if (channelCode.equals("alipay")) {
-            payRequest.setChannel("alipay");
-        } else {
-            payRequest.setChannel("weixin");
-        }
-        payRequest.setMethod(PayMethods.ISV_CREATE.getNamespace());
         IsvCreateBo isvCreateBo = BeanUtil.copyProperties(isvCreateForm, IsvCreateBo.class);
-        // 设置bizModel
+        // 设置请求方法
+        payRequest.setMethod(PayMethods.ISV_CREATE.getNamespace());
+        // 设置业务参数对象bizModel
         payRequest.setBizModel(isvCreateBo);
+        // 填充公共参数
         payRequest.autoSet(isvCreateForm);
         // 请求分发
         Response<PayResponse> response = payDispatcher.dispatcher(payRequest);
@@ -53,17 +48,12 @@ public class IsvBiz {
      */
     public void isvQuery(IsvQueryForm isvQueryForm) {
         PayIsvRequest payRequest = new PayIsvRequest();
-        // todo
-        String channelCode = isvQueryForm.getChannel();
-        if (channelCode.equals("alipay")) {
-            payRequest.setChannel("alipay");
-        } else {
-            payRequest.setChannel("weixin");
-        }
-        payRequest.setMethod(PayMethods.ISV_QUERY.getNamespace());
         IsvCreateBo isvCreateBo = BeanUtil.copyProperties(isvQueryForm, IsvCreateBo.class);
+        payRequest.setMethod(PayMethods.ISV_QUERY.getNamespace());
         // 设置bizModel
         payRequest.setBizModel(isvCreateBo);
+        // 填充公共参数
+        payRequest.autoSet(isvQueryForm);
         // 请求分发
         Response<PayResponse> response = payDispatcher.dispatcher(payRequest);
         PayResponse data = response.getData();

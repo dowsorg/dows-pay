@@ -1,5 +1,6 @@
 package org.dows.pay.alipay;
 
+import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.serializer.ValueFilter;
@@ -70,7 +71,6 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
 //                ...
 //            userFirmApi.save(ufcr);
 //        }
-
         if (response.isSuccess()) {
             // todo 保存订单号 及对应申请的营业执照 和联系人 信息，返回申请小程序记录表ID 后续通过ID查询
             String orderNo = response.getOrderNo();
@@ -86,9 +86,9 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
 //            miniRequest.setLegalPerson(createMiniRequest.getLegalPersonalName());
 //            miniRequestApi.save(miniRequest);
 
-            System.out.println("调用成功");
+            log.info("调用成功,响应信息:{}", JSONUtil.toJsonStr(response));
         } else {
-            System.out.println("调用失败");
+            log.error("调用失败,响应信息:{}", JSONUtil.toJsonStr(response));
         }
     }
 

@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dows.framework.api.Response;
 import org.dows.pay.api.PayResponse;
+import org.dows.pay.api.enums.PayMethods;
 import org.dows.pay.api.request.PayLedgersRequest;
 import org.dows.pay.bo.RelationBingBo;
 import org.dows.pay.entity.PayLedgers;
@@ -39,18 +40,14 @@ public class LedgersSettingBiz {
                 .getEntity();
         // 填充分账请求对象
         PayLedgersRequest payRequest = new PayLedgersRequest();
-        // todo
-        //payRequest.autoSet(params);
-        String channelCode = payLedgersForm.getChannelCode();
-        if (channelCode.equals("alipay")) {
-            payRequest.setChannel("alipay");
-        } else {
-            payRequest.setChannel("weixin");
-        }
-        payRequest.setMethod("dows.trade.royalty.relation.bind");
+        //"dows.trade.royalty.relation.bind"
         RelationBingBo relationBingBo = BeanUtil.copyProperties(entity, RelationBingBo.class);
+        // 设置方法
+        payRequest.setMethod(PayMethods.TRADE_ROYALTY_RELATION_BIND.getNamespace());
         // 设置bizModel
         payRequest.setBizModel(relationBingBo);
+        // 填充公共参数
+        payRequest.autoSet(payLedgersForm);
         // 请求分发
         Response<PayResponse> response = payDispatcher.dispatcher(payRequest);
         PayResponse data = response.getData();
