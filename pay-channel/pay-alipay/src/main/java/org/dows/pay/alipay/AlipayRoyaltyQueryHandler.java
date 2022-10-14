@@ -1,9 +1,6 @@
 package org.dows.pay.alipay;
 
-import cn.hutool.core.bean.BeanUtil;
 import com.alipay.api.AlipayApiException;
-import com.alipay.api.domain.AlipayOpenMiniIsvQueryModel;
-import com.alipay.api.domain.AlipayTradeOrderSettleModel;
 import com.alipay.api.domain.AlipayTradeOrderSettleQueryModel;
 import com.alipay.api.domain.AlipayTradeRoyaltyRateQueryModel;
 import com.alipay.api.request.AlipayTradeOrderSettleQueryRequest;
@@ -13,10 +10,8 @@ import com.alipay.api.response.AlipayTradeRoyaltyRateQueryResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dows.pay.api.PayRequest;
-import org.dows.pay.api.PayResponse;
 import org.dows.pay.api.annotation.PayMapping;
 import org.dows.pay.api.enums.PayMethods;
-import org.dows.pay.api.request.PayLedgersResponse;
 import org.springframework.stereotype.Service;
 
 /**
@@ -33,12 +28,13 @@ public class AlipayRoyaltyQueryHandler extends AbstractAlipayHandler {
     /**
      * 交易分账查询接口
      * https://opendocs.alipay.com/open/02pj6l
+     *
      * @param payRequest
      * @return
      */
     @PayMapping(method = PayMethods.TRADE_ORDER_SETTLE_QUERY)
     public void tradeRoyaltyRateQuery(PayRequest payRequest) {
-        AlipayTradeOrderSettleQueryModel alipayTradeOrderSettleQueryModel =new AlipayTradeOrderSettleQueryModel();
+        AlipayTradeOrderSettleQueryModel alipayTradeOrderSettleQueryModel = new AlipayTradeOrderSettleQueryModel();
         // 自动映射
         autoMappingValue(payRequest, alipayTradeOrderSettleQueryModel);
 
@@ -63,6 +59,7 @@ public class AlipayRoyaltyQueryHandler extends AbstractAlipayHandler {
     /**
      * 分账比例查询
      * https://opendocs.alipay.com/open/04nm3j
+     *
      * @param payRequest
      * @return
      */
@@ -86,7 +83,7 @@ public class AlipayRoyaltyQueryHandler extends AbstractAlipayHandler {
             //todo 失败逻辑
             throw new RuntimeException("调用失败");
         }
-       ///return  PayLedgersResponse
+        ///return  PayLedgersResponse
     }
 
 }

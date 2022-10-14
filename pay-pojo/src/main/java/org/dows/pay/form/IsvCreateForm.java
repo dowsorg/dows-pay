@@ -1,9 +1,8 @@
-package org.dows.pay.bo;
+package org.dows.pay.form;
 
 import lombok.Data;
+import org.dows.pay.api.BizForm;
 import org.dows.pay.api.ChannelBizModel;
-import org.dows.pay.api.annotation.AlipayApiField;
-import org.dows.pay.api.annotation.WeixinApiField;
 
 /**
  * "alipayAccount":"keweijr@163.com ",
@@ -18,43 +17,33 @@ import org.dows.pay.api.annotation.WeixinApiField;
  * 支付宝/微信/其他等共用
  */
 @Data
-public class IsvCreateBo implements ChannelBizModel {
+public class IsvCreateForm implements BizForm {
+
+    private String appId;
+    // 通道code
+    private String channel;
 
     // 账号
-    @WeixinApiField(name = "")
-    @AlipayApiField(name = "alipay_account")
     private String account;
 
 
     // 应用名称
-    @WeixinApiField(name = "")
-    @AlipayApiField(name = "app_name")
     private String appName;
 
 
     // 营业执照
-    @WeixinApiField(name = "")
-    @AlipayApiField(name = "cert_name")
     private String certName;
 
     // 联系人
-    @WeixinApiField(name = "")
-    @AlipayApiField(name = "contact_name")
     private String contactName;
 
     // 联系电话
-    @WeixinApiField(name = "")
-    @AlipayApiField(name = "contact_phone")
     private String contactPhone;
 
     // 法人名
-    @WeixinApiField(name = "")
-    @AlipayApiField(name = "legal_personal_name")
     private String legalPersonalName;
 
     // 外部申请单号
-    @WeixinApiField(name = "")
-    @AlipayApiField(name = "out_order_no")
     private String outOrderNo;
 
 }

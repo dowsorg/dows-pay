@@ -9,7 +9,8 @@ import org.dows.pay.api.PayResponse;
 import org.dows.pay.api.enums.PayMethods;
 import org.dows.pay.api.request.PayIsvRequest;
 import org.dows.pay.bo.IsvCreateBo;
-import org.dows.pay.bo.RelationBingBo;
+import org.dows.pay.form.IsvCreateForm;
+import org.dows.pay.form.IsvQueryForm;
 import org.dows.pay.gateway.PayDispatcher;
 import org.springframework.stereotype.Service;
 
@@ -17,22 +18,52 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Service
 public class IsvBiz {
-
     private final PayDispatcher payDispatcher;
 
-    public void isvCreate() {
+    /**
+     * isv 创建
+     *
+     * @param isvCreateForm
+     */
+    public void isvCreate(IsvCreateForm isvCreateForm) {
         PayIsvRequest payRequest = new PayIsvRequest();
         // todo
-//        String channelCode = payLedgersForm.getChannelCode();
-//        if (channelCode.equals("alipay")) {
-//            payRequest.setChannel("alipay");
-//        } else {
-//            payRequest.setChannel("weixin");
-//        }
-//        payRequest.setMethod(PayMethods.ISV_CREATE.getNamespace());
-//        IsvCreateBo isvCreateBo = BeanUtil.copyProperties(entity, IsvCreateBo.class);
-//        // 设置bizModel
-//        payRequest.setBizModel(isvCreateBo);
+        String channelCode = isvCreateForm.getChannel();
+        if (channelCode.equals("alipay")) {
+            payRequest.setChannel("alipay");
+        } else {
+            payRequest.setChannel("weixin");
+        }
+        payRequest.setMethod(PayMethods.ISV_CREATE.getNamespace());
+        IsvCreateBo isvCreateBo = BeanUtil.copyProperties(isvCreateForm, IsvCreateBo.class);
+        // 设置bizModel
+        payRequest.setBizModel(isvCreateBo);
+        payRequest.autoSet(isvCreateForm);
+        // 请求分发
+        Response<PayResponse> response = payDispatcher.dispatcher(payRequest);
+        PayResponse data = response.getData();
+        log.info("返回结果:{}", data);
+    }
+
+
+    /**
+     * isv查询
+     *
+     * @param isvQueryForm
+     */
+    public void isvQuery(IsvQueryForm isvQueryForm) {
+        PayIsvRequest payRequest = new PayIsvRequest();
+        // todo
+        String channelCode = isvQueryForm.getChannel();
+        if (channelCode.equals("alipay")) {
+            payRequest.setChannel("alipay");
+        } else {
+            payRequest.setChannel("weixin");
+        }
+        payRequest.setMethod(PayMethods.ISV_QUERY.getNamespace());
+        IsvCreateBo isvCreateBo = BeanUtil.copyProperties(isvQueryForm, IsvCreateBo.class);
+        // 设置bizModel
+        payRequest.setBizModel(isvCreateBo);
         // 请求分发
         Response<PayResponse> response = payDispatcher.dispatcher(payRequest);
         PayResponse data = response.getData();

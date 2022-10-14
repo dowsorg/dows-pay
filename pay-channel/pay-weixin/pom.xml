@@ -10,4 +10,12 @@
     <artifactId>pay-weixin</artifactId>
 
 
+    <dependencies>
+        <!--这里改为微信的-->
+        <dependency>
+            <groupId>com.alipay.sdk</groupId>
+            <artifactId>alipay-sdk-java</artifactId>
+        </dependency>
+    </dependencies>
+
 </project>

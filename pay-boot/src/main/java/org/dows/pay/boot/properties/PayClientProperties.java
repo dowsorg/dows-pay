@@ -1,4 +1,4 @@
-package org.dows.pay.boot.config;
+package org.dows.pay.boot.properties;
 
 import lombok.Data;
 

@@ -10,14 +10,10 @@
 
 
     <dependencies>
+
         <dependency>
             <groupId>org.dows.saas</groupId>
-            <artifactId>pay-gateway</artifactId>
-            <version>20220701</version>
-        </dependency>
-        <dependency>
-            <groupId>org.dows.saas</groupId>
-            <artifactId>pay-pojo</artifactId>
+            <artifactId>pay-biz</artifactId>
             <version>20220701</version>
         </dependency>
 

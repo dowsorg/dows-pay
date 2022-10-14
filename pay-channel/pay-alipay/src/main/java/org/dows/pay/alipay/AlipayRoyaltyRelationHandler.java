@@ -1,6 +1,5 @@
 package org.dows.pay.alipay;
 
-import cn.hutool.core.bean.BeanUtil;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.domain.AlipayTradeRoyaltyRelationBatchqueryModel;
 import com.alipay.api.domain.AlipayTradeRoyaltyRelationBindModel;
@@ -39,8 +38,10 @@ public class AlipayRoyaltyRelationHandler extends AbstractAlipayHandler {
      */
     @PayMapping(method = PayMethods.TRADE_ROYALTY_RELATION_BIND)
     public void tradeRoyaltyRelationBind(PayRequest payRequest) {
-        AlipayTradeRoyaltyRelationBindModel alipayTradeRoyaltyRelationBindModel =
-                BeanUtil.toBean(payRequest.getParams(), AlipayTradeRoyaltyRelationBindModel.class);
+
+        AlipayTradeRoyaltyRelationBindModel alipayTradeRoyaltyRelationBindModel = new AlipayTradeRoyaltyRelationBindModel();
+        // 自动
+        autoMappingValue(payRequest, alipayTradeRoyaltyRelationBindModel);
         AlipayTradeRoyaltyRelationBindRequest request = new AlipayTradeRoyaltyRelationBindRequest();
         request.setBizModel(alipayTradeRoyaltyRelationBindModel);
         AlipayTradeRoyaltyRelationBindResponse response = null;
@@ -68,7 +69,10 @@ public class AlipayRoyaltyRelationHandler extends AbstractAlipayHandler {
     @PayMapping(method = PayMethods.TRADE_ROYALTY_RELATION_UNBIND)
     public void tradeRoyaltyRelationUnbind(PayRequest payRequest) {
         AlipayTradeRoyaltyRelationUnbindModel alipayTradeRoyaltyRelationUnbindModel =
-                BeanUtil.toBean(payRequest.getParams(), AlipayTradeRoyaltyRelationUnbindModel.class);
+                new AlipayTradeRoyaltyRelationUnbindModel();
+        // 自动
+        autoMappingValue(payRequest, alipayTradeRoyaltyRelationUnbindModel);
+
         AlipayTradeRoyaltyRelationUnbindRequest request = new AlipayTradeRoyaltyRelationUnbindRequest();
         request.setBizModel(alipayTradeRoyaltyRelationUnbindModel);
         AlipayTradeRoyaltyRelationUnbindResponse response = null;
@@ -96,7 +100,10 @@ public class AlipayRoyaltyRelationHandler extends AbstractAlipayHandler {
     @PayMapping(method = PayMethods.TRADE_ROYALTY_RELATION_QUERY)
     public void tradeRoyaltyRelationQuery(PayRequest payRequest) {
         AlipayTradeRoyaltyRelationBatchqueryModel alipayTradeRoyaltyRelationBatchqueryModel =
-                BeanUtil.toBean(payRequest.getParams(), AlipayTradeRoyaltyRelationBatchqueryModel.class);
+                new AlipayTradeRoyaltyRelationBatchqueryModel();
+        // 自动
+        autoMappingValue(payRequest, alipayTradeRoyaltyRelationBatchqueryModel);
+
         AlipayTradeRoyaltyRelationBatchqueryRequest request = new AlipayTradeRoyaltyRelationBatchqueryRequest();
         request.setBizModel(alipayTradeRoyaltyRelationBatchqueryModel);
         AlipayTradeRoyaltyRelationBatchqueryResponse response = null;

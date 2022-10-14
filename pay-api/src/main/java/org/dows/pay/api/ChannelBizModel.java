@@ -11,12 +11,16 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * 业务对象
+ * 通道业务对象
  */
-public interface BizModel {
+public interface ChannelBizModel {
 
     Map<Class, Map<String, Field>> ALIPAY_MODLE_FIELD_MAP = new ConcurrentHashMap<>();
     Map<Class, Map<String, Field>> WEIXIN_MODLE_FIELD_MAP = new ConcurrentHashMap<>();
+
+    default String getAppId() {
+        return null;
+    }
 
     /**
      * 获取对象字段特定的注解名称及对应的Field对象

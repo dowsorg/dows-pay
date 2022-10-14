@@ -1,6 +1,5 @@
 package org.dows.pay.weixin;
 
-import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
 import org.dows.pay.api.PayHandler;
 import org.dows.pay.api.enums.PayChannels;

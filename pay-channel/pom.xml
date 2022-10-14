@@ -16,31 +16,10 @@
     </modules>
 
     <dependencies>
-
-        <dependency>
-            <groupId>org.dows.saas</groupId>
-            <artifactId>pay-api</artifactId>
-            <version>20220701</version>
-        </dependency>
-
         <dependency>
             <groupId>org.dows.saas</groupId>
             <artifactId>pay-boot</artifactId>
             <version>20220701</version>
-        </dependency>
-
-
-        <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-all</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
         </dependency>
     </dependencies>
 </project>

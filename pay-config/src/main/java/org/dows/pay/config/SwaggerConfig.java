@@ -1,4 +1,4 @@
-package org.dows.pay.boot.config;
+package org.dows.pay.config;
 
 import com.github.xiaoymin.knife4j.spring.annotations.EnableKnife4j;
 import org.springframework.beans.BeansException;

@@ -27,7 +27,7 @@ public class WeixinRoyaltyRelationHandler extends AbstractWeixinHandler {
 //    public void tradeRoyaltyRelationBind(PayRequest payRequest) {
 //        AlipayTradeRoyaltyRelationBindModel alipayTradeRoyaltyRelationBindModel = BeanUtil.toBean(payRequest.getParams(), AlipayTradeRoyaltyRelationBindModel.class);
 //        AlipayTradeRoyaltyRelationBindRequest request = new AlipayTradeRoyaltyRelationBindRequest();
-//        request.setBizModel(alipayTradeRoyaltyRelationBindModel);
+//        request.setChannelBizModel(alipayTradeRoyaltyRelationBindModel);
 //        AlipayTradeRoyaltyRelationBindResponse response = null;
 //        try {
 //            response = getAlipayClient(payRequest.getAppId()).execute(request);
@@ -55,7 +55,7 @@ public class WeixinRoyaltyRelationHandler extends AbstractWeixinHandler {
 //        AlipayTradeRoyaltyRelationUnbindModel alipayTradeRoyaltyRelationUnbindModel =
 //                BeanUtil.toBean(payRequest.getParams(), AlipayTradeRoyaltyRelationUnbindModel.class);
 //        AlipayTradeRoyaltyRelationUnbindRequest request = new AlipayTradeRoyaltyRelationUnbindRequest();
-//        request.setBizModel(alipayTradeRoyaltyRelationUnbindModel);
+//        request.setChannelBizModel(alipayTradeRoyaltyRelationUnbindModel);
 //        AlipayTradeRoyaltyRelationUnbindResponse response = null;
 //        try {
 //            response = getAlipayClient(payRequest.getAppId()).execute(request);
@@ -83,7 +83,7 @@ public class WeixinRoyaltyRelationHandler extends AbstractWeixinHandler {
 //        AlipayTradeRoyaltyRelationBatchqueryModel alipayTradeRoyaltyRelationBatchqueryModel =
 //                BeanUtil.toBean(payRequest.getParams(), AlipayTradeRoyaltyRelationBatchqueryModel.class);
 //        AlipayTradeRoyaltyRelationBatchqueryRequest request = new AlipayTradeRoyaltyRelationBatchqueryRequest();
-//        request.setBizModel(alipayTradeRoyaltyRelationBatchqueryModel);
+//        request.setChannelBizModel(alipayTradeRoyaltyRelationBatchqueryModel);
 //        AlipayTradeRoyaltyRelationBatchqueryResponse response = null;
 //        try {
 //            response = getAlipayClient(payRequest.getAppId()).execute(request);

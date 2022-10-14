@@ -1,4 +1,4 @@
-package org.dows.pay.boot.config;
+package org.dows.pay.config;
 
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;

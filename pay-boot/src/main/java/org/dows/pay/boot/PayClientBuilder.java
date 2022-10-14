@@ -1,7 +1,7 @@
 package org.dows.pay.boot;
 
 import com.alipay.api.*;
-import org.dows.pay.boot.config.PayClientProperties;
+import org.dows.pay.boot.properties.PayClientProperties;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 

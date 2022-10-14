@@ -3,7 +3,7 @@ package org.dows.pay.alipay;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.AlipayObject;
 import com.alipay.api.internal.mapping.ApiField;
-import org.dows.pay.api.BizModel;
+import org.dows.pay.api.ChannelBizModel;
 import org.dows.pay.api.PayHandler;
 import org.dows.pay.api.PayRequest;
 import org.dows.pay.api.enums.PayChannels;
@@ -32,8 +32,8 @@ public abstract class AbstractAlipayHandler implements PayHandler {
      * @param alipayObject
      */
     protected void autoMappingValue(PayRequest payRequest, AlipayObject alipayObject) {
-        BizModel bizModel = payRequest.getBizModel();
-        Map<String, Field> alipayFeilds = bizModel.getAlipayFeilds();
+        ChannelBizModel channelBizModel = payRequest.getBizModel();
+        Map<String, Field> alipayFeilds = channelBizModel.getAlipayFeilds();
         Map<String, Field> collect = Arrays.stream(alipayObject.getClass().getDeclaredFields())
                 .filter(f -> f.isAnnotationPresent(ApiField.class))
                 .collect(Collectors.toMap(f -> f.getAnnotation(ApiField.class).value(), Function.identity()));
@@ -42,8 +42,9 @@ public abstract class AbstractAlipayHandler implements PayHandler {
             Field bizFiled = alipayFeilds.get(k);
             if (bizFiled != null) {
                 try {
+                    bizFiled.setAccessible(true);
+                    Object ovalue = bizFiled.get(channelBizModel);
                     field.setAccessible(true);
-                    Object ovalue = bizFiled.get(payRequest);
                     field.set(alipayObject, ovalue);
                 } catch (IllegalAccessException e) {
                     throw new RuntimeException(e);

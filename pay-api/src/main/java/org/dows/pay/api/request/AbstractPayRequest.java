@@ -2,13 +2,14 @@ package org.dows.pay.api.request;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import org.dows.pay.api.BizModel;
+import lombok.NoArgsConstructor;
+import org.dows.pay.api.BizForm;
+import org.dows.pay.api.ChannelBizModel;
 import org.dows.pay.api.PayRequest;
 import org.dows.pay.api.PayResponse;
 import org.dows.pay.api.annotation.ParamName;
 
-import java.util.Map;
-
+@NoArgsConstructor
 @Data
 public abstract class AbstractPayRequest<T extends PayResponse> implements PayRequest<T> {
 
@@ -25,24 +26,25 @@ public abstract class AbstractPayRequest<T extends PayResponse> implements PayRe
     @ParamName("biz_method")
     protected String method;
 
-//    @ApiModelProperty("json参数体")
-//    @ParamName("biz_params")
-//    protected Map<String, Object> params;
-
     @ApiModelProperty("业务json参数")
     @ParamName("biz_params")
     protected String bizContent;
 
     @ApiModelProperty("业务对象参数")
     @ParamName("biz_params")
-    protected BizModel bizModel;
+    protected ChannelBizModel bizModel;
 
     protected Class<T> responseClass;
 
-    public void autoSet(Map<String, Object> requestParams) {
-        this.tenantId = (String) requestParams.get("tenantId");
-        this.appId = (String) requestParams.get("appId");
-        this.channel = (String) requestParams.get("channel");
+    /**
+     * 业务通用字段填充
+     *
+     * @param bizForm
+     */
+    public void autoSet(BizForm bizForm) {
+        this.tenantId = bizForm.getTenantId();
+        this.appId = bizForm.getAppId();
+        this.channel = bizForm.getChannel();
     }
 
     @Override
@@ -69,9 +71,8 @@ public abstract class AbstractPayRequest<T extends PayResponse> implements PayRe
         return this;
     }
 
-    @Override
-    public PayRequest setBizModel(BizModel bizModel) {
-        this.bizModel = bizModel;
+    public PayRequest setBizModel(ChannelBizModel channelBizModel) {
+        this.bizModel = channelBizModel;
         return this;
     }
 

@@ -1,6 +1,7 @@
-package org.dows.pay.boot.config;
+package org.dows.pay.boot;
 
 import lombok.Data;
+import org.dows.pay.boot.properties.PayClientProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.List;

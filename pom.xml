@@ -17,6 +17,7 @@
         <module>pay-api</module>
         <module>pay-client</module>
         <module>pay-channel</module>
+        <module>pay-config</module>
         <module>pay-crud</module>
         <module>pay-gateway</module>
         <module>pay-boot</module>

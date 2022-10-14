@@ -12,7 +12,7 @@
     <dependencies>
         <dependency>
             <groupId>org.dows.saas</groupId>
-            <artifactId>pay-boot</artifactId>
+            <artifactId>pay-config</artifactId>
             <version>20220701</version>
         </dependency>
 

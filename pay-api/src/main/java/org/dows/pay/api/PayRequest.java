@@ -46,9 +46,9 @@ public interface PayRequest<T extends PayResponse> {
      *
      * @return
      */
-    PayRequest setBizModel(BizModel bizModel);
+    PayRequest setBizModel(ChannelBizModel channelBizModel);
 
-    BizModel getBizModel();
+    ChannelBizModel getBizModel();
 
 
     Class<T> getResponseClass();
@@ -62,6 +62,4 @@ public interface PayRequest<T extends PayResponse> {
     default String getPayNamespace() {
         return getMethod() + "." + getChannel();
     }
-
-
 }
