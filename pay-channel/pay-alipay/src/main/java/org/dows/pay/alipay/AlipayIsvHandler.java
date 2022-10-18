@@ -15,9 +15,11 @@ import com.alipay.api.response.AlipayOpenMiniIsvCreateResponse;
 import com.alipay.api.response.AlipayOpenMiniIsvQueryResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.dows.app.entity.AppApply;
 import org.dows.pay.api.PayEvent;
 import org.dows.pay.api.PayRequest;
 import org.dows.pay.api.annotation.PayMapping;
+import org.dows.pay.api.enums.PayChannels;
 import org.dows.pay.api.enums.PayMethods;
 import org.dows.pay.api.message.AlipayMessage;
 import org.springframework.context.event.EventListener;
@@ -78,6 +80,12 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
             /**
              * todo 建立关联关系（小程序申请对象） [小程序与营业执照的关系],通过营业执照来关联 小程序名 及对应的orderNo
              */
+            AppApply appApply = AppApply.builder()
+                    .appName(createMiniRequest.getAppName())
+                    .platform(PayChannels.ALIPAY.name())
+                    .platformAppName(createMiniRequest.getAppName())
+
+                    .build();
 //            MiniRequest miniRequest = new MiniRequest();
 //            miniRequest.setOrderNo(orderNo);
 //            miniRequest.setAppName(createMiniRequest.getAppName());

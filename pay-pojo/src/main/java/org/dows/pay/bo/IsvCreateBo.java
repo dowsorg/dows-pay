@@ -21,7 +21,7 @@ import org.dows.pay.api.annotation.WeixinApiField;
 public class IsvCreateBo implements ChannelBizModel {
 
     // 账号
-    @WeixinApiField(name = "")
+    @WeixinApiField(name = "wxaccount")
     @AlipayApiField(name = "alipay_account")
     private String account;
 
