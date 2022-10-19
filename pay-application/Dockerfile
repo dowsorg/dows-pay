@@ -8,12 +8,20 @@ ENV JAVA_OPTIONS=""
 ENV PARAMS=""
 
 #多阶段构建方式：ADD maven/ /opt/
-COPY target/*.jar /app.jar
+COPY target/app.jar /dows/app.jar
 
 # 记录一下最后保存进来的时间
-RUN touch /app.jar
+RUN touch /dows/app.jar
 
 # docker run -e JAVA_OPTIONS="-Xmx -Xms..." imageName
-ENTRYPOINT ["java", "-Dfile.encoding=UTF-8", "-Djava.security.egd=file:/dev/./urandom",'$JAVA_OPTIONS',"-jar","/opt/app.jar",'$PARAMS']
+ENTRYPOINT [
+"java",
+'$JAVA_OPTIONS',
+"-Dfile.encoding=UTF-8",
+"-Duser.timezone=GMT+08",
+"-Djava.security.egd=file:/dev/./urandom",
+"-jar","/dows/app.jar",
+'$PARAMS'
+]
 
 EXPOSE 8080
