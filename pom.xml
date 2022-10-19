@@ -27,4 +27,14 @@
         <module>pay-pojo</module>
     </modules>
 
+    <distributionManagement>
+        <repository>
+            <id>rdc-releases</id>
+            <url>https://packages.aliyun.com/maven/repository/2290151-release-R4vX5T/</url>
+        </repository>
+        <snapshotRepository>
+            <id>rdc-snapshots</id>
+            <url>https://packages.aliyun.com/maven/repository/2290151-snapshot-aLhHBl/</url>
+        </snapshotRepository>
+    </distributionManagement>
 </project>
