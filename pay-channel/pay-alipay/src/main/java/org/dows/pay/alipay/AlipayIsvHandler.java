@@ -15,6 +15,7 @@ import com.alipay.api.response.AlipayOpenMiniIsvCreateResponse;
 import com.alipay.api.response.AlipayOpenMiniIsvQueryResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.dows.app.biz.AppApplyBiz;
 import org.dows.app.entity.AppApply;
 import org.dows.pay.api.PayEvent;
 import org.dows.pay.api.PayRequest;
@@ -33,6 +34,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class AlipayIsvHandler extends AbstractAlipayHandler {
 
+
+    private  final AppApplyBiz appApplyBiz;
+
+    private final UserCompanyBiz userCompanyBiz;
+
     public static void main(String[] args) {
         ValueFilter valueFilter = (o, s, o1) -> o1 == null ? "" : o1;
         System.out.println(JSON.toJSONString(new AlipayOpenMiniVersionOnlineModel(), valueFilter, SerializerFeature.PrettyFormat));
@@ -46,6 +52,21 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
      */
     @PayMapping(method = PayMethods.ISV_CREATE)
     public void createIsvMini(PayRequest payRequest) {
+
+        // todo 先查询该营业执照有没有申请过，如果没有就保存，如果有直接查询比对是否是相同的申请（orderNo为空 其他字段值全部相同通道+应用名）
+        AppApplyRequest appApply = AppApply.builder()
+                .appName(createMiniRequest.getAppName())
+                .platform(PayChannels.ALIPAY.name())
+                .build();
+        appApply = appApplyBiz.getOne(appApply);
+
+        if(appApply.getPlatformOrderNo() == null){
+            // todo 保存请求
+            appApply = appApplyBiz.saveApply(appApply);
+        }
+
+
+
         CreateMiniRequest createMiniRequest = new CreateMiniRequest();
         // 自动
         autoMappingValue(payRequest, createMiniRequest);
@@ -60,19 +81,20 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
             throw new RuntimeException(e);
         }
 
+
         /**
-         * todo 提前保存该对象 createMiniRequest 到用户实体字典域，留后期场景使用
+         * todo 提前保存该对象 createMiniRequest 到用户实体字典域UserCompany表，留后期场景使用
          * todo 保存公司信息到用户实体字典域
          */
-//        UserFiemDto ufd = userFirmApi.getByCertNo(createMiniRequest.getCertNo());
-//        if (ufd == null) {
-//            UserFirmCreateRequest ufcr = new UserFirmCreateRequest();
-//            ufcr.setXX(createMiniRequest.getCertNo());
-//            ufcr.setXX(createMiniRequest.getCertName());
-//            ufcr.setXX(createMiniRequest.getLegalPersonalName());
-//                ...
-//            userFirmApi.save(ufcr);
-//        }
+        UserCompany ufd = userCompanyBiz.getByCertNo(createMiniRequest.getCertNo());
+        if (ufd == null) {
+            UserFirmCreateRequest ufcr = new UserFirmCreateRequest();
+            ufcr.setXX(createMiniRequest.getCertNo());
+            ufcr.setXX(createMiniRequest.getCertName());
+            ufcr.setXX(createMiniRequest.getLegalPersonalName());
+            userFirmApi.save(ufcr);
+        }
+
         if (response.isSuccess()) {
             // todo 保存订单号 及对应申请的营业执照 和联系人 信息，返回申请小程序记录表ID 后续通过ID查询
             String orderNo = response.getOrderNo();
@@ -80,19 +102,12 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
             /**
              * todo 建立关联关系（小程序申请对象） [小程序与营业执照的关系],通过营业执照来关联 小程序名 及对应的orderNo
              */
-            AppApply appApply = AppApply.builder()
+            AppApply appApplyUpdateRequest = AppApply.builder()
                     .appName(createMiniRequest.getAppName())
                     .platform(PayChannels.ALIPAY.name())
-                    .platformAppName(createMiniRequest.getAppName())
-
+                    .platformOrderNo(orderNo)
                     .build();
-//            MiniRequest miniRequest = new MiniRequest();
-//            miniRequest.setOrderNo(orderNo);
-//            miniRequest.setAppName(createMiniRequest.getAppName());
-//            miniRequest.setCertNo(createMiniRequest.getCertNo());
-//            miniRequest.setCretName(createMiniRequest.getCertName());
-//            miniRequest.setLegalPerson(createMiniRequest.getLegalPersonalName());
-//            miniRequestApi.save(miniRequest);
+            AppApplyBiz.updateApplyOrderNo(appApplyUpdateRequest);
 
             log.info("调用成功,响应信息:{}", JSONUtil.toJsonStr(response));
         } else {

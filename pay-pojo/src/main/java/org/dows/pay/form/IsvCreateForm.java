@@ -1,6 +1,9 @@
 package org.dows.pay.form;
 
-import lombok.Data;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.*;
+import lombok.experimental.Accessors;
 import org.dows.pay.api.BizForm;
 import org.dows.pay.api.ChannelBizModel;
 
@@ -16,34 +19,50 @@ import org.dows.pay.api.ChannelBizModel;
  * <p>
  * 支付宝/微信/其他等共用
  */
+@ToString
+@Builder
+@Accessors(chain = true)
+@AllArgsConstructor
+@NoArgsConstructor
+@ApiModel(value = "IsvCreateForm 表单对象", description = " 支付宝/微信ISV代创建小程序")
 @Data
 public class IsvCreateForm implements BizForm {
 
+    @ApiModelProperty("平台应用ID")
     private String appId;
+
     // 通道code
+    @ApiModelProperty("通道code")
     private String channel;
 
     // 账号
+    @ApiModelProperty("账号")
     private String account;
 
 
     // 应用名称
+    @ApiModelProperty("申请应用名称")
     private String appName;
 
 
     // 营业执照
+    @ApiModelProperty("营业执照")
     private String certName;
 
     // 联系人
+    @ApiModelProperty("联系人")
     private String contactName;
 
     // 联系电话
+    @ApiModelProperty("联系电话")
     private String contactPhone;
 
     // 法人名
+    @ApiModelProperty("法人名")
     private String legalPersonalName;
 
     // 外部申请单号
+    @ApiModelProperty("外部申请单号")
     private String outOrderNo;
 
 }
