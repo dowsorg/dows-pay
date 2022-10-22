@@ -23,8 +23,13 @@ import org.dows.pay.api.annotation.PayMapping;
 import org.dows.pay.api.enums.PayChannels;
 import org.dows.pay.api.enums.PayMethods;
 import org.dows.pay.api.message.AlipayMessage;
+import org.dows.user.entity.UserCompany;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
+import org.springframework.util.IdGenerator;
+import org.springframework.util.SimpleIdGenerator;
+
+import java.util.UUID;
 
 /**
  * 代理商户作业相关业务逻辑，如：代开通或代创建小程序，其他等...
@@ -34,10 +39,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class AlipayIsvHandler extends AbstractAlipayHandler {
 
-
-    private  final AppApplyBiz appApplyBiz;
+    private final AppApplyBiz appApplyBiz;
 
     private final UserCompanyBiz userCompanyBiz;
+
+
+    private final IdGenerator idGenerator = new SimpleIdGenerator();
 
     public static void main(String[] args) {
         ValueFilter valueFilter = (o, s, o1) -> o1 == null ? "" : o1;
@@ -53,21 +60,26 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
     @PayMapping(method = PayMethods.ISV_CREATE)
     public void createIsvMini(PayRequest payRequest) {
 
+        UUID uuid = idGenerator.generateId();
+
         // todo 先查询该营业执照有没有申请过，如果没有就保存，如果有直接查询比对是否是相同的申请（orderNo为空 其他字段值全部相同通道+应用名）
         AppApplyRequest appApply = AppApply.builder()
                 .appName(createMiniRequest.getAppName())
                 .platform(PayChannels.ALIPAY.name())
+                .ddd()
+                .fff()
                 .build();
         appApply = appApplyBiz.getOne(appApply);
 
-        if(appApply.getPlatformOrderNo() == null){
+        if (appApply.getPlatformOrderNo() == null) {
             // todo 保存请求
+            appApply.setApplyOrderNo(uuid.toString());
             appApply = appApplyBiz.saveApply(appApply);
         }
 
 
-
         CreateMiniRequest createMiniRequest = new CreateMiniRequest();
+        createMiniRequest.setOutOrderNo(appApply.getApplyOrderNo());
         // 自动
         autoMappingValue(payRequest, createMiniRequest);
         AlipayOpenMiniIsvCreateRequest request = new AlipayOpenMiniIsvCreateRequest();
@@ -108,7 +120,6 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
                     .platformOrderNo(orderNo)
                     .build();
             AppApplyBiz.updateApplyOrderNo(appApplyUpdateRequest);
-
             log.info("调用成功,响应信息:{}", JSONUtil.toJsonStr(response));
         } else {
             log.error("调用失败,响应信息:{}", JSONUtil.toJsonStr(response));
