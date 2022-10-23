@@ -15,15 +15,19 @@ import com.alipay.api.response.AlipayOpenMiniIsvCreateResponse;
 import com.alipay.api.response.AlipayOpenMiniIsvQueryResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.dows.app.api.AppApplyRequest;
 import org.dows.app.biz.AppApplyBiz;
 import org.dows.app.entity.AppApply;
+import org.dows.framework.api.Response;
 import org.dows.pay.api.PayEvent;
 import org.dows.pay.api.PayRequest;
 import org.dows.pay.api.annotation.PayMapping;
 import org.dows.pay.api.enums.PayChannels;
 import org.dows.pay.api.enums.PayMethods;
 import org.dows.pay.api.message.AlipayMessage;
-import org.dows.user.entity.UserCompany;
+import org.dows.user.api.UserCompanyRequest;
+import org.dows.user.biz.UserCompanyBiz;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.util.IdGenerator;
@@ -39,8 +43,10 @@ import java.util.UUID;
 @Service
 public class AlipayIsvHandler extends AbstractAlipayHandler {
 
+    @Autowired
     private final AppApplyBiz appApplyBiz;
 
+    @Autowired
     private final UserCompanyBiz userCompanyBiz;
 
 
@@ -63,23 +69,24 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
         UUID uuid = idGenerator.generateId();
 
         // todo 先查询该营业执照有没有申请过，如果没有就保存，如果有直接查询比对是否是相同的申请（orderNo为空 其他字段值全部相同通道+应用名）
-        AppApplyRequest appApply = AppApply.builder()
-                .appName(createMiniRequest.getAppName())
+        AppApplyRequest appApply = AppApplyRequest.builder()
+                //.appName(createMiniRequest.getAppName())
                 .platform(PayChannels.ALIPAY.name())
-                .ddd()
-                .fff()
+                .contactName("")
+                .contactPhone("")
                 .build();
-        appApply = appApplyBiz.getOne(appApply);
+        Response responseAppApply = appApplyBiz.getOneAppApply(appApply);
+        AppApply reAppApply = (AppApply)responseAppApply.getData();
 
         if (appApply.getPlatformOrderNo() == null) {
             // todo 保存请求
             appApply.setApplyOrderNo(uuid.toString());
-            appApply = appApplyBiz.saveApply(appApply);
+            appApplyBiz.saveApply(appApply);
         }
 
 
         CreateMiniRequest createMiniRequest = new CreateMiniRequest();
-        createMiniRequest.setOutOrderNo(appApply.getApplyOrderNo());
+        createMiniRequest.setOutOrderNo(reAppApply.getApplyOrderNo());
         // 自动
         autoMappingValue(payRequest, createMiniRequest);
         AlipayOpenMiniIsvCreateRequest request = new AlipayOpenMiniIsvCreateRequest();
@@ -98,13 +105,15 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
          * todo 提前保存该对象 createMiniRequest 到用户实体字典域UserCompany表，留后期场景使用
          * todo 保存公司信息到用户实体字典域
          */
-        UserCompany ufd = userCompanyBiz.getByCertNo(createMiniRequest.getCertNo());
-        if (ufd == null) {
-            UserFirmCreateRequest ufcr = new UserFirmCreateRequest();
-            ufcr.setXX(createMiniRequest.getCertNo());
-            ufcr.setXX(createMiniRequest.getCertName());
-            ufcr.setXX(createMiniRequest.getLegalPersonalName());
-            userFirmApi.save(ufcr);
+        UserCompanyRequest userCompanyRequest = UserCompanyRequest.builder()
+                .certNo(createMiniRequest.getCertNo())
+                .build();
+        Response responseUserCompany = userCompanyBiz.getOneUserCompany(userCompanyRequest);
+        if (responseUserCompany == null || responseUserCompany.getData() == null) {
+            userCompanyRequest.setCertNo(createMiniRequest.getCertNo());
+            userCompanyRequest.setCompanyName(createMiniRequest.getCertName());
+            userCompanyRequest.setLegalPerson(createMiniRequest.getLegalPersonalName());
+            userCompanyBiz.saveUserCompany(userCompanyRequest);
         }
 
         if (response.isSuccess()) {
@@ -114,12 +123,11 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
             /**
              * todo 建立关联关系（小程序申请对象） [小程序与营业执照的关系],通过营业执照来关联 小程序名 及对应的orderNo
              */
-            AppApply appApplyUpdateRequest = AppApply.builder()
-                    .appName(createMiniRequest.getAppName())
-                    .platform(PayChannels.ALIPAY.name())
+            AppApplyRequest appApplyUpdateRequest = AppApplyRequest.builder()
+                    .applyOrderNo(uuid.toString())
                     .platformOrderNo(orderNo)
                     .build();
-            AppApplyBiz.updateApplyOrderNo(appApplyUpdateRequest);
+            appApplyBiz.updateApplyPlatformOrderNo(appApplyUpdateRequest);
             log.info("调用成功,响应信息:{}", JSONUtil.toJsonStr(response));
         } else {
             log.error("调用失败,响应信息:{}", JSONUtil.toJsonStr(response));

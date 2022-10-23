@@ -21,18 +21,17 @@
             <artifactId>fastjson</artifactId>
         </dependency>
 
-
         <dependency>
             <groupId>org.dows.saas</groupId>
             <artifactId>app-biz</artifactId>
             <version>20220701</version>
         </dependency>
+
         <dependency>
             <groupId>org.dows.cloud</groupId>
             <artifactId>user-biz</artifactId>
             <version>20220701</version>
         </dependency>
-
 
     </dependencies>
 
