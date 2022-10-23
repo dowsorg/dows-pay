@@ -169,12 +169,13 @@ public class PayClientFactory {
         log.info("处理:{},{},{},{}", appId, msgApi, msgId, bizContent);
         //  todo 通过event事件监听
         AlipayMessage alipayMessage = AlipayMessage.builder()
-                .msgApi(appId)
+                .appId(appId)
                 .msgApi(msgApi)
                 .msgId(msgId)
                 .bizContent(bizContent)
                 .build();
         PayEvent payEvent = new PayEvent(this, alipayMessage);
+        //payEvent.setHandlerClass();
         applicationEventPublisher.publishEvent(payEvent);
     }
 

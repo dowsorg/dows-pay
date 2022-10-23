@@ -20,6 +20,8 @@ import org.dows.app.biz.AppApplyBiz;
 import org.dows.app.entity.AppApply;
 import org.dows.framework.api.Response;
 import org.dows.pay.api.PayEvent;
+import org.dows.pay.api.PayHandler;
+import org.dows.pay.api.PayMessage;
 import org.dows.pay.api.PayRequest;
 import org.dows.pay.api.annotation.PayMapping;
 import org.dows.pay.api.enums.PayChannels;
@@ -171,8 +173,15 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
         String appId = payMessage.getAppId();
         String msgApi = payMessage.getMsgApi();
         String msgId = payMessage.getMsgId();
+        PayHandler handler = applicationContext.getBean(payEvent.getHandlerClass());
+        handler.onMessage(payMessage);
 
 
+    }
+
+    @Override
+    public void onMessage(PayMessage payMessage) {
+        //AlipayMessage alipayMessage = (AlipayMessage)payMessage;
         String bizContent = payMessage.getBizContent();
         log.info("业务响应:bizContent = {}", bizContent);
     }

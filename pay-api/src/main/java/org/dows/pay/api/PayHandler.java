@@ -4,5 +4,8 @@ public interface PayHandler {
 
     String getChannel();
 
+    default void onMessage(PayMessage payMessage) {
+    }
+
 
 }

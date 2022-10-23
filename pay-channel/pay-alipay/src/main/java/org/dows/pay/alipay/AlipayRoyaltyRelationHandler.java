@@ -15,6 +15,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.dows.pay.api.PayRequest;
 import org.dows.pay.api.annotation.PayMapping;
 import org.dows.pay.api.enums.PayMethods;
+import org.dows.pay.entity.PayLedgers;
+import org.dows.pay.service.PayLedgersService;
 import org.springframework.stereotype.Service;
 
 /**
@@ -29,6 +31,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class AlipayRoyaltyRelationHandler extends AbstractAlipayHandler {
 
+    private final PayLedgersService payLedgersService;
 
     /**
      * 分账关系绑定
@@ -53,6 +56,16 @@ public class AlipayRoyaltyRelationHandler extends AbstractAlipayHandler {
 
         if (response.isSuccess()) {
             System.out.println("调用成功");
+            // todo 保存分账关系 (注意：关系可能有多个，需要批量保存)
+            PayLedgers payLedgers = PayLedgers.builder()
+//                    .appId()
+//                    .accountId()
+//                    .channelAccountName()
+//                    .channelAccountType()
+//                    .channelAppId()
+                    .build();
+            payLedgersService.save(payLedgers);
+
         } else {
             //todo 失败逻辑
             throw new RuntimeException("调用失败");

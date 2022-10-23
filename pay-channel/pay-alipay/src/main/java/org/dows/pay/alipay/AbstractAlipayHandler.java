@@ -9,6 +9,7 @@ import org.dows.pay.api.PayRequest;
 import org.dows.pay.api.enums.PayChannels;
 import org.dows.pay.boot.PayClientFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -26,6 +27,8 @@ public abstract class AbstractAlipayHandler implements PayHandler {
         return payClientFactory.getAlipayClient(appId);
     }
 
+    @Autowired
+    protected ApplicationContext applicationContext;
     /**
      * 自动填充接口映射值
      *
