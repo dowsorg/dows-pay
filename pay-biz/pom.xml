@@ -5,7 +5,7 @@
     <parent>
         <artifactId>dows-pay</artifactId>
         <groupId>org.dows.saas</groupId>
-        <version>20220701</version>
+        <version>20220701-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>pay-biz</artifactId>
@@ -15,24 +15,24 @@
         <dependency>
             <groupId>org.dows.saas</groupId>
             <artifactId>pay-api</artifactId>
-            <version>20220701</version>
+            <version>20220701-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.dows.saas</groupId>
             <artifactId>pay-gateway</artifactId>
-            <version>20220701</version>
+            <version>20220701-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.dows.saas</groupId>
             <artifactId>pay-crud</artifactId>
-            <version>20220701</version>
+            <version>20220701-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.dows.saas</groupId>
             <artifactId>pay-pojo</artifactId>
-            <version>20220701</version>
+            <version>20220701-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
