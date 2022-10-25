@@ -10,6 +10,7 @@ import org.dows.pay.api.enums.PayChannels;
 import org.dows.pay.boot.PayClientFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -22,6 +23,8 @@ public abstract class AbstractAlipayHandler implements PayHandler {
     protected final Map<Class, Map<String, Field>> ALIPAY_OBJECT_MODLE_FIELD_MAP = new ConcurrentHashMap<>();
     @Autowired
     private PayClientFactory payClientFactory;
+    @Autowired
+    protected ApplicationEventPublisher applicationEventPublisher;
 
     protected AlipayClient getAlipayClient(String appId) {
         return payClientFactory.getAlipayClient(appId);

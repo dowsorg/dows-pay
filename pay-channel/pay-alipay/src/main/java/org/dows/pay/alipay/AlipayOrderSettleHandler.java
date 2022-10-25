@@ -15,10 +15,6 @@ import org.dows.pay.api.message.AlipayMessage;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Field;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 /**
  * 收单业务(订单分账请求 及其消息通知 > 交易分账结果通知接口)
  * <p>
@@ -77,14 +73,15 @@ public class AlipayOrderSettleHandler extends AbstractAlipayHandler {
      * @return
      */
     @EventListener(value = {PayEvent.class})
-    public void onIsvMerchantConfirmed(PayEvent<AlipayMessage> payEvent) {
+    public void onTradeOrderSettleEvent(PayEvent<AlipayMessage> payEvent) {
         AlipayMessage payMessage = payEvent.getPayMessage();
-        log.info("处理 alipay.open.mini.merchant.confirmed 事件消息:{}", payMessage);
+        log.info("处理  事件消息:{}", payMessage);
         // todo 业务处理
         String appId = payMessage.getAppId();
         String msgApi = payMessage.getMsgApi();
         String msgId = payMessage.getMsgId();
 
+        // todo 更新PayAllocation表【时间、状态、实际分得金额】
 
         String bizContent = payMessage.getBizContent();
 
