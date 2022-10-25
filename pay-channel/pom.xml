@@ -21,5 +21,10 @@
             <artifactId>pay-boot</artifactId>
             <version>20220701-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>org.dows.saas</groupId>
+            <artifactId>pay-pojo</artifactId>
+            <version>20220701-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 </project>
