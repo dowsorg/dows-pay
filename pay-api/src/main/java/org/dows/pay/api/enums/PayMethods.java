@@ -48,6 +48,10 @@ public enum PayMethods {
     TRADE_ORDER_SETTLE_QUERY("dows.trade.order.settle.query", "", "交易分账查询接口"),
 
     TRADE_ORDER_SETTLE_NOTIFY("dows.trade.order.settle.notify", "", "交易分账结果通知"),
+
+
+    // 支付交易相关
+    TRADE_ORDER_PAY("dows.trade.order.pay", "", "交易订单支付"),
     ;
 
     @Getter

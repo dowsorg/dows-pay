@@ -55,4 +55,33 @@ public class LedgersSettingBiz {
     }
 
 
+    /**
+     * 分账关系解绑
+     *
+     */
+    public void ledgerUnbind(PayLedgersForm payLedgersForm) {
+        // 根据 params 查询分账配置实体
+        PayLedgers entity = payLedgersService.lambdaQuery()
+                .eq(PayLedgers::getAppId, payLedgersForm.getAppId())
+                .eq(PayLedgers::getInstanceNo, payLedgersForm.getInstanceNo())
+                .eq(PayLedgers::getMerchantNo, payLedgersForm.getMerchantNo())
+                .eq(PayLedgers::getAccountId, payLedgersForm.getAccountId())
+                .getEntity();
+        // 填充分账请求对象
+        PayLedgersRequest payRequest = new PayLedgersRequest();
+        //"dows.trade.royalty.relation.bind"
+        RelationBingBo relationBingBo = BeanUtil.copyProperties(entity, RelationBingBo.class);
+        // 设置方法
+        payRequest.setMethod(PayMethods.TRADE_ROYALTY_RELATION_UNBIND.getNamespace());
+        // 设置bizModel
+        payRequest.setBizModel(relationBingBo);
+        // 填充公共参数
+        payRequest.autoSet(payLedgersForm);
+        // 请求分发
+        Response<PayResponse> response = payDispatcher.dispatcher(payRequest);
+        PayResponse data = response.getData();
+        log.info("返回结果:{}", data);
+    }
+
+
 }

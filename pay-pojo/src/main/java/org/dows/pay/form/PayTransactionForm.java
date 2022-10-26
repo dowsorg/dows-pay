@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import lombok.experimental.Accessors;
+import org.dows.pay.api.BizForm;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -25,7 +26,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @ApiModel(value = "PayTransactionForm 表单对象", description = "支付交易")
-public class PayTransactionForm implements Serializable {
+public class PayTransactionForm implements Serializable, BizForm {
     private static final long serialVersionUID = 835909251980690170L;
     @JsonIgnore
     private Long id;

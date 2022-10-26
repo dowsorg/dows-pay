@@ -10,11 +10,13 @@ import com.alipay.api.request.AlipayTradeRoyaltyRelationUnbindRequest;
 import com.alipay.api.response.AlipayTradeRoyaltyRelationBatchqueryResponse;
 import com.alipay.api.response.AlipayTradeRoyaltyRelationBindResponse;
 import com.alipay.api.response.AlipayTradeRoyaltyRelationUnbindResponse;
+import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dows.pay.api.PayRequest;
 import org.dows.pay.api.annotation.PayMapping;
 import org.dows.pay.api.enums.PayMethods;
+import org.dows.pay.bo.RelationBingBo;
 import org.dows.pay.entity.PayLedgers;
 import org.dows.pay.service.PayLedgersService;
 import org.springframework.stereotype.Service;
@@ -57,13 +59,14 @@ public class AlipayRoyaltyRelationHandler extends AbstractAlipayHandler {
         if (response.isSuccess()) {
             System.out.println("调用成功");
             // todo 保存分账关系 (注意：关系可能有多个，需要批量保存)
+            RelationBingBo relationBingBo = (RelationBingBo)payRequest;
             PayLedgers payLedgers = PayLedgers.builder()
-//                    .appId()
-//                    .accountId()
-//                    .channelAccountName()
-//                    .channelAccountType()
-//                    .channelAppId()
-                    .build();
+                        .appId(payRequest.getAppId())
+                        .accountId(relationBingBo.getChannelAccountNo())
+                        .channelAccountName(relationBingBo.getChannelAccountName())
+                        //.channelAccountType()
+                        .channelAppId(payRequest.getChannel())
+                        .build();
             payLedgersService.save(payLedgers);
 
         } else {
@@ -97,6 +100,16 @@ public class AlipayRoyaltyRelationHandler extends AbstractAlipayHandler {
 
         if (response.isSuccess()) {
             System.out.println("调用成功");
+            RelationBingBo relationBingBo = (RelationBingBo)payRequest;
+            LambdaQueryChainWrapper<PayLedgers> payLedgersWrapper = payLedgersService.lambdaQuery()
+                    .eq(PayLedgers::getAppId, payRequest.getAppId())
+                    .eq(PayLedgers::getAccountId, relationBingBo.getChannelAccountNo())
+                    .eq(PayLedgers::getChannelAppId, payRequest.getChannel());
+            PayLedgers payLedgers = PayLedgers.builder()
+                    .deleted(true)
+                    .build();
+
+            payLedgersService.update(payLedgers,payLedgersWrapper);
         } else {
             //todo 失败逻辑
             throw new RuntimeException("调用失败");

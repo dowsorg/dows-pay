@@ -37,4 +37,16 @@ public class LedgersSettingRest {
     }
 
 
+    /**
+     * 分账解绑
+     *
+     * @return
+     */
+    @PostMapping("/ledgerUnbind")
+    public Response ledgerUnbind(@RequestBody PayLedgersForm payLedgersForm) {
+        ledgersSettingBiz.ledgerUnbind(payLedgersForm);
+        return Response.ok();
+    }
+
+
 }

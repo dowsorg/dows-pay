@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.dows.framework.api.Response;
 import org.dows.pay.api.PayResponse;
 import org.dows.pay.biz.OrderPayBiz;
-import org.dows.pay.form.IsvQueryForm;
+import org.dows.pay.form.PayTransactionForm;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,9 +25,9 @@ public class OrderPayRest {
     private final OrderPayBiz orderPayBiz;
 
     @PostMapping("/order/topay")
-    @ApiOperation(value = "代商户查询小程序")
-    public Response<PayResponse> query(@RequestBody IsvQueryForm isvQueryForm) {
-        //orderPayBiz.toPay();
+    @ApiOperation(value = "用户支付")
+    public Response<PayResponse> query(@RequestBody PayTransactionForm payTransactionForm) {
+        orderPayBiz.toPay(payTransactionForm);
         return Response.ok();
     }
 

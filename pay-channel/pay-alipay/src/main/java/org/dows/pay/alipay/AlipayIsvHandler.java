@@ -27,7 +27,6 @@ import org.dows.pay.api.message.AlipayMessage;
 import org.dows.pay.bo.IsvCreateBo;
 import org.dows.user.api.UserCompanyRequest;
 import org.dows.user.biz.UserCompanyBiz;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.util.IdGenerator;
@@ -43,10 +42,8 @@ import java.util.UUID;
 @Service
 public class AlipayIsvHandler extends AbstractAlipayHandler {
 
-    @Autowired
     private final AppApplyBiz appApplyBiz;
 
-    @Autowired
     private final UserCompanyBiz userCompanyBiz;
 
 
