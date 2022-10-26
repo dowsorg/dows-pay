@@ -9,8 +9,12 @@ import org.dows.pay.api.enums.PayMethods;
 import org.dows.pay.api.event.OrderPaySuccessEvent;
 import org.dows.pay.api.request.OrderPayRequest;
 import org.dows.pay.bo.PayTransactionBo;
+import org.dows.pay.entity.PayAllocation;
+import org.dows.pay.entity.PayTransaction;
 import org.dows.pay.form.PayTransactionForm;
 import org.dows.pay.gateway.PayDispatcher;
+import org.dows.pay.service.PayAllocationService;
+import org.dows.pay.service.PayTransactionService;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +29,10 @@ import org.springframework.stereotype.Service;
 public class OrderPayBiz {
 
     private final PayDispatcher payDispatcher;
+
+    private final PayTransactionService payTransactionService;
+
+    private final PayAllocationService payAllocationService;
 
     public Response toPay(PayTransactionForm payTransactionForm) {
         OrderPayRequest orderPayRequest = new OrderPayRequest();
@@ -45,14 +53,23 @@ public class OrderPayBiz {
 
     @EventListener(value = {OrderPaySuccessEvent.class})
     public String onPaySuccessEvent(OrderPaySuccessEvent orderPaySuccessEvent) {
-        doOrderAllocation();
+        doOrderAllocation(orderPaySuccessEvent);
         return null;
     }
 
 
-    private void doOrderAllocation() {
+    private void doOrderAllocation(OrderPaySuccessEvent orderPaySuccessEvent) {
+        // if 成功 3
+        PayTransaction updatePayTransaction = new PayTransaction();
+        updatePayTransaction.setStatus(3);
+        //if 失败4
+        updatePayTransaction.setStatus(4);
+        payTransactionService.updateById(updatePayTransaction);
         // todo 修改订单状态（该事件需要解耦通知其他域），
         // todo 插入预分账记录，
+        PayAllocation payAllocation = PayAllocation.builder()
+                .build();
+        payAllocationService.save(payAllocation);
         // todo 根据当前支付（orderId:分账时间[支付成功时间+holdingTime]） 推送到队列(顺序规则，批量规则，定时规则) 设置并启动该比支付的分账定时任务
         // todo 计算分账任务执行时间 订单号 + 通道 + 分账时间[paySuccessTime+holdingTime ]
     }

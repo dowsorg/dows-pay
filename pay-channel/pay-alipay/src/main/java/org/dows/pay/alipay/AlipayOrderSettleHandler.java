@@ -12,6 +12,8 @@ import org.dows.pay.api.PayRequest;
 import org.dows.pay.api.annotation.PayMapping;
 import org.dows.pay.api.enums.PayMethods;
 import org.dows.pay.api.message.AlipayMessage;
+import org.dows.pay.entity.PayAllocation;
+import org.dows.pay.service.PayAllocationService;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +28,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Service
 public class AlipayOrderSettleHandler extends AbstractAlipayHandler {
+
+    private final PayAllocationService payAllocationService;
 
 
     /**
@@ -86,6 +90,10 @@ public class AlipayOrderSettleHandler extends AbstractAlipayHandler {
         String bizContent = payMessage.getBizContent();
 
         RoyaltyDetail royaltyDetail = new RoyaltyDetail();
+
+        PayAllocation payAllocation = PayAllocation.builder()
+                .build();
+        payAllocationService.updateById(payAllocation);
 
         log.info("业务响应:bizContent = {}", bizContent);
     }
