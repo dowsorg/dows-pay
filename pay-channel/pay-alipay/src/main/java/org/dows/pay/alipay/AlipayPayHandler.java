@@ -43,9 +43,6 @@ import java.util.*;
 @RequiredArgsConstructor
 @Service
 public class AlipayPayHandler extends AbstractAlipayHandler {
-
-    private final PayClientConfig payClientConfig;
-
     private final PayClientFactory payClientFactory;
 
     private final PayTransactionService payTransactionService;
@@ -152,10 +149,7 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
         }
         //获取key
         //调用SDK验证签名
-        PayClientProperties payClientProperties = payClientConfig.getClientConfigs().stream()
-                .filter(p -> p.getAppId().equalsIgnoreCase(appId))
-                .findFirst()
-                .orElse(null);
+        PayClientProperties payClientProperties = payClientFactory.getPayClientProperties(appId);
         if (payClientProperties != null) {
             String payCertPath = payClientProperties.getPayCertPath();
             boolean signVerified = AlipaySignature.rsaCertCheckV1(params, payCertPath, "utf-8", "RSA2");

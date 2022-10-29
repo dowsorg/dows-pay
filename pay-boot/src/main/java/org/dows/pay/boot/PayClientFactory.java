@@ -101,6 +101,14 @@ public class PayClientFactory {
         return alipayMsgClient;
     }
 
+    public PayClientProperties getPayClientProperties(String appId){
+        PayClientProperties payClientProperties = payClientConfig.getClientConfigs().stream()
+                .filter(p -> p.getAppId().equalsIgnoreCase(appId))
+                .findFirst()
+                .orElse(null);
+        return payClientProperties;
+    }
+
 
     private AlipayMsgClient registAlipayMsgClient(String appId) {
         PayClientProperties payClientProperties = PCM.get(appId + "@" + PayChannels.ALIPAY.name().toLowerCase());
