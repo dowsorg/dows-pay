@@ -3,20 +3,26 @@ package org.dows.pay.alipay;
 import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson.JSON;
 import com.alipay.api.AlipayApiException;
+import com.alipay.api.AlipayRequest;
 import com.alipay.api.domain.AlipayTradeAppPayModel;
 import com.alipay.api.internal.util.AlipaySignature;
+import com.alipay.api.msg.AlipayMsgClient;
 import com.alipay.api.request.AlipayTradeAppPayRequest;
 import com.alipay.api.response.AlipayTradeAppPayResponse;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dows.pay.api.PayEvent;
+import org.dows.pay.api.PayException;
 import org.dows.pay.api.PayRequest;
 import org.dows.pay.api.annotation.PayMapping;
 import org.dows.pay.api.enums.PayMethods;
 import org.dows.pay.api.event.OrderPaySuccessEvent;
 import org.dows.pay.api.message.AlipayMessage;
 import org.dows.pay.bo.PayTransactionBo;
+import org.dows.pay.boot.PayClientConfig;
+import org.dows.pay.boot.PayClientFactory;
+import org.dows.pay.boot.properties.PayClientProperties;
 import org.dows.pay.entity.PayChannel;
 import org.dows.pay.entity.PayTransaction;
 import org.dows.pay.service.PayTransactionService;
@@ -37,6 +43,10 @@ import java.util.*;
 @RequiredArgsConstructor
 @Service
 public class AlipayPayHandler extends AbstractAlipayHandler {
+
+    private final PayClientConfig payClientConfig;
+
+    private final PayClientFactory payClientFactory;
 
     private final PayTransactionService payTransactionService;
 
@@ -101,11 +111,19 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
      * 支付结果通知
      */
     @EventListener(value = {PayEvent.class})
-    public String onPaySuccessEvent(PayEvent<AlipayMessage> payEvent) throws AlipayApiException {
+    public void onPaySuccessEvent(PayEvent<AlipayMessage> payEvent) throws AlipayApiException, PayException, InterruptedException {
+        // 获取回调事件对应的应用ID
+        String appId = payEvent.getPayMessage().getAppId();
+        // 根据应用ID获取消息客户端
+        AlipayMsgClient alipayMsgClient = payClientFactory.getAlipayMsgClient(appId);
+        if (alipayMsgClient == null) {
+            throw new PayException("应用ID:" + appId + "没有配置消息客户端");
+        }
+
         Map<String, String> params = new HashMap<String, String>();
         //获取支付宝POST过来反馈信息
         String bizContent = payEvent.getPayMessage().getBizContent();
-        Map<String, String[]> requestParams = JSON.parseObject(bizContent,Map.class);
+        Map<String, String[]> requestParams = JSON.parseObject(bizContent, Map.class);
         log.error("支付宝回调开始 request{}: " + JSON.toJSONString(requestParams));
         for (Iterator<String> iter = requestParams.keySet().iterator(); iter.hasNext(); ) {
             String name = iter.next();
@@ -126,36 +144,53 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
                 .eq(PayTransaction::getOrderId, outTradeNo);
         PayTransaction payTransaction = payTransactionService.getOne(payTransactionWrapper);
         //支付成功或者失败 都告诉支付success
-        if(payTransaction.getStatus().equals(3) || payTransaction.getStatus().equals(4)){
-            return "success";
+        if (payTransaction.getStatus().equals(3) || payTransaction.getStatus().equals(4)) {
+
+            // 创建具体返回消息体
+            AlipayRequest alipayRequest = null;
+            alipayMsgClient.sendMessage(alipayRequest);
         }
         //获取key
         //调用SDK验证签名
-        boolean signVerified = AlipaySignature.rsaCertCheckV1(params, null, "utf-8", "RSA2");
-        //验证成功
-        if (!signVerified) {
-            log.error("###支付宝支付回调校验失败####");
-            return "fail";
+        PayClientProperties payClientProperties = payClientConfig.getClientConfigs().stream()
+                .filter(p -> p.getAppId().equalsIgnoreCase(appId))
+                .findFirst()
+                .orElse(null);
+        if (payClientProperties != null) {
+            String payCertPath = payClientProperties.getPayCertPath();
+            boolean signVerified = AlipaySignature.rsaCertCheckV1(params, payCertPath, "utf-8", "RSA2");
+            //验证成功
+            if (!signVerified) {
+                log.error("###支付宝支付回调校验失败####");
+                // 创建具体返回消息体
+                AlipayRequest alipayRequest = null;
+                alipayMsgClient.sendMessage(alipayRequest);
+            }
+            //修改订单状态
+            //支付宝交易号
+            log.error("支付宝回调更新状态参数:{}" + JSON.toJSONString(params));
+            String tradeStatus = params.get("trade_status");
+            // todo payTransaction 少外部订单号
+            if ("TRADE_SUCCESS".equals(tradeStatus)) {
+                payTransaction.setStatus(3);
+            } else {
+                payTransaction.setStatus(4);
+            }
+            payTransaction.setTransactionTime(new Date());
+            payTransactionService.updateById(payTransaction);
+            if (!params.get("trade_status").equals("TRADE_SUCCESS")) {//TRADE_CLOSED
+               // return "success";
+                AlipayRequest alipayRequest = null;
+                alipayMsgClient.sendMessage(alipayRequest);
+            }
+            // todo 是否需要作记录log？
+            OrderPaySuccessEvent orderPaySuccessEvent = new OrderPaySuccessEvent(null, outTradeNo, "alipay", new Date(), new Date());
+            applicationEventPublisher.publishEvent(orderPaySuccessEvent);
+            AlipayRequest alipayRequest = null;
+            alipayMsgClient.sendMessage(alipayRequest);
         }
-        //修改订单状态
-        //支付宝交易号
-        log.error("支付宝回调更新状态参数:{}" + JSON.toJSONString(params));
-        String tradeStatus = params.get("trade_status");
-        // todo payTransaction 少外部订单号
-        if("TRADE_SUCCESS".equals(tradeStatus)){
-            payTransaction.setStatus(3);
-        }else{
-            payTransaction.setStatus(4);
-        }
-        payTransaction.setTransactionTime(new Date());
-        payTransactionService.updateById(payTransaction);
-        if(!params.get("trade_status").equals("TRADE_SUCCESS")){//TRADE_CLOSED
-            return "success";
-        }
-        // todo 是否需要作记录log？
-        OrderPaySuccessEvent orderPaySuccessEvent = new OrderPaySuccessEvent(null,outTradeNo,"alipay",new Date(),new Date());
-        applicationEventPublisher.publishEvent(orderPaySuccessEvent);
-        return "success";
+        AlipayRequest alipayRequest = null;
+        alipayMsgClient.sendMessage(alipayRequest);
     }
 
 }

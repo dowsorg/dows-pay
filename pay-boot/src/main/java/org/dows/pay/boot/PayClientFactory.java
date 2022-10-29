@@ -8,6 +8,7 @@ import com.alipay.api.msg.AlipayMsgClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dows.pay.api.PayEvent;
+import org.dows.pay.api.PayException;
 import org.dows.pay.api.enums.PayChannels;
 import org.dows.pay.api.message.AlipayMessage;
 import org.dows.pay.boot.properties.PayClientProperties;
@@ -94,8 +95,14 @@ public class PayClientFactory {
         return client;
     }
 
+    public AlipayMsgClient getAlipayMsgClient(String appId) {
+        AlipayMsgClient alipayMsgClient = ALIPAY_MSG_CLIENT_MAP.get(appId);
 
-    public AlipayMsgClient registAlipayMsgClient(String appId) {
+        return alipayMsgClient;
+    }
+
+
+    private AlipayMsgClient registAlipayMsgClient(String appId) {
         PayClientProperties payClientProperties = PCM.get(appId + "@" + PayChannels.ALIPAY.name().toLowerCase());
         // 目标支付宝服务端地址，线上环境为 openchannel.alipay.com
         String serverHost = "openchannel.alipay.com";
