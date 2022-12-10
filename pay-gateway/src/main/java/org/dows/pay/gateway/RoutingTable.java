@@ -38,6 +38,8 @@ public class RoutingTable implements ApplicationContextAware {
                                 .payHandler(v)
                                 .method(m)
                                 .build();
+                        // dows.pay.isv.create.weixin
+                        // dows.pay.isv.create.alipay
                         String payMethodNamespace = payProxy.getPayMethodName() + "." + payProxy.getChannel();
                         payProxyMap.put(payMethodNamespace, payProxy);
                     });
