@@ -46,7 +46,7 @@
 
                 <configuration>
                     <includeSystemScope>true</includeSystemScope>
-                    <mainClass>org.dows.pay.PayApplication</mainClass>
+                    <mainClass>org.dows.goods.GoodsApplication</mainClass>
                     <!--<image>
                         <name>192.168.2.20/dows/${project.artifactId}</name>
                         &lt;!&ndash; 执行完build 自动push &ndash;&gt;
