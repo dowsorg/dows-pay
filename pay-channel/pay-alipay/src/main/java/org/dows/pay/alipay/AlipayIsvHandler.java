@@ -25,8 +25,9 @@ import org.dows.pay.api.enums.PayChannels;
 import org.dows.pay.api.enums.PayMethods;
 import org.dows.pay.api.message.AlipayMessage;
 import org.dows.pay.bo.IsvCreateBo;
-import org.dows.user.api.UserCompanyRequest;
 import org.dows.user.biz.UserCompanyBiz;
+import org.dows.user.biz.UserCompanyRequest;
+import org.dows.user.entity.UserCompany;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.util.IdGenerator;
@@ -103,8 +104,8 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
         UserCompanyRequest userCompanyRequest = UserCompanyRequest.builder()
                 .certNo(createMiniRequest.getCertNo())
                 .build();
-        Response responseUserCompany = userCompanyBiz.getOneUserCompany(userCompanyRequest);
-        if (responseUserCompany == null || responseUserCompany.getData() == null) {
+        UserCompany responseUserCompany = userCompanyBiz.getOneUserCompany(userCompanyRequest);
+        if (responseUserCompany == null) {
             userCompanyRequest.setCertNo(createMiniRequest.getCertNo());
             userCompanyRequest.setCompanyName(createMiniRequest.getCertName());
             userCompanyRequest.setLegalPerson(createMiniRequest.getLegalPersonalName());
