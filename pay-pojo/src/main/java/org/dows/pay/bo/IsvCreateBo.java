@@ -31,6 +31,10 @@ public class IsvCreateBo implements ChannelBizModel {
     @AlipayApiField(name = "app_name")
     private String appName;
 
+    // 营业执照号
+    @WeixinApiField(name = "")
+    @AlipayApiField(name = "cert_no")
+    private String certNo;
 
     // 营业执照
     @WeixinApiField(name = "")

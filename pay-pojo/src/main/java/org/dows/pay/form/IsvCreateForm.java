@@ -44,7 +44,9 @@ public class IsvCreateForm implements BizForm {
     @ApiModelProperty("申请应用名称")
     private String appName;
 
-
+    // 营业执照号码
+    @ApiModelProperty("营业执照号码")
+    private String certNo;
     // 营业执照
     @ApiModelProperty("营业执照")
     private String certName;
