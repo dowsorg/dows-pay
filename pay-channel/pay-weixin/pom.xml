@@ -11,11 +11,34 @@
 
 
     <dependencies>
-        <!--这里改为微信的-->
+        <!--微信SDK引入-->
         <dependency>
-            <groupId>com.alipay.sdk</groupId>
-            <artifactId>alipay-sdk-java</artifactId>
+            <groupId>com.github.wechatpay-apiv3</groupId>
+            <artifactId>wechatpay-java</artifactId>
+            <version>0.2.6</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.binarywang</groupId>
+            <artifactId>weixin-java-pay</artifactId>
+            <version>4.4.0</version>
+        </dependency>
+        <!--业务依赖引入-->
+        <dependency>
+            <groupId>org.dows.saas</groupId>
+            <artifactId>app-biz</artifactId>
+            <version>20220701-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.dows.cloud</groupId>
+            <artifactId>user-biz</artifactId>
+            <version>20220701-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.dows.saas</groupId>
+            <artifactId>pay-crud</artifactId>
+            <version>20220701-SNAPSHOT</version>
+        </dependency>
+
     </dependencies>
 
 </project>

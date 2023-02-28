@@ -5,6 +5,8 @@ import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.msg.AlipayMsgClient;
+import com.github.binarywang.wxpay.bean.result.BaseWxPayResult;
+import com.github.binarywang.wxpay.service.WxPayService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dows.pay.api.PayEvent;
@@ -39,7 +41,7 @@ public class PayClientFactory {
 
     private static final Map<String, AlipayClient> ALIPAY_CLIENT_MAP = new ConcurrentHashMap<>();
     private static final Map<String, AlipayMsgClient> ALIPAY_MSG_CLIENT_MAP = new ConcurrentHashMap<>();
-    private static final Map<String, AlipayClient> WEIXIN_CLIENT_MAP = new ConcurrentHashMap<>();
+    private static final Map<String, WxPayService> WEIXIN_CLIENT_MAP = new ConcurrentHashMap<>();
     // 事件发布
     private final ApplicationEventPublisher applicationEventPublisher;
     /**
@@ -195,16 +197,17 @@ public class PayClientFactory {
     }
 
 
-    public AlipayClient getWeixinClient(String appId) {
-        AlipayClient client = WEIXIN_CLIENT_MAP.get(appId);
+    public WxPayService getWeixinClient(String appId) {
+
+        WxPayService client = WEIXIN_CLIENT_MAP.get(appId);
         if (client != null) {
             return client;
         }
-        PayClientProperties payClientProperties = PCM.get(appId + "@" + PayChannels.ALIPAY.name().toLowerCase());
+        PayClientProperties payClientProperties = PCM.get(appId + "@" + PayChannels.WEIXIN.name().toLowerCase());
         if (payClientProperties.getCertModel() == 0) {
-            client = PayClientBuilder.buildClient(payClientProperties);
+            client = PayClientBuilder.buildWeixinClient(payClientProperties);
         } else if (payClientProperties.getCertModel() == 1) {
-            client = PayClientBuilder.buildCertClient(payClientProperties);
+            client = PayClientBuilder.buildCertWeixinClient(payClientProperties);
         }
         WEIXIN_CLIENT_MAP.put(appId, client);
         return client;
