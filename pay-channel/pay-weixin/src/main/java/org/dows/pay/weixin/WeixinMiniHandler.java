@@ -26,12 +26,12 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
      * alipay.open.mini.version.upload(小程序基于模板上传版本)
      */
     public void upoadMini() {
-
-        AlipayOpenMiniVersionUploadModel alipayOpenMiniVersionUploadModel = new AlipayOpenMiniVersionUploadModel();
+        //todo 待实现业务逻辑
+       /* AlipayOpenMiniVersionUploadModel alipayOpenMiniVersionUploadModel = new AlipayOpenMiniVersionUploadModel();
         AlipayOpenMiniVersionUploadRequest request = new AlipayOpenMiniVersionUploadRequest();
         request.setBizModel(alipayOpenMiniVersionUploadModel);
         try {
-            AlipayOpenMiniVersionUploadResponse response = getWeixinClient("").execute(request);
+           // AlipayOpenMiniVersionUploadResponse response = getWeixinClient("").execute(request);
             if (response.isSuccess()) {
                 System.out.println("调用成功");
             } else {
@@ -39,7 +39,7 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
             }
         } catch (AlipayApiException e) {
             throw new RuntimeException(e);
-        }
+        }*/
 
     }
 
@@ -62,8 +62,8 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
      * alipay.open.mini.version.online(小程序上架)
      */
     public void onlineMini() {
-
-        AlipayOpenMiniVersionOnlineModel alipayOpenMiniVersionOnlineModel = new AlipayOpenMiniVersionOnlineModel();
+        //todo 待实现业务逻辑
+       /* AlipayOpenMiniVersionOnlineModel alipayOpenMiniVersionOnlineModel = new AlipayOpenMiniVersionOnlineModel();
         AlipayOpenMiniVersionOnlineRequest request = new AlipayOpenMiniVersionOnlineRequest();
         request.setBizModel(alipayOpenMiniVersionOnlineModel);
 
@@ -77,7 +77,7 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
             System.out.println("调用成功");
         } else {
             System.out.println("调用失败");
-        }
+        }*/
     }
 
 

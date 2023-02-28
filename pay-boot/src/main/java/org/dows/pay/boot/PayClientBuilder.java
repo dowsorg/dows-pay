@@ -1,7 +1,14 @@
 package org.dows.pay.boot;
 
 import com.alipay.api.*;
+import com.github.binarywang.wxpay.bean.result.BaseWxPayResult;
+import com.github.binarywang.wxpay.config.WxPayConfig;
+import com.github.binarywang.wxpay.service.WxPayService;
+import com.github.binarywang.wxpay.service.impl.BaseWxPayServiceImpl;
+import com.github.binarywang.wxpay.service.impl.WxPayServiceImpl;
+import org.apache.commons.lang3.StringUtils;
 import org.dows.pay.boot.properties.PayClientProperties;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 
@@ -73,32 +80,59 @@ public class PayClientBuilder {
     /**
      * 普通公钥方式
      */
-    public static AlipayClient buildWeixinClient(PayClientProperties config) {
-        AlipayClient alipayClient = new DefaultAlipayClient(
-                config.getServiceUrl(),
-                config.getAppId(),
-                config.getPrivateKey(),
-                config.getFormat(),
-                config.getCharset(),
-                config.getPayPublicKey(),
-                config.getSignType());
-        return alipayClient;
+    public static WxPayService buildWeixinClient(PayClientProperties config) {
+        WxPayConfig wxPayConfig = new WxPayConfig();
+        //设置应用公众号ID
+        wxPayConfig.setAppId(StringUtils.trimToNull(config.getAppId()));
+        //设置商户号ID
+        wxPayConfig.setMchId(StringUtils.trimToNull(config.getMchId()));
+        //设置商户号KEY;
+        wxPayConfig.setMchKey(StringUtils.trimToNull(config.getMchKey()));
+        //设置应用公众号子ID
+        wxPayConfig.setSubAppId(StringUtils.trimToNull(config.getSubAppId()));
+        //设置商户号子ID
+        wxPayConfig.setSubMchId(StringUtils.trimToNull(config.getSubMchId()));
+        //设置KEYPATH;
+        wxPayConfig.setKeyPath(StringUtils.trimToNull(config.getKeyPath()));
+        //以下是apiv3以及支付分相关
+        wxPayConfig.setServiceId(StringUtils.trimToNull(config.getServiceId()));
+        wxPayConfig.setPayScoreNotifyUrl(StringUtils.trimToNull(config.getPayScoreNotifyUrl()));
+        //设置私钥路径
+        wxPayConfig.setPrivateKeyPath(StringUtils.trimToNull(config.getPrivateKeyPath()));
+        //设置私钥证书路径
+        wxPayConfig.setPrivateCertPath(StringUtils.trimToNull(config.getPrivateCertPath()));
+        //设置私钥证书序列号
+        wxPayConfig.setCertSerialNo(StringUtils.trimToNull(config.getCertSerialNo()));
+        //设置APIV3KEY
+        wxPayConfig.setApiV3Key(StringUtils.trimToNull(config.getApiV3Key()));
+        WxPayService wxPayService  = new WxPayServiceImpl();
+        wxPayService.setConfig(wxPayConfig);
+
+        return wxPayService;
     }
 
+    /**
+     * 证书方式
+     */
 
-    public static AlipayClient buildCertWeixinClient(PayClientProperties alipayProperties) throws AlipayApiException {
-        CertAlipayRequest certAlipayRequest = new CertAlipayRequest();
-        certAlipayRequest.setAppId(alipayProperties.getAppId());
-        certAlipayRequest.setCertPath(alipayProperties.getAppCertPath());
-        certAlipayRequest.setAlipayPublicCertPath(alipayProperties.getPayCertPath());
-        certAlipayRequest.setRootCertPath(alipayProperties.getPayRootCertPath());
-        certAlipayRequest.setServerUrl(alipayProperties.getServiceUrl());
-        certAlipayRequest.setPrivateKey(alipayProperties.getPrivateKey());
-        certAlipayRequest.setFormat(alipayProperties.getFormat());
-        certAlipayRequest.setCharset(alipayProperties.getCharset());
-        certAlipayRequest.setSignType(alipayProperties.getSignType());
-        AlipayClient alipayClient = new DefaultAlipayClient(certAlipayRequest);
-        return alipayClient;
+    public static WxPayService buildCertWeixinClient(PayClientProperties config) {
+        WxPayConfig wxPayConfig = new WxPayConfig();
+        wxPayConfig.setAppId(StringUtils.trimToNull(config.getAppId()));
+        wxPayConfig.setMchId(StringUtils.trimToNull(config.getMchId()));
+        wxPayConfig.setMchKey(StringUtils.trimToNull(config.getMchKey()));
+        wxPayConfig.setSubAppId(StringUtils.trimToNull(config.getSubAppId()));
+        wxPayConfig.setSubMchId(StringUtils.trimToNull(config.getSubMchId()));
+        wxPayConfig.setKeyPath(StringUtils.trimToNull(config.getKeyPath()));
+        //以下是apiv3以及支付分相关
+        wxPayConfig.setServiceId(StringUtils.trimToNull(config.getServiceId()));
+        wxPayConfig.setPayScoreNotifyUrl(StringUtils.trimToNull(config.getPayScoreNotifyUrl()));
+        wxPayConfig.setPrivateKeyPath(StringUtils.trimToNull(config.getPrivateKeyPath()));
+        wxPayConfig.setPrivateCertPath(StringUtils.trimToNull(config.getPrivateCertPath()));
+        wxPayConfig.setCertSerialNo(StringUtils.trimToNull(config.getCertSerialNo()));
+        wxPayConfig.setApiV3Key(StringUtils.trimToNull(config.getApiV3Key()));
+        WxPayService wxPayService  = new WxPayServiceImpl();
+        wxPayService.setConfig(wxPayConfig);
+        return wxPayService;
     }
 
 
