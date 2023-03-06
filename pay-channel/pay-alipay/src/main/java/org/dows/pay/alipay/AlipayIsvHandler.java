@@ -71,8 +71,6 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
                 .platform(PayChannels.ALIPAY.name())
                 .contactName(isvCreateBo.getContactName())
                 .contactPhone(isvCreateBo.getContactPhone())
-                .certNo(isvCreateBo.getCertNo())
-                .certName(isvCreateBo.getCertName())
                 .build();
         Response responseAppApply = appApplyBiz.getOneAppApply(appApply);
         if (responseAppApply == null || responseAppApply.getData() == null || ((AppApply)responseAppApply.getData()).getPlatformOrderNo() == null) {
@@ -145,7 +143,7 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
         request.setBizModel(alipayOpenMiniIsvQueryModel);
         AlipayOpenMiniIsvQueryResponse response = null;
         try {
-            response = getAlipayClient(payRequest.getAppId()).certificateExecute(request);
+            response = getAlipayClient(payRequest.getAppId()).execute(request);
         } catch (AlipayApiException e) {
             throw new RuntimeException(e);
         }

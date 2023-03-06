@@ -1,11 +1,21 @@
 package org.dows.pay.boot;
 
+import cn.binarywang.wx.miniapp.config.WxMaConfig;
+import cn.binarywang.wx.miniapp.config.impl.WxMaDefaultConfigImpl;
 import com.alipay.api.*;
 import com.github.binarywang.wxpay.bean.result.BaseWxPayResult;
 import com.github.binarywang.wxpay.config.WxPayConfig;
 import com.github.binarywang.wxpay.service.WxPayService;
 import com.github.binarywang.wxpay.service.impl.BaseWxPayServiceImpl;
 import com.github.binarywang.wxpay.service.impl.WxPayServiceImpl;
+import me.chanjar.weixin.open.api.WxOpenComponentService;
+import me.chanjar.weixin.open.api.WxOpenConfigStorage;
+import me.chanjar.weixin.open.api.WxOpenMaService;
+import me.chanjar.weixin.open.api.WxOpenService;
+import me.chanjar.weixin.open.api.impl.WxOpenInMemoryConfigStorage;
+import me.chanjar.weixin.open.api.impl.WxOpenMaServiceImpl;
+import me.chanjar.weixin.open.api.impl.WxOpenServiceAbstractImpl;
+import me.chanjar.weixin.open.api.impl.WxOpenServiceImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.dows.pay.boot.properties.PayClientProperties;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -134,6 +144,30 @@ public class PayClientBuilder {
         wxPayService.setConfig(wxPayConfig);
         return wxPayService;
     }
+    /**
+     * 微信开放平台
+     */
+    public static WxOpenService buildWxOpenClient(PayClientProperties config) {
+        WxOpenConfigStorage wxOpenConfigStorage = new WxOpenInMemoryConfigStorage();
+        wxOpenConfigStorage.setComponentAppId(config.getAppId());
+        wxOpenConfigStorage.setComponentAesKey(config.getAesKey());
+        wxOpenConfigStorage.setComponentAppSecret(config.getSecret());
+        wxOpenConfigStorage.setComponentToken(config.getToken());
+        WxOpenService wxOpenService  = new WxOpenServiceImpl();
+        wxOpenService.setWxOpenConfigStorage(wxOpenConfigStorage);
 
+        return wxOpenService;
+    }
+
+    /**
+     * 微信开放平台-管理二级商户相关
+     */
+    public static WxOpenMaService buildWxOpenMaClient(PayClientProperties config) {
+        WxMaConfig wxMaConfig = new WxMaDefaultConfigImpl();
+        WxOpenService wxOpenService = buildWxOpenClient(config);
+        WxOpenMaService wxOpenMaService  = new WxOpenMaServiceImpl(wxOpenService.getWxOpenComponentService(),config.getAppId(), wxMaConfig);
+
+        return wxOpenMaService;
+    }
 
 }

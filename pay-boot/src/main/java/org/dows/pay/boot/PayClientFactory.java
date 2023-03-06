@@ -9,6 +9,8 @@ import com.github.binarywang.wxpay.bean.result.BaseWxPayResult;
 import com.github.binarywang.wxpay.service.WxPayService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import me.chanjar.weixin.open.api.WxOpenMaService;
+import me.chanjar.weixin.open.api.WxOpenService;
 import org.dows.pay.api.PayEvent;
 import org.dows.pay.api.PayException;
 import org.dows.pay.api.enums.PayChannels;
@@ -38,10 +40,11 @@ public class PayClientFactory {
 
     private final PayClientConfig payClientConfig;
     private static final Map<String, PayClientProperties> PCM = new HashMap<>();
-
     private static final Map<String, AlipayClient> ALIPAY_CLIENT_MAP = new ConcurrentHashMap<>();
     private static final Map<String, AlipayMsgClient> ALIPAY_MSG_CLIENT_MAP = new ConcurrentHashMap<>();
     private static final Map<String, WxPayService> WEIXIN_CLIENT_MAP = new ConcurrentHashMap<>();
+    private static final Map<String, WxOpenService> WEIXIN_OPEN_MAP = new ConcurrentHashMap<>();
+    private static final Map<String, WxOpenMaService> WEIXIN_OPEN_MA_MAP = new ConcurrentHashMap<>();
     // 事件发布
     private final ApplicationEventPublisher applicationEventPublisher;
     /**
@@ -97,12 +100,14 @@ public class PayClientFactory {
         return client;
     }
 
+
+
+
     public AlipayMsgClient getAlipayMsgClient(String appId) {
         AlipayMsgClient alipayMsgClient = ALIPAY_MSG_CLIENT_MAP.get(appId);
 
         return alipayMsgClient;
     }
-
     public PayClientProperties getPayClientProperties(String appId){
         PayClientProperties payClientProperties = payClientConfig.getClientConfigs().stream()
                 .filter(p -> p.getAppId().equalsIgnoreCase(appId))
@@ -209,10 +214,38 @@ public class PayClientFactory {
         } else if (payClientProperties.getCertModel() == 1) {
             client = PayClientBuilder.buildCertWeixinClient(payClientProperties);
         }
+
         WEIXIN_CLIENT_MAP.put(appId, client);
         return client;
     }
 
+    public WxOpenService getWxOpenClient(String appId) {
+
+        WxOpenService client = WEIXIN_OPEN_MAP.get(appId);
+        if (client != null) {
+            return client;
+        }
+        PayClientProperties payClientProperties = PCM.get(appId + "@" + PayChannels.WEIXIN.name().toLowerCase());
+        if (payClientProperties.getCertModel() == 2) {
+            client = PayClientBuilder.buildWxOpenClient(payClientProperties);
+        }
+        WEIXIN_OPEN_MAP.put(appId, client);
+        return client;
+    }
+
+    public WxOpenMaService getWxOpenMaClient(String appId) {
+
+        WxOpenMaService client = WEIXIN_OPEN_MA_MAP.get(appId);
+        if (client != null) {
+            return client;
+        }
+        PayClientProperties payClientProperties = PCM.get(appId + "@" + PayChannels.WEIXIN.name().toLowerCase());
+        if (payClientProperties.getCertModel() == 3) {
+            client = PayClientBuilder.buildWxOpenMaClient(payClientProperties);
+        }
+        WEIXIN_OPEN_MA_MAP.put(appId, client);
+        return client;
+    }
     public static void main(String[] args) {
         try {
             System.out.println(AlipaySignature.getCertSN("E:\\workspaces\\java\\projects\\dows\\dows-pay\\pay-boot\\src\\main\\resources\\alipay\\appCertPublicKey_2021003129694075.crt"));

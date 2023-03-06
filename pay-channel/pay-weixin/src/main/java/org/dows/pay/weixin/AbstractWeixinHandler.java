@@ -3,6 +3,8 @@ package org.dows.pay.weixin;
 import com.alipay.api.internal.mapping.ApiField;
 import com.github.binarywang.wxpay.bean.request.BaseWxPayRequest;
 import com.github.binarywang.wxpay.service.WxPayService;
+import me.chanjar.weixin.open.api.WxOpenMaService;
+import me.chanjar.weixin.open.api.WxOpenService;
 import org.dows.pay.api.ChannelBizModel;
 import org.dows.pay.api.PayHandler;
 import org.dows.pay.api.PayRequest;
@@ -33,6 +35,30 @@ public abstract class AbstractWeixinHandler implements PayHandler {
         return payClientFactory.getWeixinClient(appId);
 
     }
+    /**
+     * todo 微信小程序
+     *
+     * @param appId
+     * @return
+     */
+    protected WxOpenService getWxOpenClient(String appId) {
+
+        return payClientFactory.getWxOpenClient(appId);
+
+    }
+
+    /**
+     * todo 微信小程序-服务商管理二级商户
+     *
+     * @param appId
+     * @return
+     */
+    protected WxOpenMaService getWxOpenMaClient(String appId) {
+
+        return payClientFactory.getWxOpenMaClient(appId);
+
+    }
+
     /**
      * 自动填充接口映射值
      *
