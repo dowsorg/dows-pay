@@ -151,7 +151,7 @@ public class PayClientBuilder {
         WxOpenConfigStorage wxOpenConfigStorage = new WxOpenInMemoryConfigStorage();
         wxOpenConfigStorage.setComponentAppId(config.getAppId());
         wxOpenConfigStorage.setComponentAesKey(config.getAesKey());
-        wxOpenConfigStorage.setComponentAppSecret(config.getSecret());
+        wxOpenConfigStorage.setComponentAppSecret(config.getAppSecret());
         wxOpenConfigStorage.setComponentToken(config.getToken());
         WxOpenService wxOpenService  = new WxOpenServiceImpl();
         wxOpenService.setWxOpenConfigStorage(wxOpenConfigStorage);

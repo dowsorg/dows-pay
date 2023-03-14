@@ -9,8 +9,10 @@ import com.github.binarywang.wxpay.bean.result.BaseWxPayResult;
 import com.github.binarywang.wxpay.service.WxPayService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import me.chanjar.weixin.open.api.WxOpenConfigStorage;
 import me.chanjar.weixin.open.api.WxOpenMaService;
 import me.chanjar.weixin.open.api.WxOpenService;
+import me.chanjar.weixin.open.api.impl.WxOpenInMemoryConfigStorage;
 import org.dows.pay.api.PayEvent;
 import org.dows.pay.api.PayException;
 import org.dows.pay.api.enums.PayChannels;
@@ -72,6 +74,7 @@ public class PayClientFactory {
         PCM.putAll(payClientConfig.getClientConfigs().stream()
                 .filter(pc -> StrUtil.isNotBlank(pc.getAppId()))
                 .collect(Collectors.toMap(PayClientProperties::getPayId, Function.identity())));
+
     }
 
     /**
@@ -226,12 +229,14 @@ public class PayClientFactory {
             return client;
         }
         PayClientProperties payClientProperties = PCM.get(appId + "@" + PayChannels.WEIXIN.name().toLowerCase());
-        if (payClientProperties.getCertModel() == 2) {
+        if (payClientProperties.getCertModel() == 1) {
             client = PayClientBuilder.buildWxOpenClient(payClientProperties);
         }
         WEIXIN_OPEN_MAP.put(appId, client);
         return client;
     }
+
+
 
     public WxOpenMaService getWxOpenMaClient(String appId) {
 

@@ -15,6 +15,9 @@ import org.dows.pay.api.annotation.PayMapping;
 import org.dows.pay.api.enums.PayMethods;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.util.Map;
+
 /**
  * 小程序相关业务功能
  */
@@ -84,5 +87,23 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
         return  response;
     }
 
-
+    /**
+     * 小程序二维码查看
+     * https://opendocs.alipay.com/mini/03l21p
+     * alipay.open.mini.version.online(小程序上架)
+     */
+    public File getQrcode(PayRequest payRequest) {
+        //todo 待实现业务逻辑
+        File response = null;
+        try {
+            response = this.getWxOpenMaClient
+                    (payRequest.getAppId()).getTestQrcode(
+                            payRequest.getBizModel().getWeixinFeilds().get("pagePath").toString(),
+                            GSON.fromJson(payRequest.getBizModel().getWeixinFeilds().get("params").toString(), Map.class)
+                    );
+        }catch (WxErrorException e) {
+            e.printStackTrace();
+        }
+        return  response;
+    }
 }

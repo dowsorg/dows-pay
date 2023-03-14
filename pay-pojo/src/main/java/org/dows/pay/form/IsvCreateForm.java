@@ -65,4 +65,17 @@ public class IsvCreateForm implements BizForm {
     @ApiModelProperty("外部申请单号")
     private String outOrderNo;
 
+    /********************************微信创建小程序START**********************************/
+    // 企业代码
+    @ApiModelProperty("企业代码")
+    private String certNo;
+    // 营业执照类型
+    @ApiModelProperty("营业执照类型")
+    private String certType;
+    // 法人微信号
+    @ApiModelProperty("法人微信号")
+    private String legalPersonalWechat;
+
+    /*********************************微信创建小程序END*************************/
+
 }

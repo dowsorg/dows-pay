@@ -154,7 +154,7 @@ public class PayClientProperties {
     /**
      * 设置微信开放平台的app secret.
      */
-    private String secret;
+    private String appSecret;
 
     /**
      * 设置微信开放平台的token.

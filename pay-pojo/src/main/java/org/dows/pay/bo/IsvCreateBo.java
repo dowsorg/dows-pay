@@ -1,5 +1,6 @@
 package org.dows.pay.bo;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.dows.pay.api.ChannelBizModel;
 import org.dows.pay.api.annotation.AlipayApiField;
@@ -21,40 +22,53 @@ import org.dows.pay.api.annotation.WeixinApiField;
 public class IsvCreateBo implements ChannelBizModel {
 
     // 账号
-    @WeixinApiField(name = "wxaccount")
+    @WeixinApiField(name = "wx_account")
     @AlipayApiField(name = "alipay_account")
     private String account;
 
 
     // 应用名称
-    @WeixinApiField(name = "")
+    @WeixinApiField(name = "app_name")
     @AlipayApiField(name = "app_name")
     private String appName;
 
 
     // 营业执照
-    @WeixinApiField(name = "")
+    @WeixinApiField(name = "name")
     @AlipayApiField(name = "cert_name")
     private String certName;
+    // 营业执照类型
+    @WeixinApiField(name = "code_type")
+    @AlipayApiField(name = "code_type")
+    private String certType;
 
     // 联系人
-    @WeixinApiField(name = "")
+    @WeixinApiField(name = "contact_name")
     @AlipayApiField(name = "contact_name")
     private String contactName;
 
     // 联系电话
-    @WeixinApiField(name = "")
+    @WeixinApiField(name = "component_phone")
     @AlipayApiField(name = "contact_phone")
     private String contactPhone;
 
     // 法人名
-    @WeixinApiField(name = "")
+    @WeixinApiField(name = "legal_persona_name")
     @AlipayApiField(name = "legal_personal_name")
     private String legalPersonalName;
 
     // 外部申请单号
-    @WeixinApiField(name = "")
+    @WeixinApiField(name = "out_order_no")
     @AlipayApiField(name = "out_order_no")
     private String outOrderNo;
 
+    // 法人微信号
+    @WeixinApiField(name = "legal_persona_wechat")
+    @AlipayApiField(name = "legal_persona_wechat")
+    private String legalPersonalWechat;
+
+    // 证件类型
+    @WeixinApiField(name = "code")
+    @AlipayApiField(name = "cert_no")
+    private String certNo;
 }

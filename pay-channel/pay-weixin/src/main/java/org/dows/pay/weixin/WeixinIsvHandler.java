@@ -37,10 +37,7 @@ import org.dows.app.api.AppApplyRequest;
 import org.dows.app.biz.AppApplyBiz;
 import org.dows.app.entity.AppApply;
 import org.dows.framework.api.Response;
-import org.dows.pay.api.PayEvent;
-import org.dows.pay.api.PayHandler;
-import org.dows.pay.api.PayMessage;
-import org.dows.pay.api.PayRequest;
+import org.dows.pay.api.*;
 import org.dows.pay.api.annotation.PayMapping;
 import org.dows.pay.api.enums.PayChannels;
 import org.dows.pay.api.enums.PayMethods;
@@ -57,6 +54,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.IdGenerator;
 import org.springframework.util.SimpleIdGenerator;
 
+import java.lang.reflect.Field;
+import java.util.Map;
 import java.util.UUID;
 
 @Slf4j
@@ -177,13 +176,15 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
      */
     @PayMapping(method = PayMethods.ISV_CREATE)
     public WxOpenResult fastRegisterApp(PayRequest payRequest) throws WxErrorException {
+        IsvCreateBo isvCreateBo = (IsvCreateBo)payRequest.getBizModel();
          WxOpenResult response = this.getWxOpenClient(payRequest.getAppId()).getWxOpenComponentService().fastRegisterWeapp(
-                 payRequest.getBizModel().getWeixinFeilds().get("name").toString()
-                ,payRequest.getBizModel().getWeixinFeilds().get("code").toString()
-                ,payRequest.getBizModel().getWeixinFeilds().get("codeType").toString()
-                ,payRequest.getBizModel().getWeixinFeilds().get("legalPersonaWechat").toString()
-                ,payRequest.getBizModel().getWeixinFeilds().get("legalPersonaName").toString()
-                ,payRequest.getBizModel().getWeixinFeilds().get("componentPhone").toString());
+                 isvCreateBo.getCertName()
+                ,isvCreateBo.getCertNo()
+                ,isvCreateBo.getCertType()
+                ,isvCreateBo.getLegalPersonalWechat()
+                ,isvCreateBo.getLegalPersonalName()
+                ,isvCreateBo.getContactPhone());
+
         return response;
     }
 
