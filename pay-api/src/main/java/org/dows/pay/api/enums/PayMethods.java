@@ -55,6 +55,17 @@ public enum PayMethods {
 
     // 支付交易相关
     TRADE_ORDER_PAY("dows.trade.order.pay", "", "交易订单支付"),
+    TRADE_COMBINE_ORDER_PAY("dows.trade.order.combine.pay", "", "合单交易订单支付"),
+    TRADE_QUERY_ORDER("dows.trade.order.query.pay", "", "查询支付订单结果"),
+    TRADE_COMBINE_QUERY_ORDER("dows.trade.order.query.combine.pay", "", "查询合并支付订单结果"),
+    TRADE_CLOSE_ORDER("dows.trade.order.close.pay", "", "关闭支付订单结果"),
+    TRADE_COMBINE_CLOSE_ORDER("dows.trade.order.close.combine.pay", "", "关闭合并支付订单结果"),
+    TRADE_REFUNDS_ORDER("dows.trade.order.refunds.pay", "", "申请退款"),
+    TRADE_REFUNDS_QUERY_ORDER("dows.trade.order.refunds.query.pay", "", "申请退款查询"),
+    TRADE_SUB_WITHDRAW_APPLY("dows.trade.order.sub.withdraw.apply", "", "二级商户提现申请"),
+    TRADE_SUB_WITHDRAW_QUERY_APPLY("dows.trade.order.sub.withdraw.query.apply", "", "二级商户提现查询"),
+    TRADE_SP_WITHDRAW_APPLY("dows.trade.order.sp.withdraw.apply", "", "平台提现申请"),
+    TRADE_SP_WITHDRAW_QUERY_APPLY("dows.trade.order.sp.withdraw.query.apply", "", "平台提现申请查询"),
     ;
 
     @Getter

@@ -11,11 +11,10 @@ import com.alipay.api.request.AlipayTradeAppPayRequest;
 import com.alipay.api.response.AlipayTradeAppPayResponse;
 import com.alipay.service.schema.util.StringUtil;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
-import com.github.binarywang.wxpay.bean.ecommerce.FinishOrderRequest;
-import com.github.binarywang.wxpay.bean.ecommerce.PartnerTransactionsRequest;
-import com.github.binarywang.wxpay.bean.ecommerce.TransactionsResult;
+import com.github.binarywang.wxpay.bean.ecommerce.*;
 import com.github.binarywang.wxpay.bean.order.WxPayMpOrderResult;
 import com.github.binarywang.wxpay.bean.request.WxPayUnifiedOrderRequest;
+import com.github.binarywang.wxpay.bean.result.enums.TradeTypeEnum;
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.github.binarywang.wxpay.service.WxPayService;
 import com.google.gson.Gson;
@@ -61,13 +60,13 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
     private static final Gson GSON = new GsonBuilder().create();
 
     /**
-     * 去支付
+     * 单笔支付
      *
      * @param payRequest
      * @return
      */
     @PayMapping(method = PayMethods.TRADE_ORDER_PAY)
-    public void toPay(PayRequest payRequest) {
+    public String toPay(PayRequest payRequest) {
         //先创建交易订单
         UUID uuid = idGenerator.generateId();
         PayTransactionBo payTransactionBo = (PayTransactionBo)payRequest.getBizModel();
@@ -78,10 +77,10 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
         payTransactionService.save(payTransaction);
         PartnerTransactionsRequest partnerTransactionsRequest =  GSON.fromJson
                 (GSON.toJson(payRequest.getBizModel().getWeixinFeilds()), PartnerTransactionsRequest.class);
-
+        String result = "下单异常!";
         TransactionsResult transactionsResult = new TransactionsResult();
         try {
-            String url = this.getWeixinClient(payRequest.getAppId()).getPayBaseUrl();//
+            String url = this.getWeixinClient(payRequest.getAppId()).getPayBaseUrl()+ TradeTypeEnum.NATIVE.getPartnerUrl();//
             String response = this.getWeixinClient(payRequest.getAppId()).postV3(url, GSON.toJson(partnerTransactionsRequest));
             GSON.fromJson(response, TransactionsResult.class);
         } catch ( WxPayException e) {
@@ -96,6 +95,7 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
                     .status(1) //下单成功
                     .build();
             payTransactionService.updateById(updatePayTransaction);
+            result =  transactionsResult.getCodeUrl();
         } else {
             //todo 失败逻辑
             PayTransaction updatePayTransaction = PayTransaction.builder()
@@ -105,10 +105,263 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
             payTransactionService.updateById(updatePayTransaction);
             throw new RuntimeException("调用失败");
         }
+        return  result;
+    }
+    /**
+     * 合单支付
+     *
+     * @param payRequest
+     * @return
+     */
+    @PayMapping(method = PayMethods.TRADE_COMBINE_ORDER_PAY)
+    public String toCombinePay(PayRequest payRequest) {
+        //先创建交易订单
+        UUID uuid = idGenerator.generateId();
+        PayTransactionBo payTransactionBo = (PayTransactionBo)payRequest.getBizModel();
+        PayTransaction payTransaction = BeanUtil.copyProperties(payTransactionBo, PayTransaction.class);
+        payTransaction.setPayChannel(payRequest.getChannel());
+        payTransaction.setTransactionNo(uuid.toString());
+        payTransaction.setAppId(payRequest.getAppId());
+        payTransactionService.save(payTransaction);
+        CombineTransactionsRequest combineTransactionsRequest =  GSON.fromJson
+                (GSON.toJson(payRequest.getBizModel().getWeixinFeilds()), CombineTransactionsRequest.class);
+
+        TransactionsResult transactionsResult = new TransactionsResult();
+        String result = "订单异常!";
+        try {
+            String url = this.getWeixinClient(payRequest.getAppId()).getPayBaseUrl()+ TradeTypeEnum.NATIVE.getCombineUrl();//
+            String response = this.getWeixinClient(payRequest.getAppId()).postV3(url, GSON.toJson(combineTransactionsRequest));
+            GSON.fromJson(response, TransactionsResult.class);
+        } catch ( WxPayException e) {
+            throw new RuntimeException(e);
+        }
+        if (!StringUtil.isEmpty(transactionsResult.getPrepayId())){
+            System.out.println("调用成功");
+            // todo 记录 pay_transaction表，可能有多次（失败），但只有一次是成功的
+            //下单成功
+            PayTransaction updatePayTransaction = PayTransaction.builder()
+                    .id(payTransaction.getId())
+                    .status(1) //下单成功
+                    .build();
+            payTransactionService.updateById(updatePayTransaction);
+            result = transactionsResult.getCodeUrl();
+        } else {
+            //todo 失败逻辑
+            PayTransaction updatePayTransaction = PayTransaction.builder()
+                    .id(payTransaction.getId())
+                    .status(2) //下单失败
+                    .build();
+            payTransactionService.updateById(updatePayTransaction);
+            throw new RuntimeException("调用失败");
+        }
+        return result;
+    }
+    /**
+     * 查询单笔订单
+     *
+     * @param payRequest
+     * @return
+     */
+    @PayMapping(method = PayMethods.TRADE_QUERY_ORDER)
+    public PartnerTransactionsResult queryOrder(PayRequest payRequest) {
+        String baseUrl = this.getWeixinClient(payRequest.getAppId()).getPayBaseUrl();
+        PartnerTransactionsQueryRequest request = GSON.fromJson
+                (GSON.toJson(payRequest.getBizModel().getWeixinFeilds()), PartnerTransactionsQueryRequest.class);
+        String url = String.format("%s/v3/pay/partner/transactions/out-trade-no/%s", baseUrl, request.getOutTradeNo());
+        if (Objects.isNull(request.getOutTradeNo())) {
+            url = String.format("%s/v3/pay/partner/transactions/id/%s", baseUrl, request.getTransactionId());
+        }
+        String response="";
+        try{
+            String query = String.format("?sp_mchid=%s&sub_mchid=%s", request.getSpMchid(), request.getSubMchid());
+            response = this.getWeixinClient(payRequest.getAppId()).getV3(url + query);
+        }catch (WxPayException e){
+            throw new RuntimeException(e);
+        }
+        return GSON.fromJson(response, PartnerTransactionsResult.class);
+    }
+    /**
+     * 查询合并订单
+     *
+     * @param payRequest
+     * @return
+     */
+    @PayMapping(method = PayMethods.TRADE_COMBINE_QUERY_ORDER)
+    public CombineTransactionsResult queryCombineOrder(PayRequest payRequest) {
+        String baseUrl = this.getWeixinClient(payRequest.getAppId()).getPayBaseUrl();
+        CombineTransactionsRequest request = GSON.fromJson
+                (GSON.toJson(payRequest.getBizModel().getWeixinFeilds()), CombineTransactionsRequest.class);
+        String url = String.format("%s/v3/combine-transactions/out-trade-no/%s", baseUrl, request.getCombineOutTradeNo());
+        String response = "";
+        try{
+            response = this.getWeixinClient(payRequest.getAppId()).getV3(url);
+        }catch (WxPayException e){
+            throw new RuntimeException(e);
+        }
+        return GSON.fromJson(response, CombineTransactionsResult.class);
     }
 
+    /**
+     * 关闭单笔订单
+     *
+     * @param payRequest
+     * @return
+     */
+    @PayMapping(method = PayMethods.TRADE_CLOSE_ORDER)
+    public String closeOrder(PayRequest payRequest) {
+        PartnerTransactionsQueryRequest request = GSON.fromJson
+                (GSON.toJson(payRequest.getBizModel().getWeixinFeilds()), PartnerTransactionsQueryRequest.class);
+        String baseUrl = this.getWeixinClient(payRequest.getAppId()).getPayBaseUrl();
+        String url = String.format("%s/v3/pay/partner/transactions/out-trade-no/%s/close", baseUrl, request.getOutTradeNo());
+        String response ="";
+        try{
+            response = this.getWeixinClient(payRequest.getAppId()).postV3(url, GSON.toJson(request));
+        }catch (WxPayException e){
+            throw new RuntimeException(e);
+        }
+        return response;
+    }
+    /**
+     * 关闭合并订单
+     *
+     * @param payRequest
+     * @return
+     */
+    @PayMapping(method = PayMethods.TRADE_COMBINE_CLOSE_ORDER)
+    public String closeCombineOrder(PayRequest payRequest) {
+        String baseUrl = this.getWeixinClient(payRequest.getAppId()).getPayBaseUrl();
+        CombineTransactionsRequest request = GSON.fromJson
+                (GSON.toJson(payRequest.getBizModel().getWeixinFeilds()), CombineTransactionsRequest.class);
+        String url = String.format("%s/v3/combine-transactions/out-trade-no/%s/close", baseUrl, request.getCombineOutTradeNo());
+        String reponse = "";
+        try{
+        reponse = this.getWeixinClient(payRequest.getAppId()).postV3(url, GSON.toJson(request));
+        }catch (WxPayException e){
+            throw new RuntimeException(e);
+        }
+        return reponse;
+    }
+    /**
+     * 申请退款
+     *
+     * @param payRequest
+     * @return
+     */
+    @PayMapping(method = PayMethods.TRADE_REFUNDS_ORDER)
+    public RefundsResult refunds(PayRequest payRequest){
+        String baseUrl = this.getWeixinClient(payRequest.getAppId()).getPayBaseUrl();
+        String url = String.format("%s/v3/ecommerce/refunds/apply", baseUrl);
+        RefundsRequest request = GSON.fromJson
+                (GSON.toJson(payRequest.getBizModel().getWeixinFeilds()), RefundsRequest.class);
+        String response = "";
+        try{
+            response =  this.getWeixinClient(payRequest.getAppId()).postV3(url, GSON.toJson(request));
+        }catch (WxPayException e){
+            throw new RuntimeException(e);
+        }
+        return GSON.fromJson(response, RefundsResult.class);
+    }
+    /**
+     * 申请退款查询
+     *
+     * @param payRequest
+     * @return
+     */
+    @PayMapping(method = PayMethods.TRADE_REFUNDS_QUERY_ORDER)
+    public RefundQueryResult queryRefundByRefundId(PayRequest payRequest) {
+        RefundsRequest request = GSON.fromJson
+                (GSON.toJson(payRequest.getBizModel().getWeixinFeilds()), RefundsRequest.class);
+        String subMchid = request.getSubMchid();
+        String refundId = request.getOutRefundNo();
+        String baseUrl = this.getWeixinClient(payRequest.getAppId()).getPayBaseUrl();
+        String url = String.format("%s/v3/ecommerce/refunds/id/%s?sub_mchid=%s", baseUrl, refundId, subMchid);
+        String response = "";
+        try{
+            response = this.getWeixinClient(payRequest.getAppId()).getV3(url);
+        }catch (WxPayException e){
+            throw new RuntimeException(e);
+        }
+        return GSON.fromJson(response, RefundQueryResult.class);
+    }
+    /**
+     * 二级商户提现申请
+     *
+     * @param payRequest
+     * @return
+     */
+    @PayMapping(method = PayMethods.TRADE_SUB_WITHDRAW_APPLY)
+    public SubWithdrawResult subWithdraw(PayRequest payRequest){
+        SubWithdrawRequest request = GSON.fromJson
+                (GSON.toJson(payRequest.getBizModel().getWeixinFeilds()), SubWithdrawRequest.class);
+        String url = String.format("%s/v3/ecommerce/fund/withdraw", this.getWeixinClient(payRequest.getAppId()).getPayBaseUrl());
+        String response = "";
+        try{
+        response = this.getWeixinClient(payRequest.getAppId()).postV3(url, GSON.toJson(request));
+        }catch (WxPayException e){
+            throw new RuntimeException(e);
+        }
+        return GSON.fromJson(response, SubWithdrawResult.class);
+    }
+    /**
+     * 二级商户提现查询
+     *
+     * @param payRequest
+     * @return
+     */
+    @PayMapping(method = PayMethods.TRADE_SUB_WITHDRAW_QUERY_APPLY)
+    public SubWithdrawStatusResult querySubWithdrawByOutRequestNo(PayRequest payRequest){
+        SubWithdrawRequest request = GSON.fromJson
+                (GSON.toJson(payRequest.getBizModel().getWeixinFeilds()), SubWithdrawRequest.class);
+        String subMchid = request.getSubMchid();
+        String outRequestNo = request.getOutRequestNo();
+        String url = String.format("%s/v3/ecommerce/fund/withdraw/out-request-no/%s?sub_mchid=%s", this.getWeixinClient(payRequest.getAppId()).getPayBaseUrl(), outRequestNo, subMchid);
+        String response ="";
+        try{
+            response = this.getWeixinClient(payRequest.getAppId()).getV3(url);
+        }catch (WxPayException e){
+            throw new RuntimeException(e);
+        }
+        return GSON.fromJson(response, SubWithdrawStatusResult.class);
+    }
+    /**
+     * 平台提现申请
+     *
+     * @param payRequest
+     * @return
+     */
+    @PayMapping(method = PayMethods.TRADE_SP_WITHDRAW_APPLY)
+    public SpWithdrawResult spWithdraw(PayRequest payRequest) {
+        SpWithdrawRequest request = GSON.fromJson
+                (GSON.toJson(payRequest.getBizModel().getWeixinFeilds()), SpWithdrawRequest.class);
+        String url = String.format("%s/v3/merchant/fund/withdraw", this.getWeixinClient(payRequest.getAppId()).getPayBaseUrl());
+        String response = "";
+        try{
+        response =this.getWeixinClient(payRequest.getAppId()).postV3(url, GSON.toJson(request));
+        }catch (WxPayException e){
+            throw new RuntimeException(e);
+        }
+        return GSON.fromJson(response, SpWithdrawResult.class);
+    }
 
-
-
+    /**
+     * 平台提现申请查询
+     *
+     * @param payRequest
+     * @return
+     */
+    @PayMapping(method = PayMethods.TRADE_SP_WITHDRAW_QUERY_APPLY)
+    public SpWithdrawStatusResult querySpWithdrawByOutRequestNo(PayRequest payRequest)  {
+        SpWithdrawRequest request = GSON.fromJson
+                (GSON.toJson(payRequest.getBizModel().getWeixinFeilds()), SpWithdrawRequest.class);
+        String outRequestNo = request.getOutRequestNo();
+        String url = String.format("%s/v3/merchant/fund/withdraw/out-request-no/%s",this.getWeixinClient(payRequest.getAppId()).getPayBaseUrl(), outRequestNo);
+        String response = "";
+        try{
+            response = this.getWeixinClient(payRequest.getAppId()).getV3(url);
+        }catch (WxPayException e){
+            throw new RuntimeException(e);
+        }
+        return GSON.fromJson(response, SpWithdrawStatusResult.class);
+    }
 
 }
