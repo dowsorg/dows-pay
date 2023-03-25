@@ -19,17 +19,40 @@
         </dependency>
 
         <dependency>
+            <groupId>org.dows.saas</groupId>
+            <artifactId>app-api</artifactId>
+            <version>20220701-SNAPSHOT</version>
+        </dependency>
+        <!--<dependency>
+            <groupId>org.dows.saas</groupId>
+            <artifactId>app-boot</artifactId>
+            <version>20220701-SNAPSHOT</version>
+        </dependency>-->
+
+
+        <dependency>
+            <groupId>org.dows.cloud</groupId>
+            <artifactId>user-api</artifactId>
+            <version>20220701-SNAPSHOT</version>
+        </dependency>
+        <!--<dependency>
+            <groupId>org.dows.saas</groupId>
+            <artifactId>user-boot</artifactId>
+            <version>20220701-SNAPSHOT</version>
+        </dependency>-->
+        <dependency>
             <groupId>org.dows.cloud</groupId>
             <artifactId>user-biz</artifactId>
             <version>20220701-SNAPSHOT</version>
         </dependency>
+
+
+
         <dependency>
             <groupId>org.dows.saas</groupId>
             <artifactId>pay-crud</artifactId>
             <version>20220701-SNAPSHOT</version>
         </dependency>
-
-
 
 
         <dependency>

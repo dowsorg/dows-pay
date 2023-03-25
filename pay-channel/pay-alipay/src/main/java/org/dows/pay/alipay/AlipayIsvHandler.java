@@ -43,9 +43,9 @@ import java.util.UUID;
 @Service
 public class AlipayIsvHandler extends AbstractAlipayHandler {
 
-    private final AppApplyBiz appApplyBiz;
+    private final AppApplyApi appApplyApi;
 
-    private final UserCompanyBiz userCompanyBiz;
+    private final UserCompanyApi userCompanyApi;
 
 
     private final IdGenerator idGenerator = new SimpleIdGenerator();
