@@ -147,6 +147,26 @@ public class PayClientProperties {
 
     /*********************************微信支付参数配置END*********************************/
 
+    /*********************************微信小程序参数配置START*********************************/
+
+    public static final String PREFIX = "wx.open";
+
+    /**
+     * 设置微信开放平台的app secret.
+     */
+    private String appSecret;
+
+    /**
+     * 设置微信开放平台的token.
+     */
+    private String token;
+
+    /**
+     * 设置微信开放平台的EncodingAESKey.
+     */
+    private String aesKey;
+
+    /*********************************微信小程序参数配置END*********************************/
 
     public String getPayId() {
         return appId + "@" + channelCode;

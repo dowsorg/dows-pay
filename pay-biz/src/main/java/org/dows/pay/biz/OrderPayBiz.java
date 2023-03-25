@@ -10,11 +10,11 @@ import org.dows.pay.api.PayResponse;
 import org.dows.pay.api.enums.PayMethods;
 import org.dows.pay.api.event.OrderPaySuccessEvent;
 import org.dows.pay.api.request.OrderPayRequest;
-import org.dows.pay.bo.PayTransactionBo;
+import org.dows.pay.bo.*;
 import org.dows.pay.entity.PayAllocation;
 import org.dows.pay.entity.PayLedgers;
 import org.dows.pay.entity.PayTransaction;
-import org.dows.pay.form.PayTransactionForm;
+import org.dows.pay.form.*;
 import org.dows.pay.gateway.PayDispatcher;
 import org.dows.pay.service.PayAllocationService;
 import org.dows.pay.service.PayLedgersService;
@@ -46,23 +46,191 @@ public class OrderPayBiz {
 
     private final IdGenerator idGenerator = new SimpleIdGenerator();
 
-    public Response toPay(PayTransactionForm payTransactionForm) {
+    public Response toPay(PayPartnerTransactionForm payPartnerTransactionForm) {
         OrderPayRequest orderPayRequest = new OrderPayRequest();
-        PayTransactionBo payTransactionBo = BeanUtil.copyProperties(payTransactionForm, PayTransactionBo.class);
+        PayPartnerTransactionBo payPartnerTransactionBo = BeanUtil.copyProperties(payPartnerTransactionForm, PayPartnerTransactionBo.class);
         // 设置请求方法
         orderPayRequest.setMethod(PayMethods.TRADE_ORDER_PAY.getNamespace());
         // 设置业务参数对象bizModel
-        orderPayRequest.setBizModel(payTransactionBo);
+        orderPayRequest.setBizModel(payPartnerTransactionBo);
         // 填充公共参数
-        orderPayRequest.autoSet(payTransactionForm);
+        orderPayRequest.autoSet(payPartnerTransactionForm);
         // 请求分发
         Response<PayResponse> response = payDispatcher.dispatcher(orderPayRequest);
         PayResponse data = response.getData();
         log.info("返回结果:{}", data);
-        return null;
+        return response;
+    }
+    public Response toCombinePay(PayCombineTransactionForm payCombineTransactionForm) {
+        OrderPayRequest orderPayRequest = new OrderPayRequest();
+        PayCombineTransactionBo payCombineTransactionBo = BeanUtil.copyProperties(payCombineTransactionForm, PayCombineTransactionBo.class);
+        // 设置请求方法
+        orderPayRequest.setMethod(PayMethods.TRADE_COMBINE_ORDER_PAY.getNamespace());
+        // 设置业务参数对象bizModel
+        orderPayRequest.setBizModel(payCombineTransactionBo);
+        // 填充公共参数
+        orderPayRequest.autoSet(payCombineTransactionForm);
+        // 请求分发
+        Response<PayResponse> response = payDispatcher.dispatcher(orderPayRequest);
+        PayResponse data = response.getData();
+        log.info("返回结果:{}", data);
+        return response;
+    }
+    public Response queryOrder(PayPartnerTransactionsQueryForm payPartnerTransactionsQueryForm) {
+        OrderPayRequest orderPayRequest = new OrderPayRequest();
+        PayPartnerTransactionsQueryBo payPartnerTransactionsQueryBo = BeanUtil.copyProperties(payPartnerTransactionsQueryForm, PayPartnerTransactionsQueryBo.class);
+        // 设置请求方法
+        orderPayRequest.setMethod(PayMethods.TRADE_QUERY_ORDER.getNamespace());
+        // 设置业务参数对象bizModel
+        orderPayRequest.setBizModel(payPartnerTransactionsQueryBo);
+        // 填充公共参数
+        orderPayRequest.autoSet(payPartnerTransactionsQueryForm);
+        // 请求分发
+        Response<PayResponse> response = payDispatcher.dispatcher(orderPayRequest);
+        PayResponse data = response.getData();
+        log.info("返回结果:{}", data);
+        return response;
     }
 
+    public Response queryCombineOrder(PayCombineTransactionForm payCombineTransactionForm) {
+        OrderPayRequest orderPayRequest = new OrderPayRequest();
+        PayCombineTransactionBo payCombineTransactionBo = BeanUtil.copyProperties(payCombineTransactionForm, PayCombineTransactionBo.class);
+        // 设置请求方法
+        orderPayRequest.setMethod(PayMethods.TRADE_COMBINE_QUERY_ORDER.getNamespace());
+        // 设置业务参数对象bizModel
+        orderPayRequest.setBizModel(payCombineTransactionBo);
+        // 填充公共参数
+        orderPayRequest.autoSet(payCombineTransactionForm);
+        // 请求分发
+        Response<PayResponse> response = payDispatcher.dispatcher(orderPayRequest);
+        PayResponse data = response.getData();
+        log.info("返回结果:{}", data);
+        return response;
+    }
 
+    public Response closeOrder(PayPartnerTransactionsQueryForm payPartnerTransactionsQueryForm) {
+        OrderPayRequest orderPayRequest = new OrderPayRequest();
+        PayPartnerTransactionsQueryBo payPartnerTransactionsQueryBo = BeanUtil.copyProperties(payPartnerTransactionsQueryForm, PayPartnerTransactionsQueryBo.class);
+        // 设置请求方法
+        orderPayRequest.setMethod(PayMethods.TRADE_CLOSE_ORDER.getNamespace());
+        // 设置业务参数对象bizModel
+        orderPayRequest.setBizModel(payPartnerTransactionsQueryBo);
+        // 填充公共参数
+        orderPayRequest.autoSet(payPartnerTransactionsQueryForm);
+        // 请求分发
+        Response<PayResponse> response = payDispatcher.dispatcher(orderPayRequest);
+        PayResponse data = response.getData();
+        log.info("返回结果:{}", data);
+        return response;
+    }
+
+    public Response closeCombineOrder(PayCombineTransactionForm payCombineTransactionForm) {
+        OrderPayRequest orderPayRequest = new OrderPayRequest();
+        PayCombineTransactionBo payCombineTransactionBo = BeanUtil.copyProperties(payCombineTransactionForm, PayCombineTransactionBo.class);
+        // 设置请求方法
+        orderPayRequest.setMethod(PayMethods.TRADE_COMBINE_CLOSE_ORDER.getNamespace());
+        // 设置业务参数对象bizModel
+        orderPayRequest.setBizModel(payCombineTransactionBo);
+        // 填充公共参数
+        orderPayRequest.autoSet(payCombineTransactionForm);
+        // 请求分发
+        Response<PayResponse> response = payDispatcher.dispatcher(orderPayRequest);
+        PayResponse data = response.getData();
+        log.info("返回结果:{}", data);
+        return response;
+    }
+
+    public Response refunds(PayRefundsTransactionForm payRefundsTransactionForm) {
+        OrderPayRequest orderPayRequest = new OrderPayRequest();
+        PayRefundsTransactionBo payRefundsTransactionBo = BeanUtil.copyProperties(payRefundsTransactionForm, PayRefundsTransactionBo.class);
+        // 设置请求方法
+        orderPayRequest.setMethod(PayMethods.TRADE_REFUNDS_ORDER.getNamespace());
+        // 设置业务参数对象bizModel
+        orderPayRequest.setBizModel(payRefundsTransactionBo);
+        // 填充公共参数
+        orderPayRequest.autoSet(payRefundsTransactionForm);
+        // 请求分发
+        Response<PayResponse> response = payDispatcher.dispatcher(orderPayRequest);
+        PayResponse data = response.getData();
+        log.info("返回结果:{}", data);
+        return response;
+    }
+
+    public Response queryRefundByRefundId(PayRefundsTransactionForm payRefundsTransactionForm) {
+        OrderPayRequest orderPayRequest = new OrderPayRequest();
+        PayRefundsTransactionBo payRefundsTransactionBo = BeanUtil.copyProperties(payRefundsTransactionForm, PayRefundsTransactionBo.class);
+        // 设置请求方法
+        orderPayRequest.setMethod(PayMethods.TRADE_REFUNDS_QUERY_ORDER.getNamespace());
+        // 设置业务参数对象bizModel
+        orderPayRequest.setBizModel(payRefundsTransactionBo);
+        // 填充公共参数
+        orderPayRequest.autoSet(payRefundsTransactionForm);
+        // 请求分发
+        Response<PayResponse> response = payDispatcher.dispatcher(orderPayRequest);
+        PayResponse data = response.getData();
+        log.info("返回结果:{}", data);
+        return response;
+    }
+    public Response subWithdraw(PaySubWithDrawTransactionForm paySubWithDrawTransactionForm) {
+        OrderPayRequest orderPayRequest = new OrderPayRequest();
+        PaySubWithDrawTransactionBo paySubWithDrawTransactionBo = BeanUtil.copyProperties(paySubWithDrawTransactionForm, PaySubWithDrawTransactionBo.class);
+        // 设置请求方法
+        orderPayRequest.setMethod(PayMethods.TRADE_SUB_WITHDRAW_APPLY.getNamespace());
+        // 设置业务参数对象bizModel
+        orderPayRequest.setBizModel(paySubWithDrawTransactionBo);
+        // 填充公共参数
+        orderPayRequest.autoSet(paySubWithDrawTransactionForm);
+        // 请求分发
+        Response<PayResponse> response = payDispatcher.dispatcher(orderPayRequest);
+        PayResponse data = response.getData();
+        log.info("返回结果:{}", data);
+        return response;
+    }
+    public Response querySubWithdrawByOutRequestNo(PaySubWithDrawTransactionForm paySubWithDrawTransactionForm) {
+        OrderPayRequest orderPayRequest = new OrderPayRequest();
+        PaySubWithDrawTransactionBo paySubWithDrawTransactionBo = BeanUtil.copyProperties(paySubWithDrawTransactionForm, PaySubWithDrawTransactionBo.class);
+        // 设置请求方法
+        orderPayRequest.setMethod(PayMethods.TRADE_SUB_WITHDRAW_QUERY_APPLY.getNamespace());
+        // 设置业务参数对象bizModel
+        orderPayRequest.setBizModel(paySubWithDrawTransactionBo);
+        // 填充公共参数
+        orderPayRequest.autoSet(paySubWithDrawTransactionForm);
+        // 请求分发
+        Response<PayResponse> response = payDispatcher.dispatcher(orderPayRequest);
+        PayResponse data = response.getData();
+        log.info("返回结果:{}", data);
+        return response;
+    }
+    public Response spWithdraw(PaySpWithDrawTransactionForm paySpWithDrawTransactionForm) {
+        OrderPayRequest orderPayRequest = new OrderPayRequest();
+        PaySpWithDrawTransactionBo paySpWithDrawTransactionBo = BeanUtil.copyProperties(paySpWithDrawTransactionForm, PaySpWithDrawTransactionBo.class);
+        // 设置请求方法
+        orderPayRequest.setMethod(PayMethods.TRADE_SP_WITHDRAW_APPLY.getNamespace());
+        // 设置业务参数对象bizModel
+        orderPayRequest.setBizModel(paySpWithDrawTransactionBo);
+        // 填充公共参数
+        orderPayRequest.autoSet(paySpWithDrawTransactionForm);
+        // 请求分发
+        Response<PayResponse> response = payDispatcher.dispatcher(orderPayRequest);
+        PayResponse data = response.getData();
+        log.info("返回结果:{}", data);
+        return response;
+    }
+    public Response querySpWithdrawByOutRequestNo(PaySpWithDrawTransactionForm paySpWithDrawTransactionForm) {
+        OrderPayRequest orderPayRequest = new OrderPayRequest();
+        PaySpWithDrawTransactionBo paySpWithDrawTransactionBo = BeanUtil.copyProperties(paySpWithDrawTransactionForm, PaySpWithDrawTransactionBo.class);
+        // 设置请求方法
+        orderPayRequest.setMethod(PayMethods.TRADE_SP_WITHDRAW_QUERY_APPLY.getNamespace());
+        // 设置业务参数对象bizModel
+        orderPayRequest.setBizModel(paySpWithDrawTransactionBo);
+        // 填充公共参数
+        orderPayRequest.autoSet(paySpWithDrawTransactionForm);
+        // 请求分发
+        Response<PayResponse> response = payDispatcher.dispatcher(orderPayRequest);
+        PayResponse data = response.getData();
+        log.info("返回结果:{}", data);
+        return response;
+    }
     @EventListener(value = {OrderPaySuccessEvent.class})
     public String onPaySuccessEvent(OrderPaySuccessEvent orderPaySuccessEvent) {
         doOrderAllocation(orderPaySuccessEvent);

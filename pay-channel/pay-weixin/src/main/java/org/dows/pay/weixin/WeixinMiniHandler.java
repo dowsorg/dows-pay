@@ -1,16 +1,22 @@
 package org.dows.pay.weixin;
 
-import com.alipay.api.AlipayApiException;
-import com.alipay.api.domain.AlipayOpenMiniVersionOnlineModel;
-import com.alipay.api.domain.AlipayOpenMiniVersionUploadModel;
 import com.alipay.api.request.AlipayOpenMiniVersionAuditApplyRequest;
-import com.alipay.api.request.AlipayOpenMiniVersionOnlineRequest;
-import com.alipay.api.request.AlipayOpenMiniVersionUploadRequest;
-import com.alipay.api.response.AlipayOpenMiniVersionOnlineResponse;
-import com.alipay.api.response.AlipayOpenMiniVersionUploadResponse;
+import com.github.binarywang.wxpay.bean.ecommerce.FinishOrderRequest;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import me.chanjar.weixin.common.error.WxErrorException;
+import me.chanjar.weixin.open.bean.message.WxOpenMaSubmitAuditMessage;
+import me.chanjar.weixin.open.bean.result.WxOpenMaSubmitAuditResult;
+import me.chanjar.weixin.open.bean.result.WxOpenResult;
+import org.dows.pay.api.PayRequest;
+import org.dows.pay.api.annotation.PayMapping;
+import org.dows.pay.api.enums.PayMethods;
 import org.springframework.stereotype.Service;
+
+import java.io.File;
+import java.util.Map;
 
 /**
  * 小程序相关业务功能
@@ -20,27 +26,28 @@ import org.springframework.stereotype.Service;
 @Service
 public class WeixinMiniHandler extends AbstractWeixinHandler {
 
+
+    private static final Gson GSON = new GsonBuilder().create();
     /**
      * 上传小程序模板
      * https://opendocs.alipay.com/mini/03l8bz
      * alipay.open.mini.version.upload(小程序基于模板上传版本)
      */
-    public void upoadMini() {
+    @PayMapping(method = PayMethods.MINI_UPLOAD)
+    public WxOpenResult uploadMini(PayRequest payRequest) {
         //todo 待实现业务逻辑
-       /* AlipayOpenMiniVersionUploadModel alipayOpenMiniVersionUploadModel = new AlipayOpenMiniVersionUploadModel();
-        AlipayOpenMiniVersionUploadRequest request = new AlipayOpenMiniVersionUploadRequest();
-        request.setBizModel(alipayOpenMiniVersionUploadModel);
+        WxOpenResult response = null;
         try {
-           // AlipayOpenMiniVersionUploadResponse response = getWeixinClient("").execute(request);
-            if (response.isSuccess()) {
-                System.out.println("调用成功");
-            } else {
-                System.out.println("调用失败");
-            }
-        } catch (AlipayApiException e) {
-            throw new RuntimeException(e);
-        }*/
-
+            response = this.getWxOpenMaClient(payRequest.getAppId()).codeCommit(
+                    Long.valueOf(payRequest.getBizModel().getWeixinFeilds().get("templateId").toString())
+                    ,payRequest.getBizModel().getWeixinFeilds().get("userVersion").toString()
+                    ,payRequest.getBizModel().getWeixinFeilds().get("userDesc").toString()
+                    ,GSON.toJson(payRequest.getBizModel().getWeixinFeilds().get("extJsonObject").toString())
+            );
+        }catch (WxErrorException e) {
+            e.printStackTrace();
+        }
+        return  response;
     }
 
 
@@ -49,9 +56,17 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
      * https://opendocs.alipay.com/mini/03l9bq
      * alipay.open.mini.version.audit.apply(小程序提交审核)
      */
-    public void auditMini() {
-        AlipayOpenMiniVersionAuditApplyRequest request = new AlipayOpenMiniVersionAuditApplyRequest();
-        request.setServiceEmail("example@mail.com");
+    public WxOpenMaSubmitAuditResult  auditMini(PayRequest payRequest) {
+        WxOpenMaSubmitAuditResult response = null;
+        WxOpenMaSubmitAuditMessage wxOpenMaSubmitAuditMessage = GSON.fromJson
+                (GSON.toJson(payRequest.getBizModel().getWeixinFeilds()), WxOpenMaSubmitAuditMessage.class);
+        try {
+            response = this.getWxOpenMaClient(payRequest.getAppId()).submitAudit(
+                    wxOpenMaSubmitAuditMessage);
+        }catch (WxErrorException e) {
+            e.printStackTrace();
+        }
+        return  response;
 
     }
 
@@ -61,24 +76,34 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
      * https://opendocs.alipay.com/mini/03l21p
      * alipay.open.mini.version.online(小程序上架)
      */
-    public void onlineMini() {
+    public WxOpenResult onlineMini(PayRequest payRequest) {
         //todo 待实现业务逻辑
-       /* AlipayOpenMiniVersionOnlineModel alipayOpenMiniVersionOnlineModel = new AlipayOpenMiniVersionOnlineModel();
-        AlipayOpenMiniVersionOnlineRequest request = new AlipayOpenMiniVersionOnlineRequest();
-        request.setBizModel(alipayOpenMiniVersionOnlineModel);
-
-        AlipayOpenMiniVersionOnlineResponse response = null;
+        WxOpenResult response = null;
         try {
-            response = getWeixinClient("").execute(request);
-        } catch (AlipayApiException e) {
-            throw new RuntimeException(e);
+            response = this.getWxOpenMaClient(payRequest.getAppId()).releaseAudited();
+        }catch (WxErrorException e) {
+            e.printStackTrace();
         }
-        if (response.isSuccess()) {
-            System.out.println("调用成功");
-        } else {
-            System.out.println("调用失败");
-        }*/
+        return  response;
     }
 
-
+    /**
+     * 小程序二维码查看
+     * https://opendocs.alipay.com/mini/03l21p
+     * alipay.open.mini.version.online(小程序上架)
+     */
+    public File getQrcode(PayRequest payRequest) {
+        //todo 待实现业务逻辑
+        File response = null;
+        try {
+            response = this.getWxOpenMaClient
+                    (payRequest.getAppId()).getTestQrcode(
+                            payRequest.getBizModel().getWeixinFeilds().get("pagePath").toString(),
+                            GSON.fromJson(payRequest.getBizModel().getWeixinFeilds().get("params").toString(), Map.class)
+                    );
+        }catch (WxErrorException e) {
+            e.printStackTrace();
+        }
+        return  response;
+    }
 }

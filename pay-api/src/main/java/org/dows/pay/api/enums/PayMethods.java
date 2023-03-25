@@ -7,8 +7,9 @@ public enum PayMethods {
     ISV_CREATE("dows.pay.isv.create", "", "isv服务商代商户创建小程序"),
     ISV_QUERY("dows.pay.isv.query", "", "isv查询代商家创建小程序记录"),
     ON_ISV_MERCHANT_CONFIRMED("dows.pay.merchant.confirmed", "", "商户确认服务商代创建小程序结果通知"),
-
-
+    ISV_APPLY("dows.pay.isv.apply", "", "isv服务商进件"),
+    ISV_APPLY_QUERY("dows.pay.isv.apply.query", "", "isv服务商进件查询"),
+    ISV_APPLY_NOTIFY("dows.pay.isv.apply.notify", "", "isv服务商进件结果通知"),
     // agent 相关接口
     AGENT_CREATE("dows.pay.agent.create", "", "开启代商户签约、创建应用事务"),
     AGENT_FACETOFACE("dows.pay.agent.facetoface", "", "协助商家申请签约当面付产品"),
@@ -38,6 +39,8 @@ public enum PayMethods {
 
 
     // 交易分账相关
+    TRADE_ROYALTY_RELATION_APPLY("dows.trade.royalty.relation.apply", "", "分账申请"),
+    TRADE_ROYALTY_RELATION_FINISH("dows.trade.royalty.relation.apply", "", "分账完成"),
     TRADE_ROYALTY_RELATION_BIND("dows.trade.royalty.relation.bind", "", "分账关系绑定"),
     TRADE_ROYALTY_RELATION_UNBIND("dows.trade.royalty.relation.unbind", "", "分账关系解绑"),
     TRADE_ROYALTY_RELATION_QUERY("dows.trade.royalty.relation.query", "", "分账关系查询"),
@@ -52,6 +55,17 @@ public enum PayMethods {
 
     // 支付交易相关
     TRADE_ORDER_PAY("dows.trade.order.pay", "", "交易订单支付"),
+    TRADE_COMBINE_ORDER_PAY("dows.trade.order.combine.pay", "", "合单交易订单支付"),
+    TRADE_QUERY_ORDER("dows.trade.order.query.pay", "", "查询支付订单结果"),
+    TRADE_COMBINE_QUERY_ORDER("dows.trade.order.query.combine.pay", "", "查询合并支付订单结果"),
+    TRADE_CLOSE_ORDER("dows.trade.order.close.pay", "", "关闭支付订单结果"),
+    TRADE_COMBINE_CLOSE_ORDER("dows.trade.order.close.combine.pay", "", "关闭合并支付订单结果"),
+    TRADE_REFUNDS_ORDER("dows.trade.order.refunds.pay", "", "申请退款"),
+    TRADE_REFUNDS_QUERY_ORDER("dows.trade.order.refunds.query.pay", "", "申请退款查询"),
+    TRADE_SUB_WITHDRAW_APPLY("dows.trade.order.sub.withdraw.apply", "", "二级商户提现申请"),
+    TRADE_SUB_WITHDRAW_QUERY_APPLY("dows.trade.order.sub.withdraw.query.apply", "", "二级商户提现查询"),
+    TRADE_SP_WITHDRAW_APPLY("dows.trade.order.sp.withdraw.apply", "", "平台提现申请"),
+    TRADE_SP_WITHDRAW_QUERY_APPLY("dows.trade.order.sp.withdraw.query.apply", "", "平台提现申请查询"),
     ;
 
     @Getter
