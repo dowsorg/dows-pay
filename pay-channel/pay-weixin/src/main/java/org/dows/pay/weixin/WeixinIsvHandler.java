@@ -1,47 +1,27 @@
 package org.dows.pay.weixin;
 
 import cn.hutool.json.JSONUtil;
-import com.alipay.api.AlipayApiException;
-import com.alipay.api.domain.AlipayOpenMiniIsvCreateModel;
-import com.alipay.api.domain.CreateMiniRequest;
-import com.alipay.api.request.AlipayOpenMiniIsvCreateRequest;
-import com.alipay.api.response.AlipayOpenMiniIsvCreateResponse;
 import com.alipay.service.schema.util.StringUtil;
-import com.github.binarywang.wxpay.bean.applyment.WxPayApplyment4SubCreateRequest;
-import com.github.binarywang.wxpay.bean.applyment.WxPayApplymentCreateResult;
 import com.github.binarywang.wxpay.bean.ecommerce.ApplymentsRequest;
 import com.github.binarywang.wxpay.bean.ecommerce.ApplymentsResult;
-import com.github.binarywang.wxpay.bean.request.BaseWxPayRequest;
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.github.binarywang.wxpay.v3.util.RsaCryptoUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import me.chanjar.weixin.common.api.WxConsts;
 import me.chanjar.weixin.common.error.WxErrorException;
-import me.chanjar.weixin.common.util.http.SimplePostRequestExecutor;
-import me.chanjar.weixin.mp.api.WxMpMessageHandler;
-import me.chanjar.weixin.mp.api.WxMpMessageRouter;
-import me.chanjar.weixin.mp.constant.WxMpEventConstants;
-import me.chanjar.weixin.open.api.WxOpenComponentService;
-import me.chanjar.weixin.open.api.WxOpenConfigStorage;
-import me.chanjar.weixin.open.api.WxOpenService;
-import me.chanjar.weixin.open.api.impl.WxOpenMessageRouter;
-import me.chanjar.weixin.open.bean.message.WxOpenXmlMessage;
 import me.chanjar.weixin.open.bean.result.WxOpenResult;
-import me.chanjar.weixin.open.util.json.WxOpenGsonBuilder;
-import org.apache.http.client.ResponseHandler;
-import org.dows.app.api.AppApplyRequest;
+import org.dows.app.api.mini.request.AppApplyRequest;
 import org.dows.app.biz.AppApplyBiz;
 import org.dows.app.entity.AppApply;
 import org.dows.framework.api.Response;
-import org.dows.pay.api.*;
+import org.dows.pay.api.PayEvent;
+import org.dows.pay.api.PayHandler;
+import org.dows.pay.api.PayRequest;
 import org.dows.pay.api.annotation.PayMapping;
 import org.dows.pay.api.enums.PayChannels;
 import org.dows.pay.api.enums.PayMethods;
-import org.dows.pay.api.message.AlipayMessage;
 import org.dows.pay.api.message.WeixinMessage;
 import org.dows.pay.bo.IsvCreateBo;
 import org.dows.user.biz.UserCompanyBiz;
@@ -54,8 +34,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.IdGenerator;
 import org.springframework.util.SimpleIdGenerator;
 
-import java.lang.reflect.Field;
-import java.util.Map;
 import java.util.UUID;
 
 @Slf4j
@@ -74,7 +52,7 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
      *
      * @param
      */
-    @PayMapping(method = PayMethods.ISV_APPLY)
+    @PayMapping(method = PayMethods.ISV_CREATE)
     public void createIsvMini(PayRequest payRequest) {
         UUID uuid = idGenerator.generateId();
         IsvCreateBo isvCreateBo = (IsvCreateBo)payRequest.getBizModel();
@@ -95,8 +73,8 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
         }
         //todo 调用微信接口创建商户小程序
         String url = String.format("%s/v3/ecommerce/applyments/", this.getWeixinClient(payRequest.getAppId()).getPayBaseUrl());
-        String requestParamStr = GSON.toJson(payRequest.getBizModel().getWeixinFeilds());
-        ApplymentsRequest request = GSON.fromJson(requestParamStr,ApplymentsRequest.class);
+        ApplymentsRequest request = new ApplymentsRequest();
+        autoMappingValue(payRequest,request);
         ApplymentsResult response =null;
         try {
             RsaCryptoUtil.encryptFields(request,this.getWeixinClient(payRequest.getAppId()).getConfig().getVerifier().getValidCertificate());
@@ -174,7 +152,7 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
     /**
      * 服务商代商户申请小程序
      */
-    @PayMapping(method = PayMethods.ISV_CREATE)
+    @PayMapping(method = PayMethods.ISV_APPLY)
     public WxOpenResult fastRegisterApp(PayRequest payRequest) throws WxErrorException {
         IsvCreateBo isvCreateBo = (IsvCreateBo)payRequest.getBizModel();
          WxOpenResult response = this.getWxOpenClient(payRequest.getAppId()).getWxOpenComponentService().fastRegisterWeapp(

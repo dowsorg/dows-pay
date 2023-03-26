@@ -71,4 +71,7 @@ public class IsvCreateBo implements ChannelBizModel {
     @WeixinApiField(name = "code")
     @AlipayApiField(name = "cert_no")
     private String certNo;
+
+
+
 }
