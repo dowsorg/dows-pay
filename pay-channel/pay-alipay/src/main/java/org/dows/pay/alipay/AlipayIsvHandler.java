@@ -15,7 +15,8 @@ import com.alipay.api.response.AlipayOpenMiniIsvCreateResponse;
 import com.alipay.api.response.AlipayOpenMiniIsvQueryResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.dows.app.api.AppApplyRequest;
+import org.dows.app.api.mini.AppApplyApi;
+import org.dows.app.api.mini.request.AppApplyRequest;
 import org.dows.app.biz.AppApplyBiz;
 import org.dows.app.entity.AppApply;
 import org.dows.framework.api.Response;
@@ -45,7 +46,11 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
 
     private final AppApplyApi appApplyApi;
 
-    private final UserCompanyApi userCompanyApi;
+//    private final AppApplyBiz appApplyBiz;
+
+//    private final UserCompanyApi userCompanyApi;
+
+    private final UserCompanyBiz userCompanyBiz;
 
 
     private final IdGenerator idGenerator = new SimpleIdGenerator();
@@ -72,11 +77,11 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
                 .contactName(isvCreateBo.getContactName())
                 .contactPhone(isvCreateBo.getContactPhone())
                 .build();
-        Response responseAppApply = appApplyBiz.getOneAppApply(appApply);
+        Response responseAppApply = appApplyApi.getOneAppApply(appApply);
         if (responseAppApply == null || responseAppApply.getData() == null || ((AppApply)responseAppApply.getData()).getPlatformOrderNo() == null) {
             // todo 保存请求
             appApply.setApplyOrderNo(uuid.toString());
-            appApplyBiz.saveApply(appApply);
+            appApplyApi.saveApply(appApply);
         }else{
             appApply.setApplyOrderNo(((AppApply)responseAppApply.getData()).getApplyOrderNo());
         }
@@ -123,7 +128,7 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
                     .applyOrderNo(appApply.getApplyOrderNo())
                     .platformOrderNo(orderNo)
                     .build();
-            appApplyBiz.updateApplyPlatformOrderNo(appApplyUpdateRequest);
+            appApplyApi.updateApplyPlatformOrderNo(appApplyUpdateRequest);
             log.info("调用成功,响应信息:{}", JSONUtil.toJsonStr(response));
         } else {
             log.error("调用失败,响应信息:{}", JSONUtil.toJsonStr(response));
