@@ -6,6 +6,9 @@ import org.dows.pay.api.ChannelBizModel;
 import org.dows.pay.api.annotation.AlipayApiField;
 import org.dows.pay.api.annotation.WeixinApiField;
 
+import javax.validation.constraints.NotBlank;
+import java.util.List;
+
 /**
  * "alipayAccount":"keweijr@163.com ",
  * "appName":"aaa",
@@ -72,6 +75,54 @@ public class IsvCreateBo implements ChannelBizModel {
     @AlipayApiField(name = "cert_no")
     private String certNo;
 
+    /***************微信申请参数封装START*****************/
+    @WeixinApiField(name = "license_pic")
+    private String licensePic;
+    @WeixinApiField(name = "legal_pic_front")
+    private String legalPicFront;
+    @WeixinApiField(name = "legal_pic_back")
+    private String legalPicBack;
+    @WeixinApiField(name = "out_request_no")
+    private String outRequestNo;
+    @WeixinApiField(name = "organization_type")
+    private String organizationType;
+    @WeixinApiField(name = "finance_institution")
+    private Boolean financeInstitution;
+    @WeixinApiField(name = "business_license_info")
+    private ApplymentsBo.BusinessLicenseInfo businessLicenseInfo;
+    @WeixinApiField(name = "finance_institution_info")
+    private ApplymentsBo.FinanceInstitutionInfo financeInstitutionInfo;
+    @WeixinApiField(name =  "id_holder_type")
+    private String idHolderType;
+    @WeixinApiField(name =  "id_doc_type")
+    private String idDocType;
+    @WeixinApiField(name =  "authorize_letter_copy")
+    private String authorizeLetterCopy;
+    @WeixinApiField(name =  "id_card_info")
+    private ApplymentsBo.IdCardInfo idCardInfo;
+    @WeixinApiField(name = "id_doc_info")
+    private ApplymentsBo.IdDocInfo idDocInfo;
+    @WeixinApiField(name = "owner")
+    private Boolean owner;
+    @WeixinApiField(name = "ubo_info_list")
+    private List<ApplymentsBo.UboInfo> uboInfoList;
+    @WeixinApiField(name = "account_info")
+    private ApplymentsBo.AccountInfo accountInfo;
+    @WeixinApiField(name = "contact_info")
+    private ApplymentsBo.ContactInfo contactInfo;
+    @WeixinApiField(name = "sales_scene_info")
+    private ApplymentsBo.SalesSceneInfo salesSceneInfo;
+    @WeixinApiField(name = "settlement_info")
+    private ApplymentsBo.SettlementInfo settlementInfo;
+    @WeixinApiField(name = "merchant_shortname")
+    private String merchantShortname;
+    @WeixinApiField(name = "qualifications")
+    private String qualifications;
+    @WeixinApiField(name = "business_addition_pics")
+    private String businessAdditionPics;
+    @WeixinApiField(name = "business_addition_desc")
+    private String businessAdditionDesc;
+    /***************微信申请参数封装END*****************/
 
 
 }

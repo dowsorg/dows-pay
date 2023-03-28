@@ -8,6 +8,7 @@ public enum PayMethods {
     ISV_QUERY("dows.pay.isv.query", "", "isv查询代商家创建小程序记录"),
     ON_ISV_MERCHANT_CONFIRMED("dows.pay.merchant.confirmed", "", "商户确认服务商代创建小程序结果通知"),
     ISV_APPLY("dows.pay.isv.apply", "", "isv服务商进件"),
+    ISV_UPLOAD("dows.pay.isv.upload", "", "isv服务商进件上传图片"),
     ISV_APPLY_QUERY("dows.pay.isv.apply.query", "", "isv服务商进件查询"),
     ISV_APPLY_NOTIFY("dows.pay.isv.apply.notify", "", "isv服务商进件结果通知"),
     // agent 相关接口
