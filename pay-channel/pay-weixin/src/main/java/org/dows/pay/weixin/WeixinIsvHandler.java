@@ -4,6 +4,7 @@ import cn.hutool.json.JSONUtil;
 import com.alipay.service.schema.util.StringUtil;
 import com.github.binarywang.wxpay.bean.ecommerce.ApplymentsRequest;
 import com.github.binarywang.wxpay.bean.ecommerce.ApplymentsResult;
+import com.github.binarywang.wxpay.bean.ecommerce.ApplymentsStatusResult;
 import com.github.binarywang.wxpay.bean.media.ImageUploadResult;
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.github.binarywang.wxpay.v3.WechatPayUploadHttpPost;
@@ -150,16 +151,18 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
      * 查询该订单协助创建小程序的情况
      */
     @PayMapping(method = PayMethods.ISV_QUERY)
-    public String queryIsvMini(PayRequest payRequest) {
+    public ApplymentsStatusResult queryIsvMini(PayRequest payRequest) {
         //todo 逻辑待实现
-        String url = String.format("%s/v3/applyment4sub/applyment/business_code/%s", this.getWeixinClient(payRequest.getAppId()).getPayBaseUrl(), payRequest.getBizModel().getWeixinFeilds().get("businessCode"));
+        ApplymentsRequest request = new ApplymentsRequest();
+        autoMappingValue(payRequest,request);
+        String url = String.format("%s/v3/ecommerce/applyments/out-request-no/%s", this.getWeixinClient(payRequest.getAppId()).getPayBaseUrl(), request.getOutRequestNo());
         String result = null;
         try {
             result = getWeixinClient(payRequest.getAppId()).getV3(url);
         } catch (WxPayException e) {
             e.printStackTrace();
         }
-        return result;
+        return GSON.fromJson(result, ApplymentsStatusResult.class);
 
     }
 

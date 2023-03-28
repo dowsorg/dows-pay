@@ -61,7 +61,7 @@ public class IsvCreateBo implements ChannelBizModel {
     private String legalPersonalName;
 
     // 外部申请单号
-    @WeixinApiField(name = "out_order_no")
+    @WeixinApiField(name = "out_request_no")
     @AlipayApiField(name = "out_order_no")
     private String outOrderNo;
 

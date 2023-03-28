@@ -241,6 +241,7 @@ public class WeixinPayNotifyController {
             WxOpenXmlMessage wxMessage = new WxOpenXmlMessage();
             wxMessage.setAppId(APPID);
             route = this.payClientFactory.getWxOpenClient(APPID).getWxOpenComponentService().route(wxMessage);
+
         } catch (WxErrorException e) {
             e.printStackTrace();
         }
