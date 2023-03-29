@@ -22,7 +22,7 @@ import org.dows.account.bo.AccountTenantBo;
 import org.dows.account.bo.AccountUserBo;
 import org.dows.app.api.mini.AppApplyApi;
 import org.dows.app.api.mini.request.AppApplyRequest;
-import org.dows.app.entity.AppApply;
+import org.dows.app.api.mini.response.AppApplyResponse;
 import org.dows.framework.api.Response;
 import org.dows.pay.api.PayEvent;
 import org.dows.pay.api.PayHandler;
@@ -42,7 +42,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.IdGenerator;
 import org.springframework.util.SimpleIdGenerator;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
@@ -56,6 +58,7 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
     private static final Gson GSON = new GsonBuilder().create();
     private final AppApplyApi appApplyApi;
     private final UserCompanyApi userCompanyApi;
+    @Autowired
     private final AccountUserApi acountUserApi;
     private final AccountTenantApi acountTenantApi;
     private final IdGenerator idGenerator = new SimpleIdGenerator();
@@ -80,13 +83,13 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
                 .contactName(isvCreateBo.getContactName())
                 .contactPhone(isvCreateBo.getContactPhone())
                 .build();
-        Response responseAppApply = appApplyApi.getOneAppApply(appApply);
-        if (responseAppApply == null || responseAppApply.getData() == null || ((AppApply)responseAppApply.getData()).getPlatformOrderNo() == null) {
+        Response<AppApplyResponse> responseAppApply = appApplyApi.getOneAppApply(appApply);
+        if (responseAppApply == null || responseAppApply.getData() == null || ((AppApplyResponse)responseAppApply.getData()).getPlatformOrderNo() == null) {
             // todo 保存请求
             appApply.setApplyOrderNo(uuid.toString());
             appApplyApi.saveApply(appApply);
         }else{
-            appApply.setApplyOrderNo(((AppApply)responseAppApply.getData()).getApplyOrderNo());
+            appApply.setApplyOrderNo(((AppApplyResponse)responseAppApply.getData()).getApplyOrderNo());
         }
         //todo 调用微信接口创建商户小程序
         String url = String.format("%s/v3/ecommerce/applyments/", this.getWeixinClient(payRequest.getAppId()).getPayBaseUrl());
@@ -155,6 +158,7 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
         //todo 逻辑待实现
         ApplymentsRequest request = new ApplymentsRequest();
         autoMappingValue(payRequest,request);
+        IsvCreateBo isvCreateBo = (IsvCreateBo)payRequest.getBizModel();
         String url = String.format("%s/v3/ecommerce/applyments/out-request-no/%s", this.getWeixinClient(payRequest.getAppId()).getPayBaseUrl(), request.getOutRequestNo());
         String result = null;
         try {
@@ -162,7 +166,13 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
         } catch (WxPayException e) {
             e.printStackTrace();
         }
-        return GSON.fromJson(result, ApplymentsStatusResult.class);
+        //更新商户号
+        ApplymentsStatusResult applymentsStatusResult = GSON.fromJson(result, ApplymentsStatusResult.class);
+        AccountTenantBo accountTenantBo = new AccountTenantBo();
+        accountTenantBo.setMerchantNo(applymentsStatusResult.getSubMchid());
+        accountTenantBo.setAccountId(isvCreateBo.getAccount());
+        acountTenantApi.updateAccountTenant(accountTenantBo);
+        return applymentsStatusResult;
 
     }
 
