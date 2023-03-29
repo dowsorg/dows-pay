@@ -46,11 +46,11 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
 
     private final AppApplyApi appApplyApi;
 
-//    private final AppApplyBiz appApplyBiz;
+    private final AppApplyBiz appApplyBiz;
 
-//    private final UserCompanyApi userCompanyApi;
+    private final UserCompanyApi userCompanyApi;
 
-    private final UserCompanyBiz userCompanyBiz;
+//    private final UserCompanyBiz userCompanyBiz;
 
 
     private final IdGenerator idGenerator = new SimpleIdGenerator();
@@ -109,12 +109,12 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
         UserCompanyRequest userCompanyRequest = UserCompanyRequest.builder()
                 .certNo(createMiniRequest.getCertNo())
                 .build();
-        UserCompany responseUserCompany = userCompanyBiz.getOneUserCompany(userCompanyRequest);
+        UserCompany responseUserCompany = userCompanyApi.getOneUserCompany(userCompanyRequest);
         if (responseUserCompany == null) {
             userCompanyRequest.setCertNo(createMiniRequest.getCertNo());
             userCompanyRequest.setCompanyName(createMiniRequest.getCertName());
             userCompanyRequest.setLegalPerson(createMiniRequest.getLegalPersonalName());
-            userCompanyBiz.saveUserCompany(userCompanyRequest);
+            userCompanyApi.saveUserCompany(userCompanyRequest);
         }
 
         if (response.isSuccess()) {
