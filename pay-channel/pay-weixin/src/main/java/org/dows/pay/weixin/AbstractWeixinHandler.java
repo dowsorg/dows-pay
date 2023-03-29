@@ -65,7 +65,7 @@ public abstract class AbstractWeixinHandler implements PayHandler {
      * @param payRequest
      * @param wxObject
      */
-    protected void autoMappingValue(PayRequest payRequest, BaseWxPayRequest wxObject) {
+    protected void autoMappingValue(PayRequest payRequest, Object wxObject) {
         ChannelBizModel channelBizModel = payRequest.getBizModel();
         Map<String, Field> weixinFeilds = channelBizModel.getWeixinFeilds();
         Map<String, Field> collect = WX_OBJECT_MODLE_FIELD_MAP.get(wxObject.getClass());
