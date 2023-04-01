@@ -1,7 +1,6 @@
 package org.dows.pay.weixin;
 
 import com.alipay.api.internal.mapping.ApiField;
-import com.github.binarywang.wxpay.bean.request.BaseWxPayRequest;
 import com.github.binarywang.wxpay.service.WxPayService;
 import me.chanjar.weixin.open.api.WxOpenMaService;
 import me.chanjar.weixin.open.api.WxOpenService;
@@ -35,6 +34,7 @@ public abstract class AbstractWeixinHandler implements PayHandler {
         return payClientFactory.getWeixinClient(appId);
 
     }
+
     /**
      * todo 微信小程序
      *

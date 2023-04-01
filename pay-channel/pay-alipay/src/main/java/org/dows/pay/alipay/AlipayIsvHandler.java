@@ -26,6 +26,7 @@ import org.dows.pay.api.enums.PayChannels;
 import org.dows.pay.api.enums.PayMethods;
 import org.dows.pay.api.message.AlipayMessage;
 import org.dows.pay.bo.IsvCreateBo;
+import org.dows.user.api.api.UserCompanyApi;
 import org.dows.user.biz.UserCompanyBiz;
 import org.dows.user.biz.UserCompanyRequest;
 import org.dows.user.entity.UserCompany;
@@ -46,13 +47,7 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
 
     private final AppApplyApi appApplyApi;
 
-    private final AppApplyBiz appApplyBiz;
-
     private final UserCompanyApi userCompanyApi;
-
-//    private final UserCompanyBiz userCompanyBiz;
-
-
     private final IdGenerator idGenerator = new SimpleIdGenerator();
 
     public static void main(String[] args) {

@@ -15,15 +15,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.open.bean.result.WxOpenResult;
-import me.chanjar.weixin.open.util.json.WxOpenGsonBuilder;
-import org.apache.http.client.ResponseHandler;
-import org.dows.app.api.mini.request.AppApplyRequest;
-import org.dows.app.biz.AppApplyBiz;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.dows.account.api.AccountTenantApi;
 import org.dows.account.api.AccountUserApi;
-import org.dows.account.bo.AccountTenantBo;
-import org.dows.account.bo.AccountUserBo;
 import org.dows.app.api.mini.AppApplyApi;
 import org.dows.app.api.mini.request.AppApplyRequest;
 import org.dows.app.entity.AppApply;
@@ -46,7 +40,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.IdGenerator;
 import org.springframework.util.SimpleIdGenerator;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
@@ -76,7 +72,7 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
         //上传证件信息
         List<ImageUploadResult> list = imageUploadV3(payRequest);
         UUID uuid = idGenerator.generateId();
-        IsvCreateBo isvCreateBo = (IsvCreateBo)payRequest.getBizModel();
+        IsvCreateBo isvCreateBo = (IsvCreateBo) payRequest.getBizModel();
         // todo 先查询该营业执照有没有申请过，如果没有就保存，如果有直接查询比对是否是相同的申请（orderNo为空 其他字段值全部相同通道+应用名）
         AppApplyRequest appApply = AppApplyRequest.builder()
                 .appName(isvCreateBo.getAppName())
@@ -85,23 +81,23 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
                 .contactPhone(isvCreateBo.getContactPhone())
                 .build();
         Response responseAppApply = appApplyApi.getOneAppApply(appApply);
-        if (responseAppApply == null || responseAppApply.getData() == null || ((AppApply)responseAppApply.getData()).getPlatformOrderNo() == null) {
+        if (responseAppApply == null || responseAppApply.getData() == null || ((AppApply) responseAppApply.getData()).getPlatformOrderNo() == null) {
             // todo 保存请求
             appApply.setApplyOrderNo(uuid.toString());
             appApplyApi.saveApply(appApply);
-        }else{
-            appApply.setApplyOrderNo(((AppApply)responseAppApply.getData()).getApplyOrderNo());
+        } else {
+            appApply.setApplyOrderNo(((AppApply) responseAppApply.getData()).getApplyOrderNo());
         }
         //todo 调用微信接口创建商户小程序
         String url = String.format("%s/v3/ecommerce/applyments/", this.getWeixinClient(payRequest.getAppId()).getPayBaseUrl());
         ApplymentsRequest request = new ApplymentsRequest();
-        autoMappingValue(payRequest,request);
-        ApplymentsResult response =null;
+        autoMappingValue(payRequest, request);
+        ApplymentsResult response = null;
         try {
-            RsaCryptoUtil.encryptFields(request,this.getWeixinClient(payRequest.getAppId()).getConfig().getVerifier().getValidCertificate());
-            String result = this.getWeixinClient(payRequest.getAppId()).postV3WithWechatpaySerial(url,GSON.toJson(request));
+            RsaCryptoUtil.encryptFields(request, this.getWeixinClient(payRequest.getAppId()).getConfig().getVerifier().getValidCertificate());
+            String result = this.getWeixinClient(payRequest.getAppId()).postV3WithWechatpaySerial(url, GSON.toJson(request));
             response = GSON.fromJson(result, ApplymentsResult.class);
-        } catch ( WxPayException e) {
+        } catch (WxPayException e) {
             throw new RuntimeException(e);
         }
         /**
@@ -151,6 +147,7 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
         }
 
     }
+
     /**
      * 查询该订单协助创建小程序的情况
      */
@@ -158,7 +155,7 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
     public ApplymentsStatusResult queryIsvMini(PayRequest payRequest) {
         //todo 逻辑待实现
         ApplymentsRequest request = new ApplymentsRequest();
-        autoMappingValue(payRequest,request);
+        autoMappingValue(payRequest, request);
         String url = String.format("%s/v3/ecommerce/applyments/out-request-no/%s", this.getWeixinClient(payRequest.getAppId()).getPayBaseUrl(), request.getOutRequestNo());
         String result = null;
         try {
@@ -186,19 +183,20 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
         handler.onMessage(payMessage);
 
     }
+
     /**
      * 服务商代商户申请小程序
      */
     @PayMapping(method = PayMethods.ISV_APPLY)
     public WxOpenResult fastRegisterApp(PayRequest payRequest) throws WxErrorException {
-        IsvCreateBo isvCreateBo = (IsvCreateBo)payRequest.getBizModel();
-         WxOpenResult response = this.getWxOpenClient(payRequest.getAppId()).getWxOpenComponentService().fastRegisterWeapp(
-                 isvCreateBo.getCertName()
-                ,isvCreateBo.getCertNo()
-                ,isvCreateBo.getCertType()
-                ,isvCreateBo.getLegalPersonalWechat()
-                ,isvCreateBo.getLegalPersonalName()
-                ,isvCreateBo.getContactPhone());
+        IsvCreateBo isvCreateBo = (IsvCreateBo) payRequest.getBizModel();
+        WxOpenResult response = this.getWxOpenClient(payRequest.getAppId()).getWxOpenComponentService().fastRegisterWeapp(
+                isvCreateBo.getCertName()
+                , isvCreateBo.getCertNo()
+                , isvCreateBo.getCertType()
+                , isvCreateBo.getLegalPersonalWechat()
+                , isvCreateBo.getLegalPersonalName()
+                , isvCreateBo.getContactPhone());
 
         return response;
     }
@@ -208,20 +206,20 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
      */
     public List<ImageUploadResult> imageUploadV3(PayRequest payRequest) {
         List<ImageUploadResult> list = new ArrayList<>();
-        IsvCreateBo isvCreateBo = (IsvCreateBo)payRequest.getBizModel();
-        File licenseFile=new File(isvCreateBo.getLicensePic());
-        list.add(upload(licenseFile,payRequest));
-        File legalPicBackFile=new File(isvCreateBo.getLegalPicBack());
-        list.add(upload(legalPicBackFile,payRequest));
-        File legalPicFrontFile=new File(isvCreateBo.getLegalPicFront());
-        list.add(upload(legalPicFrontFile,payRequest));
+        IsvCreateBo isvCreateBo = (IsvCreateBo) payRequest.getBizModel();
+        File licenseFile = new File(isvCreateBo.getLicensePic());
+        list.add(upload(licenseFile, payRequest));
+        File legalPicBackFile = new File(isvCreateBo.getLegalPicBack());
+        list.add(upload(legalPicBackFile, payRequest));
+        File legalPicFrontFile = new File(isvCreateBo.getLegalPicFront());
+        list.add(upload(legalPicFrontFile, payRequest));
         return list;
     }
 
-    public ImageUploadResult upload(File file,PayRequest payRequest){
+    public ImageUploadResult upload(File file, PayRequest payRequest) {
         String url = String.format("%s/v3/merchant/media/upload", this.getWeixinClient(payRequest.getAppId()).getPayBaseUrl());
         String result = "";
-        try{
+        try {
             FileInputStream s1 = new FileInputStream(file);
             String sha256 = DigestUtils.sha256Hex(s1);
             InputStream s2 = new FileInputStream(file);
@@ -230,7 +228,7 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
                     .build();
             result = this.getWeixinClient(payRequest.getAppId()).postV3(url, request);
 
-        }catch ( Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
