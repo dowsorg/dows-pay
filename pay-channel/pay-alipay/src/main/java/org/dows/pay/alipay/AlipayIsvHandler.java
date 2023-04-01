@@ -15,7 +15,8 @@ import com.alipay.api.response.AlipayOpenMiniIsvCreateResponse;
 import com.alipay.api.response.AlipayOpenMiniIsvQueryResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.dows.app.api.AppApplyRequest;
+import org.dows.app.api.mini.AppApplyApi;
+import org.dows.app.api.mini.request.AppApplyRequest;
 import org.dows.app.biz.AppApplyBiz;
 import org.dows.app.entity.AppApply;
 import org.dows.framework.api.Response;
@@ -45,7 +46,11 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
 
     private final AppApplyApi appApplyApi;
 
+    private final AppApplyBiz appApplyBiz;
+
     private final UserCompanyApi userCompanyApi;
+
+//    private final UserCompanyBiz userCompanyBiz;
 
 
     private final IdGenerator idGenerator = new SimpleIdGenerator();
@@ -76,7 +81,7 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
         if (responseAppApply == null || responseAppApply.getData() == null || ((AppApply)responseAppApply.getData()).getPlatformOrderNo() == null) {
             // todo 保存请求
             appApply.setApplyOrderNo(uuid.toString());
-            appApplyBiz.saveApply(appApply);
+            appApplyApi.saveApply(appApply);
         }else{
             appApply.setApplyOrderNo(((AppApply)responseAppApply.getData()).getApplyOrderNo());
         }
@@ -104,12 +109,12 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
         UserCompanyRequest userCompanyRequest = UserCompanyRequest.builder()
                 .certNo(createMiniRequest.getCertNo())
                 .build();
-        UserCompany responseUserCompany = userCompanyBiz.getOneUserCompany(userCompanyRequest);
+        UserCompany responseUserCompany = userCompanyApi.getOneUserCompany(userCompanyRequest);
         if (responseUserCompany == null) {
             userCompanyRequest.setCertNo(createMiniRequest.getCertNo());
             userCompanyRequest.setCompanyName(createMiniRequest.getCertName());
             userCompanyRequest.setLegalPerson(createMiniRequest.getLegalPersonalName());
-            userCompanyBiz.saveUserCompany(userCompanyRequest);
+            userCompanyApi.saveUserCompany(userCompanyRequest);
         }
 
         if (response.isSuccess()) {
@@ -123,7 +128,7 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
                     .applyOrderNo(appApply.getApplyOrderNo())
                     .platformOrderNo(orderNo)
                     .build();
-            appApplyBiz.updateApplyPlatformOrderNo(appApplyUpdateRequest);
+            appApplyApi.updateApplyPlatformOrderNo(appApplyUpdateRequest);
             log.info("调用成功,响应信息:{}", JSONUtil.toJsonStr(response));
         } else {
             log.error("调用失败,响应信息:{}", JSONUtil.toJsonStr(response));
