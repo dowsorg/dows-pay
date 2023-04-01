@@ -25,6 +25,7 @@
         <module>pay-application</module>
         <module>pay-biz</module>
         <module>pay-pojo</module>
+        <module>pay-feign</module>
     </modules>
 
     <distributionManagement>

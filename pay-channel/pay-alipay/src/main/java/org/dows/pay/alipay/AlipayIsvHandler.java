@@ -72,7 +72,7 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
                 .contactName(isvCreateBo.getContactName())
                 .contactPhone(isvCreateBo.getContactPhone())
                 .build();
-        Response responseAppApply = appApplyBiz.getOneAppApply(appApply);
+        Response responseAppApply = appApplyApi.getOneAppApply(appApply);
         if (responseAppApply == null || responseAppApply.getData() == null || ((AppApply)responseAppApply.getData()).getPlatformOrderNo() == null) {
             // todo 保存请求
             appApply.setApplyOrderNo(uuid.toString());
