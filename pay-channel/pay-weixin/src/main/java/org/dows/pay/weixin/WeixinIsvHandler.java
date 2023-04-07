@@ -1,5 +1,8 @@
 package org.dows.pay.weixin;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.json.JSONUtil;
 import com.alipay.service.schema.util.StringUtil;
 import com.github.binarywang.wxpay.bean.ecommerce.ApplymentsRequest;
@@ -31,7 +34,10 @@ import org.dows.pay.api.annotation.PayMapping;
 import org.dows.pay.api.enums.PayChannels;
 import org.dows.pay.api.enums.PayMethods;
 import org.dows.pay.api.message.WeixinMessage;
+import org.dows.pay.bo.ApplymentsBo;
 import org.dows.pay.bo.IsvCreateBo;
+import org.dows.store.api.StoreInstanceApi;
+import org.dows.store.api.request.StoreInstanceRequest;
 import org.dows.user.api.api.UserCompanyApi;
 import org.dows.user.api.dto.UserCompanyDTO;
 import org.dows.user.api.vo.UserCompanyVo;
@@ -42,14 +48,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.IdGenerator;
 import org.springframework.util.SimpleIdGenerator;
 
+import javax.annotation.Resource;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -58,9 +62,9 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
     private static final Gson GSON = new GsonBuilder().create();
     private final AppApplyApi appApplyApi;
     private final UserCompanyApi userCompanyApi;
-    @Autowired
     private final AccountUserApi acountUserApi;
     private final AccountTenantApi acountTenantApi;
+    private final StoreInstanceApi storeInstanceApi;
     private final IdGenerator idGenerator = new SimpleIdGenerator();
     @Autowired
     protected ApplicationContext applicationContext;
@@ -73,7 +77,7 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
     @PayMapping(method = PayMethods.ISV_CREATE)
     public void createIsvMini(PayRequest payRequest) {
         //上传证件信息
-        List<ImageUploadResult> list = imageUploadV3(payRequest);
+        Map<String, ImageUploadResult> stringImageUploadResultMap = imageUploadV3(payRequest);
         UUID uuid = idGenerator.generateId();
         IsvCreateBo isvCreateBo = (IsvCreateBo)payRequest.getBizModel();
         // todo 先查询该营业执照有没有申请过，如果没有就保存，如果有直接查询比对是否是相同的申请（orderNo为空 其他字段值全部相同通道+应用名）
@@ -95,6 +99,27 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
         String url = String.format("%s/v3/ecommerce/applyments/", this.getWeixinClient(payRequest.getAppId()).getPayBaseUrl());
         ApplymentsRequest request = new ApplymentsRequest();
         autoMappingValue(payRequest,request);
+        //图片路径
+        //金融机构许可证图片
+        request.getBusinessLicenseInfo().setBusinessLicenseCopy(stringImageUploadResultMap.get("businessLicenseFile").getMediaId());
+        //身份证人像面照片
+        request.getIdCardInfo().setIdCardCopy(stringImageUploadResultMap.get("idCardCopyFile").getMediaId());
+        //身份证国徽面照片
+        request.getIdCardInfo().setIdCardNational(stringImageUploadResultMap.get("idCardNationalFile").getMediaId());
+        //经营者/法人身份证信息 正面照片
+        request.getIdDocInfo().setIdDocCopy(stringImageUploadResultMap.get("idDocCopyFile").getMediaId());
+        //经营者/法人身份证信息 反面照片
+        request.getIdDocInfo().setIdDocCopyBack(stringImageUploadResultMap.get("idDocCopyBackFile").getMediaId());
+        //超级管理员身份证信息 正面照片
+        request.getContactInfo().setContactIdDocCopy(stringImageUploadResultMap.get("contactIdDocCopyFile").getMediaId());
+        //超级管理员身份证信息 反面照片
+        request.getContactInfo().setContactIdDocCopyBack(stringImageUploadResultMap.get("contactIdDocCopyBackFile").getMediaId());
+        //受益人列表 受益人正反面照片
+        request.getUboInfoList().forEach(
+                x->{
+                    x.setUboIdDocCopy(stringImageUploadResultMap.get("uboIdDocCopyFile"+x.getUboIdDocNumber()).getMediaId());
+                    x.setUboIdDocCopyBack(stringImageUploadResultMap.get("UboIdDocCopyBackFile"+x.getUboIdDocNumber()).getMediaId());
+                });
         ApplymentsResult response =null;
         try {
             RsaCryptoUtil.encryptFields(request,this.getWeixinClient(payRequest.getAppId()).getConfig().getVerifier().getValidCertificate());
@@ -144,6 +169,10 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
             accountTenantBo.setAccountId(isvCreateBo.getAccount());
             accountTenantBo.setUserId(userCompanyRequest.getUserId());
             acountTenantApi.updateAccountTenant(accountTenantBo);
+            //保存门店信息
+            StoreInstanceRequest storeInstanceRequest = new StoreInstanceRequest();
+            BeanUtil.copyProperties(isvCreateBo,storeInstanceRequest);
+            storeInstanceApi.saveStoreInstance(storeInstanceRequest);
             log.info("调用成功,响应信息:{}", JSONUtil.toJsonStr(response));
         } else {
             log.error("调用失败,响应信息:{}", JSONUtil.toJsonStr(response));
@@ -212,16 +241,62 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
     /**
      * 服务商代商户申请小程序上传文件
      */
-    public List<ImageUploadResult> imageUploadV3(PayRequest payRequest) {
-        List<ImageUploadResult> list = new ArrayList<>();
+    public Map<String,ImageUploadResult> imageUploadV3(PayRequest payRequest) {
+        Map<String,ImageUploadResult> map = new HashMap<>();
         IsvCreateBo isvCreateBo = (IsvCreateBo)payRequest.getBizModel();
-        File licenseFile=new File(isvCreateBo.getLicensePic());
-        list.add(upload(licenseFile,payRequest));
-        File legalPicBackFile=new File(isvCreateBo.getLegalPicBack());
-        list.add(upload(legalPicBackFile,payRequest));
-        File legalPicFrontFile=new File(isvCreateBo.getLegalPicFront());
-        list.add(upload(legalPicFrontFile,payRequest));
-        return list;
+        //营业执照扫描件
+        File businessLicenseFile=new File(isvCreateBo.getBusinessLicenseInfo().getBusinessLicenseCopy());
+        map.put("businessLicenseFile",upload(businessLicenseFile,payRequest));
+        //金融机构许可证图片
+        if(!StringUtil.isEmpty(isvCreateBo.getFinanceInstitutionInfo().getFinanceLicensePics())){
+            File financeLicensePicsFile=new File(isvCreateBo.getFinanceInstitutionInfo().getFinanceLicensePics());
+            map.put("financeLicensePicsFile",upload(financeLicensePicsFile,payRequest));
+        }
+        //身份证人像面照片
+        if(!StringUtil.isEmpty(isvCreateBo.getIdCardInfo().getIdCardCopy())){
+            File idCardCopyFile=new File(isvCreateBo.getIdCardInfo().getIdCardCopy());
+            map.put("idCardCopyFile",upload(idCardCopyFile,payRequest));
+        }
+        //身份证国徽面照片
+        if(!StringUtil.isEmpty(isvCreateBo.getIdCardInfo().getIdCardNational())){
+            File idCardNationalFile=new File(isvCreateBo.getIdCardInfo().getIdCardNational());
+            map.put("idCardNationalFile",upload(idCardNationalFile,payRequest));
+        }
+        //经营者/法人身份证信息 正面照片
+        if(!StringUtil.isEmpty(isvCreateBo.getIdDocInfo().getIdDocCopy())){
+            File idDocCopyFile=new File(isvCreateBo.getIdDocInfo().getIdDocCopy());
+            map.put("idDocCopyFile",upload(idDocCopyFile,payRequest));
+        }
+        //经营者/法人身份证信息 反面照片
+        if(!StringUtil.isEmpty(isvCreateBo.getIdDocInfo().getIdDocCopyBack())){
+            File idDocCopyBackFile=new File(isvCreateBo.getIdDocInfo().getIdDocCopyBack());
+            map.put("idDocCopyBackFile",upload(idDocCopyBackFile,payRequest));
+        }
+        //超级管理员身份证信息 正面照片
+        if(!StringUtil.isEmpty(isvCreateBo.getContactInfo().getContactIdDocCopy())){
+            File contactIdDocCopyFile=new File(isvCreateBo.getContactInfo().getContactIdDocCopy());
+            map.put("contactIdDocCopyFile",upload(contactIdDocCopyFile,payRequest));
+        }
+        //超级管理员身份证信息 反面照片
+        if(!StringUtil.isEmpty(isvCreateBo.getContactInfo().getContactIdDocCopyBack())){
+            File contactIdDocCopyBackFile=new File(isvCreateBo.getContactInfo().getContactIdDocCopyBack());
+            map.put("contactIdDocCopyBackFile",upload(contactIdDocCopyBackFile,payRequest));
+        }
+        //受益人列表 受益人正反面照片
+        List<ApplymentsBo.UboInfo> uboInfoList = isvCreateBo.getUboInfoList();
+        if(!ObjectUtil.isEmpty(uboInfoList)){
+            uboInfoList.forEach(x->{
+                if(!x.getUboIdDocCopy().isEmpty()){
+                    File uboIdDocCopyFile=new File(x.getUboIdDocCopy());
+                    map.put("uboIdDocCopyFile"+x.getUboIdDocNumber(),upload(uboIdDocCopyFile,payRequest));
+                }
+                if(!x.getUboIdDocCopyBack().isEmpty()){
+                    File UboIdDocCopyBackFile=new File(x.getUboIdDocCopyBack());
+                    map.put("UboIdDocCopyBackFile"+x.getUboIdDocNumber(),upload(UboIdDocCopyBackFile,payRequest));
+                }
+            });
+        }
+        return map;
     }
 
     public ImageUploadResult upload(File file,PayRequest payRequest){

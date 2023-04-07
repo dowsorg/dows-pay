@@ -12,7 +12,6 @@
 package org.dows.pay.weixin.controller;
 
 
-import cn.hutool.core.date.DateUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.alipay.api.kms.aliyun.utils.StringUtils;
 import com.github.binarywang.wxpay.bean.ecommerce.*;
@@ -20,15 +19,11 @@ import com.github.binarywang.wxpay.bean.notify.CombineNotifyResult;
 import com.github.binarywang.wxpay.bean.profitsharingV3.ProfitSharingNotifyData;
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.github.binarywang.wxpay.v3.util.AesUtils;
-import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.wechat.pay.java.core.util.StringUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.error.WxErrorException;
-import me.chanjar.weixin.common.util.crypto.SHA1;
-import me.chanjar.weixin.common.util.crypto.WxCryptUtil;
 import me.chanjar.weixin.open.api.WxOpenService;
 import me.chanjar.weixin.open.bean.message.WxOpenXmlMessage;
 import org.apache.commons.io.IOUtils;
@@ -41,20 +36,17 @@ import org.dows.account.vo.AccountUserVo;
 import org.dows.app.api.mini.AppLicenseApi;
 import org.dows.app.api.mini.request.AppLicenseRequest;
 import org.dows.framework.api.Response;
+import org.dows.order.api.OrderInstanceBizApiService;
+import org.dows.order.bo.OrderInstanceBo;
+import org.dows.order.enums.OrderPayTypeEnum;
 import org.dows.pay.api.util.HttpRequestUtils;
 import org.dows.pay.boot.PayClientFactory;
 import org.dows.user.api.api.UserCompanyApi;
 import org.dows.user.api.dto.UserCompanyDTO;
 import org.dows.user.api.vo.UserCompanyVo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
-import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.DocumentBuilder;
@@ -62,13 +54,10 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.util.Date;
-import java.util.Map;
 import java.util.Objects;
-import java.util.TreeMap;
 
 /**
  * @ClassName: WeixinPayNotifyController
@@ -96,6 +85,10 @@ public class WeixinPayNotifyController {
     private final AccountTenantApi acountTenantApi;
 
     private final AppLicenseApi appLicenseApi;
+
+    private final OrderInstanceBizApiService orderInstanceBizApiService;
+
+
 
     static {
         BUILDER_LOCAL = ThreadLocal.withInitial(() -> {
@@ -139,6 +132,10 @@ public class WeixinPayNotifyController {
                 PartnerTransactionsNotifyResult notifyResult = new PartnerTransactionsNotifyResult();
                 notifyResult.setRawData(notifyResponse);
                 notifyResult.setResult(transactionsResult);
+                OrderInstanceBo instanceBo =new OrderInstanceBo();
+                instanceBo.setPayTime(new Date());
+                instanceBo.setPayState(OrderPayTypeEnum.pay_finish.getCode());
+                orderInstanceBizApiService.updateOrderInstance(instanceBo);
                 return notifyResult;
             } catch (IOException | GeneralSecurityException var12) {
                 throw new WxPayException("解析报文异常！", var12);
