@@ -1,14 +1,3 @@
-/**
- * @ProjectName:zhyt_contract
- * @PackageName:com.zhyt.contract.controller
- * @Description: 地址管理业务请求分发
- *
- * @author gaozh
- * @Date: 2022年11月10日
- *
- * @Company: crudoil
- * @Copyright: Copyright (c) 2021-2050
- */
 package org.dows.pay.weixin.controller;
 
 
