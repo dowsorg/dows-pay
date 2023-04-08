@@ -1,12 +1,15 @@
 package org.dows.pay.bo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.dows.pay.api.ChannelBizModel;
 import org.dows.pay.api.annotation.AlipayApiField;
 import org.dows.pay.api.annotation.WeixinApiField;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotBlank;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -123,6 +126,65 @@ public class IsvCreateBo implements ChannelBizModel {
     @WeixinApiField(name = "business_addition_desc")
     private String businessAdditionDesc;
     /***************微信申请参数封装END*****************/
-
+    /***************新增门店参数封装START*****************/
+    @ApiModelProperty("业态ID")
+    private String ecoId;
+    @ApiModelProperty("业态")
+    private String ecoBiz;
+    @ApiModelProperty("父ID(pid空时为总店)")
+    private String storePid;
+    @ApiModelProperty("门店ID标识")
+    private String storeId;
+    @ApiModelProperty("门店名称 ")
+    private String name;
+    @ApiModelProperty("门面照")
+    private String profile;
+    @ApiModelProperty("国家 ")
+    private String country;
+    @ApiModelProperty("门店区域")
+    private String district;
+    @ApiModelProperty("门店类型 1正餐 2快餐")
+    private Integer storeType;
+    @ApiModelProperty("门店类型 1正餐 2快餐")
+    private String storeTypeShow;
+    @ApiModelProperty("门店模式 1直营 2加盟")
+    private Integer storePattern;
+    @ApiModelProperty("门店模式 1直营 2加盟")
+    private String storePatternShow;
+    @ApiModelProperty("所属品牌")
+    private Integer storeBrand;
+    @ApiModelProperty("所属品牌")
+    private String storeBrandShow;
+    @DateTimeFormat(
+            pattern = "yyyy-MM-dd"
+    )
+    @ApiModelProperty("开业日期")
+    @JsonFormat(
+            pattern = "yyyy-MM-dd",
+            timezone = "GMT+8"
+    )
+    private Date openDate;
+    @DateTimeFormat(
+            pattern = "yyyy-MM-dd"
+    )
+    @ApiModelProperty("开业日期")
+    @JsonFormat(
+            pattern = "yyyy-MM-dd",
+            timezone = "GMT+8"
+    )
+    private String openDateShow;
+    @ApiModelProperty("营业状态 1休息 2营业中")
+    private Integer state;
+    @ApiModelProperty("营业状态 1休息 2营业中")
+    private String stateShow;
+    @ApiModelProperty("账号名")
+    private String accountName;
+    @ApiModelProperty("门店地址")
+    private String address;
+    @ApiModelProperty("分成比例")
+    private Double commissionRatio;
+    @ApiModelProperty("联系人")
+    private String contacts;
+    /***************新增门店参数封装END*****************/
 
 }

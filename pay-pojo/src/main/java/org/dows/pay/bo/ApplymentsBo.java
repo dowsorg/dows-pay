@@ -3,6 +3,8 @@ package org.dows.pay.bo;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 @Data
@@ -346,6 +348,7 @@ public class ApplymentsBo {
          *  示例值：47ZC6GC-vnrbEny__Ie_An5-tCpqxucuxi-vByf3Gjm7KE53JXvGy9tqZm2XAUf-4KGprrKhpVBDIUv0OF4wFNIO4kqg05InE4d2I6_H7I4
          * </pre>
          */
+        @NotBlank(message = "营业执照扫描件")
         private String businessLicenseCopy;
 
         /**
@@ -375,6 +378,7 @@ public class ApplymentsBo {
          *  示例值：腾讯科技有限公司
          * </pre>
          */
+        @NotBlank(message = "商户名称")
         private String merchantName;
 
         /**
@@ -388,6 +392,7 @@ public class ApplymentsBo {
          *  示例值：张三
          * </pre>
          */
+        @NotBlank(message = "经营者/法定代表人姓名")
         private String legalPerson;
 
         /**
@@ -474,6 +479,7 @@ public class ApplymentsBo {
          *  示例值：jTpGmxUX3FBWVQ5NJTZvlKX_gdU4cRz7z5NxpnFuAxhBTEO_PvWkfSCJ3zVIn001D8daLC-ehEuo0BJqRTvDujqhThn4ReFxikqJ5YW6zFQ
          * </pre>
          */
+        @NotBlank(message = "身份证人像面照片")
         private String idCardCopy;
 
         /**
@@ -489,6 +495,7 @@ public class ApplymentsBo {
          *  示例值：47ZC6GC-vnrbEny__Ie_An5-tCpqxuZm2XAUf-4KGprrKhpVBDIUv0OF4wFNIO4kqg05InE4d2I6_H7I4
          * </pre>
          */
+        @NotBlank(message = "身份证国徽面照片")
         private String idCardNational;
 
         /**
@@ -503,6 +510,7 @@ public class ApplymentsBo {
          *  示例值：pVd1HJ6zyvPedzGaV+X3qtmrq9bb9tPROvwia4ibL+F6mfjbzQIzfb3HHLEjC4EL5Kz4jBHLiCyOb+tI0m2qhZ9evAM+Jv1z0NVa8MRtelw/wDa4SzfeespQO/0kjiwfqdfg==
          * </pre>
          */
+        @NotBlank(message = "身份证姓名")
         private String idCardName;
 
         /**
@@ -517,6 +525,7 @@ public class ApplymentsBo {
          *  示例值：AOZdYGISxo4y44/UgZ69bdu9X+tfMUJ9dl+LetjM45/zMbrYu+wWZ8gn4CT3JZKGZjduGdtkRJJp0/0eow96uY1Pk7Rq79Jtt7+I8juwEc4P4TG5xzchG/5IL9DBd+Z0zZXkw==
          * </pre>
          */
+        @NotBlank(message = "身份证号码")
         private String idCardNumber;
 
         /**
@@ -546,6 +555,7 @@ public class ApplymentsBo {
          *  示例值：2019-06-06
          * </pre>
          */
+        @NotBlank(message = "身份证开始时间")
         private String idCardValidTimeBegin;
 
         /**
@@ -560,6 +570,7 @@ public class ApplymentsBo {
          *  示例值：2026-06-06
          * </pre>
          */
+        @NotBlank(message = "身份证结束时间")
         private String idCardValidTime;
 
     }
@@ -580,6 +591,7 @@ public class ApplymentsBo {
          *  示例值：jTpGmxUX3FBWVQ5NJTZvlKX_gdU4cRz7z5NxpnFuAxhBTEO_PvWkfSCJ3zVIn001D8daLC-ehEuo0BJqRTvDujqhThn4ReFxikqJ5YW6zFQ
          * </pre>
          */
+        @NotBlank(message = "证件正面照片")
         private String idDocCopy;
 
         /**
@@ -610,6 +622,7 @@ public class ApplymentsBo {
          *  示例值：jTpGmxUX3FBWVQ5NJTZvlKX_gdU4cRz7z5NxpnFuAxhBTEO_PvWkfSCJ3zVIn001D8daLC-ehEuo0BJqRTvDujqhThn4ReFxikqJ5YW6zFQ
          * </pre>
          */
+        @NotBlank(message = "证件姓名")
         private String idDocName;
 
         /**
@@ -624,6 +637,7 @@ public class ApplymentsBo {
          *  示例值：jTpGmxUX3FBWVQ5NJTZvlKX_gdU4cRz7z5NxpnFuAxhBTEO_PvWkfSCJ3zVIn001D8daLC-ehEuo0BJqRTvDujqhThn4ReFxikqJ5YW6zFQ
          * </pre>
          */
+        @NotBlank(message = "证件号码")
         private String idDocNumber;
 
         /**
@@ -639,6 +653,7 @@ public class ApplymentsBo {
          *  示例值：jTpGmxUX3FBWVQ5NJTZvlKX_gdU4cRz7z5NxpnFuAxhBTEO_PvWkfSCJ3zVIn001D8daLC-ehEuo0BJqRTvDujqhThn4ReFxikqJ5YW6zFQ
          * </pre>
          */
+
         private String idDocAddress;
 
         /**
@@ -653,6 +668,7 @@ public class ApplymentsBo {
          *  示例值：2019-06-06
          * </pre>
          */
+        @NotBlank(message = "证件有效期开始时间")
         private String docPeriodBegin;
 
         /**
@@ -667,6 +683,7 @@ public class ApplymentsBo {
          *  示例值：2020-01-02
          * </pre>
          */
+        @NotBlank(message = "证件有效期结束时间")
         private String docPeriodEnd;
 
     }
@@ -694,6 +711,7 @@ public class ApplymentsBo {
          *  示例值：IDENTIFICATION_TYPE_MAINLAND_IDCARD
          * </pre>
          */
+        @NotBlank(message = "证件类型不为空")
         private String uboIdDocType;
 
         /**
@@ -710,6 +728,7 @@ public class ApplymentsBo {
          *  示例值：jTpGmxUXqRTvDujqhThn4ReFxikqJ5YW6zFQ
          * </pre>
          */
+        @NotBlank(message = "证件正面照片不为空")
         private String uboIdDocCopy;
 
         /**
@@ -739,6 +758,7 @@ public class ApplymentsBo {
          *  示例值：AOZdYGISxo4y44/Ug4P4TG5xzchG/5IL9DBd+Z0zZXkw==
          * </pre>
          */
+        @NotBlank(message = "证件姓名不为空")
         private String uboIdDocName;
 
         /**
@@ -752,6 +772,7 @@ public class ApplymentsBo {
          *  示例值：AOZdYGISxo4y44/Ug4P4TG5xzchG/5IL9DBd+Z0zZXkw==
          * </pre>
          */
+        @NotBlank(message = "证件号码不为空")
         private String uboIdDocNumber;
 
         /**
@@ -766,6 +787,7 @@ public class ApplymentsBo {
          *  示例值：pVd1HJ6zyvPedzGaV+X3qtmrq9bb9tPROvwia4ibL+F6mfjbzQIzfDa4SzfeespQO/0kjiwfqdfg==
          * </pre>
          */
+        @NotBlank(message = "证件居住地址不为空")
         private String uboIdDocAddress;
 
         /**
@@ -780,6 +802,7 @@ public class ApplymentsBo {
          *  示例值：2019-06-06
          * </pre>
          */
+        @NotBlank(message = "证件有效期开始时间不为空")
         private String uboIdDocPeriodBegin;
 
         /**
@@ -794,6 +817,7 @@ public class ApplymentsBo {
          *  示例值：2026-06-06
          * </pre>
          */
+        @NotBlank(message = "证件有效期结束时间不为空")
         private String uboIdDocPeriodEnd;
 
     }
@@ -814,6 +838,7 @@ public class ApplymentsBo {
          *  示例值：75
          * </pre>
          */
+        @NotBlank(message = "账户类型不为空")
         private String bankAccountType;
 
         /**
@@ -828,6 +853,7 @@ public class ApplymentsBo {
          *  示例值：工商银行
          * </pre>
          */
+        @NotBlank(message = "开户银行不为空")
         private String accountBank;
 
         /**
@@ -843,6 +869,7 @@ public class ApplymentsBo {
          *  示例值：AOZdYGISxo4y44/UgZ69bdu9X+tfMUJ9dl+LetjM45/zMbrYu+wWZ8gn4CTdo+D/m9MrPg+V4sm73oxqdQu/hj7aWyDl4GQtPXVdaztB9jVbVZh3QFzV+BEmytMNQp9dt1uWJktlfdDdLR3AMWyMB377xd+m9bSr/ioDTzagEcGe+vLYiKrzcroQv3OR0p3ppFYoQ3IfYeU/04S4t9rNFL+kyblK2FCCqQ11NdbbHoCrJc7NV4oASq6ZFonjTtgjjgKsadIKHXtb3JZKGZjduGdtkRJJp0/0eow96uY1Pk7Rq79Jtt7+I8juwEc4P4TG5xzchG/5IL9DBd+Z0zZXkw==
          * </pre>
          */
+        @NotBlank(message = "开户名称不为空")
         private String accountName;
 
         /**
@@ -858,6 +885,7 @@ public class ApplymentsBo {
          *  示例值：110000
          * </pre>
          */
+        @NotBlank(message = "开户银行省市编码不为空")
         private String bankAddressCode;
 
         /**
@@ -872,6 +900,7 @@ public class ApplymentsBo {
          *  示例值：402713354941
          * </pre>
          */
+
         private String bankBranchId;
 
         /**
@@ -901,6 +930,7 @@ public class ApplymentsBo {
          *  示例值： d+xT+MQCvrLHUVDWv/8MR/dB7TkXLVfSrUxMPZy6jWWYzpRrEEaYQE8ZRGYoeorwC+w==
          * </pre>
          */
+        @NotBlank(message = "银行帐号不为空")
         private String accountNumber;
 
         /**
@@ -982,6 +1012,7 @@ public class ApplymentsBo {
          *  示例值：65
          * </pre>
          */
+        @NotBlank(message = "超级管理员类型不为空")
         private String contactType;
 
         /**
@@ -998,6 +1029,7 @@ public class ApplymentsBo {
          *  示例值： pVd1HJ6zyvPedzGaV+X3IdGdbDnuC4Eelw/wDa4SzfeespQO/0kjiwfqdfg==
          * </pre>
          */
+        @NotBlank(message = "超级管理员姓名不为空")
         private String contactName;
 
         /**
@@ -1019,6 +1051,7 @@ public class ApplymentsBo {
          *  示例值：IDENTIFICATION_TYPE_MAINLAND_IDCARD
          * </pre>
          */
+
         private String contactIdDocType;
 
         /**
@@ -1126,6 +1159,7 @@ public class ApplymentsBo {
          *  示例值：pVd1HJ6zyvPedzGaV+X3qtmrq9bb9tPROvwia4ibL+F6mfjbzQIzfb3HHLEjZ4YiNWWNeespQO/0kjiwfqdfg==
          * </pre>
          */
+        @NotBlank(message = "超级管理员手机不为空")
         private String mobilePhone;
 
         /**
@@ -1160,6 +1194,7 @@ public class ApplymentsBo {
          *  示例值：爱烧烤
          * </pre>
          */
+        @NotBlank(message = "店铺名称不为空")
         private String storeName;
 
         /**

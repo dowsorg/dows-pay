@@ -12,7 +12,6 @@
 package org.dows.pay.weixin.controller;
 
 
-import cn.hutool.core.date.DateUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.alipay.api.kms.aliyun.utils.StringUtils;
 import com.github.binarywang.wxpay.bean.ecommerce.*;
@@ -20,29 +19,34 @@ import com.github.binarywang.wxpay.bean.notify.CombineNotifyResult;
 import com.github.binarywang.wxpay.bean.profitsharingV3.ProfitSharingNotifyData;
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.github.binarywang.wxpay.v3.util.AesUtils;
-import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.wechat.pay.java.core.util.StringUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.error.WxErrorException;
-import me.chanjar.weixin.common.util.crypto.SHA1;
-import me.chanjar.weixin.common.util.crypto.WxCryptUtil;
 import me.chanjar.weixin.open.api.WxOpenService;
 import me.chanjar.weixin.open.bean.message.WxOpenXmlMessage;
 import org.apache.commons.io.IOUtils;
+import org.dows.account.api.AccountTenantApi;
+import org.dows.account.api.AccountUserApi;
+import org.dows.account.bo.AccountTenantBo;
+import org.dows.account.bo.AccountUserBo;
+import org.dows.account.vo.AccountTenantVo;
+import org.dows.account.vo.AccountUserVo;
+import org.dows.app.api.mini.AppLicenseApi;
+import org.dows.app.api.mini.request.AppLicenseRequest;
+import org.dows.framework.api.Response;
+import org.dows.order.api.OrderInstanceBizApiService;
+import org.dows.order.bo.OrderInstanceBo;
+import org.dows.order.enums.OrderPayTypeEnum;
 import org.dows.pay.api.util.HttpRequestUtils;
 import org.dows.pay.boot.PayClientFactory;
+import org.dows.user.api.api.UserCompanyApi;
+import org.dows.user.api.dto.UserCompanyDTO;
+import org.dows.user.api.vo.UserCompanyVo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
-import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.DocumentBuilder;
@@ -50,12 +54,10 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
-import java.util.Map;
+import java.util.Date;
 import java.util.Objects;
-import java.util.TreeMap;
 
 /**
  * @ClassName: WeixinPayNotifyController
@@ -75,6 +77,18 @@ public class WeixinPayNotifyController {
     private static final Gson GSON = (new GsonBuilder()).create();
 
     private static final ThreadLocal<DocumentBuilder> BUILDER_LOCAL;
+
+    private final UserCompanyApi userCompanyApi;
+
+    private final AccountUserApi acountUserApi;
+
+    private final AccountTenantApi acountTenantApi;
+
+    private final AppLicenseApi appLicenseApi;
+
+    private final OrderInstanceBizApiService orderInstanceBizApiService;
+
+
 
     static {
         BUILDER_LOCAL = ThreadLocal.withInitial(() -> {
@@ -118,6 +132,10 @@ public class WeixinPayNotifyController {
                 PartnerTransactionsNotifyResult notifyResult = new PartnerTransactionsNotifyResult();
                 notifyResult.setRawData(notifyResponse);
                 notifyResult.setResult(transactionsResult);
+                OrderInstanceBo instanceBo =new OrderInstanceBo();
+                instanceBo.setPayTime(new Date());
+                instanceBo.setPayState(OrderPayTypeEnum.pay_finish.getCode());
+                orderInstanceBizApiService.updateOrderInstance(instanceBo);
                 return notifyResult;
             } catch (IOException | GeneralSecurityException var12) {
                 throw new WxPayException("解析报文异常！", var12);
@@ -314,8 +332,6 @@ public class WeixinPayNotifyController {
 
                  AuthorizerAppid = wxMessage.getAuthorizerAppid();
                  AuthorizationCode = wxMessage.getAuthorizationCode();
-                //				String AuthorizationCodeExpiredTime = xmlMap.get("AuthorizationCodeExpiredTime") + "";
-                //				String PreAuthCode = xmlMap.get("PreAuthCode")+"";
                 //todo 根据appid获取信息，获取后进行更新AuthorizationCode信息
                 log.info("收到授权事件：回调填写授权码信息！appid={}", AuthorizerAppid);
             } else if (InfoType.equals("notify_third_fasteregister")) {
@@ -326,7 +342,35 @@ public class WeixinPayNotifyController {
                 String get_auth_code = wxMessage.getAuthCode();//第三方授权码
                 String infoCode = wxMessage.getInfo().getCode();//企业代码
                 int infoCodeType = wxMessage.getInfo().getCodeType();//企业代码
-                //				String infoComponentPhone = xmlMap.get("info.component_phone")+"";//第三方联系电话
+                //通过企业码查询userId
+                UserCompanyDTO userCompanyDTO = new UserCompanyDTO();
+                userCompanyDTO.setCompanyCode(infoCode);
+                Response<UserCompanyVo> userCompany = userCompanyApi.getUserCompany(userCompanyDTO);
+                UserCompanyVo userCompanyVo = userCompany.getData();
+                //通过userId查询accountId
+                AccountUserBo accountUserBo = new AccountUserBo();
+                accountUserBo.setUserId(userCompanyVo.getUserId());
+                Response<AccountUserVo> accountUser = acountUserApi.getAccountUser(accountUserBo);
+                AccountUserVo accountUserVo = accountUser.getData();
+                //更新账户与商户关联关系
+                accountUserBo.setAppId(appid);
+                accountUserBo.setAccountId(accountUserVo.getAccountId());
+                acountUserApi.updateAccountUser(accountUserBo);
+                //更新租户与账户关联关系
+                AccountTenantBo accountTenantBo = new AccountTenantBo();
+                accountTenantBo.setAccountId(accountUserVo.getAccountId());
+                Response<AccountTenantVo> accountTenant = acountTenantApi.getAccountTenant(accountTenantBo);
+                AccountTenantVo accountTenantVo = accountTenant.getData();
+                //保存应用许可证
+                AppLicenseRequest appLicenseRequest = AppLicenseRequest.builder()
+                        .appId(appid)
+                        .appKey(get_auth_code)
+                        .accountId(accountUserVo.getAccountId())
+                        .status("1")//0-关 1-开
+                        .dt(new Date())
+                        .tenantId(accountTenantVo.getTenantId())
+                        .build();
+                appLicenseApi.saveAppLicense(appLicenseRequest);
                 //企业
                 String infoLegalPersonaName = wxMessage.getInfo().getLegalPersonaName();//法人姓名
                 String infoLegalPersonaWechat = wxMessage.getInfo().getLegalPersonaWechat();//法人微信号

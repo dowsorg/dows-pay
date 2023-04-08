@@ -19,6 +19,7 @@ import com.github.binarywang.wxpay.exception.WxPayException;
 import com.github.binarywang.wxpay.service.WxPayService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dows.pay.api.PayEvent;
@@ -80,7 +81,7 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
         String result = "下单异常!";
         TransactionsResult transactionsResult = new TransactionsResult();
         try {
-            String url = this.getWeixinClient(payRequest.getAppId()).getPayBaseUrl()+ TradeTypeEnum.NATIVE.getPartnerUrl();//
+            String url = this.getWeixinClient(payRequest.getAppId()).getPayBaseUrl()+ TradeTypeEnum.JSAPI.getPartnerUrl();//
             String response = this.getWeixinClient(payRequest.getAppId()).postV3(url, GSON.toJson(partnerTransactionsRequest));
             GSON.fromJson(response, TransactionsResult.class);
         } catch ( WxPayException e) {

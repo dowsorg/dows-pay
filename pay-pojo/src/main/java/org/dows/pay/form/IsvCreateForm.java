@@ -1,5 +1,6 @@
 package org.dows.pay.form;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -8,8 +9,11 @@ import org.dows.pay.api.BizForm;
 import org.dows.pay.api.ChannelBizModel;
 import org.dows.pay.api.annotation.WeixinApiField;
 import org.dows.pay.bo.ApplymentsBo;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -73,21 +77,20 @@ public class IsvCreateForm implements BizForm {
     /********************************微信创建小程序START**********************************/
     // 企业代码
     @ApiModelProperty("企业代码")
+    @NotBlank(message = "企业代码不能为空")
     private String certNo;
     // 营业执照类型
+    @NotBlank(message = "营业执照类型不能为空")
     @ApiModelProperty("营业执照类型")
     private String certType;
     // 法人微信号
     @ApiModelProperty("法人微信号")
     private String legalPersonalWechat;
     @ApiModelProperty("营业执照图片")
-    @NotBlank(message = "营业执照图片不能为空")
     private String licensePic;
     @ApiModelProperty("法人身份证正面")
-    @NotBlank(message = "法人身份证正面不能为空")
     private String legalPicFront;
     @ApiModelProperty("法人身份证反面")
-    @NotBlank(message = "法人身份证反面不能为空")
     private String legalPicBack;
     @NotBlank(message = "业务申请编号不能为空")
     @ApiModelProperty("业务申请编号")
@@ -105,10 +108,11 @@ public class IsvCreateForm implements BizForm {
      *1708：社会组织，包括社会团体、民办非企业、基金会、基层群众性自治组织、农村集体经济组织等组织。
      **/
     private String organizationType;
-    @NotBlank(message = "是否金融机构不能为空")
+    @NotNull(message = "是否金融机构不能为空")
     @ApiModelProperty("是否金融机构")
     private Boolean financeInstitution;
     @ApiModelProperty( "营业执照/登记证书信息")
+    @NotNull(message = "营业执照/登记证书信息不能为")
     private ApplymentsBo.BusinessLicenseInfo businessLicenseInfo;
     @ApiModelProperty( "金融机构许可证信息")
     private ApplymentsBo.FinanceInstitutionInfo financeInstitutionInfo;
@@ -124,17 +128,17 @@ public class IsvCreateForm implements BizForm {
     @ApiModelProperty( "经营者/法人其他类型证件信息")
     private ApplymentsBo.IdDocInfo idDocInfo;
     @ApiModelProperty( "经营者/法人是否为受益人")
-    @NotBlank(message = "经营者/法人是否为受益人不能为空")
+    @NotNull(message = "经营者/法人是否为受益人不能为空")
     private Boolean owner;
     @ApiModelProperty( "最终受益人信息列表")
     private List<ApplymentsBo.UboInfo> uboInfoList;
-    @NotBlank(message = "结算账户信息不能为空")
+    @NotNull(message = "结算账户信息不能为空")
     @ApiModelProperty( "结算账户信息")
     private ApplymentsBo.AccountInfo accountInfo;
-    @NotBlank(message = "超级管理员信息不能为空")
+    @NotNull(message = "超级管理员信息不能为空")
     @ApiModelProperty( "超级管理员信息")
     private ApplymentsBo.ContactInfo contactInfo;
-    @NotBlank(message = "店铺信息不能为空")
+    @NotNull(message = "店铺信息不能为空")
     @ApiModelProperty( "店铺信息")
     private ApplymentsBo.SalesSceneInfo salesSceneInfo;
     @ApiModelProperty( "结算规则")
@@ -149,5 +153,64 @@ public class IsvCreateForm implements BizForm {
     @ApiModelProperty( "补充说明")
     private String businessAdditionDesc;
     /*********************************微信创建小程序END*************************/
-
+    /*********************************新增门店参数封装START*********************/
+    @ApiModelProperty("业态ID")
+    private String ecoId;
+    @ApiModelProperty("业态")
+    private String ecoBiz;
+    @ApiModelProperty("父ID(pid空时为总店)")
+    private String storePid;
+    @ApiModelProperty("门店ID标识")
+    private String storeId;
+    @ApiModelProperty("门店名称 ")
+    private String name;
+    @ApiModelProperty("门面照")
+    private String profile;
+    @ApiModelProperty("国家 ")
+    private String country;
+    @ApiModelProperty("门店区域")
+    private String district;
+    @ApiModelProperty("门店类型 1正餐 2快餐")
+    private Integer storeType;
+    @ApiModelProperty("门店类型 1正餐 2快餐")
+    private String storeTypeShow;
+    @ApiModelProperty("门店模式 1直营 2加盟")
+    private Integer storePattern;
+    @ApiModelProperty("门店模式 1直营 2加盟")
+    private String storePatternShow;
+    @ApiModelProperty("所属品牌")
+    private Integer storeBrand;
+    @ApiModelProperty("所属品牌")
+    private String storeBrandShow;
+    @DateTimeFormat(
+            pattern = "yyyy-MM-dd"
+    )
+    @ApiModelProperty("开业日期")
+    @JsonFormat(
+            pattern = "yyyy-MM-dd",
+            timezone = "GMT+8"
+    )
+    private Date openDate;
+    @DateTimeFormat(
+            pattern = "yyyy-MM-dd"
+    )
+    @ApiModelProperty("开业日期")
+    @JsonFormat(
+            pattern = "yyyy-MM-dd",
+            timezone = "GMT+8"
+    )
+    private String openDateShow;
+    @ApiModelProperty("营业状态 1休息 2营业中")
+    private Integer state;
+    @ApiModelProperty("营业状态 1休息 2营业中")
+    private String stateShow;
+    @ApiModelProperty("账号名")
+    private String accountName;
+    @ApiModelProperty("门店地址")
+    private String address;
+    @ApiModelProperty("分成比例")
+    private Double commissionRatio;
+    @ApiModelProperty("联系人")
+    private String contacts;
+    /***********************************新增门店参数封装END*************************/
 }
