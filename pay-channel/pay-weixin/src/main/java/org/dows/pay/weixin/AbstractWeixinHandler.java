@@ -3,6 +3,7 @@ package org.dows.pay.weixin;
 import com.alipay.api.internal.mapping.ApiField;
 import com.github.binarywang.wxpay.bean.request.BaseWxPayRequest;
 import com.github.binarywang.wxpay.service.WxPayService;
+import com.google.gson.annotations.SerializedName;
 import me.chanjar.weixin.open.api.WxOpenMaService;
 import me.chanjar.weixin.open.api.WxOpenService;
 import org.dows.pay.api.ChannelBizModel;
@@ -69,10 +70,10 @@ public abstract class AbstractWeixinHandler implements PayHandler {
         ChannelBizModel channelBizModel = payRequest.getBizModel();
         Map<String, Field> weixinFeilds = channelBizModel.getWeixinFeilds();
         Map<String, Field> collect = WX_OBJECT_MODLE_FIELD_MAP.get(wxObject.getClass());
-        if (collect == null) {
+        if (collect == null ) {
             collect = Arrays.stream(wxObject.getClass().getDeclaredFields())
-                    .filter(f -> f.isAnnotationPresent(ApiField.class))
-                    .collect(Collectors.toMap(f -> f.getAnnotation(ApiField.class).value(), Function.identity()));
+                    .filter(f -> f.isAnnotationPresent(SerializedName.class))
+                    .collect(Collectors.toMap(f -> f.getAnnotation(SerializedName.class).value(), Function.identity()));
             WX_OBJECT_MODLE_FIELD_MAP.put(wxObject.getClass(), collect);
         }
         // 根据注解匹配动态设置

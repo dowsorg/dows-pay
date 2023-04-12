@@ -1,7 +1,7 @@
 package org.dows.pay.bo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-
+import com.github.binarywang.wxpay.bean.applyment.WxPayApplyment4SubCreateRequest;
 import com.github.binarywang.wxpay.bean.ecommerce.ApplymentsRequest;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -26,7 +26,7 @@ import java.util.List;
  * 支付宝/微信/其他等共用
  */
 @Data
-public class IsvCreateBo implements ChannelBizModel {
+public class IsvCreateTyBo implements ChannelBizModel {
 
     // 账号
     @WeixinApiField(name = "wx_account")
@@ -65,7 +65,7 @@ public class IsvCreateBo implements ChannelBizModel {
     private String legalPersonalName;
 
     // 外部申请单号
-    @WeixinApiField(name = "out_request_no")
+    @WeixinApiField(name = "business_code")
     @AlipayApiField(name = "out_order_no")
     private String outOrderNo;
 
@@ -80,52 +80,18 @@ public class IsvCreateBo implements ChannelBizModel {
     private String certNo;
 
     /***************微信申请参数封装START*****************/
-    @WeixinApiField(name = "license_pic")
-    private String licensePic;
-    @WeixinApiField(name = "legal_pic_front")
-    private String legalPicFront;
-    @WeixinApiField(name = "legal_pic_back")
-    private String legalPicBack;
-/*    @WeixinApiField(name = "out_request_no")
-    private String outRequestNo;*/
-    @WeixinApiField(name = "organization_type")
-    private String organizationType;
-    @WeixinApiField(name = "finance_institution")
-    private Boolean financeInstitution;
-    @WeixinApiField(name = "business_license_info")
-    private ApplymentsRequest.BusinessLicenseInfo businessLicenseInfo;
-    @WeixinApiField(name = "finance_institution_info")
-    private ApplymentsRequest.FinanceInstitutionInfo financeInstitutionInfo;
-    @WeixinApiField(name =  "id_holder_type")
-    private String idHolderType;
-    @WeixinApiField(name =  "id_doc_type")
-    private String idDocType;
-    @WeixinApiField(name =  "authorize_letter_copy")
-    private String authorizeLetterCopy;
-    @WeixinApiField(name =  "id_card_info")
-    private ApplymentsRequest.IdCardInfo idCardInfo;
-    @WeixinApiField(name = "id_doc_info")
-    private ApplymentsRequest.IdDocInfo idDocInfo;
-    @WeixinApiField(name = "owner")
-    private Boolean owner;
-    @WeixinApiField(name = "ubo_info_list")
-    private List<ApplymentsRequest.UboInfo> uboInfoList;
-    @WeixinApiField(name = "account_info")
-    private ApplymentsRequest.AccountInfo accountInfo;
     @WeixinApiField(name = "contact_info")
-    private ApplymentsRequest.ContactInfo contactInfo;
-    @WeixinApiField(name = "sales_scene_info")
-    private ApplymentsRequest.SalesSceneInfo salesSceneInfo;
+    private WxPayApplyment4SubCreateRequest.ContactInfo contactInfo;
+    @WeixinApiField(name = "subject_info")
+    private WxPayApplyment4SubCreateRequest.SubjectInfo subjectInfo;
+    @WeixinApiField(name = "business_info")
+    private WxPayApplyment4SubCreateRequest.BusinessInfo businessInfo;
     @WeixinApiField(name = "settlement_info")
-    private ApplymentsRequest.SettlementInfo settlementInfo;
-    @WeixinApiField(name = "merchant_shortname")
-    private String merchantShortname;
-    @WeixinApiField(name = "qualifications")
-    private String qualifications;
-    @WeixinApiField(name = "business_addition_pics")
-    private String businessAdditionPics;
-    @WeixinApiField(name = "business_addition_desc")
-    private String businessAdditionDesc;
+    private WxPayApplyment4SubCreateRequest.SettlementInfo settlementInfo;
+    @WeixinApiField(name = "bank_account_info")
+    private WxPayApplyment4SubCreateRequest.BankAccountInfo bankAccountInfo;
+    @WeixinApiField(name = "addition_info")
+    private WxPayApplyment4SubCreateRequest.AdditionInfo additionInfo;
     /***************微信申请参数封装END*****************/
     /***************新增门店参数封装START*****************/
     @ApiModelProperty("业态ID")

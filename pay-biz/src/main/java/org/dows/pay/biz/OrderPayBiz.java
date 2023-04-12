@@ -13,7 +13,6 @@ import org.dows.pay.api.request.OrderPayRequest;
 import org.dows.pay.bo.*;
 import org.dows.pay.entity.PayAllocation;
 import org.dows.pay.entity.PayLedgers;
-import org.dows.pay.entity.PayTransaction;
 import org.dows.pay.form.*;
 import org.dows.pay.gateway.PayDispatcher;
 import org.dows.pay.service.PayAllocationService;
@@ -46,15 +45,15 @@ public class OrderPayBiz {
 
     private final IdGenerator idGenerator = new SimpleIdGenerator();
 
-    public Response toPay(PayPartnerTransactionForm payPartnerTransactionForm) {
+    public Response toPay(PayTransactionForm payTransactionForm) {
         OrderPayRequest orderPayRequest = new OrderPayRequest();
-        PayPartnerTransactionBo payPartnerTransactionBo = BeanUtil.copyProperties(payPartnerTransactionForm, PayPartnerTransactionBo.class);
+        PayTransactionBo payTransactionBo = BeanUtil.copyProperties(payTransactionForm, PayTransactionBo.class);
         // 设置请求方法
         orderPayRequest.setMethod(PayMethods.TRADE_ORDER_PAY.getNamespace());
         // 设置业务参数对象bizModel
-        orderPayRequest.setBizModel(payPartnerTransactionBo);
+        orderPayRequest.setBizModel(payTransactionBo);
         // 填充公共参数
-        orderPayRequest.autoSet(payPartnerTransactionForm);
+        orderPayRequest.autoSet(payTransactionForm);
         // 请求分发
         Response<PayResponse> response = payDispatcher.dispatcher(orderPayRequest);
         PayResponse data = response.getData();

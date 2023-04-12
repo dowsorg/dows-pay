@@ -9,7 +9,22 @@ server:
 #  servlet:
 #    context-path: /${spring.application.name}
 
-
+log:
+  binlog:
+    hosts:
+      - name: dxz
+        host: sh-cdb-1qjrazc8.sql.tencentcdb.com
+        port: 63915
+        username: admin
+        password: dxzsaas@!
+        timeOffset: 1000
+        filter:
+          # 全部填 *，指定某个数据库所有表填写 db_name.*
+          includes: dxz.*
+          #  - dows.log_ddl_demo
+          # 不做排除 填写空 "" ,excludes 规则优先级高于 includes
+          excludes: ""
+          #  - dows.log_ddl_demo
 spring:
   application:
     name: dows-pay
