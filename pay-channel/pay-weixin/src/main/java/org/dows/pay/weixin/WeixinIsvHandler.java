@@ -88,12 +88,11 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
         UUID uuid = idGenerator.generateId();
         IsvCreateBo isvCreateBo = (IsvCreateBo)payRequest.getBizModel();
         // todo 先查询该营业执照有没有申请过，如果没有就保存，如果有直接查询比对是否是相同的申请（orderNo为空 其他字段值全部相同通道+应用名）
-        AppApplyRequest appApply = AppApplyRequest.builder()
-                .appName(isvCreateBo.getAppName())
-                .platform(PayChannels.WEIXIN.name())
-                .contactName(isvCreateBo.getContactName())
-                .contactPhone(isvCreateBo.getContactPhone())
-                .build();
+        AppApplyRequest appApply = new AppApplyRequest();
+        appApply.setAppName(isvCreateBo.getAppName());
+        appApply.setPlatform(PayChannels.WEIXIN.name());
+        appApply.setContactName(isvCreateBo.getContactName());
+        appApply.setContactPhone(isvCreateBo.getContactPhone());
         Response<AppApplyResponse> responseAppApply = appApplyApi.getOneAppApply(appApply);
         if (responseAppApply == null || responseAppApply.getData() == null ) {
             // todo 保存请求
@@ -211,10 +210,9 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
             /**
              * todo 建立关联关系（小程序申请对象） [小程序与营业执照的关系],通过营业执照来关联 小程序名 及对应的orderNo
              */
-            AppApplyRequest appApplyUpdateRequest = AppApplyRequest.builder()
-                    .applyOrderNo(appApply.getApplyOrderNo())
-                    .platformOrderNo(orderNo)
-                    .build();
+            AppApplyRequest appApplyUpdateRequest = new AppApplyRequest();
+            appApplyUpdateRequest.setApplyOrderNo(appApply.getApplyOrderNo());
+            appApplyUpdateRequest.setPlatformOrderNo(orderNo);
             appApplyApi.updateApplyPlatformOrderNo(appApplyUpdateRequest);
             //建立账户与商户关联关系
             AccountUserBo accountUserBo = new AccountUserBo();
@@ -249,12 +247,11 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
         UUID uuid = idGenerator.generateId();
         IsvCreateTyBo isvCreateTyBo = (IsvCreateTyBo)payRequest.getBizModel();
         // todo 先查询该营业执照有没有申请过，如果没有就保存，如果有直接查询比对是否是相同的申请（orderNo为空 其他字段值全部相同通道+应用名）
-        AppApplyRequest appApply = AppApplyRequest.builder()
-                .appName(isvCreateTyBo.getAppName())
-                .platform(PayChannels.WEIXIN.name())
-                .contactName(isvCreateTyBo.getContactName())
-                .contactPhone(isvCreateTyBo.getContactPhone())
-                .build();
+        AppApplyRequest appApply = new AppApplyRequest();
+        appApply.setAppName(isvCreateTyBo.getAppName());
+        appApply.setPlatform(PayChannels.WEIXIN.name());
+        appApply.setContactName(isvCreateTyBo.getContactName());
+        appApply.setContactPhone(isvCreateTyBo.getContactPhone());
         Response<AppApplyResponse> responseAppApply = appApplyApi.getOneAppApply(appApply);
         if (responseAppApply == null || responseAppApply.getData() == null ) {
             // todo 保存请求
@@ -369,10 +366,9 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
             /**
              * todo 建立关联关系（小程序申请对象） [小程序与营业执照的关系],通过营业执照来关联 小程序名 及对应的orderNo
              */
-            AppApplyRequest appApplyUpdateRequest = AppApplyRequest.builder()
-                    .applyOrderNo(appApply.getApplyOrderNo())
-                    .platformOrderNo(orderNo)
-                    .build();
+            AppApplyRequest appApplyUpdateRequest = new AppApplyRequest();
+            appApplyUpdateRequest.setApplyOrderNo(appApply.getApplyOrderNo());
+            appApplyUpdateRequest.setPlatformOrderNo(orderNo);
             appApplyApi.updateApplyPlatformOrderNo(appApplyUpdateRequest);
             //建立账户与商户关联关系
             AccountUserBo accountUserBo = new AccountUserBo();
