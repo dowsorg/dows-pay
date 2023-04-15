@@ -8,6 +8,7 @@ import org.dows.framework.api.Response;
 import org.dows.pay.api.PayResponse;
 import org.dows.pay.biz.IsvBiz;
 import org.dows.pay.form.IsvCreateForm;
+import org.dows.pay.form.IsvCreateTyForm;
 import org.dows.pay.form.IsvQueryForm;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,7 +31,12 @@ public class IsvRest {
         isvBiz.isvCreate(isvCreateForm);
         return Response.ok();
     }
-
+    @PostMapping("/isv/ty/create")
+    @ApiOperation(value = "代商户创建特约商户小程序")
+    public Response<PayResponse> create(@Validated @RequestBody IsvCreateTyForm isvCreateTyForm) {
+        isvBiz.isvTyCreate(isvCreateTyForm);
+        return Response.ok();
+    }
 
     @PostMapping("/isv/query")
     @ApiOperation(value = "代商户查询小程序")

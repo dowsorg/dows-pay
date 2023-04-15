@@ -8,7 +8,9 @@ import org.dows.pay.api.PayResponse;
 import org.dows.pay.api.enums.PayMethods;
 import org.dows.pay.api.request.PayIsvRequest;
 import org.dows.pay.bo.IsvCreateBo;
+import org.dows.pay.bo.IsvCreateTyBo;
 import org.dows.pay.form.IsvCreateForm;
+import org.dows.pay.form.IsvCreateTyForm;
 import org.dows.pay.form.IsvQueryForm;
 import org.dows.pay.gateway.PayDispatcher;
 import org.springframework.stereotype.Service;
@@ -43,7 +45,26 @@ public class IsvBiz {
         log.info("返回结果:{}", data);
     }
 
-
+    /**
+     * isvTy 创建
+     *
+     * @param isvCreateTyForm
+     */
+    public void isvTyCreate(IsvCreateTyForm isvCreateTyForm) {
+        PayIsvRequest payRequest = new PayIsvRequest();
+        // todo
+        IsvCreateTyBo isvCreateTyBo = BeanUtil.copyProperties(isvCreateTyForm, IsvCreateTyBo.class);
+        // 设置请求方法
+        payRequest.setMethod(PayMethods.ISV_TY_CREATE.getNamespace());
+        // 设置业务参数对象bizModel
+        payRequest.setBizModel(isvCreateTyBo);
+        // 填充公共参数
+        payRequest.autoSet(isvCreateTyForm);
+        // 请求分发
+        Response<PayResponse> response = payDispatcher.dispatcher(payRequest);
+        PayResponse data = response.getData();
+        log.info("返回结果:{}", data);
+    }
     /**
      * isv查询
      *

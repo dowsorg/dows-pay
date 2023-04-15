@@ -1,6 +1,7 @@
 package org.dows.pay.boot.properties;
 
 import lombok.Data;
+import lombok.Value;
 
 import javax.net.ssl.SSLContext;
 import javax.validation.constraints.NotBlank;
@@ -56,7 +57,7 @@ public class PayClientProperties {
     /**
      * 微信支付异步回掉地址，通知url必须为直接可访问的url，不能携带参数.
      */
-    private String notifyUrl;
+    private String notifyUrl = "http://127.0.0.1/nztest/payNotify";
     /**
      * 交易类型.
      * <pre>

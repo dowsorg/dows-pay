@@ -27,8 +27,8 @@ public class OrderPayRest {
 
     @PostMapping("/order/topay")
     @ApiOperation(value = "用户支付")
-    public Response<PayResponse> query(@RequestBody PayPartnerTransactionForm payPartnerTransactionForm) {
-        orderPayBiz.toPay(payPartnerTransactionForm);
+    public Response<PayResponse> toPay(@RequestBody PayTransactionForm payTransactionForm) {
+        orderPayBiz.toPay(payTransactionForm);
         return Response.ok();
     }
 

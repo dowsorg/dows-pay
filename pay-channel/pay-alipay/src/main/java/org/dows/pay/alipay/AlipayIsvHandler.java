@@ -15,7 +15,6 @@ import com.alipay.api.response.AlipayOpenMiniIsvCreateResponse;
 import com.alipay.api.response.AlipayOpenMiniIsvQueryResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.dows.app.api.mini.AppApplyApi;
 import org.dows.app.api.mini.request.AppApplyRequest;
 import org.dows.app.biz.AppApplyBiz;
 import org.dows.app.entity.AppApply;
@@ -26,7 +25,6 @@ import org.dows.pay.api.enums.PayChannels;
 import org.dows.pay.api.enums.PayMethods;
 import org.dows.pay.api.message.AlipayMessage;
 import org.dows.pay.bo.IsvCreateBo;
-import org.dows.user.api.api.UserCompanyApi;
 import org.dows.user.biz.UserCompanyBiz;
 import org.dows.user.biz.UserCompanyRequest;
 import org.dows.user.entity.UserCompany;
@@ -45,9 +43,11 @@ import java.util.UUID;
 @Service
 public class AlipayIsvHandler extends AbstractAlipayHandler {
 
-    private final AppApplyApi appApplyApi;
+    private final AppApplyBiz appApplyBiz;
 
-    private final UserCompanyApi userCompanyApi;
+    private final UserCompanyBiz userCompanyBiz;
+
+
     private final IdGenerator idGenerator = new SimpleIdGenerator();
 
     public static void main(String[] args) {
@@ -66,17 +66,22 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
         UUID uuid = idGenerator.generateId();
         IsvCreateBo isvCreateBo = (IsvCreateBo)payRequest.getBizModel();
         // todo 先查询该营业执照有没有申请过，如果没有就保存，如果有直接查询比对是否是相同的申请（orderNo为空 其他字段值全部相同通道+应用名）
-        AppApplyRequest appApply = AppApplyRequest.builder()
-                .appName(isvCreateBo.getAppName())
-                .platform(PayChannels.ALIPAY.name())
-                .contactName(isvCreateBo.getContactName())
-                .contactPhone(isvCreateBo.getContactPhone())
-                .build();
-        Response responseAppApply = appApplyApi.getOneAppApply(appApply);
+//        AppApplyRequest appApply = AppApplyRequest.builder()
+//                .appName(isvCreateBo.getAppName())
+//                .platform(PayChannels.ALIPAY.name())
+//                .contactName(isvCreateBo.getContactName())
+//                .contactPhone(isvCreateBo.getContactPhone())
+//                .build();
+        AppApplyRequest appApply = new AppApplyRequest();
+        appApply.setAppName(isvCreateBo.getAppName());
+        appApply.setPlatform(PayChannels.ALIPAY.name());
+        appApply.setContactName(isvCreateBo.getContactName());
+        appApply.setContactPhone(isvCreateBo.getContactPhone());
+        Response responseAppApply = appApplyBiz.getOneAppApply(appApply);
         if (responseAppApply == null || responseAppApply.getData() == null || ((AppApply)responseAppApply.getData()).getPlatformOrderNo() == null) {
             // todo 保存请求
             appApply.setApplyOrderNo(uuid.toString());
-            appApplyApi.saveApply(appApply);
+            appApplyBiz.saveApply(appApply);
         }else{
             appApply.setApplyOrderNo(((AppApply)responseAppApply.getData()).getApplyOrderNo());
         }
@@ -104,12 +109,12 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
         UserCompanyRequest userCompanyRequest = UserCompanyRequest.builder()
                 .certNo(createMiniRequest.getCertNo())
                 .build();
-        UserCompany responseUserCompany = userCompanyApi.getOneUserCompany(userCompanyRequest);
+        UserCompany responseUserCompany = userCompanyBiz.getOneUserCompany(userCompanyRequest);
         if (responseUserCompany == null) {
             userCompanyRequest.setCertNo(createMiniRequest.getCertNo());
             userCompanyRequest.setCompanyName(createMiniRequest.getCertName());
             userCompanyRequest.setLegalPerson(createMiniRequest.getLegalPersonalName());
-            userCompanyApi.saveUserCompany(userCompanyRequest);
+            userCompanyBiz.saveUserCompany(userCompanyRequest);
         }
 
         if (response.isSuccess()) {
@@ -119,11 +124,14 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
             /**
              * todo 建立关联关系（小程序申请对象） [小程序与营业执照的关系],通过营业执照来关联 小程序名 及对应的orderNo
              */
-            AppApplyRequest appApplyUpdateRequest = AppApplyRequest.builder()
-                    .applyOrderNo(appApply.getApplyOrderNo())
-                    .platformOrderNo(orderNo)
-                    .build();
-            appApplyApi.updateApplyPlatformOrderNo(appApplyUpdateRequest);
+//            AppApplyRequest appApplyUpdateRequest = AppApplyRequest.builder()
+//                    .applyOrderNo(appApply.getApplyOrderNo())
+//                    .platformOrderNo(orderNo)
+//                    .build();
+            AppApplyRequest appApplyUpdateRequest = new AppApplyRequest();
+            appApplyUpdateRequest.setApplyOrderNo(appApply.getApplyOrderNo());
+            appApplyUpdateRequest.setPlatformOrderNo(orderNo);
+            appApplyBiz.updateApplyPlatformOrderNo(appApplyUpdateRequest);
             log.info("调用成功,响应信息:{}", JSONUtil.toJsonStr(response));
         } else {
             log.error("调用失败,响应信息:{}", JSONUtil.toJsonStr(response));

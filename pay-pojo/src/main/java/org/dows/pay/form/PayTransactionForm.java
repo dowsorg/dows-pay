@@ -76,11 +76,19 @@ public class PayTransactionForm implements Serializable, BizForm {
     @ApiModelProperty("交易时间")
     private Date transactionTime;
 
+    @ApiModelProperty("用户登录子账户授权openId")
+    private String subOpenid;
+
     @JsonIgnore
     private Date dt;
 
     @JsonIgnore
     private Boolean deleted;
+
+    // 通道code
+    @ApiModelProperty("通道code")
+    private String channel;
+
 
 
 }
