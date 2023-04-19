@@ -66,12 +66,6 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
         UUID uuid = idGenerator.generateId();
         IsvCreateBo isvCreateBo = (IsvCreateBo)payRequest.getBizModel();
         // todo 先查询该营业执照有没有申请过，如果没有就保存，如果有直接查询比对是否是相同的申请（orderNo为空 其他字段值全部相同通道+应用名）
-//        AppApplyRequest appApply = AppApplyRequest.builder()
-//                .appName(isvCreateBo.getAppName())
-//                .platform(PayChannels.ALIPAY.name())
-//                .contactName(isvCreateBo.getContactName())
-//                .contactPhone(isvCreateBo.getContactPhone())
-//                .build();
         AppApplyRequest appApply = new AppApplyRequest();
         appApply.setAppName(isvCreateBo.getAppName());
         appApply.setPlatform(PayChannels.ALIPAY.name());
@@ -124,10 +118,6 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
             /**
              * todo 建立关联关系（小程序申请对象） [小程序与营业执照的关系],通过营业执照来关联 小程序名 及对应的orderNo
              */
-//            AppApplyRequest appApplyUpdateRequest = AppApplyRequest.builder()
-//                    .applyOrderNo(appApply.getApplyOrderNo())
-//                    .platformOrderNo(orderNo)
-//                    .build();
             AppApplyRequest appApplyUpdateRequest = new AppApplyRequest();
             appApplyUpdateRequest.setApplyOrderNo(appApply.getApplyOrderNo());
             appApplyUpdateRequest.setPlatformOrderNo(orderNo);

@@ -51,5 +51,7 @@ public class PayTransactionBo implements ChannelBizModel {
     @ApiModelProperty("用户登录子账户授权openId")
     private String subOpenid;
 
+    private String tradeType;
+
 }
 

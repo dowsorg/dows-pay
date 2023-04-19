@@ -11,9 +11,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.dows.pay.api.PayRequest;
 import org.dows.pay.api.annotation.PayMapping;
 import org.dows.pay.api.enums.PayMethods;
+import org.dows.pay.bo.PayTransactionBo;
+import org.dows.pay.bo.RelationBingBo;
+import org.dows.pay.entity.PayAllocation;
+import org.dows.pay.entity.PayLedgers;
+import org.dows.pay.service.PayAccountService;
+import org.dows.pay.service.PayAllocationService;
+import org.dows.pay.service.PayLedgersService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 
 /**
  * 微信分账关系维护
@@ -27,6 +35,7 @@ import javax.annotation.Resource;
 @Service
 public class WeixinRoyaltyRelationHandler extends AbstractWeixinHandler {
     private static final Gson GSON = new GsonBuilder().create();
+    private final PayLedgersService payLedgersService;
 
     /**
      * 分账完成
@@ -96,12 +105,23 @@ public class WeixinRoyaltyRelationHandler extends AbstractWeixinHandler {
      */
     @PayMapping(method = PayMethods.TRADE_ROYALTY_RELATION_BIND)
     public void tradeRoyaltyRelationBind(PayRequest payRequest) {
-        ProfitSharingReceiverRequest profitSharingReceiverRequest = GSON.fromJson
-                (GSON.toJson(payRequest.getBizModel().getWeixinFeilds()), ProfitSharingReceiverRequest.class);
+        RelationBingBo relationBingBo = (RelationBingBo)payRequest.getBizModel();
+        ProfitSharingReceiverRequest profitSharingReceiverRequest = new ProfitSharingReceiverRequest();
+        profitSharingReceiverRequest.setRelationType("PARTNER");
+        profitSharingReceiverRequest.setAccount(relationBingBo.getChannelAccountNo());
+        profitSharingReceiverRequest.setAppid(relationBingBo.getAppId());
+        profitSharingReceiverRequest.setType("MERCHANT_ID");
         String url =String.format("%s/v3/ecommerce/profitsharing/receivers/add",this.getWeixinClient(payRequest.getAppId()).getPayBaseUrl());
         try {
             String response = this.getWeixinClient(payRequest.getAppId()).postV3(url, GSON.toJson(profitSharingReceiverRequest));
             ProfitSharingReceiverResult profitSharingReceiverResult = GSON.fromJson(response, ProfitSharingReceiverResult.class);
+            //更新分账关系表
+            PayLedgers payLedgers = new PayLedgers();
+            payLedgers.setAccountId(relationBingBo.getAppId());
+            payLedgers.setAllocationProfit(new BigDecimal(0.01d));
+            payLedgers.setAppId(relationBingBo.getAppId());
+            payLedgers.setChannelAccountNo(relationBingBo.getChannelAccountNo());
+            payLedgersService.saveOrUpdate(payLedgers);
         } catch (WxPayException e) {
             throw new RuntimeException(e);
         }

@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.binarywang.wxpay.bean.ecommerce.*;
 import com.github.binarywang.wxpay.bean.ecommerce.enums.TradeTypeEnum;
 import com.github.binarywang.wxpay.exception.WxPayException;
+import com.github.binarywang.wxpay.v3.util.RsaCryptoUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.RequiredArgsConstructor;
@@ -21,14 +22,18 @@ import org.dows.pay.bo.PayTransactionBo;
 import org.dows.pay.boot.PayClientConfig;
 import org.dows.pay.boot.PayClientFactory;
 import org.dows.pay.entity.PayAccount;
+import org.dows.pay.entity.PayLedgers;
 import org.dows.pay.entity.PayTransaction;
 import org.dows.pay.service.PayAccountService;
+import org.dows.pay.service.PayLedgersService;
 import org.dows.pay.service.PayTransactionService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.IdGenerator;
 import org.springframework.util.SimpleIdGenerator;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -55,6 +60,8 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
 
     private static final Gson GSON = new GsonBuilder().create();
 
+    private final PayLedgersService payLedgersService;
+
     /**
      * 单笔支付
      *
@@ -80,6 +87,8 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
         payer.setSubOpenid(payTransactionBo.getSubOpenid());
         //获取商户号
         PayAccount payAccount = payAccountService.getOne(Wrappers.lambdaQuery(PayAccount.class).eq(PayAccount::getChannelAccount, orderInstanceBo.getAppId()));
+        PartnerTransactionsRequest.SettleInfo settleInfo = new PartnerTransactionsRequest.SettleInfo();
+        settleInfo.setProfitSharing(true);
         PartnerTransactionsRequest partnerTransactionsRequest = PartnerTransactionsRequest.builder()
                 .spAppid(payRequest.getAppId())
                 .spMchid(this.getWeixinClient(payRequest.getAppId()).getConfig().getMchId())
@@ -88,6 +97,7 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
                 .subMchid(payAccount.getChannelMerchantNo())
                 .description(payTransactionBo.getOrderTitle())
                 .outTradeNo(orderInstanceBo.getOrderId())
+                .settleInfo(settleInfo)
                 .notifyUrl(payClientConfig.getClientConfigs().get(0).getNotifyUrl())
                 .payer(payer)
                 .build();
@@ -95,7 +105,15 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
         String result = "下单异常!";
         TransactionsResult transactionsResult = new TransactionsResult();
         try {
-            String url = this.getWeixinClient(payRequest.getAppId()).getPayBaseUrl()+ TradeTypeEnum.JSAPI.getPartnerUrl();//
+            String tradeType = TradeTypeEnum.JSAPI.getPartnerUrl();
+            if("APP".equals(payTransactionBo.getTradeType())){
+                tradeType = TradeTypeEnum.APP.getPartnerUrl();
+            }else if("NATIVE".equals(payTransactionBo.getTradeType())){
+                tradeType = TradeTypeEnum.NATIVE.getPartnerUrl();
+            }else{
+                tradeType = TradeTypeEnum.MWEB.getPartnerUrl();
+            }
+            String url = this.getWeixinClient(payRequest.getAppId()).getPayBaseUrl()+tradeType ;
             String response = this.getWeixinClient(payRequest.getAppId()).postV3(url, GSON.toJson(partnerTransactionsRequest));
             GSON.fromJson(response, TransactionsResult.class);
         } catch ( WxPayException e) {
@@ -110,6 +128,29 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
                     .status(1) //下单成功
                     .build();
             payTransactionService.updateById(updatePayTransaction);
+            //调用分账申请
+            PayLedgers payLedger = payLedgersService.getOne(Wrappers.lambdaQuery(PayLedgers.class).eq(PayLedgers::getAppId, orderInstanceBo.getAppId()));
+            List<ProfitSharingRequest.Receiver> receivers = new ArrayList<>();
+            ProfitSharingRequest.Receiver  receiver = new ProfitSharingRequest.Receiver();
+            receiver.setType("MERCHANT_ID");
+            receiver.setAmount(payLedger.getAllocationProfit().multiply(orderInstanceBo.getAgreeAmout().multiply(new BigDecimal(100))).intValue());
+            receiver.setReceiverAccount(payLedger.getChannelAccountNo());
+            receivers.add(receiver);
+            ProfitSharingRequest profitSharingRequest = new ProfitSharingRequest();
+            profitSharingRequest.setOutOrderNo(orderInstanceBo.getOrderId());
+            profitSharingRequest.setSubMchid(payAccount.getChannelMerchantNo());
+            profitSharingRequest.setTransactionId(orderInstanceBo.getOrderId());
+            profitSharingRequest.setAppid(payRequest.getAppId());
+            profitSharingRequest.setFinish(false);
+            profitSharingRequest.setReceivers(receivers);
+            String url = String.format("%s/v3/ecommerce/profitsharing/orders", this.getWeixinClient(payRequest.getAppId()).getPayBaseUrl());
+            try {
+                RsaCryptoUtil.encryptFields(profitSharingRequest, this.getWeixinClient(payRequest.getAppId()).getConfig().getVerifier().getValidCertificate());
+                String response = this.getWeixinClient(payRequest.getAppId()).postV3WithWechatpaySerial(url, GSON.toJson(profitSharingRequest));
+                ProfitSharingResult profitSharingResult = GSON.fromJson(response, ProfitSharingResult.class);
+            } catch (WxPayException e) {
+                throw new RuntimeException(e);
+            }
             result =  transactionsResult.getCodeUrl();
         } else {
             //todo 失败逻辑

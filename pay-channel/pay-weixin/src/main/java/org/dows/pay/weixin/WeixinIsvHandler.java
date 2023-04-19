@@ -82,7 +82,7 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
      * @param
      */
     @PayMapping(method = PayMethods.ISV_CREATE)
-    public void createIsvMini(PayRequest payRequest) {
+    public ApplymentsResult createIsvMini(PayRequest payRequest) {
         //上传证件信息
         Map<String, ImageUploadResult> stringImageUploadResultMap = imageUploadV3(payRequest);
         UUID uuid = idGenerator.generateId();
@@ -232,7 +232,7 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
         } else {
             log.error("调用失败,响应信息:{}", JSONUtil.toJsonStr(response));
         }
-
+        return  response;
     }
 
     /**
@@ -441,16 +441,20 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
      * 服务商代商户申请小程序
      */
     @PayMapping(method = PayMethods.ISV_APPLY)
-    public WxOpenResult fastRegisterApp(PayRequest payRequest) throws WxErrorException {
+    public WxOpenResult fastRegisterApp(PayRequest payRequest)  {
         IsvCreateBo isvCreateBo = (IsvCreateBo)payRequest.getBizModel();
-         WxOpenResult response = this.getWxOpenClient(payRequest.getAppId()).getWxOpenComponentService().fastRegisterWeapp(
-                 isvCreateBo.getCertName()
-                ,isvCreateBo.getCertNo()
-                ,isvCreateBo.getCertType()
-                ,isvCreateBo.getLegalPersonalWechat()
-                ,isvCreateBo.getLegalPersonalName()
-                ,isvCreateBo.getContactPhone());
-
+        WxOpenResult response = new WxOpenResult();
+        try {
+            response = this.getWxOpenClient(payRequest.getAppId()).getWxOpenComponentService().fastRegisterWeapp(
+                    isvCreateBo.getCertName()
+                    ,isvCreateBo.getCertNo()
+                    ,isvCreateBo.getCertType()
+                    ,isvCreateBo.getLegalPersonalWechat()
+                    ,isvCreateBo.getLegalPersonalName()
+                    ,isvCreateBo.getContactPhone());
+        } catch (WxErrorException e) {
+            e.printStackTrace();
+        }
         return response;
     }
 

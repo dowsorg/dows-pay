@@ -362,6 +362,7 @@ public class WeixinPayNotifyController {
                 Response<AccountTenantVo> accountTenant = acountTenantApi.getAccountTenant(accountTenantBo);
                 AccountTenantVo accountTenantVo = accountTenant.getData();
                 //保存应用许可证
+
                 AppLicenseRequest appLicenseRequest = AppLicenseRequest.builder()
                         .appId(appid)
                         .appKey(get_auth_code)
