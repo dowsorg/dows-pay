@@ -26,5 +26,10 @@
             <artifactId>pay-pojo</artifactId>
             <version>20220701-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>org.dows.cloud</groupId>
+            <artifactId>auth-boot</artifactId>
+            <version>20220701-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 </project>

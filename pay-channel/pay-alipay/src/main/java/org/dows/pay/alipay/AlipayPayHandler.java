@@ -20,16 +20,15 @@ import org.dows.pay.api.enums.PayMethods;
 import org.dows.pay.api.event.OrderPaySuccessEvent;
 import org.dows.pay.api.message.AlipayMessage;
 import org.dows.pay.bo.PayTransactionBo;
-import org.dows.pay.boot.PayClientConfig;
 import org.dows.pay.boot.PayClientFactory;
 import org.dows.pay.boot.properties.PayClientProperties;
-import org.dows.pay.entity.PayChannel;
 import org.dows.pay.entity.PayTransaction;
 import org.dows.pay.service.PayTransactionService;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.util.IdGenerator;
 import org.springframework.util.SimpleIdGenerator;
+import org.dows.auth.biz.context.SecurityUtils;
 
 import java.io.IOException;
 import java.util.*;
@@ -64,6 +63,7 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
         payTransaction.setPayChannel(payRequest.getChannel());
         payTransaction.setTransactionNo(uuid.toString());
         payTransaction.setAppId(payRequest.getAppId());
+        payTransaction.setMerchantNo(SecurityUtils.getMerchantNo());
         payTransactionService.save(payTransaction);
         AlipayTradeAppPayModel alipayTradeAppPayModel = new AlipayTradeAppPayModel();
         // 自动

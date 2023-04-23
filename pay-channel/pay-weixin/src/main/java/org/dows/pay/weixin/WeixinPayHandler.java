@@ -11,6 +11,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.dows.auth.biz.context.SecurityUtils;
 import org.dows.order.api.OrderInstanceBizApiService;
 import org.dows.order.bo.OrderInstanceBo;
 import org.dows.pay.api.PayRequest;
@@ -75,6 +76,7 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
         payTransaction.setPayChannel(payRequest.getChannel());
         payTransaction.setTransactionNo(uuid.toString());
         payTransaction.setAppId(payRequest.getAppId());
+        payTransaction.setMerchantNo(SecurityUtils.getMerchantNo());
         payTransactionService.save(payTransaction);
         //组装订单逻辑
         OrderInstanceBo orderInstanceBo = orderInstanceBizApiService.getOne(payTransactionBo.getOrderId());
