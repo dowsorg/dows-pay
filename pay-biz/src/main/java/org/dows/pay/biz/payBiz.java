@@ -45,7 +45,7 @@ public class payBiz implements PayApi {
         }
 
         Boolean boolen = false;
-        //创建支付小程序
+        //创建小程序
         WxOpenResult wxOpenResult = weixinIsvHandler.fastRegisterApp(payRequest);
         //创建支付小程序
         ApplymentsResult isvMini = weixinIsvHandler.createIsvMini(payRequest);
