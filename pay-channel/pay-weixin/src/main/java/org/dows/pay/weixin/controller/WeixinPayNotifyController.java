@@ -41,6 +41,8 @@ import org.dows.order.bo.OrderInstanceBo;
 import org.dows.order.enums.OrderPayTypeEnum;
 import org.dows.pay.api.util.HttpRequestUtils;
 import org.dows.pay.boot.PayClientFactory;
+import org.dows.store.api.StoreInstanceApi;
+import org.dows.store.api.request.StoreInstanceRequest;
 import org.dows.user.api.api.UserCompanyApi;
 import org.dows.user.api.dto.UserCompanyDTO;
 import org.dows.user.api.vo.UserCompanyVo;
@@ -87,6 +89,8 @@ public class WeixinPayNotifyController {
     private final AppLicenseApi appLicenseApi;
 
     private final OrderInstanceBizApiService orderInstanceBizApiService;
+
+    private final StoreInstanceApi storeInstanceApi;
 
 
 
@@ -372,6 +376,7 @@ public class WeixinPayNotifyController {
                         .tenantId(accountTenantVo.getTenantId())
                         .build();
                 appLicenseApi.saveAppLicense(appLicenseRequest);
+
                 //企业
                 String infoLegalPersonaName = wxMessage.getInfo().getLegalPersonaName();//法人姓名
                 String infoLegalPersonaWechat = wxMessage.getInfo().getLegalPersonaWechat();//法人微信号

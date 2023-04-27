@@ -4,7 +4,6 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.json.JSONUtil;
 import com.alipay.service.schema.util.StringUtil;
-
 import com.github.binarywang.wxpay.bean.applyment.WxPayApplyment4SubCreateRequest;
 import com.github.binarywang.wxpay.bean.applyment.WxPayApplymentCreateResult;
 import com.github.binarywang.wxpay.bean.ecommerce.ApplymentsRequest;
@@ -384,6 +383,7 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
             StoreInstanceRequest storeInstanceRequest = new StoreInstanceRequest();
             BeanUtil.copyProperties(isvCreateTyBo,storeInstanceRequest);
             storeInstanceApi.saveStoreInstance(storeInstanceRequest);
+
             log.info("调用成功,响应信息:{}", JSONUtil.toJsonStr(response));
         } else {
             log.error("调用失败,响应信息:{}", JSONUtil.toJsonStr(response));
@@ -417,6 +417,10 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
         payAccount.setChannelAccount(isvCreateBo.getAppId());
         payAccount.setChannelMerchantNo(applymentsStatusResult.getSubMchid());
         payAccountService.saveOrUpdate(payAccount);
+        //更新门店信息
+        StoreInstanceRequest storeInstanceRequest = new StoreInstanceRequest();
+        storeInstanceRequest.setMerchantNo(applymentsStatusResult.getSubMchid());
+        storeInstanceApi.updateStoreInstance(storeInstanceRequest);
         return applymentsStatusResult;
 
     }
