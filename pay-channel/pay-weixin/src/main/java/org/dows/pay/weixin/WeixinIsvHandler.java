@@ -82,6 +82,7 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
      */
     @PayMapping(method = PayMethods.ISV_CREATE)
     public ApplymentsResult createIsvMini(PayRequest payRequest) {
+        log.info("生成申请/创建小程序参数{}",payRequest);
         //上传证件信息
         Map<String, ImageUploadResult> stringImageUploadResultMap = imageUploadV3(payRequest);
         UUID uuid = idGenerator.generateId();
@@ -169,6 +170,7 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
             RsaCryptoUtil.encryptFields(request,this.getWeixinClient(payRequest.getAppId()).getConfig().getVerifier().getValidCertificate());
             String result = this.getWeixinClient(payRequest.getAppId()).postV3WithWechatpaySerial(url,GSON.toJson(request));
             response = GSON.fromJson(result, ApplymentsResult.class);
+            log.info("申请/创建小程序响应{}",response);
         } catch ( WxPayException e) {
             throw new RuntimeException(e);
         }
@@ -240,7 +242,7 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
      * @param
      */
     @PayMapping(method = PayMethods.ISV_TY_CREATE)
-    public void createIsvTyMini(PayRequest payRequest) {
+    public WxPayApplymentCreateResult createIsvTyMini(PayRequest payRequest) {
         //上传证件信息
         Map<String, ImageUploadResult> stringImageUploadResultMap = imageTyUploadV3(payRequest);
         UUID uuid = idGenerator.generateId();
@@ -388,7 +390,7 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
         } else {
             log.error("调用失败,响应信息:{}", JSONUtil.toJsonStr(response));
         }
-
+        return response;
     }
     /**
      * 查询该订单协助创建小程序的情况
@@ -446,7 +448,8 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
      */
     @PayMapping(method = PayMethods.ISV_APPLY)
     public WxOpenResult fastRegisterApp(PayRequest payRequest)  {
-        IsvCreateBo isvCreateBo = (IsvCreateBo)payRequest.getBizModel();
+        log.info("生成服务商代商户申请小程序参数{}",payRequest);
+        IsvCreateTyBo isvCreateBo = (IsvCreateTyBo)payRequest.getBizModel();
         WxOpenResult response = new WxOpenResult();
         try {
             response = this.getWxOpenClient(payRequest.getAppId()).getWxOpenComponentService().fastRegisterWeapp(
@@ -456,6 +459,7 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
                     ,isvCreateBo.getLegalPersonalWechat()
                     ,isvCreateBo.getLegalPersonalName()
                     ,isvCreateBo.getContactPhone());
+            log.info("服务商代商户申请小程序响应{}",response);
         } catch (WxErrorException e) {
             e.printStackTrace();
         }

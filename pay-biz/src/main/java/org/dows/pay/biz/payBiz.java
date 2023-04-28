@@ -2,6 +2,7 @@ package org.dows.pay.biz;
 
 import com.alipay.service.schema.util.StringUtil;
 import com.github.binarywang.wxpay.bean.applyment.WxPayApplyment4SubCreateRequest;
+import com.github.binarywang.wxpay.bean.applyment.WxPayApplymentCreateResult;
 import com.github.binarywang.wxpay.bean.applyment.enums.BankAccountTypeEnum;
 import com.github.binarywang.wxpay.bean.applyment.enums.IdTypeEnum;
 import com.github.binarywang.wxpay.bean.applyment.enums.SalesScenesTypeEnum;
@@ -38,26 +39,35 @@ public class payBiz implements PayApi {
     @Override
     public Response<Boolean> isvApply(AppApplyRequest appApplyRequest) {
         PayRequest payRequest = new PayIsvRequest();
-        IsvCreateBo isvCreateBo = convert(appApplyRequest);
-        if("ty".equals(appApplyRequest.getApplyType())){
+        log.info("生成appApplyRequest参数{}",appApplyRequest);
+        if("WEIXIN".equals(appApplyRequest.getApplyType())){
             IsvCreateTyBo isvCreateTyBo = convertTy(appApplyRequest);
+            log.info("生成payRequest.setBizModel参数{}",isvCreateTyBo);
             payRequest.setBizModel(isvCreateTyBo);
+            payRequest.setChannel("weixin");
+            payRequest.setAppId("wxdb8634feb22a5ab9");
         }else{
+            IsvCreateBo isvCreateBo = convert(appApplyRequest);
+            log.info("生成payRequest.setBizModel参数{}",isvCreateBo);
             payRequest.setBizModel(isvCreateBo);
+            payRequest.setChannel("weixin");
+            payRequest.setAppId("wxdb8634feb22a5ab9");
         }
 
         Boolean boolen = false;
         //创建小程序
         WxOpenResult wxOpenResult = weixinIsvHandler.fastRegisterApp(payRequest);
+        log.info("生成WxOpenResult参数{}",wxOpenResult);
         //创建支付小程序
-        ApplymentsResult isvMini = weixinIsvHandler.createIsvMini(payRequest);
-
+        WxPayApplymentCreateResult isvMini = weixinIsvHandler.createIsvTyMini(payRequest);
+        log.info("生成WxPayApplymentCreateResult参数{}",isvMini);
         if(wxOpenResult.isSuccess()&& !StringUtil.isEmpty(isvMini.getApplymentId())){
             boolen = true;
         }
         return Response.ok(boolen);
     }
     public IsvCreateBo convert(AppApplyRequest appApplyRequest){
+        log.info("开始转换参数appApplyRequest{}",appApplyRequest);
         IsvCreateBo isvCreateBo = new IsvCreateBo();
         isvCreateBo.setAccount(appApplyRequest.getPlatformAccount());
         //账户信息
@@ -72,9 +82,11 @@ public class payBiz implements PayApi {
         isvCreateBo.setLegalPersonalWechat(appApplyRequest.getLegalWechatNo());
         isvCreateBo.setLegalPicBack(appApplyRequest.getProprietorIdPictureBack());
         isvCreateBo.setLegalPicFront(appApplyRequest.getProprietorIdPictureFront());
+        isvCreateBo.setContactPhone(appApplyRequest.getContactPhone());
         //营业执照信息
         isvCreateBo.setCertNo(appApplyRequest.getCertNo());
         isvCreateBo.setCertType("2");
+        isvCreateBo.setCertName(appApplyRequest.getCertName());
         ApplymentsRequest.BusinessLicenseInfo businessLicenseInfo = new ApplymentsRequest.BusinessLicenseInfo();
         businessLicenseInfo.setBusinessLicenseCopy(appApplyRequest.getCertPicture());
         businessLicenseInfo.setBusinessLicenseNumber(appApplyRequest.getCertNo());
@@ -119,9 +131,11 @@ public class payBiz implements PayApi {
         isvCreateBo.setUboInfoList(list);
         //资质证明
         isvCreateBo.setQualifications(appApplyRequest.getQualificationPicture());
+        log.info("结束转换参数appApplyRequest{}",isvCreateBo);
         return  isvCreateBo;
     }
     public IsvCreateTyBo convertTy(AppApplyRequest appApplyRequest){
+        log.info("开始转换参数appApplyRequest{}",appApplyRequest);
         IsvCreateTyBo isvCreateBo = new IsvCreateTyBo();
         isvCreateBo.setAccount(appApplyRequest.getPlatformAccount());
         //账户信息
@@ -134,6 +148,7 @@ public class payBiz implements PayApi {
         //主体资料
         isvCreateBo.setLegalPersonalName(appApplyRequest.getLegalName());
         isvCreateBo.setLegalPersonalWechat(appApplyRequest.getLegalWechatNo());
+        isvCreateBo.setContactPhone(appApplyRequest.getContactPhone());
         WxPayApplyment4SubCreateRequest.SubjectInfo subjectInfo = new WxPayApplyment4SubCreateRequest.SubjectInfo();
         subjectInfo.setFinanceInstitution(false);
         subjectInfo.setSubjectType(SubjectTypeEnum.SUBJECT_TYPE_ENTERPRISE);
@@ -175,6 +190,7 @@ public class payBiz implements PayApi {
         //经营资料信息
         isvCreateBo.setCertNo(appApplyRequest.getCertNo());
         isvCreateBo.setCertType("2");
+        isvCreateBo.setCertName(appApplyRequest.getCertName());
         WxPayApplyment4SubCreateRequest.BusinessInfo businessInfo = new WxPayApplyment4SubCreateRequest.BusinessInfo();
         WxPayApplyment4SubCreateRequest.BusinessInfo.SalesInfo salesInfo = new WxPayApplyment4SubCreateRequest.BusinessInfo.SalesInfo();
         WxPayApplyment4SubCreateRequest.BusinessInfo.SalesInfo.MiniProgramInfo miniProgramInfo
@@ -211,6 +227,7 @@ public class payBiz implements PayApi {
         settlementInfo.setActivitiesRate("0");
         settlementInfo.setQualificationType(appApplyRequest.getBusinessScope());
         isvCreateBo.setSettlementInfo(settlementInfo);
+        log.info("结束转换参数appApplyRequest{}",isvCreateBo);
         return  isvCreateBo;
     }
 }
