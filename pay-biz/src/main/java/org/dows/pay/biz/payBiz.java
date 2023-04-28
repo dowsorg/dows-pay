@@ -19,6 +19,7 @@ import org.dows.pay.api.request.PayIsvRequest;
 import org.dows.pay.bo.IsvCreateBo;
 import org.dows.pay.bo.IsvCreateTyBo;
 import org.dows.pay.weixin.WeixinIsvHandler;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class payBiz implements PayApi {
+    @Lazy
     private final WeixinIsvHandler weixinIsvHandler;
 
     @Override
