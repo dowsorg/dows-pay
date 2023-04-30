@@ -29,6 +29,7 @@ import org.dows.app.api.mini.request.AppApplyRequest;
 import org.dows.app.api.mini.response.AppApplyResponse;
 import org.dows.framework.api.Response;
 import org.dows.pay.api.PayEvent;
+import org.dows.pay.api.PayException;
 import org.dows.pay.api.PayHandler;
 import org.dows.pay.api.PayRequest;
 import org.dows.pay.api.annotation.PayMapping;
@@ -242,7 +243,7 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
      * @param
      */
     @PayMapping(method = PayMethods.ISV_TY_CREATE)
-    public WxPayApplymentCreateResult createIsvTyMini(PayRequest payRequest) {
+    public WxPayApplymentCreateResult createIsvTyMini(PayRequest payRequest) throws PayException {
         //上传证件信息
         Map<String, ImageUploadResult> stringImageUploadResultMap = imageTyUploadV3(payRequest);
         UUID uuid = idGenerator.generateId();
@@ -328,7 +329,8 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
             String result = this.getWeixinClient(payRequest.getAppId()).postV3WithWechatpaySerial(url,GSON.toJson(request));
             response = GSON.fromJson(result, WxPayApplymentCreateResult.class);
         } catch ( WxPayException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            throw new PayException(e.getMessage());
         }
         /**
          * todo 提前保存该对象 userCompanyRequest 到用户实体字典域UserCompany表，留后期场景使用
@@ -447,7 +449,7 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
      * 服务商代商户申请小程序
      */
     @PayMapping(method = PayMethods.ISV_APPLY)
-    public WxOpenResult fastRegisterApp(PayRequest payRequest)  {
+    public WxOpenResult fastRegisterApp(PayRequest payRequest) throws PayException {
         log.info("生成服务商代商户申请小程序参数{}",payRequest);
         IsvCreateTyBo isvCreateBo = (IsvCreateTyBo)payRequest.getBizModel();
         WxOpenResult response = new WxOpenResult();
@@ -462,6 +464,7 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
             log.info("服务商代商户申请小程序响应{}",response);
         } catch (WxErrorException e) {
             e.printStackTrace();
+            throw new PayException(e.getMessage());
         }
         return response;
     }

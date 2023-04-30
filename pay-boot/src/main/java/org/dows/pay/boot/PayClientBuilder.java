@@ -2,29 +2,41 @@ package org.dows.pay.boot;
 
 import cn.binarywang.wx.miniapp.config.WxMaConfig;
 import cn.binarywang.wx.miniapp.config.impl.WxMaDefaultConfigImpl;
-import com.alipay.api.*;
-import com.github.binarywang.wxpay.bean.result.BaseWxPayResult;
+import com.alipay.api.AlipayApiException;
+import com.alipay.api.AlipayClient;
+import com.alipay.api.AlipayConfig;
+import com.alipay.api.DefaultAlipayClient;
 import com.github.binarywang.wxpay.config.WxPayConfig;
 import com.github.binarywang.wxpay.service.WxPayService;
-import com.github.binarywang.wxpay.service.impl.BaseWxPayServiceImpl;
 import com.github.binarywang.wxpay.service.impl.WxPayServiceImpl;
-import me.chanjar.weixin.open.api.WxOpenComponentService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.open.api.WxOpenConfigStorage;
 import me.chanjar.weixin.open.api.WxOpenMaService;
 import me.chanjar.weixin.open.api.WxOpenService;
 import me.chanjar.weixin.open.api.impl.WxOpenInMemoryConfigStorage;
 import me.chanjar.weixin.open.api.impl.WxOpenMaServiceImpl;
-import me.chanjar.weixin.open.api.impl.WxOpenServiceAbstractImpl;
 import me.chanjar.weixin.open.api.impl.WxOpenServiceImpl;
 import org.apache.commons.lang3.StringUtils;
+import org.dows.auth.api.TempRedisApi;
 import org.dows.pay.boot.properties.PayClientProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 
-@Service
-public class PayClientBuilder {
+import javax.annotation.PostConstruct;
 
+@Service
+@Slf4j
+public class PayClientBuilder {
+    @Autowired
+    private   TempRedisApi tempRedisApi;
+    private static  PayClientBuilder payClientBuilder;
+    @PostConstruct
+    public void init(){
+        payClientBuilder = this;
+        payClientBuilder.tempRedisApi = this.tempRedisApi;
+    }
     /**
      * 普通公钥方式
      */
@@ -153,6 +165,8 @@ public class PayClientBuilder {
         wxOpenConfigStorage.setComponentAesKey(config.getAesKey());
         wxOpenConfigStorage.setComponentAppSecret(config.getAppSecret());
         wxOpenConfigStorage.setComponentToken(config.getToken());
+        log.info("Redis中的component_verify_ticket:{}",payClientBuilder.tempRedisApi.getKey("component_verify_ticket").getRvalue());
+        wxOpenConfigStorage.setComponentVerifyTicket(payClientBuilder.tempRedisApi.getKey("component_verify_ticket").getRvalue());
         WxOpenService wxOpenService  = new WxOpenServiceImpl();
         wxOpenService.setWxOpenConfigStorage(wxOpenConfigStorage);
 

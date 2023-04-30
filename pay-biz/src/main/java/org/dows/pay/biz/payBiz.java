@@ -15,6 +15,7 @@ import me.chanjar.weixin.open.bean.result.WxOpenResult;
 import org.dows.app.api.mini.request.AppApplyRequest;
 import org.dows.framework.api.Response;
 import org.dows.pay.api.PayApi;
+import org.dows.pay.api.PayException;
 import org.dows.pay.api.PayRequest;
 import org.dows.pay.api.request.PayIsvRequest;
 import org.dows.pay.bo.IsvCreateBo;
@@ -37,7 +38,7 @@ public class payBiz implements PayApi {
     private final WeixinIsvHandler weixinIsvHandler;
 
     @Override
-    public Response<Boolean> isvApply(AppApplyRequest appApplyRequest) {
+    public Response isvApply(AppApplyRequest appApplyRequest){
         PayRequest payRequest = new PayIsvRequest();
         log.info("生成appApplyRequest参数{}",appApplyRequest);
         if("WEIXIN".equals(appApplyRequest.getApplyType())){
@@ -53,18 +54,21 @@ public class payBiz implements PayApi {
             payRequest.setChannel("weixin");
             payRequest.setAppId("wxdb8634feb22a5ab9");
         }
-
-        Boolean boolen = false;
-        //创建小程序
-        WxOpenResult wxOpenResult = weixinIsvHandler.fastRegisterApp(payRequest);
-        log.info("生成WxOpenResult参数{}",wxOpenResult);
-        //创建支付小程序
-        WxPayApplymentCreateResult isvMini = weixinIsvHandler.createIsvTyMini(payRequest);
-        log.info("生成WxPayApplymentCreateResult参数{}",isvMini);
-        if(wxOpenResult.isSuccess()&& !StringUtil.isEmpty(isvMini.getApplymentId())){
-            boolen = true;
+        try{
+            WxOpenResult wxOpenResult = weixinIsvHandler.fastRegisterApp(payRequest);
+            log.info("生成WxOpenResult参数{}",wxOpenResult);
+            //创建支付小程序
+            WxPayApplymentCreateResult isvMini = weixinIsvHandler.createIsvTyMini(payRequest);
+            log.info("生成WxPayApplymentCreateResult参数{}",isvMini);
+            if(wxOpenResult.isSuccess()&& !StringUtil.isEmpty(isvMini.getApplymentId())){
+                return Response.ok(true,"申请成功");
+            }
+        }catch(PayException e){
+            e.printStackTrace();
+            //创建小程序
+            return Response.fail(e.getMessage());
         }
-        return Response.ok(boolen);
+        return Response.fail("系统异常，请联系管理员！");
     }
     public IsvCreateBo convert(AppApplyRequest appApplyRequest){
         log.info("开始转换参数appApplyRequest{}",appApplyRequest);

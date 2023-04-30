@@ -12,7 +12,7 @@ public interface PayApi {
      * @param appApplyRequest
      * @return
      */
-    Response<Boolean> isvApply(AppApplyRequest appApplyRequest);
+    Response isvApply(AppApplyRequest appApplyRequest);
 
 
 
