@@ -66,7 +66,7 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
      * @param
      */
     @PayMapping(method = PayMethods.ISV_CREATE)
-    public void createIsvMini(PayRequest payRequest) {
+    public AlipayOpenMiniIsvCreateResponse createIsvMini(PayRequest payRequest) {
         UUID uuid = idGenerator.generateId();
         IsvCreateBo isvCreateBo = (IsvCreateBo)payRequest.getBizModel();
         // todo 先查询该营业执照有没有申请过，如果没有就保存，如果有直接查询比对是否是相同的申请（orderNo为空 其他字段值全部相同通道+应用名）
@@ -130,6 +130,7 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
         } else {
             log.error("调用失败,响应信息:{}", JSONUtil.toJsonStr(response));
         }
+        return response;
     }
 
     /**

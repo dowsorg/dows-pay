@@ -1,5 +1,6 @@
 package org.dows.pay.biz;
 
+import com.alipay.api.response.AlipayOpenMiniIsvCreateResponse;
 import com.alipay.service.schema.util.StringUtil;
 import com.github.binarywang.wxpay.bean.applyment.WxPayApplyment4SubCreateRequest;
 import com.github.binarywang.wxpay.bean.applyment.WxPayApplymentCreateResult;
@@ -14,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.open.bean.result.WxOpenResult;
 import org.dows.app.api.mini.request.AppApplyRequest;
 import org.dows.framework.api.Response;
+import org.dows.pay.alipay.AlipayIsvHandler;
 import org.dows.pay.api.PayApi;
 import org.dows.pay.api.PayException;
 import org.dows.pay.api.PayRequest;
@@ -36,6 +38,8 @@ import java.util.List;
 public class payBiz implements PayApi {
     @Lazy
     private final WeixinIsvHandler weixinIsvHandler;
+    @Lazy
+    private final AlipayIsvHandler alipayIsvHandler;
 
     @Override
     public Response isvApply(AppApplyRequest appApplyRequest){
@@ -47,27 +51,34 @@ public class payBiz implements PayApi {
             payRequest.setBizModel(isvCreateTyBo);
             payRequest.setChannel("weixin");
             payRequest.setAppId("wxdb8634feb22a5ab9");
+            try{
+                WxOpenResult wxOpenResult = weixinIsvHandler.fastRegisterApp(payRequest);
+                log.info("生成WxOpenResult参数{}",wxOpenResult);
+                //创建支付小程序
+                WxPayApplymentCreateResult isvMini = weixinIsvHandler.createIsvTyMini(payRequest);
+                log.info("生成WxPayApplymentCreateResult参数{}",isvMini);
+                if(wxOpenResult.isSuccess()&& !StringUtil.isEmpty(isvMini.getApplymentId())){
+                    return Response.ok(true,"申请微信小程序成功");
+                }
+            }catch(PayException e){
+                e.printStackTrace();
+                //创建小程序
+                return Response.fail(e.getMessage());
+            }
         }else{
             IsvCreateBo isvCreateBo = convert(appApplyRequest);
             log.info("生成payRequest.setBizModel参数{}",isvCreateBo);
             payRequest.setBizModel(isvCreateBo);
-            payRequest.setChannel("weixin");
-            payRequest.setAppId("wxdb8634feb22a5ab9");
-        }
-        try{
-            WxOpenResult wxOpenResult = weixinIsvHandler.fastRegisterApp(payRequest);
-            log.info("生成WxOpenResult参数{}",wxOpenResult);
-            //创建支付小程序
-            WxPayApplymentCreateResult isvMini = weixinIsvHandler.createIsvTyMini(payRequest);
-            log.info("生成WxPayApplymentCreateResult参数{}",isvMini);
-            if(wxOpenResult.isSuccess()&& !StringUtil.isEmpty(isvMini.getApplymentId())){
-                return Response.ok(true,"申请成功");
+            payRequest.setChannel("alipay");
+            payRequest.setAppId("2021003129694075");
+            //创建支付宝小程序
+            AlipayOpenMiniIsvCreateResponse alipayResponse = alipayIsvHandler.createIsvMini(payRequest);
+            log.info("生成AlipayOpenMiniIsvCreateResponse参数{}",alipayResponse);
+            if(alipayResponse.isSuccess()){
+                return Response.ok(true,"申请支付宝小程序成功");
             }
-        }catch(PayException e){
-            e.printStackTrace();
-            //创建小程序
-            return Response.fail(e.getMessage());
         }
+
         return Response.fail("系统异常，请联系管理员！");
     }
     public IsvCreateBo convert(AppApplyRequest appApplyRequest){
