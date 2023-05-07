@@ -1,5 +1,6 @@
 package org.dows.pay.biz;
 
+import cn.hutool.core.util.IdUtil;
 import com.alipay.api.response.AlipayOpenMiniIsvCreateResponse;
 import com.alipay.service.schema.util.StringUtil;
 import com.github.binarywang.wxpay.bean.applyment.WxPayApplyment4SubCreateRequest;
@@ -60,7 +61,7 @@ public class payBiz implements PayApi {
                 if(wxOpenResult.isSuccess()&& !StringUtil.isEmpty(isvMini.getApplymentId())){
                     return Response.ok(true,"申请微信小程序成功");
                 }
-            }catch(PayException e){
+            }catch(Exception e){
                 e.printStackTrace();
                 //创建小程序
                 return Response.fail(e.getMessage());
@@ -98,7 +99,7 @@ public class payBiz implements PayApi {
                 if(wxOpenResult.isSuccess()&& !StringUtil.isEmpty(isvMini.getApplymentId())){
                     return Response.ok(true,"申请微信小程序成功");
                 }
-            }catch(PayException e){
+            }catch(Exception e){
                 e.printStackTrace();
                 //创建小程序
                 return Response.fail(e.getMessage());
@@ -194,6 +195,7 @@ public class payBiz implements PayApi {
     public IsvCreateTyBo convertTy(AppApplyRequest appApplyRequest){
         log.info("开始转换参数appApplyRequest{}",appApplyRequest);
         IsvCreateTyBo isvCreateBo = new IsvCreateTyBo();
+        isvCreateBo.setOutOrderNo(IdUtil.fastUUID());
         isvCreateBo.setAccount(appApplyRequest.getPlatformAccount());
         //账户信息
         WxPayApplyment4SubCreateRequest.BankAccountInfo accountInfo = new WxPayApplyment4SubCreateRequest.BankAccountInfo();
@@ -246,7 +248,7 @@ public class payBiz implements PayApi {
 
         //经营资料信息
         isvCreateBo.setCertNo(appApplyRequest.getCertNo());
-        isvCreateBo.setCertType("3");
+        isvCreateBo.setCertType("2");
         isvCreateBo.setCertName(appApplyRequest.getBankAccountName());
         WxPayApplyment4SubCreateRequest.BusinessInfo businessInfo = new WxPayApplyment4SubCreateRequest.BusinessInfo();
         WxPayApplyment4SubCreateRequest.BusinessInfo.SalesInfo salesInfo = new WxPayApplyment4SubCreateRequest.BusinessInfo.SalesInfo();
