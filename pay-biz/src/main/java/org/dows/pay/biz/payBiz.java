@@ -246,8 +246,8 @@ public class payBiz implements PayApi {
 
         //经营资料信息
         isvCreateBo.setCertNo(appApplyRequest.getCertNo());
-        isvCreateBo.setCertType("2");
-        isvCreateBo.setCertName(appApplyRequest.getCertName());
+        isvCreateBo.setCertType("3");
+        isvCreateBo.setCertName(appApplyRequest.getBankAccountName());
         WxPayApplyment4SubCreateRequest.BusinessInfo businessInfo = new WxPayApplyment4SubCreateRequest.BusinessInfo();
         WxPayApplyment4SubCreateRequest.BusinessInfo.SalesInfo salesInfo = new WxPayApplyment4SubCreateRequest.BusinessInfo.SalesInfo();
         WxPayApplyment4SubCreateRequest.BusinessInfo.SalesInfo.MiniProgramInfo miniProgramInfo
