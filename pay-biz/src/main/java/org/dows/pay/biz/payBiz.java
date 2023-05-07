@@ -65,20 +65,62 @@ public class payBiz implements PayApi {
                 //创建小程序
                 return Response.fail(e.getMessage());
             }
-        }else{
+        }else if("ALIPAY".equals(appApplyRequest.getApplyType())){
             IsvCreateBo isvCreateBo = convert(appApplyRequest);
             log.info("生成payRequest.setBizModel参数{}",isvCreateBo);
             payRequest.setBizModel(isvCreateBo);
             payRequest.setChannel("alipay");
             payRequest.setAppId("2021003129694075");
+            try{
             //创建支付宝小程序
             AlipayOpenMiniIsvCreateResponse alipayResponse = alipayIsvHandler.createIsvMini(payRequest);
             log.info("生成AlipayOpenMiniIsvCreateResponse参数{}",alipayResponse);
             if(alipayResponse.isSuccess()){
                 return Response.ok(true,"申请支付宝小程序成功");
             }
+            }catch(Exception e){
+                e.printStackTrace();
+                //创建小程序
+                return Response.fail(e.getMessage());
+            }
+        }else {
+            IsvCreateTyBo isvCreateTyBo = convertTy(appApplyRequest);
+            log.info("全部申请微信生成payRequest.setBizModel参数{}",isvCreateTyBo);
+            payRequest.setBizModel(isvCreateTyBo);
+            payRequest.setChannel("weixin");
+            payRequest.setAppId("wxdb8634feb22a5ab9");
+            try{
+                WxOpenResult wxOpenResult = weixinIsvHandler.fastRegisterApp(payRequest);
+                log.info("全部申请微信生成WxOpenResult参数{}",wxOpenResult);
+                //创建支付小程序
+                WxPayApplymentCreateResult isvMini = weixinIsvHandler.createIsvTyMini(payRequest);
+                log.info("全部申请微信生成WxPayApplymentCreateResult参数{}",isvMini);
+                if(wxOpenResult.isSuccess()&& !StringUtil.isEmpty(isvMini.getApplymentId())){
+                    return Response.ok(true,"申请微信小程序成功");
+                }
+            }catch(PayException e){
+                e.printStackTrace();
+                //创建小程序
+                return Response.fail(e.getMessage());
+            }
+            IsvCreateBo isvCreateBo = convert(appApplyRequest);
+            log.info("全部申请支付宝生成payRequest.setBizModel参数{}",isvCreateBo);
+            payRequest.setBizModel(isvCreateBo);
+            payRequest.setChannel("alipay");
+            payRequest.setAppId("2021003129694075");
+            try{
+                //创建支付宝小程序
+                AlipayOpenMiniIsvCreateResponse alipayResponse = alipayIsvHandler.createIsvMini(payRequest);
+                log.info("全部申请支付宝生成AlipayOpenMiniIsvCreateResponse参数{}",alipayResponse);
+                if(alipayResponse.isSuccess()){
+                    return Response.ok(true,"申请支付宝小程序成功");
+                }
+            }catch(Exception e){
+                e.printStackTrace();
+                //创建小程序
+                return Response.fail(e.getMessage());
+            }
         }
-
         return Response.fail("系统异常，请联系管理员！");
     }
     public IsvCreateBo convert(AppApplyRequest appApplyRequest){
