@@ -195,7 +195,7 @@ public class payBiz implements PayApi {
     public IsvCreateTyBo convertTy(AppApplyRequest appApplyRequest){
         log.info("开始转换参数appApplyRequest{}",appApplyRequest);
         IsvCreateTyBo isvCreateBo = new IsvCreateTyBo();
-        isvCreateBo.setOutOrderNo(IdUtil.fastUUID());
+        isvCreateBo.setOutOrderNo(IdUtil.fastUUID().replace("-",""));
         isvCreateBo.setAccount(appApplyRequest.getPlatformAccount());
         //账户信息
         WxPayApplyment4SubCreateRequest.BankAccountInfo accountInfo = new WxPayApplyment4SubCreateRequest.BankAccountInfo();
@@ -203,6 +203,7 @@ public class payBiz implements PayApi {
         accountInfo.setAccountName(appApplyRequest.getBankAccountName());
         accountInfo.setAccountNumber(appApplyRequest.getBankNo());
         accountInfo.setBankAccountType(BankAccountTypeEnum.BANK_ACCOUNT_TYPE_CORPORATE);
+        accountInfo.setBankAddressCode(appApplyRequest.getBankPostalNo());
         isvCreateBo.setBankAccountInfo(accountInfo);
         //主体资料
         isvCreateBo.setLegalPersonalName(appApplyRequest.getLegalName());
@@ -230,17 +231,22 @@ public class payBiz implements PayApi {
         idCardInfo.setIdCardNational(appApplyRequest.getProprietorIdPictureBack());
         idCardInfo.setIdCardName(appApplyRequest.getLegalName());
         idCardInfo.setIdCardNumber(appApplyRequest.getProprietorId());
+        idCardInfo.setCardPeriodBegin(appApplyRequest.getProprietorIdValidityPeriod());
+        idCardInfo.setCardPeriodEnd(appApplyRequest.getProprietorIdValidityPeriod());
+        idCardInfo.setIdCardAddress(appApplyRequest.getProprietorIdAddress());
         identityInfo.setIdCardInfo(idCardInfo);
         identityInfo.setOwner(true);
         identityInfo.setIdDocType(IdTypeEnum.IDENTIFICATION_TYPE_IDCARD);
         subjectInfo.setIdentityInfo(identityInfo);
         //受益人
         WxPayApplyment4SubCreateRequest.SubjectInfo.UboInfo uboInfo = new WxPayApplyment4SubCreateRequest.SubjectInfo.UboInfo();
-        uboInfo.setUboIdDocName(appApplyRequest.getBeneficiaryName());
+/*        uboInfo.setUboIdDocName(appApplyRequest.getBeneficiaryName());
         uboInfo.setUboIdDocNumber(appApplyRequest.getBeneficiary());
         uboInfo.setUboIdDocCopy(appApplyRequest.getBeneficiaryIdPictureFront());
         uboInfo.setUboIdDocCopyBack(appApplyRequest.getBeneficiaryIdPictureBack());
         uboInfo.setUboIdDocType(IdTypeEnum.IDENTIFICATION_TYPE_IDCARD);
+        uboInfo.setUboPeriodBegin(appApplyRequest.getBeneficiaryIdValidityPeriod());
+        uboInfo.setUboPeriodEnd(appApplyRequest.getBeneficiaryIdValidityPeriod());*/
         List<WxPayApplyment4SubCreateRequest.SubjectInfo.UboInfo> list = new ArrayList<>();
         list.add(uboInfo);
         subjectInfo.setUboInfoList(list);
@@ -277,7 +283,10 @@ public class payBiz implements PayApi {
         contactInfo.setContactType("LEGAL");
         contactInfo.setContactIdDocCopy(appApplyRequest.getProprietorIdPictureFront());
         contactInfo.setContactIdDocCopyBack(appApplyRequest.getProprietorIdPictureBack());
-
+        contactInfo.setContactPeriodBegin(appApplyRequest.getProprietorIdValidityPeriod());
+        contactInfo.setContactPeriodEnd(appApplyRequest.getProprietorIdValidityPeriod());
+        contactInfo.setBusinessAuthorizationLetter(appApplyRequest.getOtherCert());
+        isvCreateBo.setContactInfo(contactInfo);
         //结算规则
         WxPayApplyment4SubCreateRequest.SettlementInfo settlementInfo =
                 new WxPayApplyment4SubCreateRequest.SettlementInfo();
@@ -286,6 +295,13 @@ public class payBiz implements PayApi {
         settlementInfo.setActivitiesRate("0");
         settlementInfo.setQualificationType(appApplyRequest.getBusinessScope());
         isvCreateBo.setSettlementInfo(settlementInfo);
+        //补充材料
+        WxPayApplyment4SubCreateRequest.AdditionInfo additionInfo =
+                new WxPayApplyment4SubCreateRequest.AdditionInfo();
+        List<String> businessAdditionPics = new ArrayList<>();
+        businessAdditionPics.add(appApplyRequest.getQualificationPicture());
+        additionInfo.setBusinessAdditionPics(businessAdditionPics);
+        isvCreateBo.setAdditionInfo(additionInfo);
         log.info("结束转换参数appApplyRequest{}",isvCreateBo);
         return  isvCreateBo;
     }
