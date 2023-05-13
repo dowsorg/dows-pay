@@ -59,6 +59,10 @@ public class PayClientProperties {
      */
     private String notifyUrl = "http://81.69.171.79:9010/nztest/payNotify";
     /**
+     * 生产ip配置
+     */
+    private String ip = "81.69.171.79";
+    /**
      * 交易类型.
      * <pre>
      * JSAPI--公众号支付
