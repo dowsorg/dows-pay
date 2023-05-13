@@ -1,5 +1,6 @@
 package org.dows.pay.boot;
 
+import cn.binarywang.wx.miniapp.api.WxMaService;
 import cn.hutool.core.util.StrUtil;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
@@ -47,6 +48,7 @@ public class PayClientFactory {
     private static final Map<String, WxPayService> WEIXIN_CLIENT_MAP = new ConcurrentHashMap<>();
     private static final Map<String, WxOpenService> WEIXIN_OPEN_MAP = new ConcurrentHashMap<>();
     private static final Map<String, WxOpenMaService> WEIXIN_OPEN_MA_MAP = new ConcurrentHashMap<>();
+    private static final Map<String, WxMaService> WEIXIN_MA_MAP = new ConcurrentHashMap<>();
     // 事件发布
     private final ApplicationEventPublisher applicationEventPublisher;
     /**
@@ -251,6 +253,9 @@ public class PayClientFactory {
         WEIXIN_OPEN_MA_MAP.put(appId, client);
         return client;
     }
+
+
+
     public static void main(String[] args) {
         try {
             System.out.println(AlipaySignature.getCertSN("E:\\workspaces\\java\\projects\\dows\\dows-pay\\pay-boot\\src\\main\\resources\\alipay\\appCertPublicKey_2021003129694075.crt"));

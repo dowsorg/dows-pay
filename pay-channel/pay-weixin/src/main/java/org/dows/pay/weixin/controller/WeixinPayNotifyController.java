@@ -338,7 +338,9 @@ public class WeixinPayNotifyController {
                  AuthorizationCode = wxMessage.getAuthorizationCode();
                 //todo 根据appid获取信息，获取后进行更新AuthorizationCode信息
                 log.info("收到授权事件：回调填写授权码信息！appid={}", AuthorizerAppid);
-            } else if (InfoType.equals("notify_third_fasteregister")) {
+            }
+
+            else if (InfoType.equals("notify_third_fasteregister")) {
                 log.info("收到授权事件：注册审核事件推送通知");
                 //				String AppId = xmlMap.get("AppId")+"";//三方平台appid
                 Long createTime = wxMessage.getCreateTime();
@@ -400,6 +402,12 @@ public class WeixinPayNotifyController {
                     //todo 企业回调修改注册信息
                 }
             }
+
+            else if (InfoType.equals("wxa_nickname_audit")){
+                //todo 小程序更名逻辑实现
+
+            }
+
         } catch (Exception e) {
             log.error("接收票据事件异常" + e.getMessage(), e);
         }

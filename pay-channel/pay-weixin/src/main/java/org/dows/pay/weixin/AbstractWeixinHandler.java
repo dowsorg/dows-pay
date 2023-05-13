@@ -1,9 +1,11 @@
 package org.dows.pay.weixin;
 
+import cn.binarywang.wx.miniapp.api.WxMaService;
 import com.alipay.api.internal.mapping.ApiField;
 import com.github.binarywang.wxpay.bean.request.BaseWxPayRequest;
 import com.github.binarywang.wxpay.service.WxPayService;
 import com.google.gson.annotations.SerializedName;
+import me.chanjar.weixin.open.api.WxOpenMaBasicService;
 import me.chanjar.weixin.open.api.WxOpenMaService;
 import me.chanjar.weixin.open.api.WxOpenService;
 import org.dows.pay.api.ChannelBizModel;
@@ -59,6 +61,7 @@ public abstract class AbstractWeixinHandler implements PayHandler {
         return payClientFactory.getWxOpenMaClient(appId);
 
     }
+
 
     /**
      * 自动填充接口映射值

@@ -24,6 +24,7 @@ import org.dows.pay.api.request.PayIsvRequest;
 import org.dows.pay.bo.IsvCreateBo;
 import org.dows.pay.bo.IsvCreateTyBo;
 import org.dows.pay.weixin.WeixinIsvHandler;
+import org.dows.pay.weixin.WeixinMiniHandler;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
@@ -41,6 +42,9 @@ public class payBiz implements PayApi {
     private final WeixinIsvHandler weixinIsvHandler;
     @Lazy
     private final AlipayIsvHandler alipayIsvHandler;
+    @Lazy
+    private final WeixinMiniHandler weixinMiniHandler;
+
 
     @Override
     public Response isvApply(AppApplyRequest appApplyRequest){
@@ -124,6 +128,13 @@ public class payBiz implements PayApi {
         }
         return Response.fail("系统异常，请联系管理员！");
     }
+
+    @Override
+    public Response miniBaseInfo(AppApplyRequest appApplyRequest) {
+        //todo 维护小程序基本信息接口
+        return null;
+    }
+
     public IsvCreateBo convert(AppApplyRequest appApplyRequest){
         log.info("开始转换参数appApplyRequest{}",appApplyRequest);
         IsvCreateBo isvCreateBo = new IsvCreateBo();

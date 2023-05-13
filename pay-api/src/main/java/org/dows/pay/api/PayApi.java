@@ -3,8 +3,6 @@ package org.dows.pay.api;
 import org.dows.app.api.mini.request.AppApplyRequest;
 import org.dows.framework.api.Response;
 
-import java.util.List;
-
 public interface PayApi {
 
     /**
@@ -14,6 +12,12 @@ public interface PayApi {
      */
     Response isvApply(AppApplyRequest appApplyRequest);
 
+    /**
+     * 小程序基本信息维护
+     * @param appApplyRequest
+     * @return
+     */
+    Response miniBaseInfo(AppApplyRequest appApplyRequest);
 
 
 

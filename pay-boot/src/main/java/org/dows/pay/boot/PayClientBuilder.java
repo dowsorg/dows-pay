@@ -1,5 +1,7 @@
 package org.dows.pay.boot;
 
+import cn.binarywang.wx.miniapp.api.WxMaService;
+import cn.binarywang.wx.miniapp.api.impl.WxMaServiceImpl;
 import cn.binarywang.wx.miniapp.config.WxMaConfig;
 import cn.binarywang.wx.miniapp.config.impl.WxMaDefaultConfigImpl;
 import com.alipay.api.AlipayApiException;
@@ -12,9 +14,11 @@ import com.github.binarywang.wxpay.service.impl.WxPayServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.open.api.WxOpenConfigStorage;
+import me.chanjar.weixin.open.api.WxOpenMaBasicService;
 import me.chanjar.weixin.open.api.WxOpenMaService;
 import me.chanjar.weixin.open.api.WxOpenService;
 import me.chanjar.weixin.open.api.impl.WxOpenInMemoryConfigStorage;
+import me.chanjar.weixin.open.api.impl.WxOpenMaBasicServiceImpl;
 import me.chanjar.weixin.open.api.impl.WxOpenMaServiceImpl;
 import me.chanjar.weixin.open.api.impl.WxOpenServiceImpl;
 import org.apache.commons.lang3.StringUtils;

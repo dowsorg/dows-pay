@@ -1,21 +1,34 @@
 package org.dows.pay.weixin;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.alipay.api.request.AlipayOpenMiniVersionAuditApplyRequest;
 import com.github.binarywang.wxpay.bean.ecommerce.FinishOrderRequest;
+import com.github.binarywang.wxpay.bean.media.ImageUploadResult;
+import com.github.binarywang.wxpay.v3.WechatPayUploadHttpPost;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.error.WxErrorException;
+import me.chanjar.weixin.open.bean.ma.WxFastMaCategory;
 import me.chanjar.weixin.open.bean.message.WxOpenMaSubmitAuditMessage;
-import me.chanjar.weixin.open.bean.result.WxOpenMaSubmitAuditResult;
-import me.chanjar.weixin.open.bean.result.WxOpenResult;
+import me.chanjar.weixin.open.bean.result.*;
+import me.chanjar.weixin.open.util.json.WxOpenGsonBuilder;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.dows.pay.api.PayRequest;
 import org.dows.pay.api.annotation.PayMapping;
 import org.dows.pay.api.enums.PayMethods;
+import org.dows.pay.bo.IsvCreateTyBo;
+import org.dows.pay.bo.WxBaseInfoBo;
+import org.dows.pay.bo.WxFastMaCategoryBo;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -105,5 +118,194 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
             e.printStackTrace();
         }
         return  response;
+    }
+
+    /**
+     * 小程序类目管理
+     * 获取可设置的所有类目
+     */
+    @PayMapping(method = PayMethods.MINI_CATEGORY)
+    public String getAllCategories(PayRequest payRequest) {
+        //todo 待实现业务逻辑
+        String response = null;
+        try {
+            response = this.getWxOpenMaClient(payRequest.getAppId()).getBasicService().getAllCategories();
+        }catch (WxErrorException e) {
+            e.printStackTrace();
+        }
+        return  response;
+    }
+
+
+    /**
+     * 小程序类目管理
+     * 添加类目
+     */
+    @PayMapping(method = PayMethods.MINI_CATEGORY_ADD)
+    public WxOpenResult addCategory(PayRequest payRequest) {
+        //todo 待实现业务逻辑
+        WxOpenResult response = null;
+        try {
+            List<WxFastMaCategory> list = new ArrayList<>();
+            WxFastMaCategory wxFastMaCategory = new WxFastMaCategory();
+            WxFastMaCategoryBo wxFastMaCategoryBo = (WxFastMaCategoryBo)payRequest.getBizModel();
+            BeanUtil.copyProperties(wxFastMaCategoryBo,wxFastMaCategory);
+            list.add(wxFastMaCategory);
+            response = this.getWxOpenMaClient(payRequest.getAppId()).getBasicService().addCategory(list);
+        }catch (WxErrorException e) {
+            e.printStackTrace();
+        }
+        return  response;
+    }
+    /**
+     * 小程序类目管理
+     * 删除类目
+     */
+    @PayMapping(method = PayMethods.MINI_CATEGORY_DEL)
+    public WxOpenResult delCategory(PayRequest payRequest) {
+        //todo 待实现业务逻辑
+        WxOpenResult response = null;
+        try {
+            WxFastMaCategoryBo wxFastMaCategoryBo = (WxFastMaCategoryBo)payRequest.getBizModel();
+            response = this.getWxOpenMaClient(payRequest.getAppId()).getBasicService()
+                    .deleteCategory(wxFastMaCategoryBo.getFirst(),wxFastMaCategoryBo.getSecond());
+        }catch (WxErrorException e) {
+            e.printStackTrace();
+        }
+        return  response;
+    }
+
+    /**
+     * 小程序类目管理
+     * 获取已设置的所有类目
+     */
+    @PayMapping(method = PayMethods.MINI_CATEGORY_HANDLED)
+    public WxFastMaBeenSetCategoryResult getCategory(PayRequest payRequest)  {
+        //todo 待实现业务逻辑
+        WxFastMaBeenSetCategoryResult response = null;
+        try {
+            response = this.getWxOpenMaClient(payRequest.getAppId()).getBasicService()
+                    .getCategory();
+        }catch (WxErrorException e) {
+            e.printStackTrace();
+        }
+        return  response;
+        }
+
+    /**
+     * 小程序类目管理
+     * 修改类目资质信息
+     */
+    @PayMapping(method = PayMethods.MINI_CATEGORY_UPDATE)
+    public WxOpenResult modifyCategory(PayRequest payRequest)  {
+        //todo 待实现业务逻辑
+        WxOpenResult response = null;
+        try {
+            WxFastMaCategoryBo wxFastMaCategoryBo = (WxFastMaCategoryBo)payRequest.getBizModel();
+            WxFastMaCategory category = new WxFastMaCategory();
+            BeanUtil.copyProperties(wxFastMaCategoryBo,category);
+            response = this.getWxOpenMaClient(payRequest.getAppId()).getBasicService()
+                    .modifyCategory(category);
+        }catch (WxErrorException e) {
+            e.printStackTrace();
+        }
+        return  response;
+    }
+
+    /**
+     * 小程序基础信息管理
+     * 设置小程序名称
+     */
+    @PayMapping(method = PayMethods.MINI_BASE_NICKNAME)
+    public WxFastMaSetNickameResult setNickName(PayRequest payRequest)  {
+        //todo 待实现业务逻辑
+        WxFastMaSetNickameResult response = null;
+        try {
+            WxBaseInfoBo wxBaseInfoBo = (WxBaseInfoBo)payRequest.getBizModel();
+            response = this.getWxOpenMaClient(payRequest.getAppId()).getBasicService()
+                    .setNickname(wxBaseInfoBo.getNickName()
+                            ,upload(wxBaseInfoBo.getLicense(),payRequest).getMediaId()
+                            ,upload(wxBaseInfoBo.getIdCard(),payRequest).getMediaId()
+                            ,upload(wxBaseInfoBo.getNamingOtherStuff1(),payRequest).getMediaId()
+                            ,upload(wxBaseInfoBo.getNamingOtherStuff2(),payRequest).getMediaId());
+        }catch (WxErrorException e) {
+            e.printStackTrace();
+        }
+        return  response;
+    }
+    /**
+     * 小程序基础信息管理
+     * 查询小程序名称审核状态
+     */
+    @PayMapping(method = PayMethods.MINI_BASE_STATUS)
+    public WxFastMaQueryNicknameStatusResult getNickNameStatus(PayRequest payRequest)  {
+        //todo 待实现业务逻辑
+        WxFastMaQueryNicknameStatusResult response = null;
+        try {
+            WxBaseInfoBo wxBaseInfoBo = (WxBaseInfoBo)payRequest.getBizModel();
+            response = this.getWxOpenMaClient(payRequest.getAppId()).getBasicService().querySetNicknameStatus(wxBaseInfoBo.getAuditId());
+        }catch (WxErrorException e) {
+            e.printStackTrace();
+        }
+        return  response;
+    }
+    /**
+     * 小程序基础信息管理
+     * 设置小程序介绍
+     */
+    @PayMapping(method = PayMethods.MINI_BASE_SIGNATURE)
+    public WxOpenResult setSignature(PayRequest payRequest)  {
+        //todo 待实现业务逻辑
+        WxOpenResult response = null;
+        try {
+            WxBaseInfoBo wxBaseInfoBo = (WxBaseInfoBo)payRequest.getBizModel();
+            response = this.getWxOpenMaClient(payRequest.getAppId()).getBasicService().modifySignature(wxBaseInfoBo.getSignature());
+        }catch (WxErrorException e) {
+            e.printStackTrace();
+        }
+        return  response;
+    }
+    /**
+     * 小程序基础信息管理
+     * 修改头像
+     */
+    @PayMapping(method = PayMethods.MINI_BASE_HEADIMAGE)
+    public WxOpenResult setHeadImage(PayRequest payRequest)  {
+        //todo 待实现业务逻辑
+        WxOpenResult response = null;
+        try {
+            WxBaseInfoBo wxBaseInfoBo = (WxBaseInfoBo)payRequest.getBizModel();
+            response = this.getWxOpenMaClient(payRequest.getAppId()).getBasicService().modifyHeadImage(
+                    upload(wxBaseInfoBo.getHeadImgMediaId(),payRequest).getMediaId(),
+                    wxBaseInfoBo.getX1(),
+                    wxBaseInfoBo.getY1(),
+                    wxBaseInfoBo.getX2(),
+                    wxBaseInfoBo.getY2());
+        }catch (WxErrorException e) {
+            e.printStackTrace();
+        }
+        return  response;
+    }
+    /**
+     * 小程序上传文件接口
+     */
+    public ImageUploadResult upload(String fileUrl, PayRequest payRequest){
+        String url = String.format("%s/v3/merchant/media/upload", this.getWeixinClient(payRequest.getAppId()).getPayBaseUrl());
+        String result = "";
+        try{
+            File file = new File(fileUrl);
+            FileInputStream s1 = new FileInputStream(file);
+            String sha256 = DigestUtils.sha256Hex(s1);
+            InputStream s2 = new FileInputStream(file);
+            WechatPayUploadHttpPost request = new WechatPayUploadHttpPost.Builder(URI.create(url))
+                    .withImage(file.getName(), sha256, s2)
+                    .build();
+            result = this.getWeixinClient(payRequest.getAppId()).postV3(url, request);
+
+        }catch ( Exception e){
+            e.printStackTrace();
+        }
+
+        return ImageUploadResult.fromJson(result);
     }
 }

@@ -26,6 +26,16 @@ public enum PayMethods {
     MINI_ONLINE("dows.pay.mini.online", "", "小程序上架"),
     MINI_OFFLINE("dows.pay.mini.offline", "", "小程序下架"),
     MINI_CREATE("dows.pay.mini.create", "", "小程序生成体验版"),
+    MINI_CATEGORY_ADD("dows.pay.mini.category.add", "", "添加条目"),
+    MINI_CATEGORY("dows.pay.mini.category", "", "获取所有条目"),
+    MINI_CATEGORY_UPDATE("dows.pay.mini.category.update", "", "更新条目"),
+    MINI_CATEGORY_DEL("dows.pay.mini.category.del", "", "删除条目"),
+    MINI_CATEGORY_HANDLED("dows.pay.mini.category.handled", "", "获取已设置条目"),
+    MINI_BASE_NICKNAME("dows.pay.mini.base.nickname", "", "设置小程序名称"),
+    MINI_BASE_STATUS("dows.pay.mini.base.status", "", "查询小程序名称审核状态"),
+    MINI_BASE_SIGNATURE("dows.pay.mini.base.signature", "", "设置小程序介绍"),
+    MINI_BASE_HEADIMAGE("dows.pay.mini.base.headimage", "", "修改头像"),
+
 
 
     ON_MINI_AUDITED("dows.pay.mini.audited", "", "小程序审核通过通知"),
