@@ -19,6 +19,8 @@ import org.dows.pay.api.PayException;
 import org.dows.pay.api.enums.PayChannels;
 import org.dows.pay.api.message.AlipayMessage;
 import org.dows.pay.boot.properties.PayClientProperties;
+import org.dows.pay.entity.PayInstance;
+import org.dows.pay.service.PayInstanceService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationEventPublisher;
@@ -49,6 +51,7 @@ public class PayClientFactory {
     private static final Map<String, WxOpenService> WEIXIN_OPEN_MAP = new ConcurrentHashMap<>();
     private static final Map<String, WxOpenMaService> WEIXIN_OPEN_MA_MAP = new ConcurrentHashMap<>();
     private static final Map<String, WxMaService> WEIXIN_MA_MAP = new ConcurrentHashMap<>();
+    private final PayInstanceService payInstanceService;
     // 事件发布
     private final ApplicationEventPublisher applicationEventPublisher;
     /**
@@ -71,7 +74,7 @@ public class PayClientFactory {
     @EventListener
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
         //todo 从数据查询客户端配置列表payClientConfigService.selectAll(profiles);
-        List<PayClientProperties> payClientPropertiesList = null;
+        //List<PayInstance> payInstanceList = payInstanceService.list();
         //PCM.putAll(payClientPropertiesList.stream().collect(Collectors.toMap(PayClientProperties::getAppId, Function.identity())));
         PCM.putAll(payClientConfig.getClientConfigs().stream()
                 .filter(pc -> StrUtil.isNotBlank(pc.getAppId()))
