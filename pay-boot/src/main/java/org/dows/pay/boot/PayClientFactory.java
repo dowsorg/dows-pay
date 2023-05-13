@@ -6,21 +6,15 @@ import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.msg.AlipayMsgClient;
-import com.github.binarywang.wxpay.bean.result.BaseWxPayResult;
 import com.github.binarywang.wxpay.service.WxPayService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import me.chanjar.weixin.open.api.WxOpenConfigStorage;
 import me.chanjar.weixin.open.api.WxOpenMaService;
 import me.chanjar.weixin.open.api.WxOpenService;
-import me.chanjar.weixin.open.api.impl.WxOpenInMemoryConfigStorage;
 import org.dows.pay.api.PayEvent;
-import org.dows.pay.api.PayException;
 import org.dows.pay.api.enums.PayChannels;
 import org.dows.pay.api.message.AlipayMessage;
 import org.dows.pay.boot.properties.PayClientProperties;
-import org.dows.pay.entity.PayInstance;
-import org.dows.pay.service.PayInstanceService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationEventPublisher;
@@ -31,7 +25,6 @@ import org.springframework.util.ResourceUtils;
 
 import javax.annotation.PostConstruct;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
@@ -51,7 +44,6 @@ public class PayClientFactory {
     private static final Map<String, WxOpenService> WEIXIN_OPEN_MAP = new ConcurrentHashMap<>();
     private static final Map<String, WxOpenMaService> WEIXIN_OPEN_MA_MAP = new ConcurrentHashMap<>();
     private static final Map<String, WxMaService> WEIXIN_MA_MAP = new ConcurrentHashMap<>();
-    private final PayInstanceService payInstanceService;
     // 事件发布
     private final ApplicationEventPublisher applicationEventPublisher;
     /**
