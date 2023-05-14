@@ -17,6 +17,21 @@ import org.dows.pay.api.annotation.WeixinApiField;
 @ApiModel(value = "WxBaseInfoForm 表单对象", description = " 支付宝/微信小程序基本信息")
 @Data
 public class WxBaseInfoForm implements BizForm {
+    @ApiModelProperty("平台应用ID")
+    private String appId;
+
+    // 通道code
+    @ApiModelProperty("通道code")
+    private String channel;
+
+    // 账号
+    @ApiModelProperty("账号")
+    private String account;
+
+
+    // 应用名称
+    @ApiModelProperty("申请应用名称")
+    private String appName;
 
    /**
      * 昵称.

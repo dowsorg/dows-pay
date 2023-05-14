@@ -242,7 +242,7 @@ public class PayClientFactory {
             return client;
         }
         PayClientProperties payClientProperties = PCM.get(appId + "@" + PayChannels.WEIXIN.name().toLowerCase());
-        if (payClientProperties.getCertModel() == 3) {
+        if (payClientProperties.getCertModel() == 1) {
             client = PayClientBuilder.buildWxOpenMaClient(payClientProperties);
         }
         WEIXIN_OPEN_MA_MAP.put(appId, client);

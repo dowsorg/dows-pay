@@ -19,6 +19,22 @@ import java.util.List;
 @Data
 public class WxFastMaCategoryForm implements BizForm {
 
+    @ApiModelProperty("平台应用ID")
+    private String appId;
+
+    // 通道code
+    @ApiModelProperty("通道code")
+    private String channel;
+
+    // 账号
+    @ApiModelProperty("账号")
+    private String account;
+
+
+    // 应用名称
+    @ApiModelProperty("申请应用名称")
+    private String appName;
+
     /**
      * 一级类目ID.
      */
