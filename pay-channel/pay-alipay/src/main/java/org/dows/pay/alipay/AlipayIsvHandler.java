@@ -173,6 +173,7 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
         log.info("处理 alipay.open.mini.merchant.confirmed 事件消息:{}", payMessage);
         // todo 业务处理
         String appId = payMessage.getAppId();
+        // 去回填映射appApply的对应的dows-app的平台appID
         String msgApi = payMessage.getMsgApi();
         String msgId = payMessage.getMsgId();
         PayHandler handler = applicationContext.getBean(payEvent.getHandlerClass());
