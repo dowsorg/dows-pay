@@ -47,80 +47,80 @@ public class payBiz implements PayApi {
 
 
     @Override
-    public Response isvApply(AppApplyRequest appApplyRequest){
+    public Response isvApply(AppApplyRequest appApplyRequest) {
         PayRequest payRequest = new PayIsvRequest();
-        log.info("生成appApplyRequest参数{}",appApplyRequest);
-        if("WEIXIN".equals(appApplyRequest.getApplyType())){
+        log.info("生成appApplyRequest参数{}", appApplyRequest);
+        if ("WEIXIN".equals(appApplyRequest.getApplyType())) {
             IsvCreateTyBo isvCreateTyBo = convertTy(appApplyRequest);
-            log.info("生成payRequest.setBizModel参数{}",isvCreateTyBo);
+            log.info("生成payRequest.setBizModel参数{}", isvCreateTyBo);
             payRequest.setBizModel(isvCreateTyBo);
             payRequest.setChannel("weixin");
             payRequest.setAppId("wxdb8634feb22a5ab9");
-            try{
+            try {
                 WxOpenResult wxOpenResult = weixinIsvHandler.fastRegisterApp(payRequest);
-                log.info("生成WxOpenResult参数{}",wxOpenResult);
+                log.info("生成WxOpenResult参数{}", wxOpenResult);
                 //创建支付小程序
                 WxPayApplymentCreateResult isvMini = weixinIsvHandler.createIsvTyMini(payRequest);
-                log.info("生成WxPayApplymentCreateResult参数{}",isvMini);
-                if(wxOpenResult.isSuccess()&& !StringUtil.isEmpty(isvMini.getApplymentId())){
-                    return Response.ok(true,"申请微信小程序成功");
+                log.info("生成WxPayApplymentCreateResult参数{}", isvMini);
+                if (wxOpenResult.isSuccess() && !StringUtil.isEmpty(isvMini.getApplymentId())) {
+                    return Response.ok(true, "申请微信小程序成功");
                 }
-            }catch(Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
                 //创建小程序
                 return Response.fail(e.getMessage());
             }
-        }else if("ALIPAY".equals(appApplyRequest.getApplyType())){
+        } else if ("ALIPAY".equals(appApplyRequest.getApplyType())) {
             IsvCreateBo isvCreateBo = convert(appApplyRequest);
-            log.info("生成payRequest.setBizModel参数{}",isvCreateBo);
+            log.info("生成payRequest.setBizModel参数{}", isvCreateBo);
             payRequest.setBizModel(isvCreateBo);
             payRequest.setChannel("alipay");
             payRequest.setAppId("2021003129694075");
-            try{
-            //创建支付宝小程序
-            AlipayOpenMiniIsvCreateResponse alipayResponse = alipayIsvHandler.createIsvMini(payRequest);
-            log.info("生成AlipayOpenMiniIsvCreateResponse参数{}",alipayResponse);
-            if(alipayResponse.isSuccess()){
-                return Response.ok(true,"申请支付宝小程序成功");
-            }
-            }catch(Exception e){
-                e.printStackTrace();
-                //创建小程序
-                return Response.fail(e.getMessage());
-            }
-        }else {
-            IsvCreateTyBo isvCreateTyBo = convertTy(appApplyRequest);
-            log.info("全部申请微信生成payRequest.setBizModel参数{}",isvCreateTyBo);
-            payRequest.setBizModel(isvCreateTyBo);
-            payRequest.setChannel("weixin");
-            payRequest.setAppId("wxdb8634feb22a5ab9");
-            try{
-                WxOpenResult wxOpenResult = weixinIsvHandler.fastRegisterApp(payRequest);
-                log.info("全部申请微信生成WxOpenResult参数{}",wxOpenResult);
-                //创建支付小程序
-                WxPayApplymentCreateResult isvMini = weixinIsvHandler.createIsvTyMini(payRequest);
-                log.info("全部申请微信生成WxPayApplymentCreateResult参数{}",isvMini);
-                if(wxOpenResult.isSuccess()&& !StringUtil.isEmpty(isvMini.getApplymentId())){
-                    return Response.ok(true,"申请微信小程序成功");
-                }
-            }catch(Exception e){
-                e.printStackTrace();
-                //创建小程序
-                return Response.fail(e.getMessage());
-            }
-            IsvCreateBo isvCreateBo = convert(appApplyRequest);
-            log.info("全部申请支付宝生成payRequest.setBizModel参数{}",isvCreateBo);
-            payRequest.setBizModel(isvCreateBo);
-            payRequest.setChannel("alipay");
-            payRequest.setAppId("2021003129694075");
-            try{
+            try {
                 //创建支付宝小程序
                 AlipayOpenMiniIsvCreateResponse alipayResponse = alipayIsvHandler.createIsvMini(payRequest);
-                log.info("全部申请支付宝生成AlipayOpenMiniIsvCreateResponse参数{}",alipayResponse);
-                if(alipayResponse.isSuccess()){
-                    return Response.ok(true,"申请支付宝小程序成功");
+                log.info("生成AlipayOpenMiniIsvCreateResponse参数{}", alipayResponse);
+                if (alipayResponse.isSuccess()) {
+                    return Response.ok(true, "申请支付宝小程序成功");
                 }
-            }catch(Exception e){
+            } catch (Exception e) {
+                e.printStackTrace();
+                //创建小程序
+                return Response.fail(e.getMessage());
+            }
+        } else {
+            IsvCreateTyBo isvCreateTyBo = convertTy(appApplyRequest);
+            log.info("全部申请微信生成payRequest.setBizModel参数{}", isvCreateTyBo);
+            payRequest.setBizModel(isvCreateTyBo);
+            payRequest.setChannel("weixin");
+            payRequest.setAppId("wxdb8634feb22a5ab9");
+            try {
+                WxOpenResult wxOpenResult = weixinIsvHandler.fastRegisterApp(payRequest);
+                log.info("全部申请微信生成WxOpenResult参数{}", wxOpenResult);
+                //创建支付小程序
+                WxPayApplymentCreateResult isvMini = weixinIsvHandler.createIsvTyMini(payRequest);
+                log.info("全部申请微信生成WxPayApplymentCreateResult参数{}", isvMini);
+                if (wxOpenResult.isSuccess() && !StringUtil.isEmpty(isvMini.getApplymentId())) {
+                    return Response.ok(true, "申请微信小程序成功");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                //创建小程序
+                return Response.fail(e.getMessage());
+            }
+            IsvCreateBo isvCreateBo = convert(appApplyRequest);
+            log.info("全部申请支付宝生成payRequest.setBizModel参数{}", isvCreateBo);
+            payRequest.setBizModel(isvCreateBo);
+            payRequest.setChannel("alipay");
+            payRequest.setAppId("2021003129694075");
+            try {
+                //创建支付宝小程序
+                AlipayOpenMiniIsvCreateResponse alipayResponse = alipayIsvHandler.createIsvMini(payRequest);
+                log.info("全部申请支付宝生成AlipayOpenMiniIsvCreateResponse参数{}", alipayResponse);
+                if (alipayResponse.isSuccess()) {
+                    return Response.ok(true, "申请支付宝小程序成功");
+                }
+            } catch (Exception e) {
                 e.printStackTrace();
                 //创建小程序
                 return Response.fail(e.getMessage());
@@ -135,8 +135,8 @@ public class payBiz implements PayApi {
         return null;
     }
 
-    public IsvCreateBo convert(AppApplyRequest appApplyRequest){
-        log.info("开始转换参数appApplyRequest{}",appApplyRequest);
+    public IsvCreateBo convert(AppApplyRequest appApplyRequest) {
+        log.info("开始转换参数appApplyRequest{}", appApplyRequest);
         IsvCreateBo isvCreateBo = new IsvCreateBo();
         isvCreateBo.setAccount(appApplyRequest.getPlatformAccount());
         //账户信息
@@ -200,13 +200,14 @@ public class payBiz implements PayApi {
         isvCreateBo.setUboInfoList(list);
         //资质证明
         isvCreateBo.setQualifications(appApplyRequest.getQualificationPicture());
-        log.info("结束转换参数appApplyRequest{}",isvCreateBo);
-        return  isvCreateBo;
+        log.info("结束转换参数appApplyRequest{}", isvCreateBo);
+        return isvCreateBo;
     }
-    public IsvCreateTyBo convertTy(AppApplyRequest appApplyRequest){
-        log.info("开始转换参数appApplyRequest{}",appApplyRequest);
+
+    public IsvCreateTyBo convertTy(AppApplyRequest appApplyRequest) {
+        log.info("开始转换参数appApplyRequest{}", appApplyRequest);
         IsvCreateTyBo isvCreateBo = new IsvCreateTyBo();
-        isvCreateBo.setOutOrderNo(IdUtil.fastUUID().replace("-",""));
+        isvCreateBo.setOutOrderNo(IdUtil.fastUUID().replace("-", ""));
         isvCreateBo.setAccount(appApplyRequest.getPlatformAccount());
         //账户信息
         WxPayApplyment4SubCreateRequest.BankAccountInfo accountInfo = new WxPayApplyment4SubCreateRequest.BankAccountInfo();
@@ -266,7 +267,8 @@ public class payBiz implements PayApi {
         //经营资料信息
         isvCreateBo.setCertNo(appApplyRequest.getCertNo());
         isvCreateBo.setCertType("2");
-        isvCreateBo.setCertName(appApplyRequest.getBankAccountName());
+//        isvCreateBo.setCertName(appApplyRequest.getBankAccountName());
+        isvCreateBo.setCertName(appApplyRequest.getCertName());
         WxPayApplyment4SubCreateRequest.BusinessInfo businessInfo = new WxPayApplyment4SubCreateRequest.BusinessInfo();
         WxPayApplyment4SubCreateRequest.BusinessInfo.SalesInfo salesInfo = new WxPayApplyment4SubCreateRequest.BusinessInfo.SalesInfo();
         WxPayApplyment4SubCreateRequest.BusinessInfo.SalesInfo.MiniProgramInfo miniProgramInfo
@@ -313,7 +315,7 @@ public class payBiz implements PayApi {
         businessAdditionPics.add(appApplyRequest.getQualificationPicture());
         additionInfo.setBusinessAdditionPics(businessAdditionPics);
         isvCreateBo.setAdditionInfo(additionInfo);
-        log.info("结束转换参数appApplyRequest{}",isvCreateBo);
-        return  isvCreateBo;
+        log.info("结束转换参数appApplyRequest{}", isvCreateBo);
+        return isvCreateBo;
     }
 }
