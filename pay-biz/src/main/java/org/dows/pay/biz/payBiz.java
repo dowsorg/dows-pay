@@ -59,7 +59,7 @@ public class payBiz implements PayApi {
             try {
                 WxOpenResult wxOpenResult = weixinIsvHandler.fastRegisterApp(payRequest);
                 log.info("生成WxOpenResult参数{}", wxOpenResult);
-                //创建支付小程序
+                // 小程序申请支付权限
                 WxPayApplymentCreateResult isvMini = weixinIsvHandler.createIsvTyMini(payRequest);
                 log.info("生成WxPayApplymentCreateResult参数{}", isvMini);
                 if (wxOpenResult.isSuccess() && !StringUtil.isEmpty(isvMini.getApplymentId())) {
@@ -132,6 +132,31 @@ public class payBiz implements PayApi {
     @Override
     public Response miniBaseInfo(AppApplyRequest appApplyRequest) {
         //todo 维护小程序基本信息接口
+        return null;
+    }
+
+    @Override
+    public Response applyForPaymentAuth(AppApplyRequest appApplyRequest) {
+        PayRequest payRequest = new PayIsvRequest();
+        log.info("生成appApplyRequest参数{}", appApplyRequest);
+        if ("WEIXIN".equals(appApplyRequest.getApplyType())) {
+            IsvCreateTyBo isvCreateTyBo = convertTy(appApplyRequest);
+            log.info("生成payRequest.setBizModel参数{}", isvCreateTyBo);
+            payRequest.setBizModel(isvCreateTyBo);
+            payRequest.setChannel("weixin");
+            payRequest.setAppId("wxdb8634feb22a5ab9");
+            try {
+                // 小程序申请支付权限
+                WxPayApplymentCreateResult isvMini = weixinIsvHandler.createIsvTyMini(payRequest);
+                log.info("生成WxPayApplymentCreateResult参数{}", isvMini);
+                if (!StringUtil.isEmpty(isvMini.getApplymentId())) {
+                    return Response.ok(true, "申请支付权限成功");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                return Response.fail(e.getMessage());
+            }
+        }
         return null;
     }
 

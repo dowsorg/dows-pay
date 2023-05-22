@@ -7,6 +7,7 @@ public interface PayApi {
 
     /**
      * 小程序申请
+     *
      * @param appApplyRequest
      * @return
      */
@@ -14,11 +15,17 @@ public interface PayApi {
 
     /**
      * 小程序基本信息维护
+     *
      * @param appApplyRequest
      * @return
      */
     Response miniBaseInfo(AppApplyRequest appApplyRequest);
 
-
-
+    /**
+     * 小程序申请支付权限
+     *
+     * @param appApplyRequest
+     * @return
+     */
+    Response applyForPaymentAuth(AppApplyRequest appApplyRequest);
 }
