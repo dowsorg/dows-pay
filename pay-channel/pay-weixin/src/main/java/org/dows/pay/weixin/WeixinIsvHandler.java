@@ -267,7 +267,7 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
         String url = String.format("%s/v3/applyment4sub/applyment/", this.getWeixinClient(payRequest.getAppId()).getPayBaseUrl());
         WxPayApplyment4SubCreateRequest request = new WxPayApplyment4SubCreateRequest();
         autoMappingValue(payRequest,request);
-        if(request.getContactInfo()!=null){
+        if(request.getContactInfo()!=null && !request.getContactInfo().getContactType().equals("LEGAL")){
             //超级管理员证件照正面
             request.getContactInfo().setContactIdDocCopy
                     (!ObjectUtil.isEmpty(stringImageUploadResultMap.get("contactIdDocCopyFile"))
@@ -280,6 +280,8 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
             request.getContactInfo().setBusinessAuthorizationLetter
                     (!ObjectUtil.isEmpty(stringImageUploadResultMap.get("businessAuthorizationLetterFile"))
                             ?stringImageUploadResultMap.get("businessAuthorizationLetterFile").getMediaId():"");
+            //超级管理员证件类型
+            request.getContactInfo().setContactIdDocType("IDENTIFICATION_TYPE_IDCARD");
         }
         //营业执照
         if(request.getSubjectInfo().getBusinessLicenseInfo()!=null){

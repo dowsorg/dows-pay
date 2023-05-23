@@ -50,6 +50,9 @@ public class payBiz implements PayApi {
     public Response isvApply(AppApplyRequest appApplyRequest) {
         PayRequest payRequest = new PayIsvRequest();
         log.info("生成appApplyRequest参数{}", appApplyRequest);
+        if (null == appApplyRequest.getAppId()) {
+            appApplyRequest.setAppId("wxdb8634feb22a5ab9");
+        }
         if ("WEIXIN".equals(appApplyRequest.getApplyType())) {
             IsvCreateTyBo isvCreateTyBo = convertTy(appApplyRequest);
             log.info("生成payRequest.setBizModel参数{}", isvCreateTyBo);
@@ -277,13 +280,14 @@ public class payBiz implements PayApi {
         subjectInfo.setIdentityInfo(identityInfo);
         //受益人
         WxPayApplyment4SubCreateRequest.SubjectInfo.UboInfo uboInfo = new WxPayApplyment4SubCreateRequest.SubjectInfo.UboInfo();
-/*        uboInfo.setUboIdDocName(appApplyRequest.getBeneficiaryName());
+        uboInfo.setUboIdDocName(appApplyRequest.getBeneficiaryName());
         uboInfo.setUboIdDocNumber(appApplyRequest.getBeneficiary());
         uboInfo.setUboIdDocCopy(appApplyRequest.getBeneficiaryIdPictureFront());
         uboInfo.setUboIdDocCopyBack(appApplyRequest.getBeneficiaryIdPictureBack());
         uboInfo.setUboIdDocType(IdTypeEnum.IDENTIFICATION_TYPE_IDCARD);
         uboInfo.setUboPeriodBegin(appApplyRequest.getBeneficiaryIdValidityPeriod());
-        uboInfo.setUboPeriodEnd(appApplyRequest.getBeneficiaryIdValidityPeriod());*/
+        uboInfo.setUboPeriodEnd(appApplyRequest.getBeneficiaryIdValidityPeriod());
+        uboInfo.setUboIdDocAddress(appApplyRequest.getBeneficiaryAddress());
         List<WxPayApplyment4SubCreateRequest.SubjectInfo.UboInfo> list = new ArrayList<>();
         list.add(uboInfo);
         subjectInfo.setUboInfoList(list);
@@ -316,13 +320,18 @@ public class payBiz implements PayApi {
         contactInfo.setContactName(appApplyRequest.getSuperAdminName());
         contactInfo.setMobilePhone(appApplyRequest.getSuperAdminPhone());
         contactInfo.setContactEmail(appApplyRequest.getSuperAdminEmail());
-        contactInfo.setContactIdDocType("IDENTIFICATION_TYPE_IDCARD");
-        contactInfo.setContactIdNumber(appApplyRequest.getSuperAdminId());
+
+        // 如果为1、主体为“个体工商户/企业/政府机关/事业单位/社会组织”，可选择：LEGAL：经营者/法人，SUPER：经办人
+        // 。（经办人：经商户授权办理微信支付业务的人员）。
+        //枚举值：LEGAL：经营者/法人、SUPER：经办人
         contactInfo.setContactType("LEGAL");
-        contactInfo.setContactIdDocCopy(appApplyRequest.getProprietorIdPictureFront());
-        contactInfo.setContactIdDocCopyBack(appApplyRequest.getProprietorIdPictureBack());
-        contactInfo.setContactPeriodBegin(appApplyRequest.getProprietorIdValidityPeriod());
-        contactInfo.setContactPeriodEnd(appApplyRequest.getProprietorIdValidityPeriod());
+        // 如类型为LEGAL则以下不需要传参
+//        contactInfo.setContactIdDocType("IDENTIFICATION_TYPE_IDCARD");
+//        contactInfo.setContactIdNumber(appApplyRequest.getSuperAdminId());
+//        contactInfo.setContactIdDocCopy(appApplyRequest.getProprietorIdPictureFront());
+//        contactInfo.setContactIdDocCopyBack(appApplyRequest.getProprietorIdPictureBack());
+//        contactInfo.setContactPeriodBegin(appApplyRequest.getProprietorIdValidityPeriod());
+//        contactInfo.setContactPeriodEnd(appApplyRequest.getProprietorIdValidityPeriod());
         contactInfo.setBusinessAuthorizationLetter(appApplyRequest.getOtherCert());
         isvCreateBo.setContactInfo(contactInfo);
         //结算规则
@@ -333,6 +342,7 @@ public class payBiz implements PayApi {
         settlementInfo.setActivitiesRate("0");
         settlementInfo.setQualificationType(appApplyRequest.getBusinessScope());
         isvCreateBo.setSettlementInfo(settlementInfo);
+
         //补充材料
         WxPayApplyment4SubCreateRequest.AdditionInfo additionInfo =
                 new WxPayApplyment4SubCreateRequest.AdditionInfo();
