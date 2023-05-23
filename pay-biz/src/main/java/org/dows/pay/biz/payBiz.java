@@ -28,6 +28,8 @@ import org.dows.pay.weixin.WeixinMiniHandler;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,9 +52,6 @@ public class payBiz implements PayApi {
     public Response isvApply(AppApplyRequest appApplyRequest) {
         PayRequest payRequest = new PayIsvRequest();
         log.info("生成appApplyRequest参数{}", appApplyRequest);
-        if (null == appApplyRequest.getAppId()) {
-            appApplyRequest.setAppId("wxdb8634feb22a5ab9");
-        }
         if ("WEIXIN".equals(appApplyRequest.getApplyType())) {
             IsvCreateTyBo isvCreateTyBo = convertTy(appApplyRequest);
             log.info("生成payRequest.setBizModel参数{}", isvCreateTyBo);
@@ -305,7 +304,8 @@ public class payBiz implements PayApi {
         List<String> miniProgramPics = new ArrayList<>();
         miniProgramPics.add(appApplyRequest.getAppPicture());
         miniProgramInfo.setMiniProgramPics(miniProgramPics);
-        miniProgramInfo.setMiniProgramAppid(appApplyRequest.getAppId());
+        miniProgramInfo.setMiniProgramAppid(appApplyRequest.getAppId() == null ? "wx1f2863eb6cdee6a1" :
+                appApplyRequest.getAppId());
         salesInfo.setMiniProgramInfo(miniProgramInfo);
         List<SalesScenesTypeEnum> salesScenesType = new ArrayList<>();
         salesScenesType.add(SalesScenesTypeEnum.SALES_SCENES_MINI_PROGRAM);
@@ -339,7 +339,7 @@ public class payBiz implements PayApi {
                 new WxPayApplyment4SubCreateRequest.SettlementInfo();
         //todo 按照餐饮去送微信
         settlementInfo.setSettlementId("716");
-        settlementInfo.setActivitiesRate("0");
+//        settlementInfo.setActivitiesRate("0");
         settlementInfo.setQualificationType(appApplyRequest.getBusinessScope());
         isvCreateBo.setSettlementInfo(settlementInfo);
 
