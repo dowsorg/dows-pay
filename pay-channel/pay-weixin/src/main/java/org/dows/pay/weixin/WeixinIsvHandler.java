@@ -652,7 +652,7 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
         String arrPath[] = path.split(DateUtil.formatDate(DateUtil.date()));
         if (ObjectUtil.isNotEmpty(arrPath)&&arrPath.length>1){
             path = arrPath[1];
-            path = "/tmp"+path;
+            path = "E:\\有星科技相关\\image\\"+path;
         }
         return path;
     }
