@@ -30,6 +30,10 @@
 
     </dependencies>
 
+    <properties>
+        <maven.deploy.skip>true</maven.deploy.skip><!-- 不上传此jar包 -->
+    </properties>
+
     <build>
         <plugins>
             <plugin>

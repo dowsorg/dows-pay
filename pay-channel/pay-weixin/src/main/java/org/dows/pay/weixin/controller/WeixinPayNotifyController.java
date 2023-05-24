@@ -36,6 +36,7 @@ import org.dows.app.api.mini.request.AppLicenseRequest;
 import org.dows.framework.api.Response;
 import org.dows.order.api.OrderInstanceBizApiService;
 import org.dows.order.bo.OrderInstanceBo;
+import org.dows.order.bo.OrderUpdatePaymentStatusBo;
 import org.dows.order.enums.OrderPayTypeEnum;
 import org.dows.pay.api.util.HttpRequestUtils;
 import org.dows.pay.boot.PayClientFactory;
@@ -133,7 +134,7 @@ public class WeixinPayNotifyController {
                 PartnerTransactionsNotifyResult notifyResult = new PartnerTransactionsNotifyResult();
                 notifyResult.setRawData(notifyResponse);
                 notifyResult.setResult(transactionsResult);
-                OrderInstanceBo instanceBo = new OrderInstanceBo();
+                OrderUpdatePaymentStatusBo instanceBo = new OrderUpdatePaymentStatusBo();
                 instanceBo.setPayTime(new Date());
                 instanceBo.setPayState(OrderPayTypeEnum.pay_finish.getCode());
                 orderInstanceBizApiService.updateOrderInstance(instanceBo);
