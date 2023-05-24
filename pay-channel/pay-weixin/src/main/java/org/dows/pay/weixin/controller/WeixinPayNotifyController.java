@@ -2,10 +2,8 @@
  * @ProjectName:zhyt_contract
  * @PackageName:com.zhyt.contract.controller
  * @Description: 地址管理业务请求分发
- *
  * @author gaozh
  * @Date: 2022年11月10日
- *
  * @Company: crudoil
  * @Copyright: Copyright (c) 2021-2050
  */
@@ -93,7 +91,6 @@ public class WeixinPayNotifyController {
     private final StoreInstanceApi storeInstanceApi;
 
 
-
     static {
         BUILDER_LOCAL = ThreadLocal.withInitial(() -> {
             try {
@@ -136,7 +133,7 @@ public class WeixinPayNotifyController {
                 PartnerTransactionsNotifyResult notifyResult = new PartnerTransactionsNotifyResult();
                 notifyResult.setRawData(notifyResponse);
                 notifyResult.setResult(transactionsResult);
-                OrderInstanceBo instanceBo =new OrderInstanceBo();
+                OrderInstanceBo instanceBo = new OrderInstanceBo();
                 instanceBo.setPayTime(new Date());
                 instanceBo.setPayState(OrderPayTypeEnum.pay_finish.getCode());
                 orderInstanceBizApiService.updateOrderInstance(instanceBo);
@@ -258,6 +255,9 @@ public class WeixinPayNotifyController {
                                @RequestParam String nonce,
                                @RequestParam String encrypt_type,
                                @RequestParam String msg_signature) {
+        log.info("收到事件回调通知APPID{}, format{}，signature{}，timestamp{}，nonce{}，encrypt_type{}，msg_signature{}",
+                APPID, format, signature, timestamp, nonce, encrypt_type, msg_signature
+        );
         String route = "";
         try {
             WxOpenXmlMessage wxMessage = new WxOpenXmlMessage();
@@ -301,11 +301,11 @@ public class WeixinPayNotifyController {
         return route;
     }*/
     @PostMapping("/wtr/wechat/auth_event")
-    public String wxAuthUrlNotify( HttpServletRequest request, String signature, String timestamp,
-                                   String nonce, String encrypt_type, String msg_signature,
-                                   String auth_code,String AuthorizerAppid,String AuthorizationCode) {
+    public String wxAuthUrlNotify(HttpServletRequest request, String signature, String timestamp,
+                                  String nonce, String encrypt_type, String msg_signature,
+                                  String auth_code, String AuthorizerAppid, String AuthorizationCode) {
 
-        try (InputStream inputStream = request.getInputStream()){
+        try (InputStream inputStream = request.getInputStream()) {
             String xml = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
             if (!StringUtils.isEmpty(auth_code)) {
                 log.info("接收票据信息 预授权码独立信息");
@@ -325,7 +325,7 @@ public class WeixinPayNotifyController {
             String InfoType = wxMessage.getInfoType();
             if (InfoType.equals("component_verify_ticket")) {
                 String componentVerifyTicket = wxMessage.getComponentVerifyTicket();
-                Long createTime =  wxMessage.getCreateTime();
+                Long createTime = wxMessage.getCreateTime();
                 log.info("收到授权事件：验证票据通知 ComponentVerifyTicket=" + componentVerifyTicket);
 
                 if (!StringUtils.isEmpty(componentVerifyTicket)) {
@@ -334,13 +334,11 @@ public class WeixinPayNotifyController {
                 }
             } else if (InfoType.equals("authorized") || InfoType.equals("updateauthorized")) {//获取授权AuthorizationCode
 
-                 AuthorizerAppid = wxMessage.getAuthorizerAppid();
-                 AuthorizationCode = wxMessage.getAuthorizationCode();
+                AuthorizerAppid = wxMessage.getAuthorizerAppid();
+                AuthorizationCode = wxMessage.getAuthorizationCode();
                 //todo 根据appid获取信息，获取后进行更新AuthorizationCode信息
                 log.info("收到授权事件：回调填写授权码信息！appid={}", AuthorizerAppid);
-            }
-
-            else if (InfoType.equals("notify_third_fasteregister")) {
+            } else if (InfoType.equals("notify_third_fasteregister")) {
                 log.info("收到授权事件：注册审核事件推送通知");
                 //				String AppId = xmlMap.get("AppId")+"";//三方平台appid
                 Long createTime = wxMessage.getCreateTime();
@@ -390,7 +388,7 @@ public class WeixinPayNotifyController {
                 String msg = wxMessage.getMsg();//推送返回结果内容
                 int status = wxMessage.getStatus();//推送事件结果状态
 
-                String taskid =  wxMessage.getInfo().getUniqueId();//推送事件id
+                String taskid = wxMessage.getInfo().getUniqueId();//推送事件id
 
                 //修改完成信息
                 //分为个人与企业
@@ -401,9 +399,7 @@ public class WeixinPayNotifyController {
                     log.info("收到授权事件：企业回调修改注册信息！code={},legalPersonaName={},legalPersonaWechat={}", infoCode, infoLegalPersonaName, infoLegalPersonaWechat);
                     //todo 企业回调修改注册信息
                 }
-            }
-
-            else if (InfoType.equals("wxa_nickname_audit")){
+            } else if (InfoType.equals("wxa_nickname_audit")) {
                 //todo 小程序更名逻辑实现
 
             }
