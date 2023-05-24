@@ -10,6 +10,7 @@ import com.github.binarywang.wxpay.bean.applyment.enums.IdTypeEnum;
 import com.github.binarywang.wxpay.bean.applyment.enums.SalesScenesTypeEnum;
 import com.github.binarywang.wxpay.bean.applyment.enums.SubjectTypeEnum;
 import com.github.binarywang.wxpay.bean.ecommerce.ApplymentsRequest;
+import com.github.binarywang.wxpay.bean.ecommerce.ApplymentsStatusResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.open.bean.result.WxOpenResult;
@@ -147,7 +148,7 @@ public class payBiz implements PayApi {
                 // 申请小程序
                 WxOpenResult wxOpenResult = weixinIsvHandler.fastRegisterApp(payRequest);
                 log.info("生成WxOpenResult参数{}", wxOpenResult);
-                if (wxOpenResult.isSuccess() ) {
+                if (wxOpenResult.isSuccess()) {
                     return Response.ok(true, "申请微信小程序成功");
                 }
             } catch (Exception e) {
@@ -181,6 +182,18 @@ public class payBiz implements PayApi {
             }
         }
         return null;
+    }
+
+    @Override
+    public Response queryApplymentStatus(String applymentId) {
+        PayRequest payRequest = new PayIsvRequest();
+        payRequest.setChannel("weixin");
+        payRequest.setAppId("wxdb8634feb22a5ab9");
+        IsvCreateBo isvCreateBo = new IsvCreateBo();
+        isvCreateBo.setOutOrderNo(applymentId);
+        payRequest.setBizModel(isvCreateBo);
+        ApplymentsStatusResult applymentsStatusResult = weixinIsvHandler.queryIsvMini(payRequest);
+        return Response.ok(applymentsStatusResult);
     }
 
     public IsvCreateBo convert(AppApplyRequest appApplyRequest) {
@@ -280,7 +293,7 @@ public class payBiz implements PayApi {
         businessLicenseInfo.setMerchantName(appApplyRequest.getTenantShortName());
         businessLicenseInfo.setLegalPerson(appApplyRequest.getLegalName());
         businessLicenseInfo.setPeriodBegin(appApplyRequest.getCertValidityPeriod());
-        businessLicenseInfo.setPeriodEnd(appApplyRequest.getCertValidityPeriod());
+        businessLicenseInfo.setPeriodEnd("2036-02-24");
         subjectInfo.setBusinessLicenseInfo(businessLicenseInfo);
         WxPayApplyment4SubCreateRequest.SubjectInfo.IdentityInfo identityInfo
                 = new WxPayApplyment4SubCreateRequest.SubjectInfo.IdentityInfo();
@@ -292,7 +305,7 @@ public class payBiz implements PayApi {
         idCardInfo.setIdCardName(appApplyRequest.getLegalName());
         idCardInfo.setIdCardNumber(appApplyRequest.getProprietorId());
         idCardInfo.setCardPeriodBegin(appApplyRequest.getProprietorIdValidityPeriod());
-        idCardInfo.setCardPeriodEnd(appApplyRequest.getProprietorIdValidityPeriod());
+        idCardInfo.setCardPeriodEnd("2037-09-07");
         idCardInfo.setIdCardAddress(appApplyRequest.getProprietorIdAddress());
         identityInfo.setIdCardInfo(idCardInfo);
         identityInfo.setOwner(true);
@@ -305,8 +318,8 @@ public class payBiz implements PayApi {
         uboInfo.setUboIdDocCopy(appApplyRequest.getBeneficiaryIdPictureFront());
         uboInfo.setUboIdDocCopyBack(appApplyRequest.getBeneficiaryIdPictureBack());
         uboInfo.setUboIdDocType(IdTypeEnum.IDENTIFICATION_TYPE_IDCARD);
-        uboInfo.setUboPeriodBegin(appApplyRequest.getBeneficiaryIdValidityPeriod());
-        uboInfo.setUboPeriodEnd(appApplyRequest.getBeneficiaryIdValidityPeriod());
+        uboInfo.setUboPeriodBegin("2017-09-07");
+        uboInfo.setUboPeriodEnd("2037-09-07");
         uboInfo.setUboIdDocAddress(appApplyRequest.getBeneficiaryAddress());
         List<WxPayApplyment4SubCreateRequest.SubjectInfo.UboInfo> list = new ArrayList<>();
         list.add(uboInfo);

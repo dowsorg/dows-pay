@@ -5,17 +5,13 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dows.framework.api.Response;
+import org.dows.pay.api.PayApi;
 import org.dows.pay.api.PayResponse;
-import org.dows.pay.biz.IsvBiz;
 import org.dows.pay.biz.MiniBiz;
-import org.dows.pay.form.IsvCreateForm;
 import org.dows.pay.form.WxBaseInfoForm;
 import org.dows.pay.form.WxFastMaCategoryForm;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Api(tags = "isv服务商相关接口")
 @RestController
@@ -25,24 +21,29 @@ import org.springframework.web.bind.annotation.RestController;
 public class MiniRest {
     private final MiniBiz miniBiz;
 
+    private final PayApi payApi;
+
     @PostMapping("/mini/addCategory")
     @ApiOperation(value = "代商户添加小程序条目")
     public Response<PayResponse> addCategory(@Validated @RequestBody WxFastMaCategoryForm wxFastMaCategoryForm) {
         miniBiz.addCategory(wxFastMaCategoryForm);
         return Response.ok();
     }
+
     @PostMapping("/mini/category")
     @ApiOperation(value = "代商户查询小程序条目")
     public Response<PayResponse> category(@Validated @RequestBody WxFastMaCategoryForm wxFastMaCategoryForm) {
         miniBiz.category(wxFastMaCategoryForm);
         return Response.ok();
     }
+
     @PostMapping("/mini/updateCategory")
     @ApiOperation(value = "代商户更新小程序条目")
     public Response<PayResponse> updateCategory(@Validated @RequestBody WxFastMaCategoryForm wxFastMaCategoryForm) {
         miniBiz.updateCategory(wxFastMaCategoryForm);
         return Response.ok();
     }
+
     @PostMapping("/mini/delCategory")
     @ApiOperation(value = "代商户删除小程序条目")
     public Response<PayResponse> delCategory(@Validated @RequestBody WxFastMaCategoryForm wxFastMaCategoryForm) {
@@ -83,5 +84,12 @@ public class MiniRest {
     public Response<PayResponse> setHeadImage(@Validated @RequestBody WxBaseInfoForm wxBaseInfoForm) {
         miniBiz.setHeadImage(wxBaseInfoForm);
         return Response.ok();
+    }
+
+    @GetMapping("/mini/queryApplymentStatus")
+    @ApiOperation(value = "查询小程序申请支付权限结果")
+    public Response<PayResponse> queryApplymentStatus(@RequestParam("applymentId") String applymentId) {
+        Response response = payApi.queryApplymentStatus(applymentId);
+        return response;
     }
 }

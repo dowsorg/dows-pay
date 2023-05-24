@@ -36,4 +36,12 @@ public interface PayApi {
      * @return
      */
     Response applyForPaymentAuth(AppApplyRequest appApplyRequest);
+
+    /**
+     * 查询小程序申请支付权限结果
+     *
+     * @param applymentId
+     * @return
+     */
+    Response queryApplymentStatus(String applymentId);
 }
