@@ -10,7 +10,6 @@ import com.github.binarywang.wxpay.bean.applyment.enums.IdTypeEnum;
 import com.github.binarywang.wxpay.bean.applyment.enums.SalesScenesTypeEnum;
 import com.github.binarywang.wxpay.bean.applyment.enums.SubjectTypeEnum;
 import com.github.binarywang.wxpay.bean.ecommerce.ApplymentsRequest;
-import com.github.binarywang.wxpay.bean.ecommerce.ApplymentsResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.open.bean.result.WxOpenResult;
@@ -18,7 +17,6 @@ import org.dows.app.api.mini.request.AppApplyRequest;
 import org.dows.framework.api.Response;
 import org.dows.pay.alipay.AlipayIsvHandler;
 import org.dows.pay.api.PayApi;
-import org.dows.pay.api.PayException;
 import org.dows.pay.api.PayRequest;
 import org.dows.pay.api.request.PayIsvRequest;
 import org.dows.pay.bo.IsvCreateBo;
@@ -28,8 +26,6 @@ import org.dows.pay.weixin.WeixinMiniHandler;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -138,6 +134,31 @@ public class payBiz implements PayApi {
     }
 
     @Override
+    public Response fastRegisterApp(AppApplyRequest appApplyRequest) {
+        PayRequest payRequest = new PayIsvRequest();
+        log.info("生成appApplyRequest参数{}", appApplyRequest);
+        if ("WEIXIN".equals(appApplyRequest.getApplyType())) {
+            IsvCreateTyBo isvCreateTyBo = convertTy(appApplyRequest);
+            log.info("生成payRequest.setBizModel参数{}", isvCreateTyBo);
+            payRequest.setBizModel(isvCreateTyBo);
+            payRequest.setChannel("weixin");
+            payRequest.setAppId("wxdb8634feb22a5ab9");
+            try {
+                // 申请小程序
+                WxOpenResult wxOpenResult = weixinIsvHandler.fastRegisterApp(payRequest);
+                log.info("生成WxOpenResult参数{}", wxOpenResult);
+                if (wxOpenResult.isSuccess() ) {
+                    return Response.ok(true, "申请微信小程序成功");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                return Response.fail(e.getMessage());
+            }
+        }
+        return null;
+    }
+
+    @Override
     public Response applyForPaymentAuth(AppApplyRequest appApplyRequest) {
         PayRequest payRequest = new PayIsvRequest();
         log.info("生成appApplyRequest参数{}", appApplyRequest);
@@ -152,7 +173,7 @@ public class payBiz implements PayApi {
                 WxPayApplymentCreateResult isvMini = weixinIsvHandler.createIsvTyMini(payRequest);
                 log.info("生成WxPayApplymentCreateResult参数{}", isvMini);
                 if (!StringUtil.isEmpty(isvMini.getApplymentId())) {
-                    return Response.ok(true, "申请支付权限成功");
+                    return Response.ok(true, "申请微信小程序支付权限成功");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
