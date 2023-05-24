@@ -44,7 +44,6 @@ public class payBiz implements PayApi {
     @Lazy
     private final WeixinMiniHandler weixinMiniHandler;
 
-
     @Override
     public Response isvApply(AppApplyRequest appApplyRequest) {
         PayRequest payRequest = new PayIsvRequest();
@@ -215,7 +214,7 @@ public class payBiz implements PayApi {
         isvCreateBo.setContactPhone(appApplyRequest.getContactPhone());
         //营业执照信息
         isvCreateBo.setCertNo(appApplyRequest.getCertNo());
-        isvCreateBo.setCertType("2");
+        isvCreateBo.setCertType(appApplyRequest.getCertType());
         isvCreateBo.setCertName(appApplyRequest.getCertName());
         ApplymentsRequest.BusinessLicenseInfo businessLicenseInfo = new ApplymentsRequest.BusinessLicenseInfo();
         businessLicenseInfo.setBusinessLicenseCopy(appApplyRequest.getCertPicture());
@@ -223,7 +222,7 @@ public class payBiz implements PayApi {
         businessLicenseInfo.setCertType("CERTIFICATE_TYPE_2388");
         businessLicenseInfo.setMerchantName(appApplyRequest.getTenantShortName());
         businessLicenseInfo.setLegalPerson(appApplyRequest.getLegalName());
-        businessLicenseInfo.setBusinessTime(appApplyRequest.getCertValidityPeriod());
+        businessLicenseInfo.setBusinessTime(appApplyRequest.getCertValidityPeriodBegin());
         businessLicenseInfo.setCompanyAddress(appApplyRequest.getTenantAddress());
         isvCreateBo.setBusinessLicenseInfo(businessLicenseInfo);
         //经营信息
@@ -240,7 +239,7 @@ public class payBiz implements PayApi {
         contactInfo.setContactEmail(appApplyRequest.getSuperAdminEmail());
         contactInfo.setContactIdDocType("IDENTIFICATION_TYPE_IDCARD");
         contactInfo.setContactIdCardNumber(appApplyRequest.getSuperAdminId());
-        contactInfo.setContactType("LEGAL");
+        contactInfo.setContactType(appApplyRequest.getContactType());
         contactInfo.setContactIdDocCopy(appApplyRequest.getProprietorIdPictureFront());
         contactInfo.setContactIdDocCopyBack(appApplyRequest.getProprietorIdPictureBack());
         isvCreateBo.setContactInfo(contactInfo);
@@ -253,8 +252,8 @@ public class payBiz implements PayApi {
         uboInfo.setUboIdDocCopy(appApplyRequest.getBeneficiaryIdPictureFront());
         uboInfo.setUboIdDocCopyBack(appApplyRequest.getBeneficiaryIdPictureBack());
         uboInfo.setUboIdDocType(appApplyRequest.getBeneficiaryIdType());
-        uboInfo.setUboIdDocPeriodBegin(appApplyRequest.getBeneficiaryIdValidityPeriod());
-        uboInfo.setUboIdDocPeriodEnd(appApplyRequest.getProprietorIdValidityPeriod());
+        uboInfo.setUboIdDocPeriodBegin(appApplyRequest.getBeneficiaryIdValidityPeriodBegin());
+        uboInfo.setUboIdDocPeriodEnd(appApplyRequest.getProprietorIdValidityPeriodEnd());
         uboInfo.setUboIdDocAddress(appApplyRequest.getProprietorIdAddress());
         List<ApplymentsRequest.UboInfo> list = new ArrayList<>();
         list.add(uboInfo);
@@ -270,7 +269,7 @@ public class payBiz implements PayApi {
         IsvCreateTyBo isvCreateBo = new IsvCreateTyBo();
         isvCreateBo.setOutOrderNo(IdUtil.fastUUID().replace("-", ""));
         isvCreateBo.setAccount(appApplyRequest.getPlatformAccount());
-        //账户信息
+        // 账户信息
         WxPayApplyment4SubCreateRequest.BankAccountInfo accountInfo = new WxPayApplyment4SubCreateRequest.BankAccountInfo();
         accountInfo.setAccountBank(appApplyRequest.getBankName());
         accountInfo.setAccountName(appApplyRequest.getBankAccountName());
@@ -278,7 +277,7 @@ public class payBiz implements PayApi {
         accountInfo.setBankAccountType(BankAccountTypeEnum.BANK_ACCOUNT_TYPE_CORPORATE);
         accountInfo.setBankAddressCode(appApplyRequest.getBankPostalNo());
         isvCreateBo.setBankAccountInfo(accountInfo);
-        //主体资料
+        // 主体资料
         isvCreateBo.setLegalPersonalName(appApplyRequest.getLegalName());
         isvCreateBo.setLegalPersonalWechat(appApplyRequest.getLegalWechatNo());
         isvCreateBo.setContactPhone(appApplyRequest.getContactPhone());
@@ -292,43 +291,43 @@ public class payBiz implements PayApi {
         businessLicenseInfo.setLicenseNumber(appApplyRequest.getCertNo());
         businessLicenseInfo.setMerchantName(appApplyRequest.getTenantShortName());
         businessLicenseInfo.setLegalPerson(appApplyRequest.getLegalName());
-        businessLicenseInfo.setPeriodBegin(appApplyRequest.getCertValidityPeriod());
-        businessLicenseInfo.setPeriodEnd("2036-02-24");
+        businessLicenseInfo.setPeriodBegin(appApplyRequest.getCertValidityPeriodBegin());
+        businessLicenseInfo.setPeriodEnd(appApplyRequest.getCertValidityPeriodEnd());
         subjectInfo.setBusinessLicenseInfo(businessLicenseInfo);
         WxPayApplyment4SubCreateRequest.SubjectInfo.IdentityInfo identityInfo
                 = new WxPayApplyment4SubCreateRequest.SubjectInfo.IdentityInfo();
         WxPayApplyment4SubCreateRequest.SubjectInfo.IdentityInfo.IdCardInfo idCardInfo
                 = new WxPayApplyment4SubCreateRequest.SubjectInfo.IdentityInfo.IdCardInfo();
-        //经营信息
+        // 经营信息
         idCardInfo.setIdCardCopy(appApplyRequest.getProprietorIdPictureFront());
         idCardInfo.setIdCardNational(appApplyRequest.getProprietorIdPictureBack());
         idCardInfo.setIdCardName(appApplyRequest.getLegalName());
         idCardInfo.setIdCardNumber(appApplyRequest.getProprietorId());
-        idCardInfo.setCardPeriodBegin(appApplyRequest.getProprietorIdValidityPeriod());
-        idCardInfo.setCardPeriodEnd("2037-09-07");
+        idCardInfo.setCardPeriodBegin(appApplyRequest.getProprietorIdValidityPeriodBegin());
+        idCardInfo.setCardPeriodEnd(appApplyRequest.getProprietorIdValidityPeriodEnd());
         idCardInfo.setIdCardAddress(appApplyRequest.getProprietorIdAddress());
         identityInfo.setIdCardInfo(idCardInfo);
         identityInfo.setOwner(true);
         identityInfo.setIdDocType(IdTypeEnum.IDENTIFICATION_TYPE_IDCARD);
         subjectInfo.setIdentityInfo(identityInfo);
-        //受益人
+        // 受益人
         WxPayApplyment4SubCreateRequest.SubjectInfo.UboInfo uboInfo = new WxPayApplyment4SubCreateRequest.SubjectInfo.UboInfo();
         uboInfo.setUboIdDocName(appApplyRequest.getBeneficiaryName());
         uboInfo.setUboIdDocNumber(appApplyRequest.getBeneficiary());
         uboInfo.setUboIdDocCopy(appApplyRequest.getBeneficiaryIdPictureFront());
         uboInfo.setUboIdDocCopyBack(appApplyRequest.getBeneficiaryIdPictureBack());
         uboInfo.setUboIdDocType(IdTypeEnum.IDENTIFICATION_TYPE_IDCARD);
-        uboInfo.setUboPeriodBegin("2017-09-07");
-        uboInfo.setUboPeriodEnd("2037-09-07");
+        uboInfo.setUboPeriodBegin(appApplyRequest.getBeneficiaryIdValidityPeriodBegin());
+        uboInfo.setUboPeriodEnd(appApplyRequest.getBeneficiaryIdValidityPeriodEnd());
         uboInfo.setUboIdDocAddress(appApplyRequest.getBeneficiaryAddress());
         List<WxPayApplyment4SubCreateRequest.SubjectInfo.UboInfo> list = new ArrayList<>();
         list.add(uboInfo);
         subjectInfo.setUboInfoList(list);
         isvCreateBo.setSubjectInfo(subjectInfo);
 
-        //经营资料信息
+        // 经营资料信息
         isvCreateBo.setCertNo(appApplyRequest.getCertNo());
-        isvCreateBo.setCertType("2");
+        isvCreateBo.setCertType(appApplyRequest.getCertType());
 //        isvCreateBo.setCertName(appApplyRequest.getBankAccountName());
         isvCreateBo.setCertName(appApplyRequest.getCertName());
         WxPayApplyment4SubCreateRequest.BusinessInfo businessInfo = new WxPayApplyment4SubCreateRequest.BusinessInfo();
@@ -338,8 +337,8 @@ public class payBiz implements PayApi {
         List<String> miniProgramPics = new ArrayList<>();
         miniProgramPics.add(appApplyRequest.getAppPicture());
         miniProgramInfo.setMiniProgramPics(miniProgramPics);
-        miniProgramInfo.setMiniProgramAppid(appApplyRequest.getAppId() == null ? "wx1f2863eb6cdee6a1" :
-                appApplyRequest.getAppId());
+            miniProgramInfo.setMiniProgramAppid(appApplyRequest.getAppId() == null ? "wx1f2863eb6cdee6a1" :
+                    appApplyRequest.getAppId());
         salesInfo.setMiniProgramInfo(miniProgramInfo);
         List<SalesScenesTypeEnum> salesScenesType = new ArrayList<>();
         salesScenesType.add(SalesScenesTypeEnum.SALES_SCENES_MINI_PROGRAM);
@@ -349,7 +348,7 @@ public class payBiz implements PayApi {
         businessInfo.setServicePhone(appApplyRequest.getContactPhone());
         isvCreateBo.setBusinessInfo(businessInfo);
 
-        //超级管理员信息
+        // 超级管理员信息
         WxPayApplyment4SubCreateRequest.ContactInfo contactInfo = new WxPayApplyment4SubCreateRequest.ContactInfo();
         contactInfo.setContactName(appApplyRequest.getSuperAdminName());
         contactInfo.setMobilePhone(appApplyRequest.getSuperAdminPhone());
@@ -358,7 +357,7 @@ public class payBiz implements PayApi {
         // 如果为1、主体为“个体工商户/企业/政府机关/事业单位/社会组织”，可选择：LEGAL：经营者/法人，SUPER：经办人
         // 。（经办人：经商户授权办理微信支付业务的人员）。
         //枚举值：LEGAL：经营者/法人、SUPER：经办人
-        contactInfo.setContactType("LEGAL");
+        contactInfo.setContactType(appApplyRequest.getContactType());
         // 如类型为LEGAL则以下不需要传参
 //        contactInfo.setContactIdDocType("IDENTIFICATION_TYPE_IDCARD");
 //        contactInfo.setContactIdNumber(appApplyRequest.getSuperAdminId());
@@ -368,16 +367,16 @@ public class payBiz implements PayApi {
 //        contactInfo.setContactPeriodEnd(appApplyRequest.getProprietorIdValidityPeriod());
         contactInfo.setBusinessAuthorizationLetter(appApplyRequest.getOtherCert());
         isvCreateBo.setContactInfo(contactInfo);
-        //结算规则
+        // 结算规则
         WxPayApplyment4SubCreateRequest.SettlementInfo settlementInfo =
                 new WxPayApplyment4SubCreateRequest.SettlementInfo();
-        //todo 按照餐饮去送微信
+        // todo 按照餐饮去送微信
         settlementInfo.setSettlementId("716");
 //        settlementInfo.setActivitiesRate("0");
         settlementInfo.setQualificationType(appApplyRequest.getBusinessScope());
         isvCreateBo.setSettlementInfo(settlementInfo);
 
-        //补充材料
+        // 补充材料
         WxPayApplyment4SubCreateRequest.AdditionInfo additionInfo =
                 new WxPayApplyment4SubCreateRequest.AdditionInfo();
         List<String> businessAdditionPics = new ArrayList<>();
