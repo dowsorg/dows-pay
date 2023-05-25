@@ -1,0 +1,2 @@
+isv:
+  registerMiniprogram: https://api.weixin.qq.com/cgi-bin/component/fastregisterweapp?action=create&component_access_token=TOKEN

@@ -1,0 +1,59 @@
+dows:
+  crawlers:
+#    - channel: alipay
+#      host: https://alipay.com/api
+
+
+    - id: 1
+      channel: weixin
+      seed: https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc
+      flows:
+#        - step: 1
+#          next: 2
+#          type:
+#          rule:
+#            section: div[class="content custom"]
+#            regex:
+#              dd: h2[id]
+#            mapping: org.dows.pay.spider.model.Catalog
+#          handler: org.dows.pay.spider.handler.TextExtractHandler
+#
+#        - step: 2
+#          next: 3
+#          rule:
+#            section: div[class="content custom"]
+#            regex:
+#              ss: h2 h3[id]
+#            mapping: org.dows.pay.spider.model.Catalog
+#          handler: org.dows.pay.spider.handler.TextExtractHandler
+
+        - step: 3
+          next: 4
+          handler: org.dows.pay.spider.handler.WeixinCatalogExtractHandler
+          rule:
+            mapping: org.dows.pay.spider.model.MenuInfo
+            section: //div[@class='content custom']/div[@class='table-wrp']/table
+            regex:
+              module: ../../../preceding-sibling::h2[-1]/text()[2]
+              sub: ../../../preceding-sibling::h3[-1]/text()[2]
+              href: /td[1]/a/attribute::href
+              code: /td[1]/a/text()
+              descr: /td[2]/text()
+
+
+
+        - step: 4
+          next:
+          handler: org.dows.pay.spider.handler.WeixinIsvApiExtractHandler
+          rule:
+            section: //div[@id='docContent']
+            mapping: org.dows.pay.spider.model.MenuInfo
+            regex:
+              catalogTree: /div[@class='Breadcrumb']
+              httpMethod: /div[class='language- extra-class']/code
+              url: /div[class='language- extra-class']/code
+              input: /h3[id="请求参数"]/following-sibling::div[1]/table
+              output: /h3[id="返回参数"]/following-sibling::div[1]/table
+              descr: /h3[id="功能描述"]/following-sibling::p[1]/table
+
+
