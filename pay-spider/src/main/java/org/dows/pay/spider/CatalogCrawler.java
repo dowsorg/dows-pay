@@ -4,14 +4,12 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.json.JSONUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.dows.pay.spider.handler.ExtractHandler;
 import org.dows.pay.spider.handler.WeixinCatalogExtractHandler;
 import org.dows.pay.spider.handler.WeixinIsvApiExtractHandler;
 import org.dows.pay.spider.model.MenuInfo;
 import org.dows.pay.spider.model.StepData;
 import org.dows.pay.spider.properties.Crawler;
 import org.dows.pay.spider.properties.CrawlerProperties;
-import org.dows.pay.spider.properties.Flow;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
@@ -78,35 +76,24 @@ public class CatalogCrawler {
         List<Crawler> crawlers = crawlerProperties.getCrawlers();
 
         List<MenuInfo> menuInfos = new ArrayList<>();
-        StepData stepData = weixinCatalogExtractHandler.extract(crawlers);
+        StepData stepData = weixinCatalogExtractHandler.extract(null, crawlers);
         for (Map<String, String> data : stepData.getDatas()) {
             MenuInfo menuInfo = BeanUtil.toBean(data, MenuInfo.class);
             String seed = stepData.getSeed();
             menuInfo.setHref(seed + menuInfo.getHref().substring(1));
             menuInfos.add(menuInfo);
         }
-       /*
-        for (Crawler crawler : crawlers) {
-            //todo 多线程
-            List<Flow> flows = crawler.getFlows();
-            for (Flow flow : flows) {
-                ExtractHandler extractHandler = (ExtractHandler) applicationContext.getBean(flow.getHandler());
-                StepData stepData = extractHandler.extract(crawler, flow);
-                if (stepData == null) {
-                    continue;
-                }
-
-            }
-        }*/
-
 
         Map<String, List<MenuInfo>> collect = menuInfos.stream().collect(Collectors.groupingBy(MenuInfo::getModule));
 
+        List<StepData> stepDataList = new ArrayList<>();
         for (MenuInfo menuInfo : menuInfos) {
             log.info("菜单信息：{}", JSONUtil.toJsonStr(menuInfo));
             String href = menuInfo.getHref();
             System.out.println("");
-            weixinIsvApiExtractHandler.extract(crawlers);
+            StepData stepData1 = weixinIsvApiExtractHandler.extract(href, crawlers);
+            stepDataList.add(stepData1);
+            log.info("{}", stepData1);
         }
 
     }

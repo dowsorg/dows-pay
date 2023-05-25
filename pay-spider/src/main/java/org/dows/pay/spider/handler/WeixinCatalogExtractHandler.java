@@ -1,5 +1,6 @@
 package org.dows.pay.spider.handler;
 
+import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dows.pay.spider.model.StepData;
@@ -41,12 +42,15 @@ public class WeixinCatalogExtractHandler implements ExtractHandler {
     }
 
     @Override
-    public StepData extract(List<Crawler> crawlers) {
+    public StepData extract(String seed, List<Crawler> crawlers) {
         for (Crawler crawler : crawlers) {
             if (crawler.getChannel().equalsIgnoreCase("weixin")) {
                 List<Flow> flows = crawler.getFlows();
                 for (Flow flow : flows) {
                     if (flow.getHandler().equals(this.getClass())) {
+                        if(!StrUtil.isBlank(seed)) {
+                            crawler.setSeed(seed);
+                        }
                         return extract(crawler, flow);
                     }
                 }

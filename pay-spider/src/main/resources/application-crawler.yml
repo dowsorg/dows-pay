@@ -49,11 +49,11 @@ dows:
             section: //div[@id='docContent']
             mapping: org.dows.pay.spider.model.MenuInfo
             regex:
-              catalogTree: /div[@class='Breadcrumb']
-              httpMethod: /div[class='language- extra-class']/code
-              url: /div[class='language- extra-class']/code
-              input: /h3[id="请求参数"]/following-sibling::div[1]/table
-              output: /h3[id="返回参数"]/following-sibling::div[1]/table
-              descr: /h3[id="功能描述"]/following-sibling::p[1]/table
+              catalogTree: //div[@class='Breadcrumb']/span
+              httpMethod: //div[@class='language- extra-class']/pre/code/text()
+              url: //div[@class='language- extra-class']/pre/code/text()
+              input: //h3[@id='请求参数']/following-sibling::div[1]/table//tr
+              output: //h3[@id='返回参数']/following-sibling::div[1]/table/tbody/tr
+              descr: //h3[@id='功能描述']/following-sibling::p[1]/text()
 
 

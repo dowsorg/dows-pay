@@ -12,7 +12,7 @@ public class ApiSchema {
     private String httpMethod;
     private String descr;
 
-    private List<ParamSchema> input;
+    private List<WeixinParamSchema> input;
 
-    private List<ParamSchema> output;
+    private List<WeixinParamSchema> output;
 }
