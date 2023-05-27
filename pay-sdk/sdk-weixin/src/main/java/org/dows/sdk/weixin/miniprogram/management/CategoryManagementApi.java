@@ -58,5 +58,4 @@ public interface CategoryManagementApi {
      */
     GetAllCategoryNameResponse getAllCategoryName(GetAllCategoryNameRequest getAllCategoryNameRequest);
 
-
 }

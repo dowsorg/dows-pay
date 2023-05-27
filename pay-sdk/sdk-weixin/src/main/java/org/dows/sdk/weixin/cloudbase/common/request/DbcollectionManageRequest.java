@@ -14,18 +14,13 @@ import lombok.NoArgsConstructor;
 public class DbcollectionManageRequest {
     @Schema(title = "")
     private String access_token;
-
-    @Schema(title = "填"get"")
+    @Schema(title = "填'get'")
     private String action;
-
     @Schema(title = "环境ID")
     private String env;
-
     @Schema(title = "返回数据长度")
-    private Number limit;
-
+    private Integer limit;
     @Schema(title = "数据偏移量")
-    private Number offset;
-
+    private Integer offset;
 
 }

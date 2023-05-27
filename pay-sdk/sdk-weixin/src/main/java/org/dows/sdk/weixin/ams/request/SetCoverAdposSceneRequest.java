@@ -15,5 +15,4 @@ public class SetCoverAdposSceneRequest {
     @Schema(title = "封面广告场景值")
     private String cover_scene_list;
 
-
 }

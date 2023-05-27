@@ -13,10 +13,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SetBlackListResponse {
     @Schema(title = "错误码")
-    private Number ret;
-
+    private Integer ret;
     @Schema(title = "错误信息")
     private String err_msg;
-
 
 }

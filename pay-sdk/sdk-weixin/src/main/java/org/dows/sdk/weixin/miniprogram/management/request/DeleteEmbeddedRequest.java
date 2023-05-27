@@ -14,9 +14,7 @@ import lombok.NoArgsConstructor;
 public class DeleteEmbeddedRequest {
     @Schema(title = "接口调用凭证，该参数为 URL 参数，非 Body 参数。使用")
     private String access_token;
-
     @Schema(title = "已添加的半屏小程序appid")
     private String appid;
-
 
 }

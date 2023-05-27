@@ -13,13 +13,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class GetCoverAdposSceneResponse {
     @Schema(title = "错误码")
-    private Number ret;
-
+    private Integer ret;
     @Schema(title = "错误信息")
     private String err_msg;
-
     @Schema(title = "封面广告场景值")
     private String scene_list;
-
 
 }

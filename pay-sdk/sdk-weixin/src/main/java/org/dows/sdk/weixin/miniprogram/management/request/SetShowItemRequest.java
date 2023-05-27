@@ -14,12 +14,9 @@ import lombok.NoArgsConstructor;
 public class SetShowItemRequest {
     @Schema(title = "接口调用凭证，该参数为 URL 参数，非 Body 参数。使用")
     private String access_token;
-
     @Schema(title = "是否打开扫码关注组件，0 关闭，1 开启")
-    private Number wxa_subscribe_biz_flag;
-
+    private Integer wxa_subscribe_biz_flag;
     @Schema(title = "如果开启，需要传新的公众号 appid")
     private String appid;
-
 
 }

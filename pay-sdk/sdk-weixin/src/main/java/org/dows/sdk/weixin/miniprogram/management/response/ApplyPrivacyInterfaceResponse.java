@@ -13,13 +13,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ApplyPrivacyInterfaceResponse {
     @Schema(title = "错误码")
-    private Number errcode;
-
+    private Integer errcode;
     @Schema(title = "错误信息")
     private String errmsg;
-
     @Schema(title = "审核id")
-    private Number audit_id;
-
+    private Integer audit_id;
 
 }

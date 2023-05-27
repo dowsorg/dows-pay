@@ -34,5 +34,4 @@ public interface LinkMiniprogramApi {
      */
     UnlinkMiniprogramResponse unlinkMiniprogram(UnlinkMiniprogramRequest unlinkMiniprogramRequest);
 
-
 }

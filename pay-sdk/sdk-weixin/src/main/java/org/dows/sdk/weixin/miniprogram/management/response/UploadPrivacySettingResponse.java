@@ -13,13 +13,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UploadPrivacySettingResponse {
     @Schema(title = "返回码")
-    private Number errcode;
-
+    private Integer errcode;
     @Schema(title = "错误信息")
     private String errmsg;
-
     @Schema(title = "文件的media_id")
     private String ext_file_media_id;
-
 
 }

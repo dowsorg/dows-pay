@@ -15,5 +15,4 @@ public class GetCustomShareRatioRequest {
     @Schema(title = "查询用于该APPID签约时所使用的自定义分账比例。默认优先使用自定义分账比例，若不存在，则使用默认分账比例。")
     private String appid;
 
-
 }

@@ -14,9 +14,7 @@ import lombok.NoArgsConstructor;
 public class SetSignatureRequest {
     @Schema(title = "接口调用凭证，该参数为 URL 参数，非 Body 参数。使用")
     private String access_token;
-
     @Schema(title = "功能介绍（简介）")
     private String signature;
-
 
 }

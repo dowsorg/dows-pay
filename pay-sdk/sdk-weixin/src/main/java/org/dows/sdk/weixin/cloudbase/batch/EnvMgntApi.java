@@ -53,5 +53,4 @@ public interface EnvMgntApi {
      */
     ShareCloudbaseEnvResponse shareCloudbaseEnv(ShareCloudbaseEnvRequest shareCloudbaseEnvRequest);
 
-
 }

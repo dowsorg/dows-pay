@@ -41,5 +41,4 @@ public interface EnvManagementApi {
      */
     ShareEnvResponse shareEnv(ShareEnvRequest shareEnvRequest);
 
-
 }

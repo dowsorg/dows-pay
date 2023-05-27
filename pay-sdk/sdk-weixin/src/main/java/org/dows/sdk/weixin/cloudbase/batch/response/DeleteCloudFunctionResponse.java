@@ -13,10 +13,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class DeleteCloudFunctionResponse {
     @Schema(title = "返回码")
-    private Number errcode;
-
+    private Integer errcode;
     @Schema(title = "错误信息")
     private String errmsg;
-
 
 }

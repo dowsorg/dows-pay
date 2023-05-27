@@ -27,12 +27,13 @@ import java.math.BigDecimal;
 public interface ${clazz?cap_first!""}{
 <#if apiSchemas?? && (apiSchemas?size >0)>
     <#list apiSchemas as api >
+        <#if api??>
     /**
      * ${api.descr!""}
-     * @param ${api.method!""}Request
+     * @param ${api.method?uncap_first!""}Request
      */
-    ${api.method?cap_first!""}Response ${api.method!""}(${api.method?cap_first!""}Request ${api.method!""}Request);
-
+    ${api.method?cap_first!""}Response ${api.method?uncap_first!""}(${api.method?cap_first!""}Request ${api.method?uncap_first!""}Request);
+        </#if>
     </#list>
 
 </#if>

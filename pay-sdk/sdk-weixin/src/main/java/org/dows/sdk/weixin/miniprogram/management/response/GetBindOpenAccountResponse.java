@@ -14,12 +14,9 @@ import lombok.NoArgsConstructor;
 public class GetBindOpenAccountResponse {
     @Schema(title = "是否绑定open帐号，true表示绑定；false表示未绑定任何open帐号")
     private Boolean have_open;
-
     @Schema(title = "返回码")
-    private Number errcode;
-
+    private Integer errcode;
     @Schema(title = "错误信息")
     private String errmsg;
-
 
 }

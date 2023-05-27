@@ -1,5 +1,6 @@
 package org.dows.pay.spider.model;
 
+import cn.hutool.core.util.StrUtil;
 import lombok.Data;
 import org.dows.pay.spider.AlipayField;
 import org.dows.pay.spider.WexinField;
@@ -12,7 +13,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- *
  * 属性	类型	必填	说明
  */
 @Data
@@ -48,8 +48,8 @@ public class FieldSchema {
         // todo 支付宝
     }
 
-    public Boolean isNotnull(){
-        if(must.equalsIgnoreCase("是")){
+    public Boolean isNotnull() {
+        if (must.equalsIgnoreCase("是")) {
             return true;
         }
         return false;
@@ -57,5 +57,24 @@ public class FieldSchema {
 
     public Map<String, Field> getWexinFieldMap() {
         return weixinFieldMap;
+    }
+
+
+    public String getDescr() {
+        if (StrUtil.isBlank(descr)) {
+            return "";
+        }
+        return descr.replaceAll("\"", "'");
+    }
+
+    public String getFieldType() {
+        if (StrUtil.isBlank(fieldType)) {
+            return "";
+        } else if (fieldType.startsWith("Array<string") || fieldType.startsWith("array<string")) {
+            return "List<String>";
+        } else if (fieldType.equalsIgnoreCase("number")) {
+            return "Integer";
+        }
+        return fieldType;
     }
 }

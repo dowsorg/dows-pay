@@ -13,22 +13,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class GetUploadFileLinkResponse {
     @Schema(title = "错误码")
-    private Number errcode;
-
+    private Integer errcode;
     @Schema(title = "错误信息")
     private String errmsg;
-
     @Schema(title = "上传url")
     private String url;
-
     @Schema(title = "token")
     private String token;
-
     @Schema(title = "authorization")
     private String authorization;
-
     @Schema(title = "文件ID")
     private String file_id;
-
 
 }

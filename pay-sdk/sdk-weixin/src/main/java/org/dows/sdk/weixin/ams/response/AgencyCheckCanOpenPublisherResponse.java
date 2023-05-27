@@ -13,13 +13,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AgencyCheckCanOpenPublisherResponse {
     @Schema(title = "错误码")
-    private Number ret;
-
+    private Integer ret;
     @Schema(title = "错误信息")
     private String err_msg;
-
     @Schema(title = "返回能否开通状态：0否，1能")
-    private Number status;
-
+    private Integer status;
 
 }

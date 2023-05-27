@@ -14,12 +14,9 @@ import lombok.NoArgsConstructor;
 public class GetOpenAccountResponse {
     @Schema(title = "公众号或小程序所绑定的开放平台帐号的 appid")
     private String open_appid;
-
     @Schema(title = "错误码")
-    private Number errcode;
-
+    private Integer errcode;
     @Schema(title = "错误信息")
     private String errmsg;
-
 
 }

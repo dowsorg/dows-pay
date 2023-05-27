@@ -13,16 +13,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CreateTcbEnvResponse {
     @Schema(title = "返回码")
-    private Number errcode;
-
+    private Integer errcode;
     @Schema(title = "错误信息")
     private String errmsg;
-
     @Schema(title = "后付费订单号")
     private String tranid;
-
     @Schema(title = "环境ID")
     private String env;
-
 
 }

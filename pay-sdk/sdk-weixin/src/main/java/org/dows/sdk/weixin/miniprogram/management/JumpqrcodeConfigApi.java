@@ -1,7 +1,7 @@
 package org.dows.sdk.weixin.miniprogram.management;
 
-import org.dows.sdk.weixin.miniprogram.management.request.*;
-import org.dows.sdk.weixin.miniprogram.management.response.*;
+import org.dows.sdk.weixin.miniprogram.management.request.DownloadQRCodeTextRequest;
+import org.dows.sdk.weixin.miniprogram.management.response.DownloadQRCodeTextResponse;
 
 /**
  * @author
@@ -41,6 +41,5 @@ public interface JumpqrcodeConfigApi {
      * @param downloadQRCodeTextRequest
      */
     DownloadQRCodeTextResponse downloadQRCodeText(DownloadQRCodeTextRequest downloadQRCodeTextRequest);
-
 
 }

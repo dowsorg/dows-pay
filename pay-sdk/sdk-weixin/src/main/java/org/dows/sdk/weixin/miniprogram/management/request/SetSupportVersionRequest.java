@@ -14,9 +14,7 @@ import lombok.NoArgsConstructor;
 public class SetSupportVersionRequest {
     @Schema(title = "接口调用凭证，该参数为 URL 参数，非 Body 参数。使用")
     private String access_token;
-
     @Schema(title = "为已发布的基础库版本号")
     private String version;
-
 
 }

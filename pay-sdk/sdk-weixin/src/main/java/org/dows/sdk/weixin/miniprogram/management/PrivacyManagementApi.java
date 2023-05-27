@@ -34,5 +34,4 @@ public interface PrivacyManagementApi {
      */
     UploadPrivacySettingResponse uploadPrivacySetting(UploadPrivacySettingRequest uploadPrivacySettingRequest);
 
-
 }

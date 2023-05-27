@@ -13,13 +13,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class DeleteDatabaseItemResponse {
     @Schema(title = "错误码")
-    private Number errcode;
-
+    private Integer errcode;
     @Schema(title = "错误信息")
     private String errmsg;
-
     @Schema(title = "删除记录数量")
-    private Number deleted;
-
+    private Integer deleted;
 
 }

@@ -33,10 +33,11 @@ public class ${clazz!""}{
         <#if field.size??>
     @Size(<#if field.size.min??>min = ${field.size.min!""}</#if>, <#if field.size.max??>max = ${field.size.max!""}, </#if>message = "${field.descr!""}[${field.name!""}]<#if field.size.descr?? && field.size.descr != "">${field.size.descr!""}<#else >长度有误,允许的大小值为:${field.size.value!""}</#if>")
         </#if>
+        <#if field.fieldType?has_content>
 <#--    @ApiModelProperty("${field.descr!""}")-->
     @Schema(title = "${field.descr!""}")
     private ${(field.fieldType!"")?cap_first} ${field.name!""};
-
+        </#if>
     </#list>
 
 </#if>

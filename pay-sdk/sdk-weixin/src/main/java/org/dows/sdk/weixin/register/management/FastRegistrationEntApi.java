@@ -16,5 +16,4 @@ public interface FastRegistrationEntApi {
      */
     RegisterMiniprogramResponse registerMiniprogram(RegisterMiniprogramRequest registerMiniprogramRequest);
 
-
 }

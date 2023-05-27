@@ -44,5 +44,4 @@ public interface ServiceMgntApi {
      */
     ReleaseCloudbaseServiceVersionResponse releaseCloudbaseServiceVersion(ReleaseCloudbaseServiceVersionRequest releaseCloudbaseServiceVersionRequest);
 
-
 }

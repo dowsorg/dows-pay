@@ -14,9 +14,7 @@ import lombok.NoArgsConstructor;
 public class SetVisitStatusRequest {
     @Schema(title = "接口调用凭证，该参数为 URL 参数，非 Body 参数。使用")
     private String access_token;
-
     @Schema(title = "设置可访问状态，发布后默认可访问，close 为不可见，open 为可见")
     private String action;
-
 
 }

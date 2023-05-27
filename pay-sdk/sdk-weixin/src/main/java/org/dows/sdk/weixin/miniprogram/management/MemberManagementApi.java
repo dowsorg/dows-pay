@@ -30,5 +30,4 @@ public interface MemberManagementApi {
      */
     GetTesterResponse getTester(GetTesterRequest getTesterRequest);
 
-
 }

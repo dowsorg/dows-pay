@@ -13,13 +13,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AgencyCreateAdunitResponse {
     @Schema(title = "错误码")
-    private Number ret;
-
+    private Integer ret;
     @Schema(title = "错误信息")
     private String err_msg;
-
     @Schema(title = "广告单元ID")
     private String ad_unit_id;
-
 
 }

@@ -14,5 +14,4 @@ public interface FastRegistrationOfficalaccountApi {
      */
     RegisterMiniprogramByOffiaccountResponse registerMiniprogramByOffiaccount(RegisterMiniprogramByOffiaccountRequest registerMiniprogramByOffiaccountRequest);
 
-
 }

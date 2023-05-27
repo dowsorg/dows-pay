@@ -14,12 +14,9 @@ import lombok.NoArgsConstructor;
 public class GetUploadFileLinkRequest {
     @Schema(title = "接口调用凭证，该参数为 URL 参数，非 Body 参数。使用")
     private String access_token;
-
     @Schema(title = "云环境ID")
     private String env;
-
     @Schema(title = "上传路径")
     private String path;
-
 
 }

@@ -13,16 +13,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class GetUploadStaticStoreFileResponse {
     @Schema(title = "错误码")
-    private Number errcode;
-
+    private Integer errcode;
     @Schema(title = "错误信息")
     private String errmsg;
-
     @Schema(title = "上传链接")
     private String signed_url;
-
     @Schema(title = "x-cos-security-token的值")
     private String token;
-
 
 }

@@ -14,15 +14,11 @@ import lombok.NoArgsConstructor;
 public class GetDatabaseCollectionRequest {
     @Schema(title = "接口调用凭证，该参数为 URL 参数，非 Body 参数。使用")
     private String access_token;
-
     @Schema(title = "云环境ID")
     private String env;
-
     @Schema(title = "获取数量限制")
-    private Number limit;
-
+    private Integer limit;
     @Schema(title = "偏移量")
-    private Number offset;
-
+    private Integer offset;
 
 }

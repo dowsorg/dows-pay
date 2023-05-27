@@ -13,22 +13,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class GetCloudTokenResponse {
     @Schema(title = "错误码")
-    private Number errcode;
-
+    private Integer errcode;
     @Schema(title = "错误信息")
     private String errmsg;
-
     @Schema(title = "secretid")
     private String secretid;
-
     @Schema(title = "secretkey")
     private String secretkey;
-
     @Schema(title = "token")
     private String token;
-
     @Schema(title = "过期时间戳")
-    private Number expired_time;
-
+    private Integer expired_time;
 
 }

@@ -25,5 +25,4 @@ public interface WechatpayApi {
      */
     GetWechatPayAuthResponse getWechatPayAuth(GetWechatPayAuthRequest getWechatPayAuthRequest);
 
-
 }

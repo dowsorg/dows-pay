@@ -14,9 +14,7 @@ import lombok.NoArgsConstructor;
 public class GetNickNameStatusRequest {
     @Schema(title = "接口调用凭证，该参数为 URL 参数，非 Body 参数。使用")
     private String access_token;
-
     @Schema(title = "审核单 id，由")
-    private Number audit_id;
-
+    private Integer audit_id;
 
 }

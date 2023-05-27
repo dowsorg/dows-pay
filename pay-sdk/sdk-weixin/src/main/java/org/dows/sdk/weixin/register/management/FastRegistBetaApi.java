@@ -34,5 +34,4 @@ public interface FastRegistBetaApi {
      */
     RegisterBetaMiniprogramResponse registerBetaMiniprogram(RegisterBetaMiniprogramRequest registerBetaMiniprogramRequest);
 
-
 }

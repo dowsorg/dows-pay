@@ -48,5 +48,4 @@ public interface CloudenvMgntApi {
      */
     UnshareCloudbaseEnvResponse unshareCloudbaseEnv(UnshareCloudbaseEnvRequest unshareCloudbaseEnvRequest);
 
-
 }

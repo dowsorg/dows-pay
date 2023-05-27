@@ -15,16 +15,12 @@ import java.nio.Buffer;
 @NoArgsConstructor
 public class UploadMediaToCodeAuditResponse {
     @Schema(title = "错误码")
-    private Number errcode;
-
+    private Integer errcode;
     @Schema(title = "错误信息")
     private String errmsg;
-
     @Schema(title = "类型")
     private String type;
-
     @Schema(title = "媒体id")
     private Buffer mediaid;
-
 
 }

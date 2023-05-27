@@ -13,16 +13,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ReleaseCloudbaseServiceVersionResponse {
     @Schema(title = "错误码")
-    private Number errcode;
-
+    private Integer errcode;
     @Schema(title = "错误信息")
     private String errmsg;
-
     @Schema(title = "是否成功，success是成功，failed是失败")
     private String result;
-
     @Schema(title = "发布单id")
-    private Number release_order_id;
-
+    private Integer release_order_id;
 
 }

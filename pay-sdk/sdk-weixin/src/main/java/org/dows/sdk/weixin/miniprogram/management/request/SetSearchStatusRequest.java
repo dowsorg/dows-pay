@@ -14,9 +14,7 @@ import lombok.NoArgsConstructor;
 public class SetSearchStatusRequest {
     @Schema(title = "接口调用凭证，该参数为 URL 参数，非 Body 参数。使用")
     private String access_token;
-
     @Schema(title = "1 表示不可搜索，0 表示可搜索")
-    private Number status;
-
+    private Integer status;
 
 }

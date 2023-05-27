@@ -18,30 +18,29 @@ public interface AdBlackApi {
     /**
      * 该 API 用于查询当前小程序广告屏蔽的广告主。使用过程中如遇到问题，可在发帖交流。其中access_token为
      *
-     * @param GetBlackListRequest
+     * @param getBlackListRequest
      */
-    GetBlackListResponse GetBlackList(GetBlackListRequest GetBlackListRequest);
+    GetBlackListResponse getBlackList(GetBlackListRequest getBlackListRequest);
 
     /**
      * 该 API 用于设置小程序广告屏蔽的广告主。使用过程中如遇到问题，可在发帖交流。其中access_token为
      *
-     * @param SetBlackListRequest
+     * @param setBlackListRequest
      */
-    SetBlackListResponse SetBlackList(SetBlackListRequest SetBlackListRequest);
+    SetBlackListResponse setBlackList(SetBlackListRequest setBlackListRequest);
 
     /**
      * 该 API 用于查询小程序广告行业屏蔽信息。使用过程中如遇到问题，可在发帖交流。其中access_token为
      *
-     * @param GetAmsCategoryBlackListRequest
+     * @param getAmsCategoryBlackListRequest
      */
-    GetAmsCategoryBlackListResponse GetAmsCategoryBlackList(GetAmsCategoryBlackListRequest GetAmsCategoryBlackListRequest);
+    GetAmsCategoryBlackListResponse getAmsCategoryBlackList(GetAmsCategoryBlackListRequest getAmsCategoryBlackListRequest);
 
     /**
      * 该 API 用于设置小程序广告行业屏蔽信息。使用过程中如遇到问题，可在发帖交流。其中access_token为
      *
-     * @param SetAmsCategoryBlackListRequest
+     * @param setAmsCategoryBlackListRequest
      */
-    SetAmsCategoryBlackListResponse SetAmsCategoryBlackList(SetAmsCategoryBlackListRequest SetAmsCategoryBlackListRequest);
-
+    SetAmsCategoryBlackListResponse setAmsCategoryBlackList(SetAmsCategoryBlackListRequest setAmsCategoryBlackListRequest);
 
 }

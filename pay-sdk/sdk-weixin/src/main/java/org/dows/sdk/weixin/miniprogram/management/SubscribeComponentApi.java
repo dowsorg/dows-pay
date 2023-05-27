@@ -34,5 +34,4 @@ public interface SubscribeComponentApi {
      */
     SetShowItemResponse setShowItem(SetShowItemRequest setShowItemRequest);
 
-
 }

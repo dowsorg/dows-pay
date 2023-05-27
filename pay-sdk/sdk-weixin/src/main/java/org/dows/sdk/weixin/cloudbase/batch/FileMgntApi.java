@@ -43,5 +43,4 @@ public interface FileMgntApi {
      */
     GetDownloadFileLinkResponse getDownloadFileLink(GetDownloadFileLinkRequest getDownloadFileLinkRequest);
 
-
 }

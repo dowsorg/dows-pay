@@ -14,5 +14,4 @@ public interface LoginApi {
      */
     ThirdpartyCode2SessionResponse thirdpartyCode2Session(ThirdpartyCode2SessionRequest thirdpartyCode2SessionRequest);
 
-
 }

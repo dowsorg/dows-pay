@@ -21,5 +21,4 @@ public interface PrivacyApiManagementApi {
      */
     GetPrivacyInterfaceResponse getPrivacyInterface(GetPrivacyInterfaceRequest getPrivacyInterfaceRequest);
 
-
 }

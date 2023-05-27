@@ -14,12 +14,9 @@ import lombok.NoArgsConstructor;
 public class GetWechatPayAuthRequest {
     @Schema(title = "接口调用凭证，该参数为 URL 参数，非 Body 参数。使用")
     private String access_token;
-
     @Schema(title = "bind/openjsapi/openrefund")
     private String action;
-
     @Schema(title = "商户号")
     private String merchant_code;
-
 
 }

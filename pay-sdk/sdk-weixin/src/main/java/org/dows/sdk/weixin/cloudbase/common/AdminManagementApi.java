@@ -41,5 +41,4 @@ public interface AdminManagementApi {
      */
     CheckMobileConfigResponse checkMobileConfig(CheckMobileConfigRequest checkMobileConfigRequest);
 
-
 }

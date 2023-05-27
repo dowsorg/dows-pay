@@ -51,5 +51,4 @@ public interface FileManagementApi {
      */
     UpdateDatabaseRecordResponse updateDatabaseRecord(UpdateDatabaseRecordRequest updateDatabaseRecordRequest);
 
-
 }

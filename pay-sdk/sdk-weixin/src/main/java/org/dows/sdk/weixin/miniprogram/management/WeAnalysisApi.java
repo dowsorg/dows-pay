@@ -58,5 +58,4 @@ public interface WeAnalysisApi {
      */
     Wedata_loginResponse wedata_login(Wedata_loginRequest wedata_loginRequest);
 
-
 }

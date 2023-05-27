@@ -14,12 +14,9 @@ import lombok.NoArgsConstructor;
 public class DeleteCategoryRequest {
     @Schema(title = "接口调用凭证，该参数为 URL 参数，非 Body 参数。使用")
     private String access_token;
-
     @Schema(title = "一级类目 ID")
-    private Number first;
-
+    private Integer first;
     @Schema(title = "二级类目 ID")
-    private Number second;
-
+    private Integer second;
 
 }

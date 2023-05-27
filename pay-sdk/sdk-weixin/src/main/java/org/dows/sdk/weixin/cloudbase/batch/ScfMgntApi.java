@@ -65,5 +65,4 @@ public interface ScfMgntApi {
      */
     UploadCloudFunctionCodeResponse uploadCloudFunctionCode(UploadCloudFunctionCodeRequest uploadCloudFunctionCodeRequest);
 
-
 }

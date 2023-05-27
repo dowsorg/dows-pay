@@ -4,8 +4,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 /**
  * @author
  * @description
@@ -16,9 +14,7 @@ import java.util.List;
 public class SetPrefetchDomainRequest {
     @Schema(title = "接口调用凭证，该参数为 URL 参数，非 Body 参数。使用")
     private String access_token;
-
     @Schema(title = "预解析域名")
-    private List<Object> prefetch_dns_domain;
-
+    private Array .<object>prefetch_dns_domain;
 
 }

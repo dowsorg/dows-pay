@@ -13,13 +13,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class GetCustomShareRatioResponse {
     @Schema(title = "错误码")
-    private Number ret;
-
+    private Integer ret;
     @Schema(title = "错误信息")
     private String err_msg;
-
     @Schema(title = "服务商的分账比例")
-    private Number share_ratio;
-
+    private Integer share_ratio;
 
 }

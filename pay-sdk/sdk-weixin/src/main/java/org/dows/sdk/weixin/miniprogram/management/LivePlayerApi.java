@@ -16,5 +16,4 @@ public interface LivePlayerApi {
      */
     ApplyLivelnfoResponse applyLivelnfo(ApplyLivelnfoRequest applyLivelnfoRequest);
 
-
 }

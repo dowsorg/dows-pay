@@ -14,15 +14,11 @@ import lombok.NoArgsConstructor;
 public class LinkMiniprogramRequest {
     @Schema(title = "接口调用凭证，该参数为 URL 参数，非 Body 参数。使用")
     private String access_token;
-
     @Schema(title = "小程序 appid")
     private String appid;
-
     @Schema(title = "是否发送模板消息通知公众号粉丝。1表示是，0表示否。")
-    private Number notify_users;
-
+    private Integer notify_users;
     @Schema(title = "是否展示公众号主页中。1表示是，0表示否。")
-    private Number show_profile;
-
+    private Integer show_profile;
 
 }

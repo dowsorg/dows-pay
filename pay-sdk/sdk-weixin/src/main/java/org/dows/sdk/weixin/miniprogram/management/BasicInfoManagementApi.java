@@ -94,5 +94,4 @@ public interface BasicInfoManagementApi {
      */
     ApplySetOrderPathInfoResponse applySetOrderPathInfo(ApplySetOrderPathInfoRequest applySetOrderPathInfoRequest);
 
-
 }

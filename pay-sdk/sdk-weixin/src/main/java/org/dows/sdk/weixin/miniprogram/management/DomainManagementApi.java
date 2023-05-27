@@ -58,5 +58,4 @@ public interface DomainManagementApi {
      */
     SetPrefetchDomainResponse setPrefetchDomain(SetPrefetchDomainRequest setPrefetchDomainRequest);
 
-
 }

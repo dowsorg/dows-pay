@@ -4,8 +4,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 /**
  * @author
  * @description
@@ -16,12 +14,9 @@ import java.util.List;
 public class ModifyJumpDomainDirectlyRequest {
     @Schema(title = "接口调用凭证，该参数为 URL 参数，非 Body 参数。使用")
     private String access_token;
-
     @Schema(title = "操作类型")
     private String action;
-
     @Schema(title = "小程序业务域名，当 action 参数是 get 时不需要此字段")
     private List<String> webviewdomain;
-
 
 }

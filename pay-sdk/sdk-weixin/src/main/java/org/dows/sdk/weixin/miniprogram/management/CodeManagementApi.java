@@ -142,5 +142,4 @@ public interface CodeManagementApi {
      */
     GetCodePrivacyInfoResponse getCodePrivacyInfo(GetCodePrivacyInfoRequest getCodePrivacyInfoRequest);
 
-
 }

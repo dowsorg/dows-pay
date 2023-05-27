@@ -89,4 +89,11 @@ public class ApiSchema {
     public void setApiPath(String root) {
         this.apiPath = root + "/src/main/java/" + this.getApiPkg().replaceAll("\\.", "/");
     }
+
+    public String getDescr(){
+        if(StrUtil.isBlank(descr)){
+            return "";
+        }
+        return this.descr.replaceAll("\"","'");
+    }
 }

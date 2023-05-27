@@ -30,5 +30,4 @@ public interface DomainMgntApi {
      */
     ModifyThirdpartyJumpDomainResponse modifyThirdpartyJumpDomain(ModifyThirdpartyJumpDomainRequest modifyThirdpartyJumpDomainRequest);
 
-
 }

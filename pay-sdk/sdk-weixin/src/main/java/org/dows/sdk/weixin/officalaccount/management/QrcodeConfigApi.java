@@ -1,14 +1,5 @@
 package org.dows.sdk.weixin.officalaccount.management;
 
-import org.dows.sdk.weixin.officalaccount.management.request.AddJumpQRCodeRequest;
-import org.dows.sdk.weixin.officalaccount.management.request.DeleteJumpQRCodeRequest;
-import org.dows.sdk.weixin.officalaccount.management.request.GetJumpQRCodeRequest;
-import org.dows.sdk.weixin.officalaccount.management.request.PublishJumpQRCodeRequest;
-import org.dows.sdk.weixin.officalaccount.management.response.AddJumpQRCodeResponse;
-import org.dows.sdk.weixin.officalaccount.management.response.DeleteJumpQRCodeResponse;
-import org.dows.sdk.weixin.officalaccount.management.response.GetJumpQRCodeResponse;
-import org.dows.sdk.weixin.officalaccount.management.response.PublishJumpQRCodeResponse;
-
 /**
  * @author
  * @description 调用方式以及出入参和HTTPS相同，仅是调用的token不同该接口所属的权限集id为：3、18服务商获得其中之一权限集授权后，可通过使用代商家进行调用
@@ -42,6 +33,5 @@ public interface QrcodeConfigApi {
      * @param deleteJumpQRCodeRequest
      */
     DeleteJumpQRCodeResponse deleteJumpQRCode(DeleteJumpQRCodeRequest deleteJumpQRCodeRequest);
-
 
 }

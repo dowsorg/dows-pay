@@ -14,12 +14,9 @@ import lombok.NoArgsConstructor;
 public class GetLinkForShowRequest {
     @Schema(title = "接口调用凭证，该参数为 URL 参数，非 Body 参数。使用")
     private String access_token;
-
     @Schema(title = "页码，从 0 开始")
-    private Number page;
-
+    private Integer page;
     @Schema(title = "每页记录数，最大为 20")
-    private Number num;
-
+    private Integer num;
 
 }

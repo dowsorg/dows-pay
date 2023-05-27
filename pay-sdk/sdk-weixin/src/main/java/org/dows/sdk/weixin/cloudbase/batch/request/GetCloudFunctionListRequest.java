@@ -14,18 +14,13 @@ import lombok.NoArgsConstructor;
 public class GetCloudFunctionListRequest {
     @Schema(title = "接口调用凭证，该参数为 URL 参数，非 Body 参数。使用")
     private String access_token;
-
     @Schema(title = "环境ID")
     private String env;
-
     @Schema(title = "数据偏移量。默认值0")
-    private Number offset;
-
+    private Integer offset;
     @Schema(title = "返回数据长度。默认值20")
-    private Number limit;
-
+    private Integer limit;
     @Schema(title = "模糊匹配 functionName")
     private String searchkey;
-
 
 }

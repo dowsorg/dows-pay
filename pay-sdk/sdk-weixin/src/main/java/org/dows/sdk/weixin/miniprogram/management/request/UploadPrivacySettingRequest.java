@@ -14,9 +14,7 @@ import lombok.NoArgsConstructor;
 public class UploadPrivacySettingRequest {
     @Schema(title = "第三方平台接口调用凭证")
     private String access_token;
-
     @Schema(title = "只支持传txt文件")
     private Bufffer file;
-
 
 }

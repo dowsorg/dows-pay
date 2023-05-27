@@ -16,5 +16,4 @@ public interface FastRegistrationIndApi {
      */
     FastRegisterPersonalMpResponse fastRegisterPersonalMp(FastRegisterPersonalMpRequest fastRegisterPersonalMpRequest);
 
-
 }

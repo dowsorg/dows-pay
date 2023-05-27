@@ -86,5 +86,4 @@ public interface DbManagementApi {
      */
     UpdateDatabaseIndexResponse updateDatabaseIndex(UpdateDatabaseIndexRequest updateDatabaseIndexRequest);
 
-
 }

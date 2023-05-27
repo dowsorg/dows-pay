@@ -15,5 +15,4 @@ public class Wedata_loginResponse {
     @Schema(title = "")
     private String;
 
-
 }

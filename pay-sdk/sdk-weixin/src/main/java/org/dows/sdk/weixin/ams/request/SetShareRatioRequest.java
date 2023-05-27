@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SetShareRatioRequest {
     @Schema(title = "服务商默认分账比例。如share_ratio为40，则代表服务商获得收益的40%，小程序商家获得收益的60%")
-    private Number share_ratio;
-
+    private Integer share_ratio;
 
 }

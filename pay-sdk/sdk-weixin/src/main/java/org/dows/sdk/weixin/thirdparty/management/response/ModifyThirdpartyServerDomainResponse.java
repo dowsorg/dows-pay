@@ -13,19 +13,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ModifyThirdpartyServerDomainResponse {
     @Schema(title = "返回码")
-    private Number errcode;
-
+    private Integer errcode;
     @Schema(title = "错误信息")
     private String errmsg;
-
     @Schema(title = "目前生效的 “全网发布版”第三方平台“小程序服务器域名”。如果修改失败，该字段不会返回。如果没有已发布的第三方平台，该字段也不会返回。")
     private String published_wxa_server_domain;
-
     @Schema(title = "目前生效的 “测试版”第三方平台“小程序服务器域名”。如果修改失败，该字段不会返回")
     private String testing_wxa_server_domain;
-
     @Schema(title = "未通过验证的域名。如果不存在未通过验证的域名，该字段不会返回。")
     private String invalid_wxa_server_domain;
-
 
 }

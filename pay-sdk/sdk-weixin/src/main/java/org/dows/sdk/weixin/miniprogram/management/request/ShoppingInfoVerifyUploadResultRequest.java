@@ -13,13 +13,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ShoppingInfoVerifyUploadResultRequest {
     @Schema(title = "错误码")
-    private Number errcode;
-
+    private Integer errcode;
     @Schema(title = "错误原因")
     private String errmsg;
-
     @Schema(title = "验证结果")
     private String verify_result;
-
 
 }

@@ -43,5 +43,4 @@ public interface StaticstoreManagementApi {
      */
     GetStaticStoreFileResponse getStaticStoreFile(GetStaticStoreFileRequest getStaticStoreFileRequest);
 
-
 }

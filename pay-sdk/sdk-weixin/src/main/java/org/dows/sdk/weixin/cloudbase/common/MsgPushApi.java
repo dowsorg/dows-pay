@@ -25,5 +25,4 @@ public interface MsgPushApi {
      */
     GetCallBackConfigResponse getCallBackConfig(GetCallBackConfigRequest getCallBackConfigRequest);
 
-
 }

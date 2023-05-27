@@ -14,16 +14,15 @@ public interface OpenApi {
     /**
      * 该 API 用于服务商检测小程序是否达到开通流量主门槛。使用过程中如遇到问题，可在发帖交流。其中access_token为
      *
-     * @param AgencyCheckCanOpenPublisherRequest
+     * @param agencyCheckCanOpenPublisherRequest
      */
-    AgencyCheckCanOpenPublisherResponse AgencyCheckCanOpenPublisher(AgencyCheckCanOpenPublisherRequest AgencyCheckCanOpenPublisherRequest);
+    AgencyCheckCanOpenPublisherResponse agencyCheckCanOpenPublisher(AgencyCheckCanOpenPublisherRequest agencyCheckCanOpenPublisherRequest);
 
     /**
      * 该 API 用于为小程序开通流量主。使用过程中如遇到问题，可在发帖交流。其中access_token为
      *
-     * @param AgencyCreatePublisherRequest
+     * @param agencyCreatePublisherRequest
      */
-    AgencyCreatePublisherResponse AgencyCreatePublisher(AgencyCreatePublisherRequest AgencyCreatePublisherRequest);
-
+    AgencyCreatePublisherResponse agencyCreatePublisher(AgencyCreatePublisherRequest agencyCreatePublisherRequest);
 
 }

@@ -41,5 +41,4 @@ public interface OpenplatformManagementApi {
      */
     CreateOpenAccountResponse createOpenAccount(CreateOpenAccountRequest createOpenAccountRequest);
 
-
 }

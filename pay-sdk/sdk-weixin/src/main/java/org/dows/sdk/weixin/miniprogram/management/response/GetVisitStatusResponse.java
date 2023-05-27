@@ -13,13 +13,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class GetVisitStatusResponse {
     @Schema(title = "返回码")
-    private Number errcode;
-
+    private Integer errcode;
     @Schema(title = "错误信息")
     private String errmsg;
-
     @Schema(title = "服务状态。0表示已暂停服务（包含主动暂停服务违规被暂停服务）。1表示未暂停服务。")
-    private Number status;
-
+    private Integer status;
 
 }

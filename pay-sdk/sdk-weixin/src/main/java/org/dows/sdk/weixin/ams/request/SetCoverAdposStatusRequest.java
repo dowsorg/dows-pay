@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SetCoverAdposStatusRequest {
     @Schema(title = "开关状态：1开启，4关闭")
-    private Number status;
-
+    private Integer status;
 
 }

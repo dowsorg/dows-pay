@@ -42,9 +42,8 @@ public interface ShoppingOrdersApi {
     ConfirmProductPermissionResponse confirmProductPermission(ConfirmProductPermissionRequest confirmProductPermissionRequest);
 
     /**
-     * @param ShoppingInfoVerifyUploadResultRequest
+     * @param shoppingInfoVerifyUploadResultRequest
      */
-    ShoppingInfoVerifyUploadResultResponse ShoppingInfoVerifyUploadResult(ShoppingInfoVerifyUploadResultRequest ShoppingInfoVerifyUploadResultRequest);
-
+    ShoppingInfoVerifyUploadResultResponse shoppingInfoVerifyUploadResult(ShoppingInfoVerifyUploadResultRequest shoppingInfoVerifyUploadResultRequest);
 
 }

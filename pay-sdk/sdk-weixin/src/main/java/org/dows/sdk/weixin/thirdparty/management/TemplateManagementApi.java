@@ -41,5 +41,4 @@ public interface TemplateManagementApi {
      */
     DeleteTemplateResponse deleteTemplate(DeleteTemplateRequest deleteTemplateRequest);
 
-
 }

@@ -13,22 +13,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SetCodeAuditQuotaResponse {
     @Schema(title = "返回码")
-    private Number errcode;
-
+    private Integer errcode;
     @Schema(title = "错误信息")
     private String errmsg;
-
     @Schema(title = "quota剩余值")
-    private Number rest;
-
+    private Integer rest;
     @Schema(title = "当月分配quota")
-    private Number limit;
-
+    private Integer limit;
     @Schema(title = "剩余加急次数")
-    private Number speedup_rest;
-
+    private Integer speedup_rest;
     @Schema(title = "当月分配加急次数")
-    private Number speedup_limit;
-
+    private Integer speedup_limit;
 
 }

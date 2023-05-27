@@ -65,5 +65,4 @@ public interface ScfManagementApi {
      */
     GetFuntionConfigResponse getFuntionConfig(GetFuntionConfigRequest getFuntionConfigRequest);
 
-
 }

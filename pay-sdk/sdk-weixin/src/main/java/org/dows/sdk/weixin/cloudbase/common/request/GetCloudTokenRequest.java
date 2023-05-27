@@ -14,9 +14,7 @@ import lombok.NoArgsConstructor;
 public class GetCloudTokenRequest {
     @Schema(title = "接口调用凭证，该参数为 URL 参数，非 Body 参数。使用")
     private String access_token;
-
     @Schema(title = "有效期（单位为秒，最大7200）")
-    private Number lifespan;
-
+    private Integer lifespan;
 
 }

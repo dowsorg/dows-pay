@@ -13,16 +13,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SetNickNameResponse {
     @Schema(title = "返回码")
-    private Number errcode;
-
+    private Integer errcode;
     @Schema(title = "错误信息")
     private String errmsg;
-
     @Schema(title = "材料说明")
     private String wording;
-
     @Schema(title = "审核单 id，通过用于")
-    private Number audit_id;
-
+    private Integer audit_id;
 
 }
