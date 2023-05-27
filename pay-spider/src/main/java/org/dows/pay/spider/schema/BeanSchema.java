@@ -1,0 +1,98 @@
+package org.dows.pay.spider.schema;
+
+import lombok.Data;
+import org.dows.pay.spider.model.schema.ApiSchema;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+@Data
+public class BeanSchema {
+
+    /**
+     * bean名称
+     */
+    private String name;
+    /**
+     * interface|class|annotation....
+     */
+    private String type;
+    /**
+     * 描述
+     */
+    private String descr;
+    /**
+     * 包
+     */
+    private String pkg;
+
+    /**
+     * 统一后缀
+     */
+    private String suffix;
+
+    /**
+     * 泛型类型: String -> <String>, String, Object -> <String, Object>, Map<String, Object> -> <Map<String, Object>>
+     */
+    private String genericTyp;
+
+    /**
+     * 父类
+     */
+    private BeanSchema parentClass;
+
+    /**
+     * 需要导入的包
+     */
+    private final List<String> imports = new ArrayList<>();
+
+
+
+    private final List<FieldSchema> fieldSchemas = new ArrayList<>();
+
+    /**
+     * 请求方法
+     */
+    private final List<MethodSchema> methods = new ArrayList<>();
+
+    /**
+     * 继承接口
+     */
+    private final List<BeanSchema> superInterfaces = new ArrayList<>();
+
+
+    private static Map<String, Field> fieldMap = new ConcurrentHashMap<>();
+
+    static {
+        fieldMap.putAll(Arrays.stream(ApiSchema.class.getDeclaredFields()).collect(Collectors.toMap(f -> f.getName(), Function.identity())));
+    }
+
+    public BeanSchema() {
+
+    }
+
+    /**
+     * @param map
+     */
+    public BeanSchema(Map<String, Object> map) {
+        map.forEach((k, v) -> {
+            Field field = fieldMap.get(k);
+            if (field != null) {
+                field.setAccessible(true);
+                try {
+                    field.set(this, v);
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+    }
+
+
+}

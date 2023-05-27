@@ -1,4 +1,4 @@
-package org.dows.pay.spider.model.schema;
+package org.dows.pay.spider.schema;
 
 import cn.hutool.core.util.StrUtil;
 import lombok.Builder;
@@ -12,7 +12,7 @@ import java.util.List;
 @Data
 public class ParamSchema {
     private String type;
-    private String name = "";
+    private String name;
     private String descr;
 
     // 参数类型，输入参数还是输出参数，默认输入参数
@@ -21,8 +21,10 @@ public class ParamSchema {
     private String collectionType;
     private String suffix;
 
-    private String path;
-    private String pkg;
+
+
+
+
 
 
 
