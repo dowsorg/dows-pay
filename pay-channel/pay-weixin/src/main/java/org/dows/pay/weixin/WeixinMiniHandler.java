@@ -18,6 +18,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.dows.pay.api.PayRequest;
 import org.dows.pay.api.annotation.PayMapping;
 import org.dows.pay.api.enums.PayMethods;
+import org.dows.pay.api.request.MiniUploadRequest;
 import org.dows.pay.bo.IsvCreateTyBo;
 import org.dows.pay.bo.WxBaseInfoBo;
 import org.dows.pay.bo.WxFastMaCategoryBo;
@@ -47,15 +48,15 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
      * alipay.open.mini.version.upload(小程序基于模板上传版本)
      */
     @PayMapping(method = PayMethods.MINI_UPLOAD)
-    public WxOpenResult uploadMini(PayRequest payRequest) {
+    public WxOpenResult uploadMini(MiniUploadRequest payRequest) {
         //todo 待实现业务逻辑
         WxOpenResult response = null;
         try {
             response = this.getWxOpenMaClient(payRequest.getAppId()).codeCommit(
-                    Long.valueOf(payRequest.getBizModel().getWeixinFeilds().get("templateId").toString())
-                    ,payRequest.getBizModel().getWeixinFeilds().get("userVersion").toString()
-                    ,payRequest.getBizModel().getWeixinFeilds().get("userDesc").toString()
-                    ,GSON.toJson(payRequest.getBizModel().getWeixinFeilds().get("extJsonObject").toString())
+                    Long.valueOf(payRequest.getTemplateId())
+                    ,payRequest.getUserVersion()
+                    ,payRequest.getUserDesc()
+                    ,payRequest.getExtJsonObject()
             );
         }catch (WxErrorException e) {
             e.printStackTrace();

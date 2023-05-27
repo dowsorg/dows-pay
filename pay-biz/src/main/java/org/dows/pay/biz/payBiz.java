@@ -1,6 +1,7 @@
 package org.dows.pay.biz;
 
 import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.StrUtil;
 import com.alipay.api.response.AlipayOpenMiniIsvCreateResponse;
 import com.alipay.service.schema.util.StringUtil;
 import com.github.binarywang.wxpay.bean.applyment.WxPayApplyment4SubCreateRequest;
@@ -16,14 +17,18 @@ import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.open.bean.result.WxOpenResult;
 import org.dows.app.api.mini.request.AppApplyRequest;
 import org.dows.app.api.mini.request.PayApplyStatusReq;
+import org.dows.app.api.mini.request.WechatMiniUploadRequest;
 import org.dows.framework.api.Response;
 import org.dows.framework.api.exceptions.BizException;
 import org.dows.pay.alipay.AlipayIsvHandler;
 import org.dows.pay.api.PayApi;
 import org.dows.pay.api.PayRequest;
+import org.dows.pay.api.request.MiniUploadRequest;
+import org.dows.pay.api.request.MiniUploadTemplateIdBO;
 import org.dows.pay.api.request.PayIsvRequest;
 import org.dows.pay.bo.IsvCreateBo;
 import org.dows.pay.bo.IsvCreateTyBo;
+import org.dows.pay.boot.PayClientConfig;
 import org.dows.pay.entity.PayApply;
 import org.dows.pay.service.PayApplyService;
 import org.dows.pay.weixin.WeixinIsvHandler;
@@ -48,6 +53,8 @@ public class payBiz implements PayApi {
     private final WeixinMiniHandler weixinMiniHandler;
     @Lazy
     private final PayApplyService payApplyService;
+    @Lazy
+    private final PayClientConfig payClientConfig;
 
     @Override
     public Response isvApply(AppApplyRequest appApplyRequest) {
@@ -189,6 +196,35 @@ public class payBiz implements PayApi {
             }
         }
         return null;
+    }
+
+    @Override
+    public Response uploadWeChatMini(WechatMiniUploadRequest request) {
+        try {
+
+            MiniUploadRequest miniUploadRequest = convertUploadReq(request);
+            WxOpenResult wxOpenResult = weixinMiniHandler.uploadMini(miniUploadRequest);
+            return Response.ok(wxOpenResult);
+        } catch (Exception e) {
+            log.warn("uploadWeChatMini fail:",e);
+            return Response.fail(e.getMessage());
+        }
+    }
+
+    private MiniUploadRequest convertUploadReq(WechatMiniUploadRequest request) {
+        MiniUploadRequest miniUploadRequest = new MiniUploadRequest();
+        String appId = Optional.ofNullable(payClientConfig.getClientConfigs().get(1).getAppId()).orElse("wxdb8634feb22a5ab9");
+        miniUploadRequest.setAppId(appId);
+        miniUploadRequest.setTemplateId(request.getTemplateId());
+        miniUploadRequest.setUserVersion("V1.0");
+        miniUploadRequest.setUserDesc("normal");
+        miniUploadRequest.setExtJsonObject(getExtJsonObject(request.getAppId()));
+        return miniUploadRequest;
+    }
+
+    private String getExtJsonObject(String appId) {
+        String str = "{\"extEnable\":true,\"extAppid\":\"wxb36e5d143973a0fb\",\"directCommit\":false,\"ext\":{\"name\":\"wechat\",\"attr\":{\"host\":\"open.weixin.qq.com\",\"users\":[\"user_1\"]}}}";
+        return str;
     }
 
     @Override
