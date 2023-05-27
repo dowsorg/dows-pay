@@ -15,7 +15,7 @@ public class GetFetchdataSettingRequest {
     @Schema(title = "接口调用凭证，该参数为 URL 参数，非 Body 参数。使用")
     private String access_token;
 
-    @Schema(title = "可填"get"、“ set_pre_fetch”、"set_period_fetch"")
+    @Schema(title = "可填get、set_pre_fetch、set_period_fetch")
     private String action;
 
     @Schema(title = "数据预拉取是否开启，action=set_pre_fetch时，必填")
@@ -27,8 +27,8 @@ public class GetFetchdataSettingRequest {
     @Schema(title = "数据下载地址，当pre_fetch_type=0必填。")
     private String pre_fetch_url;
 
-    @Schema(title = "")
-    private 说明，1、需要将域名先添加到第三方平台的业务域名；2、然后将该域名添加到小程序业务域名；才可以成功设置;
+    //@Schema(title = "")
+    //private 说明，1、需要将域名先添加到第三方平台的业务域名；2、然后将该域名添加到小程序业务域名；才可以成功设置;
 
     @Schema(title = "环境ID，当pre_fetch_type=1必填")
     private String pre_env;
@@ -45,8 +45,8 @@ public class GetFetchdataSettingRequest {
     @Schema(title = "数据下载地址，当period_fetch_type=0必填")
     private String period_fetch_url;
 
-    @Schema(title = "")
-    private  1、需要将域名先添加到第三方平台的业务域名；2、然后将该域名添加到小程序业务域名；才可以成功设置;
+    //@Schema(title = "")
+    //private  1、需要将域名先添加到第三方平台的业务域名；2、然后将该域名添加到小程序业务域名；才可以成功设置;
 
     @Schema(title = "环境ID，当period_fetch_type=1必填")
     private String period_env;

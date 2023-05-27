@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 /**
  * @author
  * @description
@@ -25,7 +27,7 @@ public class DbindexManageRequest {
     private String collection_name;
 
     @Schema(title = "索引信息")
-    private List<Object>indexes;
+    private List<Object> indexes;
 
 
 }

@@ -18,7 +18,7 @@ public class ApplyLivelnfoResponse {
     @Schema(title = "错误信息")
     private String errmsg;
 
-    @Schema(title = ""apply"")
+    @Schema(title = "apply")
     private String action;
 
 

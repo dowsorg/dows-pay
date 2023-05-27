@@ -15,7 +15,7 @@ public class GetTesterRequest {
     @Schema(title = "接口调用凭证，该参数为 URL 参数，非 Body 参数。使用")
     private String access_token;
 
-    @Schema(title = "填 "get_experiencer" 即可")
+    @Schema(title = "填 get_experiencer 即可")
     private String action;
 
 

@@ -15,6 +15,7 @@
     <modules>
         <module>sdk-weixin</module>
         <module>sdk-zijie</module>
+        <module>sdk-client</module>
     </modules>
 
     <properties>

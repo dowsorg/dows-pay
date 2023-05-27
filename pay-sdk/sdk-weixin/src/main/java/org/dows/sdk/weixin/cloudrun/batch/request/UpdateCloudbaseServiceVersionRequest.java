@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 /**
  * @author
  * @description
@@ -91,7 +93,7 @@ public class UpdateCloudbaseServiceVersionRequest {
     private Number initial_delay_seconds;
 
     @Schema(title = "cfs挂载信息")
-    private List<CloudBaseRunVolumeMount>mount_volume_info;
+    private List<CloudBaseRunVolumeMount> mount_volume_info;
 
     @Schema(title = "是否回滚")
     private Boolean rollback;
@@ -112,7 +114,7 @@ public class UpdateCloudbaseServiceVersionRequest {
     private Boolean is_update_cls;
 
     @Schema(title = "自动扩缩容策略组")
-    private List<HpaPolicy>policy_detail;
+    private List<HpaPolicy> policy_detail;
 
 
 }
