@@ -1,0 +1,22 @@
+package org.dows.sdk.weixin.miniprogram.management.request;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+/**
+ * @author
+ * @description
+ * @date
+ */
+@Data
+@NoArgsConstructor
+public class SetVisitStatusRequest {
+    @Schema(title = "接口调用凭证，该参数为 URL 参数，非 Body 参数。使用")
+    private String access_token;
+
+    @Schema(title = "设置可访问状态，发布后默认可访问，close 为不可见，open 为可见")
+    private String action;
+
+
+}

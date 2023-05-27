@@ -1,0 +1,25 @@
+package org.dows.sdk.weixin.thirdparty.management.request;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+/**
+ * @author
+ * @description
+ * @date
+ */
+@Data
+@NoArgsConstructor
+public class AddToTemplateRequest {
+    @Schema(title = "接口调用凭证，该参数为 URL 参数，非 Body 参数。使用")
+    private String access_token;
+
+    @Schema(title = "草稿 ID")
+    private Number draft_id;
+
+    @Schema(title = "默认值是0，对应普通模板；可选1，对应标准模板库，关于标准模板库和普通模板库的区别可以查看")
+    private Number template_type;
+
+
+}

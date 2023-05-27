@@ -1,0 +1,37 @@
+package org.dows.sdk.weixin.miniprogram.management.response;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+/**
+ * @author
+ * @description
+ * @date
+ */
+@Data
+@NoArgsConstructor
+public class GetShowItemResponse {
+    @Schema(title = "返回码")
+    private Number errcode;
+
+    @Schema(title = "错误信息")
+    private String errmsg;
+
+    @Schema(title = "是否可以设置 1 可以，0，不可以")
+    private Number can_open;
+
+    @Schema(title = "是否已经设置，1 已设置，0，未设置")
+    private Number is_open;
+
+    @Schema(title = "展示的公众号 appid")
+    private String appid;
+
+    @Schema(title = "展示的公众号 nickname")
+    private String nickname;
+
+    @Schema(title = "展示的公众号头像")
+    private String headimg;
+
+
+}

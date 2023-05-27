@@ -1,0 +1,28 @@
+package org.dows.sdk.weixin.miniprogram.management.response;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+/**
+ * @author
+ * @description
+ * @date
+ */
+@Data
+@NoArgsConstructor
+public class SetNickNameResponse {
+    @Schema(title = "返回码")
+    private Number errcode;
+
+    @Schema(title = "错误信息")
+    private String errmsg;
+
+    @Schema(title = "材料说明")
+    private String wording;
+
+    @Schema(title = "审核单 id，通过用于")
+    private Number audit_id;
+
+
+}
