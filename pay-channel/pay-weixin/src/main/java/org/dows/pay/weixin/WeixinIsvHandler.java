@@ -28,6 +28,7 @@ import org.dows.account.bo.AccountUserBo;
 import org.dows.app.api.mini.AppApplyApi;
 import org.dows.app.api.mini.request.AppApplyRequest;
 import org.dows.app.api.mini.response.AppApplyResponse;
+import org.dows.auth.biz.context.SecurityUtils;
 import org.dows.framework.api.Response;
 import org.dows.pay.api.PayEvent;
 import org.dows.pay.api.PayException;
@@ -382,6 +383,7 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
             // todo 保存订单号 及对应申请的营业执照 和联系人 信息，返回申请小程序记录表ID 后续通过ID查询
             String orderNo = response.getApplymentId();
             log.info("创建微信小程序成功，返回订单号为:{}", orderNo);
+
             /**
              * todo 建立关联关系（小程序申请对象） [小程序与营业执照的关系],通过营业执照来关联 小程序名 及对应的orderNo
              */
@@ -411,7 +413,7 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
         return response;
     }
     /**
-     * 查询该订单协助创建小程序的情况
+     * 查询该订单协助创建小程序支付能力的情况
      */
     @PayMapping(method = PayMethods.ISV_QUERY)
     public ApplymentsStatusResult queryIsvMini(PayRequest payRequest) {
@@ -428,19 +430,19 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
         }
         //更新商户号
         ApplymentsStatusResult applymentsStatusResult = GSON.fromJson(result, ApplymentsStatusResult.class);
-        AccountTenantBo accountTenantBo = new AccountTenantBo();
-        accountTenantBo.setMerchantNo(applymentsStatusResult.getSubMchid());
-        accountTenantBo.setAccountId(isvCreateBo.getAccount());
-        acountTenantApi.updateAccountTenant(accountTenantBo);
-        PayAccount payAccount = new PayAccount();
-        payAccount.setAccountNo(isvCreateBo.getAccount());
-        payAccount.setChannelAccount(isvCreateBo.getAppId());
-        payAccount.setChannelMerchantNo(applymentsStatusResult.getSubMchid());
-        payAccountService.saveOrUpdate(payAccount);
-        //更新门店信息
-        StoreInstanceRequest storeInstanceRequest = new StoreInstanceRequest();
-        storeInstanceRequest.setMerchantNo(applymentsStatusResult.getSubMchid());
-        storeInstanceApi.updateStoreInstance(storeInstanceRequest);
+//        AccountTenantBo accountTenantBo = new AccountTenantBo();
+//        accountTenantBo.setMerchantNo(applymentsStatusResult.getSubMchid());
+//        accountTenantBo.setAccountId(isvCreateBo.getAccount());
+//        acountTenantApi.updateAccountTenant(accountTenantBo);
+//        PayAccount payAccount = new PayAccount();
+//        payAccount.setAccountNo(isvCreateBo.getAccount());
+//        payAccount.setChannelAccount(isvCreateBo.getAppId());
+//        payAccount.setChannelMerchantNo(applymentsStatusResult.getSubMchid());
+//        payAccountService.saveOrUpdate(payAccount);
+//        //更新门店信息
+//        StoreInstanceRequest storeInstanceRequest = new StoreInstanceRequest();
+//        storeInstanceRequest.setMerchantNo(applymentsStatusResult.getSubMchid());
+//        storeInstanceApi.updateStoreInstance(storeInstanceRequest);
         return applymentsStatusResult;
 
     }
