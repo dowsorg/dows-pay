@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.dows.pay.spider.AlipayField;
 import org.dows.pay.spider.WexinField;
-import org.dows.pay.spider.model.schema.FieldSchema;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -26,22 +25,26 @@ public class MethodSchema {
      * 方法名
      */
     @AlipayField("")
-    @WexinField("属性")
+    @WexinField("name")
     private String name;
     /**
      * 方法描述
      */
+    @AlipayField("")
+    @WexinField("descr")
     private String descr;
 
     /**
      * 方法url
      */
     @AlipayField("")
-    @WexinField("属性")
+    @WexinField("url")
     private String url;
     /**
      * 支持http请求类型
      */
+    @AlipayField("")
+    @WexinField("httpMethod")
     private String httpMethod;
     /**
      * 是否 restful 风格 API
@@ -89,7 +92,7 @@ public class MethodSchema {
     private final static Map<String, Field> weixinMethodMap = new ConcurrentHashMap<>();
 
     static {
-        weixinMethodMap.putAll(Arrays.stream(FieldSchema.class.getDeclaredFields()).filter(f -> f.getAnnotation(WexinField.class) != null)
+        weixinMethodMap.putAll(Arrays.stream(MethodSchema.class.getDeclaredFields()).filter(f -> f.getAnnotation(WexinField.class) != null)
                 .collect(Collectors.toMap(f -> f.getAnnotation(WexinField.class).value(), Function.identity())));
         // todo 支付宝
     }
@@ -107,6 +110,14 @@ public class MethodSchema {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    public String getWeixinUrl() {
+        return url == null ? "" : url.substring(url.indexOf(" ") + 1);
+    }
+
+    public String getWeixinHttpMethod() {
+        return url == null ? "" : url.substring(0, url.indexOf(" "));
     }
 
 

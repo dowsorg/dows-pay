@@ -111,12 +111,21 @@ public class BeanSchema {
         return this;
     }
 
+    /**
+     * 转驼峰
+     *
+     * @return
+     */
+    public String getName() {
+        return StrUtil.toCamelCase(name.replaceAll("-", "_"));
+    }
+
     public String getPkg() {
         return moduleSchema.getPkg() + (StrUtil.isBlank(pkg) ? "" : "." + pkg);
     }
 
-    public  String getPath(){
-        return moduleSchema.getPath()+ File.separator + getPkg().replaceAll("\\.","/");
+    public String getPath() {
+        return moduleSchema.getPath() + File.separator + getPkg().replaceAll("\\.", "/");
     }
 
 }

@@ -46,10 +46,11 @@ public class WeixinDeveloperLinkExtracter implements Extractable {
     }
 
 
-    public List<BeanSchema> get(String seed, String regex, String regex1) {
+    public Map<String, BeanSchema> get(String seed, String regex, String regex1) {
         List<WeixinLinkSchema> weixinLinkSchemas = getLink(seed, regex);
 
-        List<BeanSchema> beanSchemas = new ArrayList<>();
+        //List<BeanSchema> beanSchemas = new ArrayList<>();
+        Map<String, BeanSchema> beanSchemaMap = new HashMap<>();
         Map<String, String> map = new HashMap<>();
         map.put("catalogTree", "//div[@class='Breadcrumb']/span/child::span/text()");
         map.put("httpMethod", "//div[@class='language- extra-class']/pre/code/text()");
@@ -61,25 +62,30 @@ public class WeixinDeveloperLinkExtracter implements Extractable {
 
         for (WeixinLinkSchema weixinLinkSchema : weixinLinkSchemas) {
             BeanSchema beanSchema = weixinLinkSchema.getBeanSchema();
+            beanSchema = beanSchemaMap.get(beanSchema.getName());
+            if (beanSchema == null) {
+                beanSchema = weixinLinkSchema.getBeanSchema();
+                beanSchemaMap.put(beanSchema.getName(), beanSchema);
+            }
             Document document = getDocument(weixinLinkSchema.getHref());
             JXDocument jxDocument = JXDocument.create(document);
 
             // 构建方法
             String method = weixinLinkSchema.getHref().
-                    substring(weixinLinkSchema.getHref().lastIndexOf("/"), weixinLinkSchema.getHref().lastIndexOf("."));
+                    substring(weixinLinkSchema.getHref().lastIndexOf("/") + 1, weixinLinkSchema.getHref().lastIndexOf("."));
             MethodSchema methodSchema = new MethodSchema();
             methodSchema.setName(method);
 
             beanSchema.addMethod(methodSchema);
-            beanSchemas.add(beanSchema);
+            //beanSchemas.add(beanSchema);
 
             // 构建参数
             map.forEach((k, v) -> {
                 List<JXNode> jxNodes = jxDocument.selN(v);
 
                 List<JXNode> ths = new ArrayList<>();
-
                 StringBuilder sb = new StringBuilder();
+
                 if (k.equalsIgnoreCase("inputs")) {
 
                     ParamSchema paramSchema = new ParamSchema();
@@ -87,57 +93,60 @@ public class WeixinDeveloperLinkExtracter implements Extractable {
                     // 为method 设置 input入参列表
                     methodSchema.addInput(paramSchema);
                     for (JXNode jxNode : jxNodes) {
-                        Element element = (Element) jxNode.value();
-                        if (element.tagName().equalsIgnoreCase("tr")) {
-                            // 处理表头
-                            if (ths.isEmpty()) {
-                                ths.addAll(jxNode.sel("th"));
-                            }
-
-                            List<JXNode> tds = jxNode.sel("td");
-                            if (tds.size() != ths.size()) {
-                                continue;
-                            }
-
-                            FieldSchema fieldSchema = new FieldSchema();
-                            paramSchema.addField(fieldSchema);
-
-                            Map<String, Field> fields = fieldSchema.getWexinFieldMap();
-                            for (int i = 0; i < ths.size(); i++) {
-                                Field field = fields.get(ths.get(i).selOne("/text()").asString());
-                                if (field != null) {
-                                    field.setAccessible(true);
-                                    try {
-                                        JXNode jxNode1 = tds.get(i);
-                                        JXNode jxNode2 = jxNode1.selOne("/text()");
-                                        if (jxNode1 != null && jxNode2 != null) {
-                                            field.set(fieldSchema, jxNode2.asString());
-                                        }
-                                    } catch (IllegalAccessException e) {
-                                        throw new RuntimeException(e);
-                                    }
-                                }
-                            }
-                        }
+                        buildParam(ths, paramSchema, jxNode);
                     }
                 } else if (k.equalsIgnoreCase("output")) {
-
                     ParamSchema paramSchema = new ParamSchema();
                     paramSchema.setName(method + "Response");
-
                     methodSchema.setOutput(paramSchema);
+                    for (JXNode jxNode : jxNodes) {
+                        buildParam(ths, paramSchema, jxNode);
+                    }
                 } else {
                     for (JXNode jxNode : jxNodes) {
                         sb.append(jxNode.asString());
                     }
                     methodSchema.setFieldValue(k, sb.toString());
                 }
-
-
                 log.info("jxNodes:{}", jxNodes);
             });
         }
-        return beanSchemas;
+        return beanSchemaMap;
+    }
+
+    private void buildParam(List<JXNode> ths, ParamSchema paramSchema, JXNode jxNode) {
+        Element element = (Element) jxNode.value();
+        if (element.tagName().equalsIgnoreCase("tr")) {
+            // 处理表头
+            if (ths.isEmpty()) {
+                ths.addAll(jxNode.sel("th"));
+            }
+
+            List<JXNode> tds = jxNode.sel("td");
+            if (tds.size() != ths.size()) {
+                return;
+            }
+
+            FieldSchema fieldSchema = new FieldSchema();
+            paramSchema.addField(fieldSchema);
+
+            Map<String, Field> fields = fieldSchema.getWexinFieldMap();
+            for (int i = 0; i < ths.size(); i++) {
+                Field field = fields.get(ths.get(i).selOne("/text()").asString());
+                if (field != null) {
+                    field.setAccessible(true);
+                    try {
+                        JXNode jxNode1 = tds.get(i);
+                        JXNode jxNode2 = jxNode1.selOne("/text()");
+                        if (jxNode1 != null && jxNode2 != null) {
+                            field.set(fieldSchema, jxNode2.asString());
+                        }
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        }
     }
 
 

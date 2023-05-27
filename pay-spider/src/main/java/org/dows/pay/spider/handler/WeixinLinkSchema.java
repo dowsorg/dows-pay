@@ -17,7 +17,7 @@ import java.util.Map;
 @Slf4j
 public class WeixinLinkSchema {
 
-    private final Map<String, BeanSchema> beanSchemaMap = new HashMap<>();
+    private final static Map<String, BeanSchema> beanSchemaMap = new HashMap<>();
     private final String root = "https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/";
     private String href;
     private String name;
