@@ -10,7 +10,6 @@ import org.dows.pay.spider.properties.Flow;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-import java.io.IOException;
 import java.util.List;
 
 public interface ExtractHandler {
@@ -22,7 +21,7 @@ public interface ExtractHandler {
 
     default Document getDocument(String seed) {
         /** 创建模拟指定浏览器的客户端对象 */
-        final WebClient webClient = new WebClient(BrowserVersion.CHROME);
+        final WebClient webClient = new WebClient(BrowserVersion.INTERNET_EXPLORER);
         /** JS执行出错不抛出异常 */
         webClient.getOptions().setThrowExceptionOnScriptError(false);
         /** HTTP状态不是200时不抛出异常 */
@@ -33,19 +32,20 @@ public interface ExtractHandler {
         webClient.getOptions().setJavaScriptEnabled(true);
         /** 支持AJAX(非常重要) */
         webClient.setAjaxController(new NicelyResynchronizingAjaxController());
+
         /** JS执行需要一定时间，设置等待时间(非常重要) */
-        webClient.waitForBackgroundJavaScript(10000);
+        webClient.waitForBackgroundJavaScript(3000);
         // webClient.getOptions().setActiveXNative(false);
-        // webClient.getOptions().setTimeout(10000);
+        //webClient.getOptions().setTimeout(3000);
 
         /** 加载网页 */
         HtmlPage page = null;
         try {
             page = webClient.getPage(seed);
-        } catch (IOException e) {
+            //Thread.sleep(3000);
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        // Thread.sleep(3000);
         /** 将加载的网页转换成XML形式 */
         String pageXml = page.asXml();
         /** Jsoup获取HTML文档 */

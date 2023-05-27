@@ -78,7 +78,7 @@ public class WeixinCatalogExtractHandler implements ExtractHandler {
         for (JXNode jxNode : jxNodes) {
             List<JXNode> trs = jxNode.sel("//tbody/tr");
             for (JXNode trNode : trs) {
-                Map<String, String> map = new HashMap<>();
+                Map<String, Object> map = new HashMap<>();
                 regex.forEach((key, val) -> {
                     JXNode jxNode1 = trNode.selOne(val);
                     if (jxNode1 != null) {

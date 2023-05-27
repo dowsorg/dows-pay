@@ -1,11 +1,10 @@
 package org.dows.pay.spider.handler;
 
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dows.pay.spider.model.StepData;
-import org.dows.pay.spider.model.WeixinParamSchema;
+import org.dows.pay.spider.model.FieldSchema;
 import org.dows.pay.spider.properties.Crawler;
 import org.dows.pay.spider.properties.Flow;
 import org.dows.pay.spider.properties.Rule;
@@ -73,50 +72,56 @@ public class WeixinIsvApiExtractHandler implements ExtractHandler {
         stepData.setDatas(new ArrayList<>());
 
         for (JXNode jxNode : jxNodes) {
-            Map<String, String> map = new HashMap<>();
+            Map<String, Object> map = new HashMap<>();
             regex.forEach((key, val) -> {
                 List<JXNode> selectedNodes = jxNode.sel(val);
 
                 List<JXNode> ths = new ArrayList<>();
+                StringBuilder sb = new StringBuilder();
+                List<FieldSchema> fieldSchemas = new ArrayList<>();
                 for (JXNode selectedNode : selectedNodes) {
-
                     Element element = (Element) selectedNode.value();
+                    if (key.equalsIgnoreCase("input") || key.equalsIgnoreCase("output")) {
 
-                    if (element.tagName().equalsIgnoreCase("tr")) {
-                        // 处理表头
-                        if(ths.isEmpty()) {
-                            ths.addAll(selectedNode.sel("th"));
-                        }
+                        if (element.tagName().equalsIgnoreCase("tr")) {
+                            // 处理表头
+                            if (ths.isEmpty()) {
+                                ths.addAll(selectedNode.sel("th"));
+                            }
 
-                        List<JXNode> tds = selectedNode.sel("td");
-                        if(tds.size() != ths.size()){
-                            continue;
-                        }
-                        WeixinParamSchema weixinParamSchema = new WeixinParamSchema();
-                        Map<String, Field> fields = weixinParamSchema.getFields();
-                        for (int i = 0; i < ths.size(); i++) {
-                            Field field = fields.get(ths.get(i).selOne("/text()").asString());
-                            if(field != null) {
-                                field.setAccessible(true);
-                                try {
-                                    JXNode jxNode1 = tds.get(i);
-                                    if (jxNode1 != null) {
-                                        field.set(weixinParamSchema, tds.get(i).selOne("/text()").asString());
+                            List<JXNode> tds = selectedNode.sel("td");
+                            if (tds.size() != ths.size()) {
+                                continue;
+                            }
+                            FieldSchema fieldSchema = new FieldSchema();
+                            Map<String, Field> fields = fieldSchema.getWexinFieldMap();
+                            for (int i = 0; i < ths.size(); i++) {
+                                Field field = fields.get(ths.get(i).selOne("/text()").asString());
+                                if (field != null) {
+                                    field.setAccessible(true);
+                                    try {
+                                        JXNode jxNode1 = tds.get(i);
+                                        JXNode jxNode2 = jxNode1.selOne("/text()");
+                                        if (jxNode1 != null && jxNode2 != null) {
+                                            field.set(fieldSchema, jxNode2.asString());
+                                        }
+                                    } catch (IllegalAccessException e) {
+                                        throw new RuntimeException(e);
                                     }
-                                } catch (IllegalAccessException e) {
-                                    throw new RuntimeException(e);
                                 }
                             }
+                            fieldSchemas.add(fieldSchema);
+                            map.put(key, fieldSchemas);
+                            log.info("");
                         }
-                        map.put(key, JSONUtil.toJsonStr(weixinParamSchema));
-                        log.info("");
                     } else {
-                        map.put(key, element.text());
+                        sb.append(element.text());
+                        map.put(key, sb.toString());
                     }
-                    stepData.getDatas().add(map);
                     log.info("共提取接口：{}", stepData.getDatas().size());
                 }
             });
+            stepData.getDatas().add(map);
         }
         return stepData;
     }

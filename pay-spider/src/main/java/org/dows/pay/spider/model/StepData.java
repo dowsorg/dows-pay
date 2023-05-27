@@ -12,7 +12,11 @@ public class StepData {
 
     private Integer step;
     private String seed;
-    private List<Map<String, String>> datas;
+    private List<Map<String, Object>> datas;
+
+    public void addData(Map<String, Object> data) {
+        datas.add(data);
+    }
 
     public <T> T toObject(Class<T> tClass) {
         T t = null;
