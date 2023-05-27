@@ -223,7 +223,9 @@ public class payBiz implements PayApi {
     }
 
     private String getExtJsonObject(String appId) {
-        String str = "{\"extEnable\":true,\"extAppid\":\"wxb36e5d143973a0fb\",\"directCommit\":false,\"ext\":{\"name\":\"wechat\",\"attr\":{\"host\":\"open.weixin.qq.com\",\"users\":[\"user_1\"]}}}";
+        String str = "{\"extEnable\":true,\"extAppid\":\"" +
+                appId +
+                "\",\"directCommit\":false,\"ext\":{\"name\":\"wechat\",\"attr\":{\"host\":\"open.weixin.qq.com\",\"users\":[\"user_1\"]}}}";
         return str;
     }
 
