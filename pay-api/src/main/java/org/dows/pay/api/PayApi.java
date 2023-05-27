@@ -1,6 +1,8 @@
 package org.dows.pay.api;
 
 import org.dows.app.api.mini.request.AppApplyRequest;
+import org.dows.app.api.mini.request.PayApplyStatusReq;
+import org.dows.app.api.mini.response.PayApplyStatusRes;
 import org.dows.framework.api.Response;
 
 public interface PayApi {
@@ -44,4 +46,11 @@ public interface PayApi {
      * @return
      */
     Response queryApplymentStatus(String applymentId);
+
+    /**
+     * 查询小程序 支付状态
+     * @param res
+     * @return
+     */
+    Response queryPayApplyStatus(PayApplyStatusReq res);
 }

@@ -15,20 +15,23 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.open.bean.result.WxOpenResult;
 import org.dows.app.api.mini.request.AppApplyRequest;
+import org.dows.app.api.mini.request.PayApplyStatusReq;
 import org.dows.framework.api.Response;
+import org.dows.framework.api.exceptions.BizException;
 import org.dows.pay.alipay.AlipayIsvHandler;
 import org.dows.pay.api.PayApi;
 import org.dows.pay.api.PayRequest;
 import org.dows.pay.api.request.PayIsvRequest;
 import org.dows.pay.bo.IsvCreateBo;
 import org.dows.pay.bo.IsvCreateTyBo;
+import org.dows.pay.entity.PayApply;
+import org.dows.pay.service.PayApplyService;
 import org.dows.pay.weixin.WeixinIsvHandler;
 import org.dows.pay.weixin.WeixinMiniHandler;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * ISV 代理商业务
@@ -43,6 +46,8 @@ public class payBiz implements PayApi {
     private final AlipayIsvHandler alipayIsvHandler;
     @Lazy
     private final WeixinMiniHandler weixinMiniHandler;
+    @Lazy
+    private final PayApplyService payApplyService;
 
     @Override
     public Response isvApply(AppApplyRequest appApplyRequest) {
@@ -160,6 +165,7 @@ public class payBiz implements PayApi {
 
     @Override
     public Response applyForPaymentAuth(AppApplyRequest appApplyRequest) {
+        Long payApplyId = payApplyService.createPayApply(appApplyRequest.getMerchantNo());
         PayRequest payRequest = new PayIsvRequest();
         log.info("生成appApplyRequest参数{}", appApplyRequest);
         if ("WEIXIN".equals(appApplyRequest.getApplyType())) {
@@ -172,15 +178,37 @@ public class payBiz implements PayApi {
                 // 小程序申请支付权限
                 WxPayApplymentCreateResult isvMini = weixinIsvHandler.createIsvTyMini(payRequest);
                 log.info("生成WxPayApplymentCreateResult参数{}", isvMini);
+                // 回填申请单号
+                payApplyService.updateApplyNoById(payApplyId,isvMini.getApplymentId());
                 if (!StringUtil.isEmpty(isvMini.getApplymentId())) {
                     return Response.ok(true, "申请微信小程序支付权限成功");
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                log.warn("applyForPaymentAuth fail :",e);
                 return Response.fail(e.getMessage());
             }
         }
         return null;
+    }
+
+    @Override
+    public Response queryPayApplyStatus(PayApplyStatusReq res) {
+        PayApply payApply = payApplyService.getByMerchantNoAndType(res.getMerchantNo(),res.getApplyType());
+        return Optional.ofNullable(payApply).map(p -> {
+            Response response = queryApplymentStatus(payApply.getApplyNo());
+            ApplymentsStatusResult result = (ApplymentsStatusResult) response.getData();
+            if (!Objects.nonNull(payApply.getAppUrl())) {
+                payApply.setAppUrl(result.getSignUrl());
+            }
+            payApply.setApplymentState(result.getApplymentState());
+            if (Objects.equals("APPLYMENT_STATE_FINISHED",payApply.getApplymentState())) {
+                payApply.setChecked(true);
+            }
+            payApply.setUpdateTime(new Date());
+            payApplyService.updateById(payApply);
+            return response;
+        })
+                .orElseThrow(() -> new BizException(String.format("payApply query is null and merchantNo:[%s]",res.getMerchantNo())));
     }
 
     @Override
