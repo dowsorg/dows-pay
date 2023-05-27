@@ -3,6 +3,7 @@ package org.dows.pay.spider.handler;
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.dows.pay.spider.extract.Extractable;
 import org.dows.pay.spider.model.StepData;
 import org.dows.pay.spider.model.schema.FieldSchema;
 import org.dows.pay.spider.properties.Crawler;

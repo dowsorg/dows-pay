@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import lombok.Data;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -14,17 +15,21 @@ public class ModuleSchema {
 
     private PomSchema pomSchema;
 
-    private List<BeanSchema> beanSchemas;
 
     // 所属项目
     private ProjectSchema projectSchema;
 
+    private final List<BeanSchema> beanSchemas = new ArrayList<>();
     //子模块
     private List<ModuleSchema> childModules;
 
+    public void addBeanSchema(BeanSchema beanSchema) {
+        this.beanSchemas.add(beanSchema);
+    }
+
     public String getJavaPath() {
-        return projectSchema.getRootPath() + File.separator + projectSchema.getName()
-                + File.separator + null == name ? "" : name + File.separator + "src/main/java";
+        return projectSchema.getRootPath() + "/" + projectSchema.getName()
+                + "/" + (null == name ? "" : name) + "/" + "src/main/java";
     }
 
     public String getResourcesPath() {
@@ -33,8 +38,8 @@ public class ModuleSchema {
     }
 
     public String getPath() {
-        return getJavaPath() + File.separator + (projectSchema.getBasePkg() + pkg)
-                .replaceAll("\\.", "/");
+        return getJavaPath()/* + "/" + (projectSchema.getBasePkg() + pkg)
+                .replaceAll("\\.", "/")*/;
     }
 
     public String getPkg() {

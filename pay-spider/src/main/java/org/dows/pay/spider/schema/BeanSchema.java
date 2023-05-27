@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.ToString;
 import org.dows.pay.spider.model.schema.ApiSchema;
 
-import java.io.File;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,6 +50,8 @@ public class BeanSchema {
      */
     private BeanSchema parentClass;
 
+    // 所属模块
+    private ModuleSchema moduleSchema;
     /**
      * 需要导入的包
      */
@@ -70,10 +71,8 @@ public class BeanSchema {
     private final List<BeanSchema> superInterfaces = new ArrayList<>();
 
 
-    private static Map<String, Field> fieldMap = new ConcurrentHashMap<>();
+    private final static Map<String, Field> fieldMap = new ConcurrentHashMap<>();
 
-    // 所属模块
-    private ModuleSchema moduleSchema;
 
     static {
         fieldMap.putAll(Arrays.stream(ApiSchema.class.getDeclaredFields()).collect(Collectors.toMap(f -> f.getName(), Function.identity())));
@@ -125,7 +124,7 @@ public class BeanSchema {
     }
 
     public String getPath() {
-        return moduleSchema.getPath() + File.separator + getPkg().replaceAll("\\.", "/");
+        return moduleSchema.getPath() + "/" + getPkg().replaceAll("\\.", "/");
     }
 
 }

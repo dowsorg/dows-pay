@@ -1,4 +1,4 @@
-package org.dows.pay.spider.handler;
+package org.dows.pay.spider.model;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +15,7 @@ import java.util.Map;
  */
 @Data
 @Slf4j
-public class WeixinLinkSchema {
+public class WeixinLinkModel {
 
     private final static Map<String, BeanSchema> beanSchemaMap = new HashMap<>();
     private final String root = "https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/";
@@ -51,7 +51,7 @@ public class WeixinLinkSchema {
 
 
     public static void main(String[] args) {
-        WeixinLinkSchema weixinLinkSchema = new WeixinLinkSchema();
+        WeixinLinkModel weixinLinkSchema = new WeixinLinkModel();
         weixinLinkSchema.setHref("https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/aaa/cloudrun-batch/cloudenv-mgnt/getShareCloudbaseEnv.html");
         BeanSchema beanSchema = weixinLinkSchema.getBeanSchema();
         log.info("...{}", beanSchema);

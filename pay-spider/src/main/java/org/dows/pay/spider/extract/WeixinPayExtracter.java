@@ -1,8 +1,9 @@
-package org.dows.pay.spider.handler;
+package org.dows.pay.spider.extract;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dows.pay.spider.model.StepData;
+import org.dows.pay.spider.model.WeixinLinkModel;
 import org.dows.pay.spider.properties.Crawler;
 import org.dows.pay.spider.properties.Flow;
 import org.dows.pay.spider.schema.BeanSchema;
@@ -24,19 +25,19 @@ import java.util.Map;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class WeixinDeveloperLinkExtracter implements Extractable {
+public class WeixinPayExtracter implements Extractable {
 
 
-    public List<WeixinLinkSchema> getLink(String seed, String regex) {
+    public List<WeixinLinkModel> getLink(String seed, String regex) {
         Document document = getDocument(seed);
         JXDocument jxDocument = JXDocument.create(document);
         List<JXNode> jxNodes = jxDocument.selN(regex);
 
-        List<WeixinLinkSchema> weixinLinkSchemas = new ArrayList<>();
+        List<WeixinLinkModel> weixinLinkSchemas = new ArrayList<>();
         for (JXNode jxNode : jxNodes) {
             JXNode href = jxNode.selOne("/@href");
             JXNode text = jxNode.selOne("/text()");
-            WeixinLinkSchema linkSchema = new WeixinLinkSchema();
+            WeixinLinkModel linkSchema = new WeixinLinkModel();
             linkSchema.setHref(href.asString());
             linkSchema.setName(text.asString());
             weixinLinkSchemas.add(linkSchema);
@@ -47,7 +48,7 @@ public class WeixinDeveloperLinkExtracter implements Extractable {
 
 
     public Map<String, BeanSchema> get(String seed, String regex, String regex1) {
-        List<WeixinLinkSchema> weixinLinkSchemas = getLink(seed, regex);
+        List<WeixinLinkModel> weixinLinkSchemas = getLink(seed, regex);
 
         //List<BeanSchema> beanSchemas = new ArrayList<>();
         Map<String, BeanSchema> beanSchemaMap = new HashMap<>();
@@ -60,7 +61,7 @@ public class WeixinDeveloperLinkExtracter implements Extractable {
         map.put("descr", "//h3[@id='功能描述']/following-sibling::p/text()");
         map.put("explain", "//h3[@id='第三方调用']/following-sibling::ul/li/*/text()");
 
-        for (WeixinLinkSchema weixinLinkSchema : weixinLinkSchemas) {
+        for (WeixinLinkModel weixinLinkSchema : weixinLinkSchemas) {
             BeanSchema beanSchema = weixinLinkSchema.getBeanSchema();
             beanSchema = beanSchemaMap.get(beanSchema.getName());
             if (beanSchema == null) {

@@ -75,7 +75,7 @@ public class WeixinSdkCrawler {
         ModuleSchema moduleSchema = new ModuleSchema();
         moduleSchema.setProjectSchema(projectSchema);
         moduleSchemas.add(moduleSchema);
-        moduleSchema.setBeanSchemas(beanSchemas);
+        //moduleSchema.setBeanSchemas(beanSchemas);
 
         BeanSchema beanSchema = new BeanSchema();
         beanSchema.setName("");

@@ -1,4 +1,4 @@
-package org.dows.pay.spider.handler;
+package org.dows.pay.spider.extract;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
