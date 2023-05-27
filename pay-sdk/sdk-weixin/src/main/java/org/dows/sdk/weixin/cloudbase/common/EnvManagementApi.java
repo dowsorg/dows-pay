@@ -1,8 +1,10 @@
 package org.dows.sdk.weixin.cloudbase.common;
 
+import org.dows.sdk.weixin.cloudbase.common.request.ChangeTcbEnvRequest;
 import org.dows.sdk.weixin.cloudbase.common.request.CreateEnvRequest;
 import org.dows.sdk.weixin.cloudbase.common.request.GetEnvInfoRequest;
 import org.dows.sdk.weixin.cloudbase.common.request.ShareEnvRequest;
+import org.dows.sdk.weixin.cloudbase.common.response.ChangeTcbEnvResponse;
 import org.dows.sdk.weixin.cloudbase.common.response.CreateEnvResponse;
 import org.dows.sdk.weixin.cloudbase.common.response.GetEnvInfoResponse;
 import org.dows.sdk.weixin.cloudbase.common.response.ShareEnvResponse;

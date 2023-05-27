@@ -23,7 +23,7 @@ import java.util.Map;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class WeixinIsvApiExtractHandler implements ExtractHandler {
+public class WeixinIsvApiExtractHandler implements Extractable {
 
     @Override
     public StepData extract(Crawler crawler, Flow flow) {

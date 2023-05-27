@@ -1,11 +1,7 @@
 package org.dows.sdk.weixin.cloudrun.batch;
 
-import org.dows.sdk.weixin.cloudrun.batch.request.CreateCloudbaseEnvRequest;
-import org.dows.sdk.weixin.cloudrun.batch.request.GetWxCloudBaseRunEnvsRequest;
-import org.dows.sdk.weixin.cloudrun.batch.request.UnshareCloudbaseEnvRequest;
-import org.dows.sdk.weixin.cloudrun.batch.response.CreateCloudbaseEnvResponse;
-import org.dows.sdk.weixin.cloudrun.batch.response.GetWxCloudBaseRunEnvsResponse;
-import org.dows.sdk.weixin.cloudrun.batch.response.UnshareCloudbaseEnvResponse;
+import org.dows.sdk.weixin.cloudrun.batch.request.*;
+import org.dows.sdk.weixin.cloudrun.batch.response.*;
 
 /**
  * @author

@@ -20,8 +20,8 @@ public class ProjectSchema {
      */
     private String basePkg = "";
 
-//    private Config config;
 
+//    private Config config;
 
     private List<ModuleSchema> modules;
 

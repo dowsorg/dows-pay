@@ -20,7 +20,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Service
 @Slf4j
-public class WeixinCatalogExtractHandler implements ExtractHandler {
+public class WeixinCatalogExtractHandler implements Extractable {
 
 //    public StepData extract(Crawler crawler, Flow flow) {
 //        String seed = crawler.getSeed();

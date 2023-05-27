@@ -1,5 +1,6 @@
 package org.dows.pay.spider.schema;
 
+import cn.hutool.core.util.StrUtil;
 import lombok.Data;
 
 import java.io.File;
@@ -11,6 +12,8 @@ public class ModuleSchema {
 
     private String pkg = "";
 
+    private PomSchema pomSchema;
+
     private List<BeanSchema> beanSchemas;
 
     // 所属项目
@@ -21,7 +24,7 @@ public class ModuleSchema {
 
     public String getJavaPath() {
         return projectSchema.getRootPath() + File.separator + projectSchema.getName()
-                + File.separator + name + File.separator + "src/main/java";
+                + File.separator + null == name ? "" : name + File.separator + "src/main/java";
     }
 
     public String getResourcesPath() {
@@ -29,9 +32,13 @@ public class ModuleSchema {
                 + File.separator + name + File.separator + "src/main/resources";
     }
 
-    public String getFullPath() {
+    public String getPath() {
         return getJavaPath() + File.separator + (projectSchema.getBasePkg() + pkg)
                 .replaceAll("\\.", "/");
+    }
+
+    public String getPkg() {
+        return projectSchema.getBasePkg() + (StrUtil.isBlank(pkg) ? "" : "." + pkg);
     }
 
 }

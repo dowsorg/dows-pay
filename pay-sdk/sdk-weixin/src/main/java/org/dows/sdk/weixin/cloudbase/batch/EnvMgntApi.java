@@ -1,9 +1,7 @@
 package org.dows.sdk.weixin.cloudbase.batch;
 
-import org.dows.sdk.weixin.cloudbase.batch.request.CreateTcbEnvRequest;
-import org.dows.sdk.weixin.cloudbase.batch.request.GetTcbEnvListRequest;
-import org.dows.sdk.weixin.cloudbase.batch.response.CreateTcbEnvResponse;
-import org.dows.sdk.weixin.cloudbase.batch.response.GetTcbEnvListResponse;
+import org.dows.sdk.weixin.cloudbase.batch.request.*;
+import org.dows.sdk.weixin.cloudbase.batch.response.*;
 
 /**
  * @author

@@ -58,3 +58,25 @@ dows:
               explain: //h3[@id='第三方调用']/following-sibling::ul/li/*/text()
 
 
+  支付一级菜单: //div[@class='doc-menu ']/dl/dt/text()
+  支付二级菜单: //div[@class='doc-menu ']/dl/dd/a/text()
+  
+  支付二级菜单下的链接名称: //div[@class='doc-menu ']/dl/dd/ul/li/a/text()
+  支付二级菜单下的链接: //div[@class='doc-menu ']/dl/dd/ul/li/a/@href
+
+
+
+接口描述: //div[@class='overview']//*/text()
+接口信息:
+
+
+
+第三方一级菜单: //div[@class="TreeNavigation"]/div/ul/li/div/div/span[2]/a/text()
+
+第三方二级菜单名称: //div[@class="TreeNavigation"]/div/ul/li/div/ul/li/span/a/text()
+第三方二级菜单href: //div[@class="TreeNavigation"]/div/ul/li/div/ul/li/span/a/@href
+  
+  
+  //div[@class="TreeNavigation"]/div/ul/li/div/ul//li/span/a
+  
+  //div[@class="TreeNavigation"]/div/ul/li/div/ul/li/div/div/span

@@ -12,7 +12,7 @@ import org.jsoup.nodes.Document;
 
 import java.util.List;
 
-public interface ExtractHandler {
+public interface Extractable {
 
     //StepData extract(Crawler crawler, Flow flow);
     StepData extract(Crawler crawler, Flow flow);

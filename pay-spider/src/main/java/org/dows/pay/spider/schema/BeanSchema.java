@@ -1,8 +1,11 @@
 package org.dows.pay.spider.schema;
 
+import cn.hutool.core.util.StrUtil;
 import lombok.Data;
+import lombok.ToString;
 import org.dows.pay.spider.model.schema.ApiSchema;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,6 +16,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Data
+@ToString
 public class BeanSchema {
 
     /**
@@ -53,8 +57,7 @@ public class BeanSchema {
     private final List<String> imports = new ArrayList<>();
 
 
-
-    private final List<FieldSchema> fieldSchemas = new ArrayList<>();
+    private final List<FieldSchema> fields = new ArrayList<>();
 
     /**
      * 请求方法
@@ -68,6 +71,9 @@ public class BeanSchema {
 
 
     private static Map<String, Field> fieldMap = new ConcurrentHashMap<>();
+
+    // 所属模块
+    private ModuleSchema moduleSchema;
 
     static {
         fieldMap.putAll(Arrays.stream(ApiSchema.class.getDeclaredFields()).collect(Collectors.toMap(f -> f.getName(), Function.identity())));
@@ -94,5 +100,23 @@ public class BeanSchema {
         });
     }
 
+
+    public BeanSchema addField(FieldSchema fieldSchema) {
+        this.fields.add(fieldSchema);
+        return this;
+    }
+
+    public BeanSchema addMethod(MethodSchema methodSchema) {
+        this.methods.add(methodSchema);
+        return this;
+    }
+
+    public String getPkg() {
+        return moduleSchema.getPkg() + (StrUtil.isBlank(pkg) ? "" : "." + pkg);
+    }
+
+    public  String getPath(){
+        return moduleSchema.getPath()+ File.separator + getPkg().replaceAll("\\.","/");
+    }
 
 }
