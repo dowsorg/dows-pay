@@ -1,4 +1,4 @@
-package org.dows.pay.spider.model;
+package org.dows.pay.spider.model.schema;
 
 import cn.hutool.core.util.StrUtil;
 import lombok.Data;

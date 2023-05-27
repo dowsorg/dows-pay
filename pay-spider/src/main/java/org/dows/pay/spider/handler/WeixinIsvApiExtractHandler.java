@@ -4,7 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dows.pay.spider.model.StepData;
-import org.dows.pay.spider.model.FieldSchema;
+import org.dows.pay.spider.model.schema.FieldSchema;
 import org.dows.pay.spider.properties.Crawler;
 import org.dows.pay.spider.properties.Flow;
 import org.dows.pay.spider.properties.Rule;
