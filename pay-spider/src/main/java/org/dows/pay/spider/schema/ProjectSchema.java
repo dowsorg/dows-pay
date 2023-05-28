@@ -1,10 +1,14 @@
 package org.dows.pay.spider.schema;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import java.util.List;
 
 @Data
+@ToString
+@EqualsAndHashCode
 public class ProjectSchema {
     /**
      * 项目名

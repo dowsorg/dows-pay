@@ -1,7 +1,6 @@
 package org.dows.pay.spider.schema;
 
 import cn.hutool.core.util.StrUtil;
-import lombok.Builder;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -20,12 +19,9 @@ public class ParamSchema {
     private String collectionType;
     private String suffix;
 
+    private String pkg;
 
-
-
-
-
-
+    private MethodSchema methodSchema;
 
 
     private final List<FieldSchema> fields = new ArrayList<>();

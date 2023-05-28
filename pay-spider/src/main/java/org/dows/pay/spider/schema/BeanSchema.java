@@ -116,11 +116,12 @@ public class BeanSchema {
      * @return
      */
     public String getName() {
-        return StrUtil.toCamelCase(name.replaceAll("-", "_"));
+        return StrUtil.toCamelCase(name.replaceAll("-", "_")) + "Api";
     }
 
     public String getPkg() {
-        return moduleSchema.getPkg() + (StrUtil.isBlank(pkg) ? "" : "." + pkg);
+        return moduleSchema.getPkg() + (StrUtil.isBlank(pkg) ? "" : "."
+                + pkg.replaceAll("-", ".").replaceAll("/", "."));
     }
 
     public String getPath() {

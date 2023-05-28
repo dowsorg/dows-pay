@@ -1,16 +1,15 @@
 package org.dows.pay.spider;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.template.Template;
 import cn.hutool.extra.template.TemplateEngine;
-import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.dows.pay.spider.extract.WeixinDeveloperExtracter;
-import org.dows.pay.spider.schema.BeanSchema;
-import org.dows.pay.spider.schema.ModuleSchema;
-import org.dows.pay.spider.schema.ProjectSchema;
+import org.dows.pay.spider.extract.WeixinPayExtracter;
+import org.dows.pay.spider.schema.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,6 +20,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @SpringBootTest
@@ -39,6 +39,9 @@ public class ApiTest {
     private WeixinDeveloperExtracter weixinDeveloperExtracter;
 
     @Autowired
+    private WeixinPayExtracter weixinPayExtracter;
+
+    @Autowired
     private CatalogCrawler catalogCrawler;
 
     @Autowired
@@ -51,11 +54,21 @@ public class ApiTest {
 
 
     @Test
+    public void testPay() {
+        String seed = "https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/index.shtml";
+        String regex = "//div[@class='doc-menu ']/dl/dd/ul/li/a";
+        Map<String, BeanSchema> beanSchemaMap = weixinPayExtracter.get(seed, regex, "");
+        log.info("");
+
+    }
+
+
+    @Test
     public void testA() {
         log.info("");
         String file = this.getClass().getResource("").getPath() + File.separator + "bean-schema.json";
 
-        Map link = new HashMap<>();
+        Map<String, BeanSchema> link = new HashMap<>();
         try {
             String s = FileUtil.readString(new File(file), Charset.defaultCharset());
             link = JSONUtil.toBean(s, Map.class);
@@ -75,9 +88,11 @@ public class ApiTest {
 
         ProjectSchema projectSchema = new ProjectSchema();
         projectSchema.setName("sdk-weixin");
-        projectSchema.setRootPath("E:/workspaces/java/projects/dows/dows-pay/pay-sdk1");
+        projectSchema.setRootPath("E:/workspaces/java/projects/dows/dows-pay/pay-sdk");
         projectSchema.setBasePkg("org.dows.sdk.weixin");
         projectSchema.setModules(moduleSchemas);
+
+        String apiSuffix = "Api";
 
 
         ModuleSchema moduleSchema = new ModuleSchema();
@@ -86,10 +101,16 @@ public class ApiTest {
         //moduleSchema.setBeanSchemas(beanSchemas);
 
         Template template = templateEngine.getTemplate("api1.ftl");
+        Template modelTemplate = templateEngine.getTemplate("param1.ftl");
+        Template ymlTemplate = templateEngine.getTemplate("wexiapi.ftl");
 
+        //link.entrySet().stream().iterator().next().getValue().stream().collect(Collectors.groupingBy(BeanSchema::getPkg));
+        List<BeanSchema> beanSchemas = new ArrayList<>();
         Set<String> strings = link.keySet();
         for (String string : strings) {
-            BeanSchema beanSchema = JSONUtil.toBean((JSONObject) link.get(string), BeanSchema.class);
+            //BeanSchema beanSchema = JSONUtil.toBean((JSONObject) link.get(string), BeanSchema.class);
+            BeanSchema beanSchema = (BeanSchema) link.get(string);
+            beanSchema.setDescr(string);
             String beanName = beanSchema.getName();
             beanSchema.setModuleSchema(moduleSchema);
             moduleSchema.addBeanSchema(beanSchema);
@@ -97,14 +118,48 @@ public class ApiTest {
             try {
                 Files.createDirectories(Path.of(path));
 
-                String render = template.render((Map) link.get(string));
+                String render = template.render(BeanUtil.beanToMap(beanSchema));
 
                 Files.write(Path.of(path + "/" + StrUtil.upperFirst(beanName) + ".java"), render.getBytes());
                 log.info("");
+
+                List<MethodSchema> methods = beanSchema.getMethods();
+
+                for (MethodSchema method : methods) {
+                    List<ParamSchema> inputs = method.getInputs();
+                    for (ParamSchema input : inputs) {
+                        Files.createDirectories(Path.of(path, "request"));
+                        input.setPkg(beanSchema.getPkg() + ".request");
+                        String request = modelTemplate.render(BeanUtil.beanToMap(input));
+                        Files.write(Path.of(path + "/request/" + StrUtil.upperFirst(input.getType()) + ".java"), request.getBytes());
+                    }
+                    ParamSchema output = method.getOutput();
+                    output.setPkg(beanSchema.getPkg() + ".response");
+                    Files.createDirectories(Path.of(path, "response"));
+                    String response = modelTemplate.render(BeanUtil.beanToMap(output));
+                    Files.write(Path.of(path + "/response/" + StrUtil.upperFirst(output.getType()) + ".java"), response.getBytes());
+
+                }
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
+            beanSchemas.add(beanSchema);
         }
+
+        // 生成yml
+        Map<String, List<BeanSchema>> collect = beanSchemas.stream().collect(Collectors.groupingBy(BeanSchema::getPkg));
+        collect.forEach((k, v) -> {
+            try {
+                Files.createDirectories(Path.of(moduleSchema.getResourcesPath()));
+                BeanUtil.beanToMap(v);
+                Map<String, List<BeanSchema>> map = new HashMap<>();
+                map.put("beanSchemas", v);
+                String render = ymlTemplate.render(map);
+                Files.write(Path.of(moduleSchema.getResourcesPath() + "application-" + k.replaceAll("\\.", "-") + ".yml"), render.getBytes());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
     }
 

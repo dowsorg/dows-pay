@@ -2,12 +2,15 @@ package org.dows.pay.spider.schema;
 
 import cn.hutool.core.util.StrUtil;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
+@ToString
+@EqualsAndHashCode
 public class ModuleSchema {
     private String name;
 
@@ -33,8 +36,8 @@ public class ModuleSchema {
     }
 
     public String getResourcesPath() {
-        return projectSchema.getRootPath() + File.separator + projectSchema.getName()
-                + File.separator + name + File.separator + "src/main/resources";
+        return projectSchema.getRootPath() + "/" + projectSchema.getName()
+                + "/" + name + "/" + "src/main/resources";
     }
 
     public String getPath() {
@@ -43,7 +46,8 @@ public class ModuleSchema {
     }
 
     public String getPkg() {
-        return projectSchema.getBasePkg() + (StrUtil.isBlank(pkg) ? "" : "." + pkg);
+        return projectSchema.getBasePkg() + (StrUtil.isBlank(pkg) ? "" : "."
+                + pkg.replaceAll("/", ".").replaceAll("-", "."));
     }
 
 }

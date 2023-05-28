@@ -1,14 +1,7 @@
 dows:
   sdk:
     weixin:
-      ams:
-        adBlackApi:
-          getBlackList:
-            method: POST
-            url: https://api.weixin.qq.com/tcb/wxpayopenauth?access_token=${rt*}
-          setBlackList: POST https://api.weixin.qq.com/tcb/setBlackList?access_token=${rt*}
-          getAmsCategoryBlackList: POST https://api.weixin.qq.com/tcb/getAmsCategoryBlackList?access_token=${rt*}
-        adDataApi:
-          getBlackList: POST https://api.weixin.qq.com/tcb/wxpayopenauth?access_token=${rt*}
-          setBlackList: POST https://api.weixin.qq.com/tcb/setBlackList?access_token=${rt*}
-          getAmsCategoryBlackList: POST https://api.weixin.qq.com/tcb/getAmsCategoryBlackList?access_token=${rt*}
+      "org.dows.sdk.weixin.ams.AdBlackApi.getBlackList": POST https://api.weixin.qq.com/tcb/wxpayopenauth?access_token=${rt*access_token}
+      "org.dows.sdk.weixin.ams.AdBlackApi.setAmsCategoryBlackList": POST https://api.weixin.qq.com/tcb/wxpayopenauth?access_token=${rt*access_token}
+
+

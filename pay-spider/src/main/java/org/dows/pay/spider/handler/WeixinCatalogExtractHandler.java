@@ -21,7 +21,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Service
 @Slf4j
-public class WeixinCatalogExtractHandler implements Extractable {
+public class WeixinCatalogExtractHandler implements ExtracterHandler {
 
 //    public StepData extract(Crawler crawler, Flow flow) {
 //        String seed = crawler.getSeed();

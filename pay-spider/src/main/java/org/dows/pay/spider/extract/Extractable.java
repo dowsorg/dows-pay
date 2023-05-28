@@ -14,11 +14,6 @@ import java.util.List;
 
 public interface Extractable {
 
-    //StepData extract(Crawler crawler, Flow flow);
-    StepData extract(Crawler crawler, Flow flow);
-
-    StepData extract(String seed, List<Crawler> crawlers);
-
     default Document getDocument(String seed) {
         /** 创建模拟指定浏览器的客户端对象 */
         final WebClient webClient = new WebClient(BrowserVersion.INTERNET_EXPLORER);

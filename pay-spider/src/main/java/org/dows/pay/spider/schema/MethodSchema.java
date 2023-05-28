@@ -71,8 +71,12 @@ public class MethodSchema {
     /**
      * 方法返回值或出参
      */
-    private ParamSchema output;
+    private ParamSchema output = new ParamSchema();
 
+    /**
+     *
+     */
+    private BeanSchema beanSchema;
 
     public String getName() {
         return name.trim();

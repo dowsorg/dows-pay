@@ -3,7 +3,7 @@ package org.dows.pay.spider.extract;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dows.pay.spider.model.StepData;
-import org.dows.pay.spider.model.WeixinLinkModel;
+import org.dows.pay.spider.model.WeixinDeveloperLinkModel;
 import org.dows.pay.spider.properties.Crawler;
 import org.dows.pay.spider.properties.Flow;
 import org.dows.pay.spider.schema.BeanSchema;
@@ -28,27 +28,27 @@ import java.util.Map;
 public class WeixinDeveloperExtracter implements Extractable {
 
 
-    public List<WeixinLinkModel> getLink(String seed, String regex) {
+    public List<WeixinDeveloperLinkModel> getLink(String seed, String regex) {
         Document document = getDocument(seed);
         JXDocument jxDocument = JXDocument.create(document);
         List<JXNode> jxNodes = jxDocument.selN(regex);
 
-        List<WeixinLinkModel> weixinLinkSchemas = new ArrayList<>();
+        List<WeixinDeveloperLinkModel> weixinLinkSchemas = new ArrayList<>();
         for (JXNode jxNode : jxNodes) {
             JXNode href = jxNode.selOne("/@href");
             JXNode text = jxNode.selOne("/text()");
-            WeixinLinkModel linkSchema = new WeixinLinkModel();
+            WeixinDeveloperLinkModel linkSchema = new WeixinDeveloperLinkModel();
             linkSchema.setHref(href.asString());
             linkSchema.setName(text.asString());
             weixinLinkSchemas.add(linkSchema);
-            log.info("");
+            //return weixinLinkSchemas;
         }
         return weixinLinkSchemas;
     }
 
 
     public Map<String, BeanSchema> get(String seed, String regex, String regex1) {
-        List<WeixinLinkModel> weixinLinkSchemas = getLink(seed, regex);
+        List<WeixinDeveloperLinkModel> weixinLinkSchemas = getLink(seed, regex);
 
         //List<BeanSchema> beanSchemas = new ArrayList<>();
         Map<String, BeanSchema> beanSchemaMap = new HashMap<>();
@@ -61,7 +61,7 @@ public class WeixinDeveloperExtracter implements Extractable {
         map.put("descr", "//h3[@id='功能描述']/following-sibling::p/text()");
         map.put("explain", "//h3[@id='第三方调用']/following-sibling::ul/li/*/text()");
 
-        for (WeixinLinkModel weixinLinkSchema : weixinLinkSchemas) {
+        for (WeixinDeveloperLinkModel weixinLinkSchema : weixinLinkSchemas) {
             BeanSchema beanSchema = weixinLinkSchema.getBeanSchema();
             beanSchema = beanSchemaMap.get(beanSchema.getName());
             if (beanSchema == null) {
@@ -91,6 +91,8 @@ public class WeixinDeveloperExtracter implements Extractable {
 
                     ParamSchema paramSchema = new ParamSchema();
                     paramSchema.setName(method + "Request");
+                    paramSchema.setType(method + "Request");
+                    paramSchema.setIot("in");
                     // 为method 设置 input入参列表
                     methodSchema.addInput(paramSchema);
                     for (JXNode jxNode : jxNodes) {
@@ -99,6 +101,8 @@ public class WeixinDeveloperExtracter implements Extractable {
                 } else if (k.equalsIgnoreCase("output")) {
                     ParamSchema paramSchema = new ParamSchema();
                     paramSchema.setName(method + "Response");
+                    paramSchema.setType(method + "Response");
+                    paramSchema.setIot("out");
                     methodSchema.setOutput(paramSchema);
                     for (JXNode jxNode : jxNodes) {
                         buildParam(ths, paramSchema, jxNode);
@@ -148,16 +152,5 @@ public class WeixinDeveloperExtracter implements Extractable {
                 }
             }
         }
-    }
-
-
-    @Override
-    public StepData extract(Crawler crawler, Flow flow) {
-        return null;
-    }
-
-    @Override
-    public StepData extract(String seed, List<Crawler> crawlers) {
-        return null;
     }
 }
