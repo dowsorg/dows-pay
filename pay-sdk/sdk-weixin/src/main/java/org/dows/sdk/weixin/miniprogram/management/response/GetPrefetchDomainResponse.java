@@ -1,24 +1,29 @@
 package org.dows.sdk.weixin.miniprogram.management.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
+import lombok.*;
 
-import java.util.List;
+import java.util.Date;
+import java.math.BigDecimal;
 
 /**
- * @author
- * @description
- * @date 2023年5月28日 下午9:25:34
- * @date
+ *
+ * @description 
+ * @author @author lait.zhang@gmail.com
+ * @date 2023年5月28日 下午9:55:33
  */
 @Data
-public class GetPrefetchDomainResponse {
+@Schema(name = "GetPrefetchDomainResponse", title = "GetPrefetchDomainResponse")
+public class GetPrefetchDomainResponse{
     @Schema(title = "错误码")
     private Integer errcode;
     @Schema(title = "错误信息")
     private String errmsg;
     @Schema(title = "预解析dns域名")
-    private List<Object> prefetch_dns_domain;
+    private List<object> prefetch_dns_domain;
     @Schema(title = "总共可配置域名个数")
     private Integer size_limit;
 }

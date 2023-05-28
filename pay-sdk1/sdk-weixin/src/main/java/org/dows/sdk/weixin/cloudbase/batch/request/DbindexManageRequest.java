@@ -26,6 +26,6 @@ public class DbindexManageRequest{
     @Schema(title = "集合名称")
     private String collection_name;
     @Schema(title = "索引信息")
-    private Array.<Object> indexes;
+    private List<Object> indexes;
 }
 

@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 @RequiredArgsConstructor
-@PropertySource(value = {"classpath:application-ams.yml"}, factory = YamlPropertySourceFactory.class)
+@PropertySource(value = {"classpath:*.yml"}, factory = YamlPropertySourceFactory.class)
 @EnableConfigurationProperties(ApiUrlProperties.class)
 @Getter
 @Configuration

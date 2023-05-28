@@ -12,9 +12,9 @@ public interface ${name?cap_first!""}{
      * ${method.descr!""}
      * ${method.weixinUrl!""}
      * <#list method.inputs as input>
-     * @param ${input.name!""}
+     * @param ${(input.name!"")?uncap_first}
      * </#list>
      */
-    ${method.output.name?cap_first!""} ${method.name!""}(<#list method.inputs as input>${input.type!""} ${input.name!""}</#list>);
+    ${method.output.name?cap_first!""} ${(method.name!"")?uncap_first}(<#list method.inputs as input>${(input.type!"")?cap_first} ${(input.name!"")?uncap_first}</#list>);
 </#list>
 }

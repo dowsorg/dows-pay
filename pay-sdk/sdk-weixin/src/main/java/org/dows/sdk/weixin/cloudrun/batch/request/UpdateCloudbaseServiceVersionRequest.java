@@ -1,16 +1,23 @@
 package org.dows.sdk.weixin.cloudrun.batch.request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
+import lombok.*;
+
+import java.util.Date;
+import java.math.BigDecimal;
 
 /**
- * @author
- * @description
- * @date 2023年5月28日 下午9:25:34
- * @date
+ *
+ * @description 
+ * @author @author lait.zhang@gmail.com
+ * @date 2023年5月28日 下午9:55:33
  */
 @Data
-public class UpdateCloudbaseServiceVersionRequest {
+@Schema(name = "UpdateCloudbaseServiceVersionRequest", title = "UpdateCloudbaseServiceVersionRequest")
+public class UpdateCloudbaseServiceVersionRequest{
     @Schema(title = "")
     private String access_token;
     @Schema(title = "环境ID")
@@ -64,7 +71,7 @@ public class UpdateCloudbaseServiceVersionRequest {
     @Schema(title = "延迟多长时间开始健康检查（单位s）")
     private Integer initial_delay_seconds;
     @Schema(title = "cfs挂载信息")
-    private List<CloudBaseRunVolumeMount>mount_volume_info;
+    private List<CloudBaseRunVolumeMount> mount_volume_info;
     @Schema(title = "是否回滚")
     private Boolean rollback;
     @Schema(title = "版本历史名")
@@ -78,6 +85,6 @@ public class UpdateCloudbaseServiceVersionRequest {
     @Schema(title = "是否更新Cls")
     private Boolean is_update_cls;
     @Schema(title = "自动扩缩容策略组")
-    private List<HpaPolicy>policy_detail;
+    private List<HpaPolicy> policy_detail;
 }
 

@@ -1,21 +1,28 @@
 package org.dows.sdk.weixin.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
+import lombok.*;
+
+import java.util.Date;
+import java.math.BigDecimal;
 
 /**
- * @author
- * @description
- * @date 2023年5月28日 下午9:25:34
- * @date
+ *
+ * @description 
+ * @author @author lait.zhang@gmail.com
+ * @date 2023年5月28日 下午9:55:33
  */
 @Data
-public class GetAuthorizerInfoResponse {
-//    @Schema(title = "订阅号")
-//    private 0;
-//    @Schema(title = "由历史老帐号升级后的订阅号")
-//    private 1;
-//    @Schema(title = "服务号")
-//    private 2;
+@Schema(name = "GetAuthorizerInfoResponse", title = "GetAuthorizerInfoResponse")
+public class GetAuthorizerInfoResponse{
+    @Schema(title = "订阅号")
+    private 0 ;
+    @Schema(title = "由历史老帐号升级后的订阅号")
+    private 1 ;
+    @Schema(title = "服务号")
+    private 2 ;
 }
 

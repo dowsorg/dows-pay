@@ -1,14 +1,22 @@
 package org.dows.sdk.weixin.cloudbase.batch.response;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.*;
+
+import java.util.Date;
+import java.math.BigDecimal;
 
 /**
- * @author
- * @description
- * @date 2023年5月28日 下午9:25:34
- * @date
+ *
+ * @description 
+ * @author @author lait.zhang@gmail.com
+ * @date 2023年5月28日 下午9:55:33
  */
 @Data
-public class DbrecordManageResponse {
+@Schema(name = "DbrecordManageResponse", title = "DbrecordManageResponse")
+public class DbrecordManageResponse{
 }
 

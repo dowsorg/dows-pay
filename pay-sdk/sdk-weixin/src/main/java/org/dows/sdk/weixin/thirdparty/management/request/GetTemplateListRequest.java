@@ -1,16 +1,23 @@
 package org.dows.sdk.weixin.thirdparty.management.request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
+import lombok.*;
+
+import java.util.Date;
+import java.math.BigDecimal;
 
 /**
- * @author
- * @description
- * @date 2023年5月28日 下午9:25:34
- * @date
+ *
+ * @description 
+ * @author @author lait.zhang@gmail.com
+ * @date 2023年5月28日 下午9:55:33
  */
 @Data
-public class GetTemplateListRequest {
+@Schema(name = "GetTemplateListRequest", title = "GetTemplateListRequest")
+public class GetTemplateListRequest{
     @Schema(title = "接口调用凭证，该参数为 URL 参数，非 Body 参数。使用")
     private String access_token;
     @Schema(title = "可选是0（对应普通模板）和1（对应标准模板），如果不填，则返回全部的。关于标准模板和普通模板的区别可查看")

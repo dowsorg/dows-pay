@@ -23,6 +23,7 @@ import java.math.BigDecimal;
 @Data
 <#--@Schema(name = "${parameter.type} 对象", title = "${(parameter.descr!"")}")-->
 <#--@ApiModel(value = "${parameter.type} 对象", description = "${(parameter.descr!"")}")-->
+@Schema(name = "${(name!"")?cap_first}", title = "${(name!"")?cap_first}")
 public class ${(name!"")?cap_first}{
 <#if fields?? && (fields?size >0)>
     <#list fields as field >

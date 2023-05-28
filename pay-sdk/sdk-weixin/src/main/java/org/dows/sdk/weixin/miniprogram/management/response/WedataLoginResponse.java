@@ -10,8 +10,8 @@ import lombok.Data;
  * @date
  */
 @Data
-public class Wedata_loginResponse {
-    @Schema(title = "")
-    private String;
+public class WedataLoginResponse {
+//    @Schema(title = "")
+//    private String;
 }
 

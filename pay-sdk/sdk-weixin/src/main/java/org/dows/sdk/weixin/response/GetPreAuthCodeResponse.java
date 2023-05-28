@@ -1,16 +1,23 @@
 package org.dows.sdk.weixin.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
+import lombok.*;
+
+import java.util.Date;
+import java.math.BigDecimal;
 
 /**
- * @author
- * @description
- * @date 2023年5月28日 下午9:25:34
- * @date
+ *
+ * @description 
+ * @author @author lait.zhang@gmail.com
+ * @date 2023年5月28日 下午9:55:33
  */
 @Data
-public class GetPreAuthCodeResponse {
+@Schema(name = "GetPreAuthCodeResponse", title = "GetPreAuthCodeResponse")
+public class GetPreAuthCodeResponse{
     @Schema(title = "预授权码")
     private String pre_auth_code;
     @Schema(title = "有效期，单位：秒")

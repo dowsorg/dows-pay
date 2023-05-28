@@ -10,7 +10,7 @@ import lombok.Data;
  * @date
  */
 @Data
-public class Wedata_loginRequest {
+public class WedataLoginRequest {
     @Schema(title = "接口调用凭证，该参数为 URL 参数，非 Body 参数。使用")
     private String access_token;
     @Schema(title = "服务商session，用户访问服务商系统的session")

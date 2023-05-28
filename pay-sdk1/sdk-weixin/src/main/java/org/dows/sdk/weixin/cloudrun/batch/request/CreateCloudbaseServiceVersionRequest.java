@@ -72,7 +72,7 @@ public class CreateCloudbaseServiceVersionRequest{
     @Schema(title = "延迟多长时间开始健康检查（单位s）")
     private Integer initial_delay_seconds;
     @Schema(title = "cfs挂载信息")
-    private Array.<CloudBaseRunVolumeMount> mount_volume_info;
+    private List<CloudBaseRunVolumeMount> mount_volume_info;
     @Schema(title = "4 代表只能微信链路访问")
     private Integer access_type;
     @Schema(title = "es信息")
@@ -82,15 +82,15 @@ public class CreateCloudbaseServiceVersionRequest{
     @Schema(title = "服务路径")
     private String server_path;
     @Schema(title = "容器的描述文件")
-    private Array.<CloudBaseRunSideSpec> sidecar_specs;
+    private List<CloudBaseRunSideSpec> sidecar_specs;
     @Schema(title = "安全特性")
     private CloudBaseSecurityContext security;
     @Schema(title = "服务磁盘挂载")
-    private Array.<CloudRunServiceVolume> service_volumes;
+    private List<CloudRunServiceVolume> service_volumes;
     @Schema(title = "是否创建JnsGw 0未传默认创建 1创建 2不创建")
     private Integer is_create_jns_gw;
     @Schema(title = "数据卷挂载参数")
-    private Array.<CloudBaseRunServiceVolumeMount> service_volume_mounts;
+    private List<CloudBaseRunServiceVolumeMount> service_volume_mounts;
     @Schema(title = "是否有Dockerfile：0-default has, 1-has, 2-has not")
     private Integer has_dockerfile;
     @Schema(title = "基础镜像")
@@ -102,6 +102,6 @@ public class CreateCloudbaseServiceVersionRequest{
     @Schema(title = "）")
     private String upload_filename;
     @Schema(title = "自动扩缩容策略组")
-    private Array.<HpaPolicy> policy_detail;
+    private List<HpaPolicy> policy_detail;
 }
 
