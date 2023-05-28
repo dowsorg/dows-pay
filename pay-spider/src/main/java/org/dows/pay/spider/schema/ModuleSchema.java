@@ -37,7 +37,7 @@ public class ModuleSchema {
 
     public String getResourcesPath() {
         return projectSchema.getRootPath() + "/" + projectSchema.getName()
-                + "/" + name + "/" + "src/main/resources";
+                + "/" + (null == name ? "" : name) + "/" + "src/main/resources";
     }
 
     public String getPath() {

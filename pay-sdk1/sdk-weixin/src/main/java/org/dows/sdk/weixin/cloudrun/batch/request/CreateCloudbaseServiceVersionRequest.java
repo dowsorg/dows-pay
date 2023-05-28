@@ -78,7 +78,7 @@ public class CreateCloudbaseServiceVersionRequest{
     @Schema(title = "es信息")
     private CloudBaseEsInfo es_info;
     @Schema(title = "是否使用统一域名")
-    private Bool enable_union;
+    private Boolean enable_union;
     @Schema(title = "服务路径")
     private String server_path;
     @Schema(title = "容器的描述文件")

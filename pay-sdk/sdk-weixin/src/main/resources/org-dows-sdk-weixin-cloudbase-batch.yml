@@ -1,0 +1,33 @@
+dows:
+  sdk:
+    weixin:
+      "org.dows.sdk.weixin.cloudbase.batch.FileMgntApi.getUploadFileLink": POST https://api.weixin.qq.com/componenttcb/uploadfile?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.batch.FileMgntApi.deleteTcbFile": POST https://api.weixin.qq.com/componenttcb/batchdeletefile?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.batch.FileMgntApi.getTcbFile": POST https://api.weixin.qq.com/componenttcb/getbucket?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.batch.FileMgntApi.getDownloadFileLink": POST https://api.weixin.qq.com/componenttcb/batchdownloadfile?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.batch.DbMgntApi.dbImport": POST https://api.weixin.qq.com/componenttcb/dbimport?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.batch.DbMgntApi.dbExport": POST https://api.weixin.qq.com/componenttcb/dbexport?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.batch.DbMgntApi.getMigrationState": POST https://api.weixin.qq.com/componenttcb/dbmigrationstate?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.batch.DbMgntApi.dbAggregate": POST https://api.weixin.qq.com/componenttcb/dbaggregate?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.batch.DbMgntApi.getPermission": POST https://api.weixin.qq.com/componenttcb/dbgetacl?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.batch.DbMgntApi.setPermission": POST https://api.weixin.qq.com/componenttcb/dbmodifyacl?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.batch.DbMgntApi.dbrecordManage": POST https://api.weixin.qq.com/componenttcb/dbrecord?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.batch.DbMgntApi.dbindexManage": POST https://api.weixin.qq.com/componenttcb/dbindex?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.batch.StaticstoreManagementApi.getStaticStore": POST https://api.weixin.qq.com/componenttcb/describestaticstore?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.batch.StaticstoreManagementApi.createStaticStore": POST https://api.weixin.qq.com/componenttcb/createstaticstore?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.batch.StaticstoreManagementApi.getUploadStaticStoreFile": POST https://api.weixin.qq.com/componenttcb/staticuploadfile?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.batch.StaticstoreManagementApi.getStaticStoreFile": POST https://api.weixin.qq.com/componenttcb/staticfilelist?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.batch.ScfMgntApi.batchuUloadCloudFunction": POST https://api.weixin.qq.com/componenttcb/batchuploadscf?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.batch.ScfMgntApi.uploadCloudFunctionConfig": POST https://api.weixin.qq.com/componenttcb/updatescfconfig?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.batch.ScfMgntApi.deleteCloudFunction": POST https://api.weixin.qq.com/componenttcb/deletescf?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.batch.ScfMgntApi.getCloudFunctionList": POST https://api.weixin.qq.com/componenttcb/getscflist?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.batch.ScfMgntApi.getTriggers": POST https://api.weixin.qq.com/componenttcb/gettriggers?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.batch.ScfMgntApi.updateTriggers": POST https://api.weixin.qq.com/componenttcb/batchupdatetriggers?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.batch.ScfMgntApi.invokeCloudFunction": POST New https://api.weixin.qq.com/tcb/invokecloudfunction?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.batch.ScfMgntApi.uploadCloudFunctionCode": POST https://api.weixin.qq.com/componenttcb/batchuploadscfcode?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.batch.EnvMgntApi.changeTcbEnv": POST https://api.weixin.qq.com/tcb/modifyenv?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.batch.EnvMgntApi.setCloudAccessToken": POST https://api.weixin.qq.com/tcb/usecloudaccesstoken?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.batch.EnvMgntApi.getShareCloudbaseEnv": POST https://api.weixin.qq.com/componenttcb/batchgetenvid?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.batch.EnvMgntApi.getTcbEnvList": POST https://api.weixin.qq.com/componenttcb/describeenvs?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.batch.EnvMgntApi.createTcbEnv": POST https://api.weixin.qq.com/componenttcb/createenv?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.batch.EnvMgntApi.shareCloudbaseEnv": POST https://api.weixin.qq.com/componenttcb/batchshareenv?access_token=ACCESS_TOKEN

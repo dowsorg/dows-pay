@@ -22,6 +22,7 @@ public class WeixinDeveloperLinkModel {
     private String href;
     private String name;
 
+
     public void setHref(String href) {
         this.href = "https://developers.weixin.qq.com" + href;
 

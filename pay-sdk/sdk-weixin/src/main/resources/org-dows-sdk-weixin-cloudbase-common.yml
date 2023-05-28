@@ -1,0 +1,40 @@
+dows:
+  sdk:
+    weixin:
+      "org.dows.sdk.weixin.cloudbase.common.DbManagementApi.dbcollectionManage": POST https://api.weixin.qq.com/componenttcb/dbcollection?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.common.DbManagementApi.addDatabaseItem": POST https://api.weixin.qq.com/tcb/databaseadd?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.common.DbManagementApi.addDatabaseCollection": POST https://api.weixin.qq.com/tcb/databasecollectionadd?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.common.DbManagementApi.deleteDatabaseCollection": POST https://api.weixin.qq.com/tcb/databasecollectiondelete?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.common.DbManagementApi.getDatabaseCollection": POST https://api.weixin.qq.com/tcb/databasecollectionget?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.common.DbManagementApi.getDatabaseCount": POST https://api.weixin.qq.com/tcb/databasecount?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.common.DbManagementApi.deleteDatabaseItem": POST https://api.weixin.qq.com/tcb/databasedelete?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.common.DbManagementApi.exportDatabaseItem": POST https://api.weixin.qq.com/tcb/databasemigrateexport?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.common.DbManagementApi.importDatabaseItem": POST https://api.weixin.qq.com/tcb/databasemigrateimport?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.common.DbManagementApi.getDatabaseRecord": POST https://api.weixin.qq.com/tcb/databasequery?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.common.DbManagementApi.updateDatabaseIndex": POST https://api.weixin.qq.com/tcb/updateindex?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.common.EnvManagementApi.changeTcbEnv": POST https://api.weixin.qq.com/tcb/modifyenv?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.common.EnvManagementApi.createEnv": POST https://api.weixin.qq.com/tcb/createenvandresource?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.common.EnvManagementApi.getEnvInfo": POST https://api.weixin.qq.com/tcb/getenvinfo?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.common.EnvManagementApi.shareEnv": POST https://api.weixin.qq.com/tcb/shareenv?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.common.FileManagementApi.getUploadTcbFileLink": POST https://api.weixin.qq.com/tcb/uploadfile?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.common.FileManagementApi.deleteTcbCloudFile": POST https://api.weixin.qq.com/tcb/batchdeletefile?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.common.FileManagementApi.getDownloadTcbFileLink": POST https://api.weixin.qq.com/tcb/batchdownloadfile?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.common.FileManagementApi.aggregateDatabase": POST https://api.weixin.qq.com/tcb/databaseaggregate?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.common.FileManagementApi.getDatabaseMigrateStatus": POST https://api.weixin.qq.com/tcb/databasemigratequeryinfo?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.common.FileManagementApi.updateDatabaseRecord": POST https://api.weixin.qq.com/tcb/databaseupdate?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.common.AdminManagementApi.setCloudAccessToken": POST https://api.weixin.qq.com/tcb/usecloudaccesstoken?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.common.AdminManagementApi.createCloudUser": POST https://api.weixin.qq.com/tcb/createclouduser?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.common.AdminManagementApi.getCloudToken": POST https://api.weixin.qq.com/tcb/getqcloudtoken?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.common.AdminManagementApi.checkMobileConfig": POST https://api.weixin.qq.com/tcb/checkmobile?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.common.MsgPushApi.setCallBackConfig": POST https://api.weixin.qq.com/tcb/setcallbackconfig?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.common.MsgPushApi.getCallBackConfig": POST https://api.weixin.qq.com/tcb/getcallbackconfig?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.common.WechatpayApi.getWechatPayList": POST https://api.weixin.qq.com/tcb/wxpaylist?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.common.WechatpayApi.getWechatPayAuth": POST https://api.weixin.qq.com/tcb/wxpayopenauth?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.common.ScfManagementApi.invokeCloudFunction": POST New https://api.weixin.qq.com/tcb/invokecloudfunction?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.common.ScfManagementApi.createFunction": POST https://api.weixin.qq.com/tcb/createfunction?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.common.ScfManagementApi.getCodeSecret": POST https://api.weixin.qq.com/tcb/getcodesecret?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.common.ScfManagementApi.getYploadSignature": POST https://api.weixin.qq.com/tcb/getuploadsignature?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.common.ScfManagementApi.getFuntionList": POST https://api.weixin.qq.com/tcb/listfunctions?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.common.ScfManagementApi.getFuntionLink": POST https://api.weixin.qq.com/tcb/downloadfunction?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.common.ScfManagementApi.getUploadFuntionConfig": POST https://api.weixin.qq.com/tcb/uploadfuncconfig?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudbase.common.ScfManagementApi.getFuntionConfig": POST https://api.weixin.qq.com/tcb/getfuncconfig?access_token=ACCESS_TOKEN

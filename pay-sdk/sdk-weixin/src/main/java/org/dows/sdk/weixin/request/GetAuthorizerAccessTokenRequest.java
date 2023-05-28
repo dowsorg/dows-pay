@@ -1,22 +1,16 @@
 package org.dows.sdk.weixin.request;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
-
-import java.util.Date;
-import java.math.BigDecimal;
+import lombok.Data;
 
 /**
-* @description 
-*
-* @author 
-* @date 
-*/
+ * @author
+ * @description
+ * @date 2023年5月28日 下午9:25:34
+ * @date
+ */
 @Data
-public class GetAuthorizerAccessTokenRequest{
+public class GetAuthorizerAccessTokenRequest {
     @Schema(title = "第三方平台接口调用凭证")
     private String component_access_token;
     @Schema(title = "第三方平台 appid")

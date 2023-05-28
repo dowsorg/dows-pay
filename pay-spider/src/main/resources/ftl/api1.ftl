@@ -1,9 +1,9 @@
 package ${pkg!""};
 
 /**
- * @Date ${.now}
- * @author lait.zhang@gmail.com
  * @description ${descr!""}
+ * @author ${author!"lait.zhang@gmail.com"}
+ * @date  ${date!.now}
  */
 public interface ${name?cap_first!""}{
 <#list methods as method>

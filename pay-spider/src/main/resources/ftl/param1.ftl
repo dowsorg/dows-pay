@@ -14,9 +14,8 @@ import java.math.BigDecimal;
 /**
  *
  * @description ${descr!""}
- * @date ${.now}
- * @author ${author!""}
- * @date ${date!""}
+ * @author @author ${author!"lait.zhang@gmail.com"}
+ * @date ${date!.now}
  */
 <#if extendClass??>
     @EqualsAndHashCode(callSuper = true)

@@ -1,0 +1,10 @@
+dows:
+  sdk:
+    weixin:
+      "org.dows.sdk.weixin.officalaccount.management.LinkMiniprogramApi.getLinkMiniprogram": POST https://api.weixin.qq.com/cgi-bin/wxopen/wxamplinkget?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.officalaccount.management.LinkMiniprogramApi.linkMiniprogram": POST https://api.weixin.qq.com/cgi-bin/wxopen/wxamplink?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.officalaccount.management.LinkMiniprogramApi.unlinkMiniprogram": POST https://api.weixin.qq.com/cgi-bin/wxopen/wxampunlink?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.officalaccount.management.QrcodeConfigApi.getJumpQRCode": POST https://api.weixin.qq.com/cgi-bin/wxopen/qrcodejumpget?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.officalaccount.management.QrcodeConfigApi.addJumpQRCode": POST https://api.weixin.qq.com/cgi-bin/wxopen/qrcodejumpadd?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.officalaccount.management.QrcodeConfigApi.publishJumpQRCode": POST https://api.weixin.qq.com/cgi-bin/wxopen/qrcodejumppublish?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.officalaccount.management.QrcodeConfigApi.deleteJumpQRCode": POST https://api.weixin.qq.com/cgi-bin/wxopen/qrcodejumpdelete?access_token=ACCESS_TOKEN

@@ -1,7 +1,0 @@
-dows:
-  sdk:
-    weixin:
-      "org.dows.sdk.weixin.ams.AdBlackApi.getBlackList": POST https://api.weixin.qq.com/tcb/wxpayopenauth?access_token=${rt*access_token}
-      "org.dows.sdk.weixin.ams.AdBlackApi.setAmsCategoryBlackList": POST https://api.weixin.qq.com/tcb/wxpayopenauth?access_token=${rt*access_token}
-
-

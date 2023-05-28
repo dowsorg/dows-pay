@@ -66,23 +66,23 @@ public class UpdateCloudbaseServiceVersionRequest{
     @Schema(title = "Github等拉取代码的详情")
     private CloudBaseCodeRepoDetail code_detail;
     @Schema(title = "是否回放流量")
-    private Bool is_rebuild;
+    private Boolean is_rebuild;
     @Schema(title = "延迟多长时间开始健康检查（单位s）")
     private Integer initial_delay_seconds;
     @Schema(title = "cfs挂载信息")
     private Array.<CloudBaseRunVolumeMount> mount_volume_info;
     @Schema(title = "是否回滚")
-    private Bool rollback;
+    private Boolean rollback;
     @Schema(title = "版本历史名")
     private String snapshot_name;
     @Schema(title = "自定义采集路径")
     private String custom_logs;
     @Schema(title = "是否启用统一域名")
-    private Bool enable_union;
+    private Boolean enable_union;
     @Schema(title = "服务路径（只会第一次生效）")
     private String server_path;
     @Schema(title = "是否更新Cls")
-    private Bool is_update_cls;
+    private Boolean is_update_cls;
     @Schema(title = "自动扩缩容策略组")
     private Array.<HpaPolicy> policy_detail;
 }

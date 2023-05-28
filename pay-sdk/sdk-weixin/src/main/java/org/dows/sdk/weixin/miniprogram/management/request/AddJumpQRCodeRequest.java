@@ -1,22 +1,18 @@
 package org.dows.sdk.weixin.miniprogram.management.request;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
+import lombok.Data;
 
-import java.util.Date;
-import java.math.BigDecimal;
+import java.util.List;
 
 /**
-* @description 
-*
-* @author 
-* @date 
-*/
+ * @author
+ * @description
+ * @date 2023年5月28日 下午9:25:34
+ * @date
+ */
 @Data
-public class AddJumpQRCodeRequest{
+public class AddJumpQRCodeRequest {
     @Schema(title = "接口调用凭证，该参数为 URL 参数，非 Body 参数。使用")
     private String access_token;
     @Schema(title = "编辑标志位，0 表示新增二维码规则，1 表示修改已有二维码规则。")

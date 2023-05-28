@@ -88,7 +88,7 @@ public class ApiTest {
 
         ProjectSchema projectSchema = new ProjectSchema();
         projectSchema.setName("sdk-weixin");
-        projectSchema.setRootPath("E:/workspaces/java/projects/dows/dows-pay/pay-sdk");
+        projectSchema.setRootPath("E:/workspaces/java/projects/dows/dows-pay/pay-sdk/");
         projectSchema.setBasePkg("org.dows.sdk.weixin");
         projectSchema.setModules(moduleSchemas);
 
@@ -155,7 +155,7 @@ public class ApiTest {
                 Map<String, List<BeanSchema>> map = new HashMap<>();
                 map.put("beanSchemas", v);
                 String render = ymlTemplate.render(map);
-                Files.write(Path.of(moduleSchema.getResourcesPath() + "application-" + k.replaceAll("\\.", "-") + ".yml"), render.getBytes());
+                Files.write(Path.of(moduleSchema.getResourcesPath() + "/" + k.replaceAll("\\.", "-") + ".yml"), render.getBytes());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

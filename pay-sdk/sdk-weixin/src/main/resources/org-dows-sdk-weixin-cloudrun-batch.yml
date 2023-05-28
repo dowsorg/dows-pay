@@ -1,0 +1,13 @@
+dows:
+  sdk:
+    weixin:
+      "org.dows.sdk.weixin.cloudrun.batch.CloudenvMgntApi.getShareCloudbaseEnv": POST https://api.weixin.qq.com/componenttcb/batchgetenvid?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudrun.batch.CloudenvMgntApi.shareCloudbaseEnv": POST https://api.weixin.qq.com/componenttcb/batchshareenv?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudrun.batch.CloudenvMgntApi.getWxCloudBaseRunEnvs": POST https://api.weixin.qq.com/componenttcb/describecloudbaserunenvs?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudrun.batch.CloudenvMgntApi.createCloudbaseEnv": POST https://api.weixin.qq.com/componenttcb/createcloudbaserunenv?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudrun.batch.CloudenvMgntApi.unshareCloudbaseEnv": POST https://api.weixin.qq.com/componenttcb/batchunshareenv?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudrun.batch.ServiceMgntApi.createCloudbaseService": POST https://api.weixin.qq.com/componenttcb/establishcloudbaserunserver?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudrun.batch.ServiceMgntApi.createCloudbaseServiceVersion": POST https://api.weixin.qq.com/componenttcb/createcloudbaserunserverversion?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudrun.batch.ServiceMgntApi.updateCloudbaseServiceVersion": POST https://api.weixin.qq.com/componenttcb/rollupdatecloudbaserunserverversion?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudrun.batch.ServiceMgntApi.deleteCloudbaseServiceVersion": POST https://api.weixin.qq.com/componenttcb/deletecloudbaserunserverversion?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.cloudrun.batch.ServiceMgntApi.releaseCloudbaseServiceVersion": POST https://api.weixin.qq.com/componenttcb/releasecloudbaserunversion?access_token=ACCESS_TOKEN

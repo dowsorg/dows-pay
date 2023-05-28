@@ -1,0 +1,20 @@
+dows:
+  sdk:
+    weixin:
+      "org.dows.sdk.weixin.OpenapiApi.clearQuota": POST https://api.weixin.qq.com/cgi-bin/clear_quota?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.OpenapiApi.getApiQuota": POST https://api.weixin.qq.com/cgi-bin/openapi/quota/get?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.OpenapiApi.getRidInfo": POST https://api.weixin.qq.com/cgi-bin/openapi/rid/get?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.OpenapiApi.clearComponentQuotaByAppSecret": POST https://api.weixin.qq.com/cgi-bin/component/clear_quota/v2
+      "org.dows.sdk.weixin.AuthorizationManagementApi.getAuthorizerList": POST https://api.weixin.qq.com/cgi-bin/component/api_get_authorizer_list?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.AuthorizationManagementApi.getAuthorizerInfo": POST https://api.weixin.qq.com/cgi-bin/component/api_get_authorizer_info?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.AuthorizationManagementApi.setAuthorizerOptionInfo": POST https://api.weixin.qq.com/cgi-bin/component/set_authorizer_option?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.AuthorizationManagementApi.getAuthorizerOptionInfo": POST https://api.weixin.qq.com/cgi-bin/component/get_authorizer_option?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.TicketTokenApi.startPushTicket": POST https://api.weixin.qq.com/cgi-bin/component/api_start_push_ticket
+      "org.dows.sdk.weixin.TicketTokenApi.getPreAuthCode": POST https://api.weixin.qq.com/cgi-bin/component/api_create_preauthcode?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.TicketTokenApi.getAuthorizerAccessToken": POST https://api.weixin.qq.com/cgi-bin/component/api_authorizer_token?component_access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.TicketTokenApi.getAuthorizerRefreshToken": POST https://api.weixin.qq.com/cgi-bin/component/api_query_auth?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.TicketTokenApi.getComponentAccessToken": POST https://api.weixin.qq.com/cgi-bin/component/api_component_token
+      "org.dows.sdk.weixin.OpenplatformManagementApi.bindOpenAccount": POST https://api.weixin.qq.com/cgi-bin/open/bind?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.OpenplatformManagementApi.unbindOpenAccount": POST https://api.weixin.qq.com/cgi-bin/open/unbind?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.OpenplatformManagementApi.getOpenAccount": POST https://api.weixin.qq.com/cgi-bin/open/get?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.OpenplatformManagementApi.createOpenAccount": POST https://api.weixin.qq.com/cgi-bin/open/create?access_token=ACCESS_TOKEN
