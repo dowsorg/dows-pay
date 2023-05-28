@@ -23,8 +23,10 @@ public class PayApplyServiceImpl extends MybatisCrudServiceImpl<PayApplyMapper, 
     @Override
     public PayApply getByMerchantNoAndType(String merchantNo, Integer applyType) {
         LambdaQueryWrapper<PayApply> queryWrapper = new LambdaQueryWrapper<PayApply>()
-                .eq(PayApply::getMerchantNo,merchantNo)
-                .eq(PayApply::getApplyType,applyType)
+                .eq(PayApply::getMerchantNo, merchantNo)
+                .eq(PayApply::getApplyType, applyType)
+                .eq(PayApply::getChecked, 0)
+                .eq(PayApply::getDeleted, 0)
                 .orderByDesc(PayApply::getId)
                 .last(" limit 1");
         return getOne(queryWrapper);
@@ -39,13 +41,24 @@ public class PayApplyServiceImpl extends MybatisCrudServiceImpl<PayApplyMapper, 
             p.setUpdateTime(new Date());
             updateById(p);
             return p;
-        }).orElseThrow(() -> new BizException(String.format("back fill applyPaymentId fail because payApply is null and payApplyId :[%s]",payApplyId)));
+        }).orElseThrow(() -> new BizException(String.format("back fill applyPaymentId fail because payApply is null and payApplyId :[%s]", payApplyId)));
 
     }
 
     @Override
     public Long createPayApply(String merchantNo) {
-        PayApply payApply = new PayApply();
+        PayApply payApply = getOne(new LambdaQueryWrapper<PayApply>()
+                .eq(PayApply::getMerchantNo, merchantNo)
+                .eq(PayApply::getApplyType,1)
+                .eq(PayApply::getChecked, 0)
+                .eq(PayApply::getDeleted, 0)
+                .last(" limit 1"));
+       return Optional.ofNullable(payApply).map(PayApply::getId).orElseGet(()->getPayApplyId(merchantNo));
+
+    }
+
+    private Long getPayApplyId(String merchantNo) {
+        PayApply  payApply = new PayApply();
         payApply.setMerchantNo(merchantNo);
         payApply.setChecked(false);
         payApply.setApplyType(1);
@@ -54,7 +67,6 @@ public class PayApplyServiceImpl extends MybatisCrudServiceImpl<PayApplyMapper, 
         payApply.setDt(new Date());
         save(payApply);
         return payApply.getId();
-
     }
 }
 
