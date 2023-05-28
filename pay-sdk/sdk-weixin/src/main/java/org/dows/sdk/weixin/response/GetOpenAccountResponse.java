@@ -1,23 +1,16 @@
 package org.dows.sdk.weixin.response;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
-
-import java.util.Date;
-import java.math.BigDecimal;
+import lombok.Data;
 
 /**
- *
- * @description 
  * @author @author lait.zhang@gmail.com
+ * @description
  * @date 2023年5月28日 下午9:55:33
  */
 @Data
 @Schema(name = "GetOpenAccountResponse", title = "GetOpenAccountResponse")
-public class GetOpenAccountResponse{
+public class GetOpenAccountResponse {
     @Schema(title = "公众号或小程序所绑定的开放平台帐号的 appid")
     private String open_appid;
     @Schema(title = "错误码")

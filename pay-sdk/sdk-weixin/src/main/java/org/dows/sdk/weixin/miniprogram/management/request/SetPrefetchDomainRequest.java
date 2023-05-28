@@ -1,26 +1,21 @@
 package org.dows.sdk.weixin.miniprogram.management.request;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
+import lombok.Data;
 
-import java.util.Date;
-import java.math.BigDecimal;
+import java.util.List;
 
 /**
- *
- * @description 
  * @author @author lait.zhang@gmail.com
+ * @description
  * @date 2023年5月28日 下午9:55:33
  */
 @Data
 @Schema(name = "SetPrefetchDomainRequest", title = "SetPrefetchDomainRequest")
-public class SetPrefetchDomainRequest{
+public class SetPrefetchDomainRequest {
     @Schema(title = "接口调用凭证，该参数为 URL 参数，非 Body 参数。使用")
     private String access_token;
     @Schema(title = "预解析域名")
-    private List<object> prefetch_dns_domain;
+    private List<Object> prefetch_dns_domain;
 }
 

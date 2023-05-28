@@ -1,23 +1,16 @@
 package org.dows.sdk.weixin.register.management.request;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
-
-import java.util.Date;
-import java.math.BigDecimal;
+import lombok.Data;
 
 /**
- *
- * @description 
  * @author @author lait.zhang@gmail.com
+ * @description
  * @date 2023年5月28日 下午9:55:33
  */
 @Data
 @Schema(name = "RegisterMiniprogramRequest", title = "RegisterMiniprogramRequest")
-public class RegisterMiniprogramRequest{
+public class RegisterMiniprogramRequest {
     @Schema(title = "第三方平台接口调用凭证")
     private String access_token;
     @Schema(title = "企业名（需与工商部门登记信息一致）；如果是“无主体名称个体工商户”则填“个体户+法人姓名”，例如“个体户张三”")

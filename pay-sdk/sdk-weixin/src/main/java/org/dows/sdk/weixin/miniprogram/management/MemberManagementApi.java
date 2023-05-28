@@ -1,36 +1,38 @@
 package org.dows.sdk.weixin.miniprogram.management;
 
+import org.dows.sdk.weixin.miniprogram.management.request.BindTesterRequest;
+import org.dows.sdk.weixin.miniprogram.management.request.GetTesterRequest;
+import org.dows.sdk.weixin.miniprogram.management.request.UnbindTesterRequest;
+import org.dows.sdk.weixin.miniprogram.management.response.BindTesterResponse;
+import org.dows.sdk.weixin.miniprogram.management.response.GetTesterResponse;
+import org.dows.sdk.weixin.miniprogram.management.response.UnbindTesterResponse;
+
 /**
- * @description memberManagementApi
  * @author lait.zhang@gmail.com
- * @date  2023年5月28日 下午9:55:33
+ * @description memberManagementApi
+ * @date 2023年5月28日 下午9:55:33
  */
-public interface MemberManagementApi{
+public interface MemberManagementApi {
 
     /**
      * 如果运营者同时也是该小程序的管理员，则无需绑定，管理员默认有体验权限。
      * https://api.weixin.qq.com/wxa/bind_tester?access_token=ACCESS_TOKEN
-     * 
+     *
      * @param bindTesterRequest
-     * 
      */
     BindTesterResponse bindTester(BindTesterRequest bindTesterRequest);
 
     /**
-     * 
      * https://api.weixin.qq.com/wxa/unbind_tester?access_token=ACCESS_TOKEN
-     * 
+     *
      * @param unbindTesterRequest
-     * 
      */
     UnbindTesterResponse unbindTester(UnbindTesterRequest unbindTesterRequest);
 
     /**
-     * 
      * https://api.weixin.qq.com/wxa/memberauth?access_token=ACCESS_TOKEN
-     * 
+     *
      * @param getTesterRequest
-     * 
      */
     GetTesterResponse getTester(GetTesterRequest getTesterRequest);
 }

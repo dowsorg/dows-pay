@@ -1,23 +1,16 @@
 package org.dows.sdk.weixin.miniprogram.management.response;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
-
-import java.util.Date;
-import java.math.BigDecimal;
+import lombok.Data;
 
 /**
- *
- * @description 
  * @author @author lait.zhang@gmail.com
+ * @description
  * @date 2023年5月28日 下午9:55:33
  */
 @Data
 @Schema(name = "GetBindOpenAccountEntityResponse", title = "GetBindOpenAccountEntityResponse")
-public class GetBindOpenAccountEntityResponse{
+public class GetBindOpenAccountEntityResponse {
     @Schema(title = "是否同主体；true表示同主体；false表示不同主体")
     private Boolean same_entity;
     @Schema(title = "错误码")

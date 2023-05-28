@@ -1,22 +1,15 @@
 package org.dows.sdk.weixin.officalaccount.management.response;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
-
-import java.util.Date;
-import java.math.BigDecimal;
+import lombok.Data;
 
 /**
- *
- * @description 
  * @author @author lait.zhang@gmail.com
+ * @description
  * @date 2023年5月28日 下午9:55:33
  */
 @Data
 @Schema(name = "GetJumpQRCodeResponse", title = "GetJumpQRCodeResponse")
-public class GetJumpQRCodeResponse{
+public class GetJumpQRCodeResponse {
 }
 

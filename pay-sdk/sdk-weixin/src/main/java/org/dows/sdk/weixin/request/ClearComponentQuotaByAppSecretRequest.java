@@ -1,23 +1,16 @@
 package org.dows.sdk.weixin.request;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
-
-import java.util.Date;
-import java.math.BigDecimal;
+import lombok.Data;
 
 /**
- *
- * @description 
  * @author @author lait.zhang@gmail.com
+ * @description
  * @date 2023年5月28日 下午9:55:33
  */
 @Data
 @Schema(name = "ClearComponentQuotaByAppSecretRequest", title = "ClearComponentQuotaByAppSecretRequest")
-public class ClearComponentQuotaByAppSecretRequest{
+public class ClearComponentQuotaByAppSecretRequest {
     @Schema(title = "授权用户appid")
     private String appid;
     @Schema(title = "第三方appid")

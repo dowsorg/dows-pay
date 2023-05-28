@@ -27,7 +27,7 @@ public class ClinetTest {
         SetAmsCategoryBlackListRequest setAmsCategoryBlackListRequest = new SetAmsCategoryBlackListRequest();
         setAmsCategoryBlackListRequest.setAms_category("dddd");
 
-        SetAmsCategoryBlackListResponse setAmsCategoryBlackListResponse = adBlackApi.SetAmsCategoryBlackList(setAmsCategoryBlackListRequest);
+        SetAmsCategoryBlackListResponse setAmsCategoryBlackListResponse = adBlackApi.setAmsCategoryBlackList(setAmsCategoryBlackListRequest);
 
         log.info("");
     }

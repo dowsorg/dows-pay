@@ -1,6 +1,5 @@
 package org.dows.sdk.weixin.miniprogram.management.response;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 /**

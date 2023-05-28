@@ -1,23 +1,16 @@
 package org.dows.sdk.weixin.ams.request;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
-
-import java.util.Date;
-import java.math.BigDecimal;
+import lombok.Data;
 
 /**
- *
- * @description 
  * @author @author lait.zhang@gmail.com
+ * @description
  * @date 2023年5月28日 下午9:55:33
  */
 @Data
 @Schema(name = "AgencyCreateAdunitRequest", title = "AgencyCreateAdunitRequest")
-public class AgencyCreateAdunitRequest{
+public class AgencyCreateAdunitRequest {
     @Schema(title = "广告单元名称")
     private String name;
     @Schema(title = "广告单元类型")
