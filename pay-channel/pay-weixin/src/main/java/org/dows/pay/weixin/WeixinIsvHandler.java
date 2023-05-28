@@ -659,4 +659,16 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
         return path;
     }
 
+//    /**
+//     * 获取文件路径
+//     */
+//    public static String getFilePath(String path){
+//        String arrPath[] = path.split(DateUtil.formatDate(DateUtil.date()));
+//        if (ObjectUtil.isNotEmpty(arrPath)&&arrPath.length>1){
+//            path = arrPath[1];
+//            path = "/tmp"+path;
+//        }
+//        return path;
+//    }
+
 }
