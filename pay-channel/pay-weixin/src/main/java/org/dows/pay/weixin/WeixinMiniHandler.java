@@ -1,6 +1,8 @@
 package org.dows.pay.weixin;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.alipay.api.request.AlipayOpenMiniVersionAuditApplyRequest;
 import com.github.binarywang.wxpay.bean.ecommerce.FinishOrderRequest;
 import com.github.binarywang.wxpay.bean.media.ImageUploadResult;
@@ -10,16 +12,21 @@ import com.google.gson.GsonBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.error.WxErrorException;
+import me.chanjar.weixin.open.api.WxOpenMaService;
 import me.chanjar.weixin.open.bean.ma.WxFastMaCategory;
 import me.chanjar.weixin.open.bean.message.WxOpenMaSubmitAuditMessage;
 import me.chanjar.weixin.open.bean.result.*;
 import me.chanjar.weixin.open.util.json.WxOpenGsonBuilder;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.dows.auth.api.weixin.WeixinTokenApi;
+import org.dows.auth.biz.utils.HttpClientResult;
+import org.dows.auth.biz.utils.HttpClientUtils;
+import org.dows.framework.api.exceptions.BizException;
 import org.dows.pay.api.PayRequest;
 import org.dows.pay.api.annotation.PayMapping;
 import org.dows.pay.api.enums.PayMethods;
 import org.dows.pay.api.request.MiniUploadRequest;
-import org.dows.pay.bo.IsvCreateTyBo;
+import org.dows.pay.api.request.TemplateSubmitReq;
 import org.dows.pay.bo.WxBaseInfoBo;
 import org.dows.pay.bo.WxFastMaCategoryBo;
 import org.springframework.stereotype.Service;
@@ -28,9 +35,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 小程序相关业务功能
@@ -41,6 +46,15 @@ import java.util.Map;
 public class WeixinMiniHandler extends AbstractWeixinHandler {
 
 
+    private final WeixinTokenApi weixinTokenApi;
+
+    // 上传模板
+    private final String WX_API_UPLOAD_TEMPLATE_URL = "https://api.weixin.qq.com/wxa/commit";
+
+    // 提交审核
+    private final String WX_API_TEMPLATE_SUBMIT_URL = "https://api.weixin.qq.com/wxa/submit_audit";
+
+
     private static final Gson GSON = new GsonBuilder().create();
     /**
      * 上传小程序模板
@@ -49,19 +63,48 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
      */
     @PayMapping(method = PayMethods.MINI_UPLOAD)
     public WxOpenResult uploadMini(MiniUploadRequest payRequest) {
-        //todo 待实现业务逻辑
-        WxOpenResult response = null;
+
         try {
-            response = this.getWxOpenMaClient(payRequest.getAppId()).codeCommit(
-                    Long.valueOf(payRequest.getTemplateId())
-                    ,payRequest.getUserVersion()
-                    ,payRequest.getUserDesc()
-                    ,payRequest.getExtJsonObject()
-            );
-        }catch (WxErrorException e) {
-            e.printStackTrace();
+            String authorizerAccessToken = weixinTokenApi.getAuthorizerAccessToken(payRequest.getAuthorizerAppid());
+            Map<String, String> param = new HashMap<>();
+            param.put("template_id",payRequest.getTemplateId());
+            param.put("ext_json",payRequest.getExtJsonObject());
+            param.put("user_version",payRequest.getUserVersion());
+            param.put("user_desc",payRequest.getUserDesc());
+            HttpClientResult uploadTemplateResult = HttpClientUtils.doPost(WX_API_UPLOAD_TEMPLATE_URL + "?component_access_token=" + authorizerAccessToken, param, 1);
+
+            String content = uploadTemplateResult.getContent();
+            JSONObject jsonObject = JSON.parseObject(content);
+            String resContent = jsonObject.getString("content");
+            log.info("uploadMini res is {}",JSON.toJSONString(resContent));
+            WxOpenResult wxOpenResult = JSON.parseObject(resContent, WxOpenResult.class);
+            if (Objects.equals(wxOpenResult.getErrcode(),0)) {
+                // 提交审核
+                Map<String, String> submitMap = new HashMap<>();
+                submitMap.put("item_list",listSubmitContent());
+                HttpClientResult submitResult = HttpClientUtils.doPost(WX_API_TEMPLATE_SUBMIT_URL + "?component_access_token=" + authorizerAccessToken, submitMap, 1);
+                String submitResultContent = submitResult.getContent();
+                String auditid = JSON.parseObject(submitResultContent).getString("auditid");
+                log.info("auditid is {}",auditid);
+            }
+            return wxOpenResult;
+        }catch (Exception e) {
+            log.info("uploadMini fail :",e);
+            throw new BizException(e.getMessage());
         }
-        return  response;
+    }
+
+    private String listSubmitContent() {
+        TemplateSubmitReq templateSubmitReq = new TemplateSubmitReq();
+        templateSubmitReq.setAddress("pages\\/home\\/index");
+        templateSubmitReq.setTag("餐饮");
+        templateSubmitReq.setFirst_class("餐饮服务");
+        templateSubmitReq.setSecond_class("餐厅排队");
+        templateSubmitReq.setFirst_id(220);
+        templateSubmitReq.setSecond_id(634);
+        templateSubmitReq.setTitle("首页");
+        return JSON.toJSONString(Collections.singletonList(templateSubmitReq));
+
     }
 
 

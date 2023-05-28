@@ -25,4 +25,6 @@ public class MiniUploadRequest {
      */
     private String extJsonObject;
 
+    private String authorizerAppid;
+
 }

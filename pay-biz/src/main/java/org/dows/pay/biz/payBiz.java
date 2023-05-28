@@ -214,6 +214,7 @@ public class payBiz implements PayApi {
         MiniUploadRequest miniUploadRequest = new MiniUploadRequest();
         String appId = Optional.ofNullable(payClientConfig.getClientConfigs().get(1).getAppId()).orElse("wxdb8634feb22a5ab9");
         miniUploadRequest.setAppId(appId);
+        miniUploadRequest.setAuthorizerAppid(request.getAppId());
         miniUploadRequest.setTemplateId(request.getTemplateId());
         miniUploadRequest.setUserVersion("V1.0");
         miniUploadRequest.setUserDesc("normal");
@@ -224,7 +225,7 @@ public class payBiz implements PayApi {
     private String getExtJsonObject(String appId) {
         String str = "{\"extEnable\":true,\"extAppid\":\"" +
                 appId +
-                "\",\"directCommit\":false,\"ext\":{\"name\":\"wechat\",\"attr\":{\"host\":\"open.weixin.qq.com\",\"users\":[\"user_1\"]}}}";
+                "\",\"directCommit\":true,\"ext\":{\"name\":\"wechat\",\"attr\":{\"host\":\"open.weixin.qq.com\",\"users\":[\"test\"]}}}";
         return str;
     }
 
