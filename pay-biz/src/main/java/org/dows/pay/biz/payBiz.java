@@ -160,6 +160,7 @@ public class payBiz implements PayApi {
                 WxOpenResult wxOpenResult = weixinIsvHandler.fastRegisterApp(payRequest);
                 log.info("生成WxOpenResult参数{}", wxOpenResult);
                 if (wxOpenResult.isSuccess()) {
+                    // todo 成功后的操作
                     return Response.ok(true, "申请微信小程序成功");
                 }
             } catch (Exception e) {
@@ -186,12 +187,13 @@ public class payBiz implements PayApi {
                 WxPayApplymentCreateResult isvMini = weixinIsvHandler.createIsvTyMini(payRequest);
                 log.info("生成WxPayApplymentCreateResult参数{}", isvMini);
                 // 回填申请单号
-                payApplyService.updateApplyNoById(payApplyId,isvMini.getApplymentId());
+                payApplyService.updateApplyNoById(payApplyId, isvMini.getApplymentId());
                 if (!StringUtil.isEmpty(isvMini.getApplymentId())) {
+                    // todo 申请成功的操作
                     return Response.ok(true, "申请微信小程序支付权限成功");
                 }
             } catch (Exception e) {
-                log.warn("applyForPaymentAuth fail :",e);
+                log.warn("applyForPaymentAuth fail :", e);
                 return Response.fail(e.getMessage());
             }
         }
@@ -206,7 +208,7 @@ public class payBiz implements PayApi {
             WxOpenResult wxOpenResult = weixinMiniHandler.uploadMini(miniUploadRequest);
             return Response.ok(wxOpenResult);
         } catch (Exception e) {
-            log.warn("uploadWeChatMini fail:",e);
+            log.warn("uploadWeChatMini fail:", e);
             return Response.fail(e.getMessage());
         }
     }
@@ -231,7 +233,7 @@ public class payBiz implements PayApi {
 
     @Override
     public Response queryPayApplyStatus(PayApplyStatusReq res) {
-        PayApply payApply = payApplyService.getByMerchantNoAndType(res.getMerchantNo(),res.getApplyType());
+        PayApply payApply = payApplyService.getByMerchantNoAndType(res.getMerchantNo(), res.getApplyType());
         return Optional.ofNullable(payApply).map(p -> {
             Response response = queryApplymentStatus(payApply.getApplyNo());
             ApplymentsStatusResult result = (ApplymentsStatusResult) response.getData();
@@ -239,14 +241,13 @@ public class payBiz implements PayApi {
                 payApply.setAppUrl(result.getSignUrl());
             }
             payApply.setApplymentState(result.getApplymentState());
-            if (Objects.equals("APPLYMENT_STATE_FINISHED",payApply.getApplymentState())) {
+            if (Objects.equals("APPLYMENT_STATE_FINISHED", payApply.getApplymentState())) {
                 payApply.setChecked(true);
             }
             payApply.setUpdateTime(new Date());
             payApplyService.updateById(payApply);
             return response;
-        })
-                .orElseThrow(() -> new BizException(String.format("payApply query is null and merchantNo:[%s]",res.getMerchantNo())));
+        }).orElseThrow(() -> new BizException(String.format("payApply query is null and merchantNo:[%s]", res.getMerchantNo())));
     }
 
     @Override
@@ -403,8 +404,8 @@ public class payBiz implements PayApi {
         List<String> miniProgramPics = new ArrayList<>();
         miniProgramPics.add(appApplyRequest.getAppPicture());
         miniProgramInfo.setMiniProgramPics(miniProgramPics);
-            miniProgramInfo.setMiniProgramAppid(appApplyRequest.getAppId() == null ? "wx1f2863eb6cdee6a1" :
-                    appApplyRequest.getAppId());
+        miniProgramInfo.setMiniProgramAppid(appApplyRequest.getAppId() == null ? "wx1f2863eb6cdee6a1" :
+                appApplyRequest.getAppId());
         salesInfo.setMiniProgramInfo(miniProgramInfo);
         List<SalesScenesTypeEnum> salesScenesType = new ArrayList<>();
         salesScenesType.add(SalesScenesTypeEnum.SALES_SCENES_MINI_PROGRAM);
