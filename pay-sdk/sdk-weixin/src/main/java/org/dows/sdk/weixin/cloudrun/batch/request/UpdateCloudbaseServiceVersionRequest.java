@@ -2,7 +2,7 @@ package org.dows.sdk.weixin.cloudrun.batch.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import org.dows.sdk.weixin.common.HpaPolicy;
+import org.dows.sdk.weixin.common.model.HpaPolicy;
 
 import java.util.List;
 
@@ -60,16 +60,16 @@ public class UpdateCloudbaseServiceVersionRequest {
     private String package_name;
     @Schema(title = "代码包版本")
     private String package_version;
-    @Schema(title = "Image的详情")
-    private CloudBaseRunImageInfo image_info;
-    @Schema(title = "Github等拉取代码的详情")
-    private CloudBaseCodeRepoDetail code_detail;
+//    @Schema(title = "Image的详情")
+//    private CloudBaseRunImageInfo image_info;
+//    @Schema(title = "Github等拉取代码的详情")
+//    private CloudBaseCodeRepoDetail code_detail;
     @Schema(title = "是否回放流量")
     private Boolean is_rebuild;
     @Schema(title = "延迟多长时间开始健康检查（单位s）")
     private Integer initial_delay_seconds;
-    @Schema(title = "cfs挂载信息")
-    private List<CloudBaseRunVolumeMount> mount_volume_info;
+//    @Schema(title = "cfs挂载信息")
+//    private List<CloudBaseRunVolumeMount> mount_volume_info;
     @Schema(title = "是否回滚")
     private Boolean rollback;
     @Schema(title = "版本历史名")

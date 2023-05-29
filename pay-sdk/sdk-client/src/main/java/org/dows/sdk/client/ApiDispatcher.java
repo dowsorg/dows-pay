@@ -24,6 +24,7 @@ public class ApiDispatcher {
 
     public JSONObject dispatch(String env, String orgUrl, JSONObject params) {
         JSONObject result = new JSONObject();
+        String url = processUrl(orgUrl);
         try {
             if (orgUrl.startsWith("post") || orgUrl.startsWith("POST")) {
                 log.info("do http post:{}", orgUrl);
@@ -75,6 +76,12 @@ public class ApiDispatcher {
         }
         return result;
 
+    }
+
+    private String processUrl(String orgUrl) {
+        UrlSchema urlSchema = new UrlSchema();
+
+        return orgUrl.split(" ")[1];
     }
 
 }

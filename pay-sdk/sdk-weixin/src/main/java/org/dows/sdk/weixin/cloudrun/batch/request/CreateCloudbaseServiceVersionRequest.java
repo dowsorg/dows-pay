@@ -2,8 +2,8 @@ package org.dows.sdk.weixin.cloudrun.batch.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import org.dows.sdk.weixin.common.CloudBaseRunServiceVolumeMount;
-import org.dows.sdk.weixin.common.HpaPolicy;
+import org.dows.sdk.weixin.common.model.CloudBaseRunServiceVolumeMount;
+import org.dows.sdk.weixin.common.model.HpaPolicy;
 
 import java.util.List;
 
@@ -59,34 +59,34 @@ public class CreateCloudbaseServiceVersionRequest {
     private String package_name;
     @Schema(title = "代码包的版本")
     private String package_version;
-    @Schema(title = "Image的详情")
-    private CloudBaseRunImageInfo image_info;
-    @Schema(title = "Github等拉取代码的详情")
-    private CloudBaseCodeRepoDetail code_detail;
-    @Schema(title = "私有镜像秘钥信息")
-    private CloudBaseRunImageSecretInfo image_secret_info;
+//    @Schema(title = "Image的详情")
+//    private CloudBaseRunImageInfo image_info;
+//    @Schema(title = "Github等拉取代码的详情")
+//    private CloudBaseCodeRepoDetail code_detail;
+//    @Schema(title = "私有镜像秘钥信息")
+//    private CloudBaseRunImageSecretInfo image_secret_info;
     @Schema(title = "私有镜像 认证名称")
     private String image_pull_secret;
     @Schema(title = "用户自定义采集日志路径")
     private String custom_logs;
     @Schema(title = "延迟多长时间开始健康检查（单位s）")
     private Integer initial_delay_seconds;
-    @Schema(title = "cfs挂载信息")
-    private List<CloudBaseRunVolumeMount> mount_volume_info;
+//    @Schema(title = "cfs挂载信息")
+//    private List<CloudBaseRunVolumeMount> mount_volume_info;
     @Schema(title = "4 代表只能微信链路访问")
     private Integer access_type;
-    @Schema(title = "es信息")
-    private CloudBaseEsInfo es_info;
+//    @Schema(title = "es信息")
+//    private CloudBaseEsInfo es_info;
     @Schema(title = "是否使用统一域名")
     private Boolean enable_union;
     @Schema(title = "服务路径")
     private String server_path;
-    @Schema(title = "容器的描述文件")
-    private List<CloudBaseRunSideSpec> sidecar_specs;
-    @Schema(title = "安全特性")
-    private CloudBaseSecurityContext security;
-    @Schema(title = "服务磁盘挂载")
-    private List<CloudRunServiceVolume> service_volumes;
+//    @Schema(title = "容器的描述文件")
+//    private List<CloudBaseRunSideSpec> sidecar_specs;
+//    @Schema(title = "安全特性")
+//    private CloudBaseSecurityContext security;
+//    @Schema(title = "服务磁盘挂载")
+//    private List<CloudRunServiceVolume> service_volumes;
     @Schema(title = "是否创建JnsGw 0未传默认创建 1创建 2不创建")
     private Integer is_create_jns_gw;
     @Schema(title = "数据卷挂载参数")
