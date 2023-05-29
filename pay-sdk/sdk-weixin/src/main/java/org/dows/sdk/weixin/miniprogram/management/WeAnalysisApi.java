@@ -69,7 +69,7 @@ public interface WeAnalysisApi {
      * doc: https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/we-analysis/wedata_login.html
      * api: https://api.weixin.qq.com/wedata/wedata_login?access_token=ACCESS_TOKEN
      *
-     * @param wedata_loginRequest
+     * @param wedataLoginRequest
      */
-    Wedata_loginResponse wedata_login(Wedata_loginRequest wedata_loginRequest);
+    WedataLoginResponse wedataLogin(WedataLoginRequest wedataLoginRequest);
 }

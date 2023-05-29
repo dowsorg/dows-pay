@@ -3,9 +3,11 @@ package org.dows.sdk.weixin.cloudbase.common;
 import org.dows.sdk.weixin.cloudbase.common.request.CheckMobileConfigRequest;
 import org.dows.sdk.weixin.cloudbase.common.request.CreateCloudUserRequest;
 import org.dows.sdk.weixin.cloudbase.common.request.GetCloudTokenRequest;
+import org.dows.sdk.weixin.cloudbase.common.request.SetCloudAccessTokenRequest;
 import org.dows.sdk.weixin.cloudbase.common.response.CheckMobileConfigResponse;
 import org.dows.sdk.weixin.cloudbase.common.response.CreateCloudUserResponse;
 import org.dows.sdk.weixin.cloudbase.common.response.GetCloudTokenResponse;
+import org.dows.sdk.weixin.cloudbase.common.response.SetCloudAccessTokenResponse;
 
 /**
  * @author lait.zhang@gmail.com

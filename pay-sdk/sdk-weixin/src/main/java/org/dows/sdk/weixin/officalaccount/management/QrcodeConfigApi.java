@@ -1,5 +1,14 @@
 package org.dows.sdk.weixin.officalaccount.management;
 
+import org.dows.sdk.weixin.officalaccount.management.request.AddJumpQRCodeRequest;
+import org.dows.sdk.weixin.officalaccount.management.request.DeleteJumpQRCodeRequest;
+import org.dows.sdk.weixin.officalaccount.management.request.GetJumpQRCodeRequest;
+import org.dows.sdk.weixin.officalaccount.management.request.PublishJumpQRCodeRequest;
+import org.dows.sdk.weixin.officalaccount.management.response.AddJumpQRCodeResponse;
+import org.dows.sdk.weixin.officalaccount.management.response.DeleteJumpQRCodeResponse;
+import org.dows.sdk.weixin.officalaccount.management.response.GetJumpQRCodeResponse;
+import org.dows.sdk.weixin.officalaccount.management.response.PublishJumpQRCodeResponse;
+
 /**
  * @author lait.zhang@gmail.com
  * @description qrcodeConfigApi
