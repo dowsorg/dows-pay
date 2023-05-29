@@ -32,7 +32,6 @@ public class ApiFactoryBean<T> implements FactoryBean<T>, BeanPostProcessor {
 
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
-        log.info("");
         if (bean.getClass().equals(ApiService.class)) {
             this.apiService = (ApiService) bean;
         }
