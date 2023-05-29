@@ -12,11 +12,17 @@ public class UriSchema {
         return new UriSchema(orgUri);
     }
 
+    /**
+     * https://api.weixin.qq.com/wxa/operationams?action=agency_set_mp_amscategory_blacklist&access_token=ACCESS_TOKEN
+     *
+     * @param orgUri
+     */
     private UriSchema(String orgUri) {
         this.orgUri = orgUri;
         String[] split1 = orgUri.split(" ");
         this.method = split1[0];
-        this.url = split1[1];
+        this.url = split1[1].replace("ACCESS_TOKEN", AccessTokenContext.getToken());
+        AccessTokenContext.removeToken();
     }
 
     public boolean isPost() {

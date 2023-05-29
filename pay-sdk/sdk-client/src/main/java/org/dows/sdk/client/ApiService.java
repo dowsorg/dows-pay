@@ -2,6 +2,7 @@ package org.dows.sdk.client;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyFactory;
 import lombok.Data;
@@ -11,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -115,24 +115,23 @@ public class ApiService {
         public Object invoke(Object target, Method method, Method arg2, Object[] args) throws Throwable {
 
             String m = method.getDeclaringClass().getName() + "." + method.getName();
-
+            Class<?> returnType = method.getReturnType();
             String url = apiUrlProperties.getWeixin().get(m);
             if (StrUtil.isBlank(url)) {
                 throw new RuntimeException("系统异常,url不存在!");
             }
-            Parameter[] parameters = method.getParameters();
-//            for (Parameter parameter : parameters) {
-//                parameter
-//            }
-            JSONObject dispatch = apiDispatcher.dispatch("", url, null);
-
+            int length = args.length;
+            JSONObject jsonObject = new JSONObject();
+            for (int i = 0; i < length; i++) {
+                jsonObject.putAll(JSONUtil.parseObj(args[i]));
+            }
 
             /**
              * todo 设置请求参数
              *
              */
-
-            return dispatch;
+            JSONObject result = apiDispatcher.dispatch("", url, jsonObject);
+            return result.toBean(returnType);
         }
 
 

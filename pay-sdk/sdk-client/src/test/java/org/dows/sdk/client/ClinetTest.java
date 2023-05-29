@@ -21,13 +21,13 @@ public class ClinetTest {
 //
 //        GetBlackListResponse blackList = adBlackApi.getBlackList(getBlackListRequest);
 
-
+        AccessTokenContext.addToken("sss");
         SetAmsCategoryBlackListRequest setAmsCategoryBlackListRequest = new SetAmsCategoryBlackListRequest();
         setAmsCategoryBlackListRequest.setAms_category("dddd");
 
         SetAmsCategoryBlackListResponse setAmsCategoryBlackListResponse = adBlackApi.setAmsCategoryBlackList(setAmsCategoryBlackListRequest);
 
-        log.info("");
+        log.info("setAmsCategoryBlackListResponse:{}", setAmsCategoryBlackListResponse);
     }
 
 }
