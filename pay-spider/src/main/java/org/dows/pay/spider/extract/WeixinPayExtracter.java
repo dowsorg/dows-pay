@@ -38,10 +38,13 @@ public class WeixinPayExtracter implements Extractable {
         for (JXNode jxNode : jxNodes) {
             JXNode href = jxNode.selOne("/@href");
             JXNode text = jxNode.selOne("/text()");
-            WeixinPayLinkModel linkSchema = new WeixinPayLinkModel();
-            linkSchema.setHref(href.asString());
-            linkSchema.setName(text.asString());
-            weixinLinkSchemas.add(linkSchema);
+            if (!href.asString().startsWith("javascript")) {
+                WeixinPayLinkModel linkSchema = new WeixinPayLinkModel();
+                linkSchema.setHref(href.asString());
+                linkSchema.setName(text.asString());
+                weixinLinkSchemas.add(linkSchema);
+            }
+
             log.info("");
         }
         return weixinLinkSchemas;

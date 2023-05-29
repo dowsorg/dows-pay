@@ -2,10 +2,7 @@ package org.dows.pay.spider.extract;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.dows.pay.spider.model.StepData;
 import org.dows.pay.spider.model.WeixinDeveloperLinkModel;
-import org.dows.pay.spider.properties.Crawler;
-import org.dows.pay.spider.properties.Flow;
 import org.dows.pay.spider.schema.BeanSchema;
 import org.dows.pay.spider.schema.FieldSchema;
 import org.dows.pay.spider.schema.MethodSchema;
@@ -37,10 +34,13 @@ public class WeixinDeveloperExtracter implements Extractable {
         for (JXNode jxNode : jxNodes) {
             JXNode href = jxNode.selOne("/@href");
             JXNode text = jxNode.selOne("/text()");
-            WeixinDeveloperLinkModel linkSchema = new WeixinDeveloperLinkModel();
-            linkSchema.setHref(href.asString());
-            linkSchema.setName(text.asString());
-            weixinLinkSchemas.add(linkSchema);
+
+            if (!href.asString().startsWith("javascript")) {
+                WeixinDeveloperLinkModel linkSchema = new WeixinDeveloperLinkModel();
+                linkSchema.setHref(href.asString());
+                linkSchema.setName(text.asString());
+                weixinLinkSchemas.add(linkSchema);
+            }
             //return weixinLinkSchemas;
         }
         return weixinLinkSchemas;
