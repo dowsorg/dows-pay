@@ -3,7 +3,7 @@ package org.dows.pay.api.request;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import lombok.experimental.Accessors;
-import org.dows.pay.api.resonse.PayIsvResponse;
+import org.dows.pay.api.response.PayIsvResponse;
 
 /**
  *

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import lombok.*;
 import lombok.experimental.Accessors;
-import org.dows.pay.api.resonse.PayLedgersResponse;
+import org.dows.pay.api.response.PayLedgersResponse;
 
 @EqualsAndHashCode
 @Data

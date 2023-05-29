@@ -183,7 +183,7 @@ public class PayClientBuilder {
     public static WxOpenMaService buildWxOpenMaClient(PayClientProperties config) {
         WxMaConfig wxMaConfig = new WxMaDefaultConfigImpl();
         WxOpenService wxOpenService = buildWxOpenClient(config);
-        WxOpenMaService wxOpenMaService  = new WxOpenMaServiceImpl(wxOpenService.getWxOpenComponentService(),config.getAppId(), wxMaConfig);
+        WxOpenMaService wxOpenMaService  = new WxOpenMaServiceImpl(wxOpenService.getWxOpenComponentService(),"wxc6cfbe8d417102cc", wxMaConfig);
 
         return wxOpenMaService;
     }

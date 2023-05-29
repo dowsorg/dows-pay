@@ -2,6 +2,7 @@ package org.dows.pay.api;
 
 import org.dows.app.api.mini.request.AppApplyRequest;
 import org.dows.app.api.mini.request.PayApplyStatusReq;
+import org.dows.app.api.mini.request.WechatMiniUploadRequest;
 import org.dows.app.api.mini.response.PayApplyStatusRes;
 import org.dows.framework.api.Response;
 
@@ -53,4 +54,11 @@ public interface PayApi {
      * @return
      */
     Response queryPayApplyStatus(PayApplyStatusReq res);
+
+    /**
+     * 上传模版小程序
+     * @param request -
+     * @return -
+     */
+    Response uploadWeChatMini(WechatMiniUploadRequest request);
 }
