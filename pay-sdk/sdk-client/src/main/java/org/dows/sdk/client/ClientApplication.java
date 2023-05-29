@@ -2,7 +2,9 @@ package org.dows.sdk.client;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 
+@EnableFeignClients(basePackages={"org.dows.sdk.client.rpc"})
 @SpringBootApplication
 @ApiScan(scanPackages = {"org.dows.sdk.weixin.ams", "org.dows.sdk.weixin.cloudrun"}, urlLocations = {})
 public class ClientApplication {

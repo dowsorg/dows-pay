@@ -5,6 +5,7 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,9 @@ import java.util.Map;
 public class ApiDispatcher {
 
     private static MD5 md5 = MD5.create();
+    // private final ApiClient apiHttpClient;
+    //@Qualifier("apiHttpClient")
+    @Qualifier("apiFeignClient")
     private final ApiClient apiClient;
     private final ApplicationContext applicationContext;
 
@@ -72,6 +76,7 @@ public class ApiDispatcher {
 //                }
             }
         } catch (Exception e) {
+            log.error("error:{}", e);
             //throw new RuntimeException(e);
         }
         return result;
