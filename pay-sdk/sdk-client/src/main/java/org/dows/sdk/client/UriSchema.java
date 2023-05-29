@@ -1,0 +1,53 @@
+package org.dows.sdk.client;
+
+import lombok.Data;
+
+@Data
+public class UriSchema {
+    private String orgUri;
+    private String method;
+    private String url;
+
+    public static UriSchema of(String orgUri) {
+        return new UriSchema(orgUri);
+    }
+
+    public UriSchema(String orgUri) {
+        this.orgUri = orgUri;
+        String[] split1 = orgUri.split(" ");
+        this.method = split1[0];
+        this.url = split1[1];
+    }
+
+    public boolean isPost() {
+        if (orgUri.startsWith("post ") || orgUri.startsWith("POST ")) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isGet() {
+        if (orgUri.startsWith("get ") || orgUri.startsWith("GET ")) {
+            return true;
+        }
+        return false;
+    }
+
+
+    public boolean isPut() {
+        if (orgUri.startsWith("put ") || orgUri.startsWith("PUT ")) {
+            return true;
+        }
+        return false;
+    }
+
+
+    public boolean isDelete() {
+        if (orgUri.startsWith("delete ") || orgUri.startsWith("DELETE ")) {
+            return true;
+        }
+        return false;
+    }
+
+
+}

@@ -22,17 +22,17 @@ public class ApiDispatcher {
     private final ApplicationContext applicationContext;
 
 
-    public JSONObject dispatch(String env, String orgUrl, JSONObject params) {
+    public JSONObject dispatch(String env, String orgUri, JSONObject params) {
         JSONObject result = new JSONObject();
-        String url = processUrl(orgUrl);
+        UriSchema uriSchema = UriSchema.of(orgUri);
         try {
-            if (orgUrl.startsWith("post") || orgUrl.startsWith("POST")) {
-                log.info("do http post:{}", orgUrl);
+            if (uriSchema.isPost()) {
+                log.info("do http post:{}", orgUri);
                 Map headers = new HashMap();
-                String s = apiClient.post(URI.create(orgUrl), headers, params);
+                String s = apiClient.post(URI.create(uriSchema.getUrl()), headers, params);
                 JSONObject jsonObject = JSONUtil.parseObj(s);
                 return jsonObject;
-            } else if (orgUrl.startsWith("get:http")) {
+            } else if (uriSchema.isGet()) {
 //                log.info("do http get:{}", url);
 //                Map<String, String> headers = buildHeaders(channelEnv, channelSetting, params);
 //                //Map<String, String> headers = new HashMap<>();
@@ -40,12 +40,12 @@ public class ApiDispatcher {
 //                JSONObject jsonObject = JSONUtil.parseObj(s);
 //                jsonObject.putAll(headers);
 //                return jsonObject;
-            } else if (orgUrl.startsWith("put:http")) {
+            } else if (uriSchema.isPut()) {
 //                log.info("do http put:{}", url);
 //                Map<String, String> headers = buildHeaders(channelEnv, channelSetting, params);
 //                Object s = restClient.put(URI.create(url), headers, params);
 //                return JSONUtil.parseObj(s);
-            } else if (orgUrl.startsWith("delete:http")) {
+            } else if (uriSchema.isDelete()) {
 //                log.info("do http delete:{}", url);
 //                Map<String, String> headers = buildHeaders(channelEnv, channelSetting, params);
 //                Object s = restClient.delete(URI.create(url), headers, params);
@@ -78,10 +78,5 @@ public class ApiDispatcher {
 
     }
 
-    private String processUrl(String orgUrl) {
-        UrlSchema urlSchema = new UrlSchema();
-
-        return orgUrl.split(" ")[1];
-    }
 
 }
