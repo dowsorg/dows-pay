@@ -12,7 +12,7 @@ public class UriSchema {
         return new UriSchema(orgUri);
     }
 
-    public UriSchema(String orgUri) {
+    private UriSchema(String orgUri) {
         this.orgUri = orgUri;
         String[] split1 = orgUri.split(" ");
         this.method = split1[0];
