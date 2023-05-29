@@ -3,7 +3,7 @@ package org.dows.sdk.client;
 import lombok.Data;
 
 @Data
-public class AccessTokenContext {
+public class ApiAccessTokenContext {
 
     private static ThreadLocal<String> TOKEN = new ThreadLocal<>();
 

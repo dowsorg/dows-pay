@@ -21,8 +21,8 @@ public class UriSchema {
         this.orgUri = orgUri;
         String[] split1 = orgUri.split(" ");
         this.method = split1[0];
-        this.url = split1[1].replace("ACCESS_TOKEN", AccessTokenContext.getToken());
-        AccessTokenContext.removeToken();
+        this.url = split1[1].replace("ACCESS_TOKEN", ApiAccessTokenContext.getToken());
+        ApiAccessTokenContext.removeToken();
     }
 
     public boolean isPost() {
@@ -49,6 +49,35 @@ public class UriSchema {
 
 
     public boolean isDelete() {
+        if (orgUri.startsWith("delete ") || orgUri.startsWith("DELETE ")) {
+            return true;
+        }
+        return false;
+    }
+
+    ////////////////sql///////////////////
+    public boolean isSelect() {
+        if (orgUri.startsWith("delete ") || orgUri.startsWith("DELETE ")) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isInsert() {
+        if (orgUri.startsWith("delete ") || orgUri.startsWith("DELETE ")) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isUpdate() {
+        if (orgUri.startsWith("delete ") || orgUri.startsWith("DELETE ")) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isSqlDelete() {
         if (orgUri.startsWith("delete ") || orgUri.startsWith("DELETE ")) {
             return true;
         }
