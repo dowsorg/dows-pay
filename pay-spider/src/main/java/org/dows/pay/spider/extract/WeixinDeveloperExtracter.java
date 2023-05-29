@@ -76,6 +76,7 @@ public class WeixinDeveloperExtracter implements Extractable {
                     substring(weixinLinkSchema.getHref().lastIndexOf("/") + 1, weixinLinkSchema.getHref().lastIndexOf("."));
             MethodSchema methodSchema = new MethodSchema();
             methodSchema.setName(method);
+            methodSchema.setDocUrl(weixinLinkSchema.getHref());
 
             beanSchema.addMethod(methodSchema);
             //beanSchemas.add(beanSchema);
@@ -98,6 +99,7 @@ public class WeixinDeveloperExtracter implements Extractable {
                     for (JXNode jxNode : jxNodes) {
                         buildParam(ths, paramSchema, jxNode);
                     }
+                    paramSchema.setDocUrl(methodSchema.getDocUrl());
                 } else if (k.equalsIgnoreCase("output")) {
                     ParamSchema paramSchema = new ParamSchema();
                     paramSchema.setName(method + "Response");
@@ -107,6 +109,7 @@ public class WeixinDeveloperExtracter implements Extractable {
                     for (JXNode jxNode : jxNodes) {
                         buildParam(ths, paramSchema, jxNode);
                     }
+                    paramSchema.setDocUrl(methodSchema.getDocUrl());
                 } else {
                     for (JXNode jxNode : jxNodes) {
                         sb.append(jxNode.asString());

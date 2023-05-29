@@ -28,14 +28,10 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ApiService {
 
 
-    private ApiConfiguration configuration;
-
-    private ApiInvoker startInvoker = null;
-
     private final ApiUrlProperties apiUrlProperties;
-
     private final ApiDispatcher apiDispatcher;
-
+    private ApiConfiguration configuration;
+    private ApiInvoker startInvoker = null;
     private Map<Class<?>, Object> serviceCache = new ConcurrentHashMap<>();
 
 

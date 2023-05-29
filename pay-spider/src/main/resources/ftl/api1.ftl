@@ -9,8 +9,9 @@ public interface ${name?cap_first!""}{
 <#list methods as method>
 
     /**
-     * ${method.descr!""}
-     * ${method.weixinUrl!""}
+     * description: ${method.descr!""}
+     * doc: ${method.docUrl!""}
+     * api: ${method.weixinUrl!""}
      * <#list method.inputs as input>
      * @param ${(input.name!"")?uncap_first}
      * </#list>

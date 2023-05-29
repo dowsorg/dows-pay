@@ -13,13 +13,13 @@ public interface ApiClient {
 
     @PostMapping
     @Headers(value = "Content-Type:application/json")
-    String post(URI uri, @RequestHeader Map<String, String> headers, @RequestBody Map<String,Object> request);
+    String post(URI uri, @RequestHeader Map<String, String> headers, @RequestBody Map<String, Object> request);
 
     @DeleteMapping
     @Headers(value = "Content-Type:application/json")
-    String delete(URI uri, @RequestHeader Map<String, String> headers, @RequestBody Map<String,Object> request);
+    String delete(URI uri, @RequestHeader Map<String, String> headers, @RequestBody Map<String, Object> request);
 
     @PutMapping
     @Headers(value = "Content-Type:application/json")
-    String put(URI uri, @RequestHeader Map<String, String> headers, @RequestBody Map<String,Object> request);
+    String put(URI uri, @RequestHeader Map<String, String> headers, @RequestBody Map<String, Object> request);
 }

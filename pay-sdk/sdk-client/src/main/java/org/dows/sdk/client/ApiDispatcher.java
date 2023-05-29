@@ -17,10 +17,8 @@ import java.util.Map;
 @Service
 public class ApiDispatcher {
 
-    private final ApiClient apiClient;
-
     private static MD5 md5 = MD5.create();
-
+    private final ApiClient apiClient;
     private final ApplicationContext applicationContext;
 
 

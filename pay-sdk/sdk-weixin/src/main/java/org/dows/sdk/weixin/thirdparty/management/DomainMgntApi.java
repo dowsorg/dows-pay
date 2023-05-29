@@ -10,27 +10,32 @@ import org.dows.sdk.weixin.thirdparty.management.response.ModifyThirdpartyServer
 /**
  * @author lait.zhang@gmail.com
  * @description domainMgntApi
- * @date 2023年5月28日 下午9:55:33
+ * @date 2023年5月29日 上午11:32:00
  */
 public interface DomainMgntApi {
 
     /**
-     * 每月只可修改申请50次
-     * https://api.weixin.qq.com/cgi-bin/component/modify_wxa_server_domain?access_token=ACCESS_TOKEN
+     * description: 每月只可修改申请50次
+     * doc: https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/thirdparty-management/domain-mgnt/modifyThirdpartyServerDomain.html
+     * api: https://api.weixin.qq.com/cgi-bin/component/modify_wxa_server_domain?access_token=ACCESS_TOKEN
      *
      * @param modifyThirdpartyServerDomainRequest
      */
     ModifyThirdpartyServerDomainResponse modifyThirdpartyServerDomain(ModifyThirdpartyServerDomainRequest modifyThirdpartyServerDomainRequest);
 
     /**
-     * https://api.weixin.qq.com/cgi-bin/component/get_domain_confirmfile?access_token=ACCESS_TOKEN
+     * description:
+     * doc: https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/thirdparty-management/domain-mgnt/getThirdpartyJumpDomainConfirmFile.html
+     * api: https://api.weixin.qq.com/cgi-bin/component/get_domain_confirmfile?access_token=ACCESS_TOKEN
      *
      * @param getThirdpartyJumpDomainConfirmFileRequest
      */
     GetThirdpartyJumpDomainConfirmFileResponse getThirdpartyJumpDomainConfirmFile(GetThirdpartyJumpDomainConfirmFileRequest getThirdpartyJumpDomainConfirmFileRequest);
 
     /**
-     * https://api.weixin.qq.com/cgi-bin/component/modify_wxa_jump_domain?access_token=ACCESS_TOKEN
+     * description:
+     * doc: https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/thirdparty-management/domain-mgnt/modifyThirdpartyJumpDomain.html
+     * api: https://api.weixin.qq.com/cgi-bin/component/modify_wxa_jump_domain?access_token=ACCESS_TOKEN
      *
      * @param modifyThirdpartyJumpDomainRequest
      */

@@ -40,6 +40,11 @@ public class MethodSchema {
     @AlipayField("")
     @WexinField("url")
     private String url;
+
+    /**
+     * 方法文档url
+     */
+    private String docUrl;
     /**
      * 支持http请求类型
      */
@@ -119,7 +124,9 @@ public class MethodSchema {
     public String getWeixinUrl() {
         return url == null ? "" : url.substring(url.indexOf(" ") + 1);
     }
-
+    public String getWeixinDocUrl() {
+        return docUrl == null ? "" : docUrl.substring(docUrl.indexOf(" ") + 1);
+    }
     public String getWeixinHttpMethod() {
         return url == null ? "" : url.substring(0, url.indexOf(" "));
     }

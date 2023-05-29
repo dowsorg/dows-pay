@@ -6,7 +6,7 @@ import java.net.URI;
 import java.util.Map;
 
 @Service
-public class ApiClientImpl implements ApiClient{
+public class ApiClientImpl implements ApiClient {
     @Override
     public String get(URI uri, Map<String, String> headers) {
         return null;

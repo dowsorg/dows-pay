@@ -88,7 +88,7 @@ public class ApiTest {
 
         ProjectSchema projectSchema = new ProjectSchema();
         projectSchema.setName("sdk-weixin");
-        projectSchema.setRootPath("E:/workspaces/java/projects/dows/dows-pay/pay-sdk/");
+        projectSchema.setRootPath("E:/workspaces/java/projects/dows/dows-pay/pay-sdk");
         projectSchema.setBasePkg("org.dows.sdk.weixin");
         projectSchema.setModules(moduleSchemas);
 
@@ -136,7 +136,8 @@ public class ApiTest {
                     ParamSchema output = method.getOutput();
                     output.setPkg(beanSchema.getPkg() + ".response");
                     Files.createDirectories(Path.of(path, "response"));
-                    String response = modelTemplate.render(BeanUtil.beanToMap(output));
+                    Map<String, Object> stringObjectMap = BeanUtil.beanToMap(output);
+                    String response = modelTemplate.render(stringObjectMap);
                     Files.write(Path.of(path + "/response/" + StrUtil.upperFirst(output.getType()) + ".java"), response.getBytes());
 
                 }

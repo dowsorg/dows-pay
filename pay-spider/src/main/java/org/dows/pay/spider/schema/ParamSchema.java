@@ -21,6 +21,7 @@ public class ParamSchema {
 
     private String pkg;
 
+    private String docUrl;
     private MethodSchema methodSchema;
 
 
@@ -126,4 +127,8 @@ public class ParamSchema {
         }
         return s;
     }
+
+//    public String getDocUrl() {
+//        return methodSchema.getWeixinDocUrl();
+//    }
 }

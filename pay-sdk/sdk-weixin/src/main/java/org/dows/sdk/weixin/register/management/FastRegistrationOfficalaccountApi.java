@@ -6,12 +6,14 @@ import org.dows.sdk.weixin.register.management.response.RegisterMiniprogramByOff
 /**
  * @author lait.zhang@gmail.com
  * @description fastRegistrationOfficalaccountApi
- * @date 2023年5月28日 下午9:55:33
+ * @date 2023年5月29日 上午11:32:00
  */
 public interface FastRegistrationOfficalaccountApi {
 
     /**
-     * https://api.weixin.qq.com/cgi-bin/account/fastregister?access_token=ACCESS_TOKEN
+     * description:
+     * doc: https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/register-management/fast-registration-officalaccount/registerMiniprogramByOffiaccount.html
+     * api: https://api.weixin.qq.com/cgi-bin/account/fastregister?access_token=ACCESS_TOKEN
      *
      * @param registerMiniprogramByOffiaccountRequest
      */

@@ -6,12 +6,14 @@ import org.dows.sdk.weixin.miniprogram.management.response.ThirdpartyCode2Sessio
 /**
  * @author lait.zhang@gmail.com
  * @description loginApi
- * @date 2023年5月28日 下午9:55:33
+ * @date 2023年5月29日 上午11:32:00
  */
 public interface LoginApi {
 
     /**
-     * https://api.weixin.qq.com/sns/component/jscode2session?component_access_token=ACCESS_TOKEN
+     * description:
+     * doc: https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/login/thirdpartyCode2Session.html
+     * api: https://api.weixin.qq.com/sns/component/jscode2session?component_access_token=ACCESS_TOKEN
      *
      * @param thirdpartyCode2SessionRequest
      */

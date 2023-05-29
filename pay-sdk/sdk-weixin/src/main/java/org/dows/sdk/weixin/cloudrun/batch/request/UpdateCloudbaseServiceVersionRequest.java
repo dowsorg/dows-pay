@@ -4,9 +4,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 /**
- * @author @author lait.zhang@gmail.com
+ * https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/cloudrun-batch/service-mgnt/updateCloudbaseServiceVersion.html
+ *
+ * @author lait.zhang@gmail.com
  * @description
- * @date 2023年5月28日 下午9:55:33
+ * @date 2023年5月29日 上午11:32:00
  */
 @Data
 @Schema(name = "UpdateCloudbaseServiceVersionRequest", title = "UpdateCloudbaseServiceVersionRequest")
@@ -64,7 +66,7 @@ public class UpdateCloudbaseServiceVersionRequest {
     @Schema(title = "延迟多长时间开始健康检查（单位s）")
     private Integer initial_delay_seconds;
     @Schema(title = "cfs挂载信息")
-    private List<CloudBaseRunVolumeMount> mount_volume_info;
+    private List<CloudBaseRunVolumeMount>mount_volume_info;
     @Schema(title = "是否回滚")
     private Boolean rollback;
     @Schema(title = "版本历史名")
@@ -78,6 +80,6 @@ public class UpdateCloudbaseServiceVersionRequest {
     @Schema(title = "是否更新Cls")
     private Boolean is_update_cls;
     @Schema(title = "自动扩缩容策略组")
-    private List<HpaPolicy> policy_detail;
+    private List<HpaPolicy>policy_detail;
 }
 

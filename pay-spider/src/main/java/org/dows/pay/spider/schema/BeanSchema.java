@@ -128,4 +128,11 @@ public class BeanSchema {
         return moduleSchema.getPath() + "/" + getPkg().replaceAll("\\.", "/");
     }
 
+    public List<MethodSchema> getMethods() {
+        return this.methods;
+    }
+
+    public List<FieldSchema> getFields() {
+        return this.fields;
+    }
 }

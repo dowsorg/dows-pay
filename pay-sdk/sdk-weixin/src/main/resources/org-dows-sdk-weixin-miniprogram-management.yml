@@ -26,7 +26,7 @@ dows:
       "org.dows.sdk.weixin.miniprogram.management.RecordManagementApi.getAppealRecords": POST https://api.weixin.qq.com/wxa/getappealrecords?access_token=ACCESS_TOKEN
       "org.dows.sdk.weixin.miniprogram.management.CodeManagementApi.commit": POST https://api.weixin.qq.com/wxa/commit?access_token=ACCESS_TOKEN
       "org.dows.sdk.weixin.miniprogram.management.CodeManagementApi.getCodePage": GET https://api.weixin.qq.com/wxa/get_page?access_token=ACCESS_TOKEN
-      "org.dows.sdk.weixin.miniprogram.management.CodeManagementApi.getTrialQRCode": GET https://api.weixin.qq.com/wxa/get_qrcode?access_token=ACCESS_TOKENHTTP/1.1 200 OK Connection: close Content-Type: image/jpeg Content-disposition: attachment; filename="QRCode.jpg" Date: Sun, 06 Jan 2013 10:20:18 GMT Cache-Control: no-cache, must-revalidate Content-Length: 339721
+      "org.dows.sdk.weixin.miniprogram.management.CodeManagementApi.getTrialQRCode": GET https://api.weixin.qq.com/wxa/get_qrcode?access_token=ACCESS_TOKENHTTP
       "org.dows.sdk.weixin.miniprogram.management.CodeManagementApi.submitAudit": POST https://api.weixin.qq.com/wxa/submit_audit?access_token=ACCESS_TOKEN
       "org.dows.sdk.weixin.miniprogram.management.CodeManagementApi.getAuditStatus": POST https://api.weixin.qq.com/wxa/get_auditstatus?access_token=ACCESS_TOKEN
       "org.dows.sdk.weixin.miniprogram.management.CodeManagementApi.undoAudit": GET https://api.weixin.qq.com/wxa/undocodeaudit?access_token=ACCESS_TOKEN

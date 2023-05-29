@@ -21,13 +21,13 @@ public class ApiClassPathBeanDefinitionScanner extends ClassPathBeanDefinitionSc
 
     private BeanFactory beanFactory;
 
+    public ApiClassPathBeanDefinitionScanner(BeanDefinitionRegistry registry) {
+        super(registry);
+    }
+
     @Override
     public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
         this.beanFactory = beanFactory;
-    }
-
-    public ApiClassPathBeanDefinitionScanner(BeanDefinitionRegistry registry) {
-        super(registry);
     }
 
     public void register() {

@@ -8,19 +8,23 @@ import org.dows.sdk.weixin.miniprogram.management.response.GetPrivacyInterfaceRe
 /**
  * @author lait.zhang@gmail.com
  * @description privacyApiManagementApi
- * @date 2023年5月28日 下午9:55:33
+ * @date 2023年5月29日 上午11:32:00
  */
 public interface PrivacyApiManagementApi {
 
     /**
-     * https://api.weixin.qq.com/wxa/security/apply_privacy_interface?access_token=ACCESS_TOKEN
+     * description:
+     * doc: https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/privacy-api-management/applyPrivacyInterface.html
+     * api: https://api.weixin.qq.com/wxa/security/apply_privacy_interface?access_token=ACCESS_TOKEN
      *
      * @param applyPrivacyInterfaceRequest
      */
     ApplyPrivacyInterfaceResponse applyPrivacyInterface(ApplyPrivacyInterfaceRequest applyPrivacyInterfaceRequest);
 
     /**
-     * https://api.weixin.qq.com/wxa/security/get_privacy_interface?access_token=ACCESS_TOKEN
+     * description:
+     * doc: https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/miniprogram-management/privacy-api-management/getPrivacyInterface.html
+     * api: https://api.weixin.qq.com/wxa/security/get_privacy_interface?access_token=ACCESS_TOKEN
      *
      * @param getPrivacyInterfaceRequest
      */

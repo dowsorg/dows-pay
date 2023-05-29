@@ -10,11 +10,14 @@ import lombok.*;
 
 import java.util.Date;
 import java.math.BigDecimal;
-
+<#--<#list methods as method>
+ * ${method.docUrl!""}
+ * ${method.weixinUrl!""}
+ *</#list>-->
 /**
- *
+ * ${docUrl!""}
  * @description ${descr!""}
- * @author @author ${author!"lait.zhang@gmail.com"}
+ * @author ${author!"lait.zhang@gmail.com"}
  * @date ${date!.now}
  */
 <#if extendClass??>
