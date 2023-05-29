@@ -2,6 +2,8 @@ package org.dows.sdk.weixin.cloudrun.batch.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import org.dows.sdk.weixin.common.CloudBaseRunServiceVolumeMount;
+import org.dows.sdk.weixin.common.HpaPolicy;
 
 import java.util.List;
 

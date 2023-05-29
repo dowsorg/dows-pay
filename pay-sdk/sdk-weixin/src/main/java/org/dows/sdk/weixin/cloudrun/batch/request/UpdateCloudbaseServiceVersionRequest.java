@@ -2,6 +2,7 @@ package org.dows.sdk.weixin.cloudrun.batch.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import org.dows.sdk.weixin.common.HpaPolicy;
 
 import java.util.List;
 
@@ -83,5 +84,7 @@ public class UpdateCloudbaseServiceVersionRequest {
     private Boolean is_update_cls;
     @Schema(title = "自动扩缩容策略组")
     private List<HpaPolicy> policy_detail;
+
+
 }
 
