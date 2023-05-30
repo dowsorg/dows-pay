@@ -66,7 +66,7 @@ public class WeixinPayExtracter implements Extractable {
         projectSchema.setRootPath("E:/workspaces/java/projects/dows/dows-pay/pay-sdk1");
         projectSchema.setBasePkg("org.dows.sdk.weixin.pay");
         projectSchema.setModules(moduleSchemas);
-        buildModuleSchema(getCatalogs(seed, regex), moduleSchemas, beanSchemas, null, null);
+        buildModuleSchema(getCatalogs(seed, regex), projectSchema, moduleSchemas, beanSchemas, null, null);
 
 
         Template template = templateEngine.getTemplate("api1.ftl");
@@ -171,13 +171,14 @@ public class WeixinPayExtracter implements Extractable {
                 }
                 id1++;
             }
-            log.info("");
         }
         return catalogs;
     }
 
 
-    private void buildModuleSchema(List<Catalog> catalogs, List<ModuleSchema> moduleSchemas, List<BeanSchema> beanSchemas, ModuleSchema moduleSchema, BeanSchema beanSchema) {
+    private void buildModuleSchema(List<Catalog> catalogs,
+                                   ProjectSchema projectSchema, List<ModuleSchema> moduleSchemas, List<BeanSchema> beanSchemas,
+                                   ModuleSchema moduleSchema, BeanSchema beanSchema) {
         for (Catalog catalog : catalogs) {
 
             if (catalog.getName().contains("商户进件")) {
@@ -191,6 +192,8 @@ public class WeixinPayExtracter implements Extractable {
                 moduleSchema = new ModuleSchema();
                 moduleSchema.setName(catalog.getName());
                 moduleSchema.setPkg(catalog.getName());
+                moduleSchema.setProjectSchema(projectSchema);
+
                 moduleSchemas.add(moduleSchema);
             } else if (catalog.getType().equals("bean")) {
                 beanSchema = new BeanSchema();
@@ -244,11 +247,10 @@ public class WeixinPayExtracter implements Extractable {
                         methodSchema.setFieldValue(k, sb.toString());
                     }
                     log.info("jxNodes:{}", jxNodes);
-
                 });
             }
             if (catalog.getChilds().size() != 0) {
-                buildModuleSchema(catalog.getChilds(), moduleSchemas, beanSchemas, moduleSchema, beanSchema);
+                buildModuleSchema(catalog.getChilds(), projectSchema, moduleSchemas, beanSchemas, moduleSchema, beanSchema);
             }
         }
     }

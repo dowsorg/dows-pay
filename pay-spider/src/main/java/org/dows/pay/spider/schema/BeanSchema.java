@@ -121,7 +121,7 @@ public class BeanSchema {
 
     public String getPkg() {
         if (moduleSchema != null) {
-            return moduleSchema.getPkg() + (StrUtil.isBlank(pkg) ? "" : "."
+            return (null == moduleSchema.getPkg() ? "" : moduleSchema.getPkg()) + (StrUtil.isBlank(pkg) ? "" : "."
                     + pkg.replaceAll("-", ".").replaceAll("/", "."));
         }
         return (StrUtil.isBlank(pkg) ? "" : "."
@@ -130,7 +130,7 @@ public class BeanSchema {
 
     public String getPath() {
         if (moduleSchema != null) {
-            return moduleSchema.getPath() + "/" + getPkg().replaceAll("\\.", "/");
+            return (null == moduleSchema.getPath() ? "" : moduleSchema.getPath()) + "/" + getPkg().replaceAll("\\.", "/");
         }
         return getPkg().replaceAll("\\.", "/");
     }
