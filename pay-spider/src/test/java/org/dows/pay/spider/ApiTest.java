@@ -56,7 +56,10 @@ public class ApiTest {
     @Test
     public void testPay() {
         String seed = "https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/index.shtml";
-        String regex = "//div[@class=\"doc-menu \"]/dl//a";
+
+        String regex = "//div[@class='doc-menu ']/dl/dt,/following-sibling::dd//a";
+//        String menu2 = "//div[@class=\"doc-menu \"]/dl/dt/following-sibling::dd/a";
+//        String regex = "//div[@class=\"doc-menu \"]/dl//a";
         Map<String, BeanSchema> beanSchemaMap = weixinPayExtracter.get(seed, regex, "");
         log.info("");
 
