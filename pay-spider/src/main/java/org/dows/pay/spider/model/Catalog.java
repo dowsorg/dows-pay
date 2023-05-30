@@ -46,10 +46,16 @@ public class Catalog implements Treeable {
     }
 
     public String getPkg() {
-        return patent.getPkg() + pkg == null ? "" : "." + pkg;
+        if (patent != null) {
+            return patent.getPkg() + (pkg == null ? "" : "." + pkg);
+        }
+        return pkg;
     }
 
     public String getName() {
-        return null == patent ? "" : patent.getName() + "." + name;
+        if (patent != null) {
+            return patent.getName() + (name == null ? "" : "." + name);
+        }
+        return name;
     }
 }

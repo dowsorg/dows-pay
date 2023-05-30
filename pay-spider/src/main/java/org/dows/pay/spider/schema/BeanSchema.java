@@ -120,12 +120,19 @@ public class BeanSchema {
     }
 
     public String getPkg() {
-        return moduleSchema.getPkg() + (StrUtil.isBlank(pkg) ? "" : "."
+        if (moduleSchema != null) {
+            return moduleSchema.getPkg() + (StrUtil.isBlank(pkg) ? "" : "."
+                    + pkg.replaceAll("-", ".").replaceAll("/", "."));
+        }
+        return (StrUtil.isBlank(pkg) ? "" : "."
                 + pkg.replaceAll("-", ".").replaceAll("/", "."));
     }
 
     public String getPath() {
-        return moduleSchema.getPath() + "/" + getPkg().replaceAll("\\.", "/");
+        if (moduleSchema != null) {
+            return moduleSchema.getPath() + "/" + getPkg().replaceAll("\\.", "/");
+        }
+        return getPkg().replaceAll("\\.", "/");
     }
 
     public List<MethodSchema> getMethods() {

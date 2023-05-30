@@ -3,7 +3,8 @@ package org.dows.pay.spider.schema;
 import cn.hutool.core.util.StrUtil;
 import lombok.Data;
 import org.dows.pay.spider.AlipayField;
-import org.dows.pay.spider.WexinField;
+import org.dows.pay.spider.WexinOpenField;
+import org.dows.pay.spider.WexinPayField;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -14,24 +15,30 @@ import java.util.stream.Collectors;
 
 /**
  * 属性	类型	必填	说明
+ * 参数名	变量	类型[长度限制]	必填	描述
  */
 @Data
 public class FieldSchema {
+    @WexinOpenField("属性")
+    @WexinPayField("变量")
+    private String code;
 
-    @AlipayField("")
-    @WexinField("属性")
+    @WexinPayField("参数名")
     private String name;
 
     @AlipayField("")
-    @WexinField("类型")
+    @WexinOpenField("类型")
+    @WexinPayField("类型[长度限制]")
     private String fieldType;
 
     @AlipayField("")
-    @WexinField("必填")
+    @WexinOpenField("必填")
+    @WexinPayField("必填")
     private String must;
 
     @AlipayField("")
-    @WexinField("说明")
+    @WexinOpenField("说明")
+    @WexinPayField("描述")
     private String descr;
 //    @TdIndex("说明")
 //    private String explain;
@@ -40,11 +47,15 @@ public class FieldSchema {
      */
     private String ioType;
 
-    private static Map<String, Field> weixinFieldMap = new ConcurrentHashMap<>();
+    private static Map<String, Field> weixinOpenFieldMap = new ConcurrentHashMap<>();
+    private static Map<String, Field> weixinPayFieldMap = new ConcurrentHashMap<>();
 
     static {
-        weixinFieldMap.putAll(Arrays.stream(FieldSchema.class.getDeclaredFields()).filter(f -> f.getAnnotation(WexinField.class) != null)
-                .collect(Collectors.toMap(f -> f.getAnnotation(WexinField.class).value(), Function.identity())));
+        weixinOpenFieldMap.putAll(Arrays.stream(FieldSchema.class.getDeclaredFields()).filter(f -> f.getAnnotation(WexinOpenField.class) != null)
+                .collect(Collectors.toMap(f -> f.getAnnotation(WexinOpenField.class).value(), Function.identity())));
+
+        weixinPayFieldMap.putAll(Arrays.stream(FieldSchema.class.getDeclaredFields()).filter(f -> f.getAnnotation(WexinPayField.class) != null)
+                .collect(Collectors.toMap(f -> f.getAnnotation(WexinPayField.class).value(), Function.identity())));
         // todo 支付宝
     }
 
@@ -55,11 +66,13 @@ public class FieldSchema {
         return false;
     }
 
-    public Map<String, Field> getWexinFieldMap() {
-        return weixinFieldMap;
+    public Map<String, Field> getWexinOpenFieldMap() {
+        return weixinOpenFieldMap;
     }
 
-
+    public Map<String, Field> getWexinPayFieldMap() {
+        return weixinPayFieldMap;
+    }
     public String getDescr() {
         if (StrUtil.isBlank(descr)) {
             return "";

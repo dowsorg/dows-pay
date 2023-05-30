@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.dows.pay.spider.AlipayField;
-import org.dows.pay.spider.WexinField;
+import org.dows.pay.spider.WexinOpenField;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -25,20 +25,23 @@ public class MethodSchema {
      * 方法名
      */
     @AlipayField("")
-    @WexinField("name")
+    @WexinOpenField("name")
     private String name;
     /**
      * 方法描述
      */
     @AlipayField("")
-    @WexinField("descr")
+    @WexinOpenField("descr")
     private String descr;
+
+    @WexinOpenField("overview")
+    private String overview;
 
     /**
      * 方法url
      */
     @AlipayField("")
-    @WexinField("url")
+    @WexinOpenField("url")
     private String url;
 
     /**
@@ -49,7 +52,7 @@ public class MethodSchema {
      * 支持http请求类型
      */
     @AlipayField("")
-    @WexinField("httpMethod")
+    @WexinOpenField("httpMethod")
     private String httpMethod;
     /**
      * 是否 restful 风格 API
@@ -101,8 +104,11 @@ public class MethodSchema {
     private final static Map<String, Field> weixinMethodMap = new ConcurrentHashMap<>();
 
     static {
-        weixinMethodMap.putAll(Arrays.stream(MethodSchema.class.getDeclaredFields()).filter(f -> f.getAnnotation(WexinField.class) != null)
-                .collect(Collectors.toMap(f -> f.getAnnotation(WexinField.class).value(), Function.identity())));
+
+/*        weixinMethodMap.putAll(Arrays.stream(MethodSchema.class.getDeclaredFields()).filter(f -> f.getAnnotation(WexinOpenField.class) != null)
+                .collect(Collectors.toMap(f -> f.getAnnotation(WexinOpenField.class).value(), Function.identity())));*/
+        weixinMethodMap.putAll(Arrays.stream(MethodSchema.class.getDeclaredFields())
+                .collect(Collectors.toMap(f -> f.getName(), Function.identity())));
         // todo 支付宝
     }
 
@@ -124,9 +130,11 @@ public class MethodSchema {
     public String getWeixinUrl() {
         return url == null ? "" : url.substring(url.indexOf(" ") + 1);
     }
+
     public String getWeixinDocUrl() {
         return docUrl == null ? "" : docUrl.substring(docUrl.indexOf(" ") + 1);
     }
+
     public String getWeixinHttpMethod() {
         return url == null ? "" : url.substring(0, url.indexOf(" "));
     }

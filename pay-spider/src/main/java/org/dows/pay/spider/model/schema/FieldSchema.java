@@ -3,7 +3,7 @@ package org.dows.pay.spider.model.schema;
 import cn.hutool.core.util.StrUtil;
 import lombok.Data;
 import org.dows.pay.spider.AlipayField;
-import org.dows.pay.spider.WexinField;
+import org.dows.pay.spider.WexinOpenField;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -19,19 +19,19 @@ import java.util.stream.Collectors;
 public class FieldSchema {
 
     @AlipayField("")
-    @WexinField("属性")
+    @WexinOpenField("属性")
     private String name;
 
     @AlipayField("")
-    @WexinField("类型")
+    @WexinOpenField("类型")
     private String fieldType;
 
     @AlipayField("")
-    @WexinField("必填")
+    @WexinOpenField("必填")
     private String must;
 
     @AlipayField("")
-    @WexinField("说明")
+    @WexinOpenField("说明")
     private String descr;
 //    @TdIndex("说明")
 //    private String explain;
@@ -43,8 +43,8 @@ public class FieldSchema {
     private static Map<String, Field> weixinFieldMap = new ConcurrentHashMap<>();
 
     static {
-        weixinFieldMap.putAll(Arrays.stream(FieldSchema.class.getDeclaredFields()).filter(f -> f.getAnnotation(WexinField.class) != null)
-                .collect(Collectors.toMap(f -> f.getAnnotation(WexinField.class).value(), Function.identity())));
+        weixinFieldMap.putAll(Arrays.stream(FieldSchema.class.getDeclaredFields()).filter(f -> f.getAnnotation(WexinOpenField.class) != null)
+                .collect(Collectors.toMap(f -> f.getAnnotation(WexinOpenField.class).value(), Function.identity())));
         // todo 支付宝
     }
 

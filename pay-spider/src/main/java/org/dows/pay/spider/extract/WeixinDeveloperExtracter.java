@@ -138,7 +138,7 @@ public class WeixinDeveloperExtracter implements Extractable {
             FieldSchema fieldSchema = new FieldSchema();
             paramSchema.addField(fieldSchema);
 
-            Map<String, Field> fields = fieldSchema.getWexinFieldMap();
+            Map<String, Field> fields = fieldSchema.getWexinOpenFieldMap();
             for (int i = 0; i < ths.size(); i++) {
                 Field field = fields.get(ths.get(i).selOne("/text()").asString());
                 if (field != null) {

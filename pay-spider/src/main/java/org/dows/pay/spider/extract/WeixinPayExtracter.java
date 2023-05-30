@@ -1,52 +1,127 @@
 package org.dows.pay.spider.extract;
 
-import cn.hutool.core.lang.tree.Tree;
-import cn.hutool.core.lang.tree.TreeNodeConfig;
-//import cn.hutool.core.lang.tree.TreeUtil;
-import org.dows.pay.spider.schema.ModuleSchema;
-import org.dows.pay.spider.util.TreeUtil;
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.extra.template.Template;
+import cn.hutool.extra.template.TemplateEngine;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dows.pay.spider.model.Catalog;
-import org.dows.pay.spider.model.WeixinPayLinkModel;
-import org.dows.pay.spider.schema.BeanSchema;
-import org.dows.pay.spider.schema.FieldSchema;
-import org.dows.pay.spider.schema.ParamSchema;
+import org.dows.pay.spider.schema.*;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.seimicrawler.xpath.JXDocument;
 import org.seimicrawler.xpath.JXNode;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
 @Service
 public class WeixinPayExtracter implements Extractable {
 
+    @Autowired
+    private TemplateEngine templateEngine;
+    private static Map<String, String> map = new HashMap<>();
 
-    public List<WeixinPayLinkModel> getLink(String seed, String regex) {
-
-        TreeNodeConfig treeNodeConfig = new TreeNodeConfig();
-        treeNodeConfig.setIdKey("id");
-        treeNodeConfig.setParentIdKey("pid");
-        treeNodeConfig.setNameKey("name");
-        treeNodeConfig.setChildrenKey("childs");
-        // 最大递归深度，可不用配置,默认无限制
-        //treeNodeConfig.setDeep(2);
-
-        List<Catalog> catalogs = getCatalogs(seed, regex);
-
-
-        return null;
+    static {
+        map.put("overview", "//div[@class='overview']/*/text()");
+        map.put("url", "//strong[contains(text(),'请求URL：')]/parent::p/text()");
+        map.put("httpMethod", "(//strong[contains(text(),'请求方式：')])[1]/parent::p/text()");
+        map.put("inputs", "//h3[contains(text(),'请求参数')]/following-sibling::div[@class='table-wrp']/table//tr");
+        map.put("output", "//h3[contains(text(),'返回参数')]/following-sibling::div[@class='table-wrp']/table//tr");
+        map.put("descr", "//div[@class='overview']/*/text()");
     }
 
-    public List<Catalog> getCatalogs(String seed, String regex) {
+//    public void genSdk(String seed, String regex) {
+//
+//        List<Catalog> catalogs = ;
+//
+////        ProjectSchema projectSchema = buildProjectSchema(catalogs);
+//
+//        genSdk();
+//
+//        Map<String, BeanSchema> beanSchemaMap = new HashMap<>();
+//
+//    }
+
+
+    public void genSdk(String seed, String regex) {
+
+        List<ModuleSchema> moduleSchemas = new ArrayList<>();
+        List<BeanSchema> beanSchemas = new ArrayList<>();
+
+        ProjectSchema projectSchema = new ProjectSchema();
+        projectSchema.setName("sdk-weixin");
+        projectSchema.setRootPath("E:/workspaces/java/projects/dows/dows-pay/pay-sdk1");
+        projectSchema.setBasePkg("org.dows.sdk.weixin.pay");
+        projectSchema.setModules(moduleSchemas);
+        buildModuleSchema(getCatalogs(seed, regex), moduleSchemas, beanSchemas, null, null);
+
+
+        Template template = templateEngine.getTemplate("api1.ftl");
+        Template modelTemplate = templateEngine.getTemplate("param1.ftl");
+        Template ymlTemplate = templateEngine.getTemplate("wexiapi.ftl");
+
+
+        for (BeanSchema beanSchema : beanSchemas) {
+            String beanName = beanSchema.getName();
+            String path = beanSchema.getPath();
+            try {
+                Files.createDirectories(Path.of(path));
+                Files.write(Path.of(path + "/" + StrUtil.upperFirst(beanName) + ".java"),
+                        template.render(BeanUtil.beanToMap(beanSchema)).getBytes());
+
+                List<MethodSchema> methods = beanSchema.getMethods();
+                for (MethodSchema method : methods) {
+                    List<ParamSchema> inputs = method.getInputs();
+                    for (ParamSchema input : inputs) {
+                        Files.createDirectories(Path.of(path, "request"));
+                        input.setPkg(beanSchema.getPkg() + ".request");
+                        String request = modelTemplate.render(BeanUtil.beanToMap(input));
+                        Files.write(Path.of(path + "/request/" + StrUtil.upperFirst(input.getType()) + ".java"), request.getBytes());
+                    }
+                    ParamSchema output = method.getOutput();
+                    output.setPkg(beanSchema.getPkg() + ".response");
+                    Files.createDirectories(Path.of(path, "response"));
+                    Map<String, Object> stringObjectMap = BeanUtil.beanToMap(output);
+                    String response = modelTemplate.render(stringObjectMap);
+                    Files.write(Path.of(path + "/response/" + StrUtil.upperFirst(output.getType()) + ".java"), response.getBytes());
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        // 生成yml
+        Map<String, List<BeanSchema>> collect = beanSchemas.stream().collect(Collectors.groupingBy(BeanSchema::getPkg));
+        collect.forEach((k, v) -> {
+            try {
+                ModuleSchema moduleSchema = v.get(0).getModuleSchema();
+                Files.createDirectories(Path.of(moduleSchema.getResourcesPath()));
+                BeanUtil.beanToMap(v);
+                Map<String, List<BeanSchema>> map = new HashMap<>();
+                map.put("beanSchemas", v);
+                String render = ymlTemplate.render(map);
+                Files.write(Path.of(moduleSchema.getResourcesPath() + "/" + k.replaceAll("\\.", "-") + ".yml"), render.getBytes());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+
+    private List<Catalog> getCatalogs(String seed, String regex) {
         List<Catalog> catalogs = new ArrayList<>();
 
         Document document = getDocument(seed);
@@ -102,98 +177,83 @@ public class WeixinPayExtracter implements Extractable {
     }
 
 
-    public void tree(List<Catalog> catalogs){
-
+    private void buildModuleSchema(List<Catalog> catalogs, List<ModuleSchema> moduleSchemas, List<BeanSchema> beanSchemas, ModuleSchema moduleSchema, BeanSchema beanSchema) {
         for (Catalog catalog : catalogs) {
 
+            if (catalog.getName().contains("商户进件")) {
+                continue;
+            }
+            if (catalog.getName().contains("经营能力")) {
+                return;
+            }
             if (catalog.getType().equals("pkg")) {
                 catalog.setPkg(catalog.getName());
-                ModuleSchema moduleSchema = new ModuleSchema();
-            }
-            if (catalog.getType().equals("bean")) {
-                BeanSchema beanSchema = new BeanSchema();
+                moduleSchema = new ModuleSchema();
+                moduleSchema.setName(catalog.getName());
+                moduleSchema.setPkg(catalog.getName());
+                moduleSchemas.add(moduleSchema);
+            } else if (catalog.getType().equals("bean")) {
+                beanSchema = new BeanSchema();
                 beanSchema.setPkg(catalog.getName());
+                beanSchema.setName(catalog.getName());
+                if (moduleSchema != null) {
+                    moduleSchema.addBeanSchema(beanSchema);
+                    beanSchema.setModuleSchema(moduleSchema);
+                }
+                beanSchemas.add(beanSchema);
+            } else {
+                MethodSchema methodSchema = new MethodSchema();
+                methodSchema.setName(catalog.getName());
+                if (beanSchema != null) {
+                    beanSchema.addMethod(methodSchema);
+                }
+                methodSchema.setDocUrl(catalog.getWeixinPayDocUrl());
+                Document document = getDocument(catalog.getWeixinPayDocUrl());
+                JXDocument jxDocument = JXDocument.create(document);
+                map.forEach((k, v) -> {
+                    List<JXNode> jxNodes = jxDocument.selN(v);
 
+                    List<JXNode> ths = new ArrayList<>();
+                    StringBuilder sb = new StringBuilder();
+                    if (k.equalsIgnoreCase("inputs")) {
+
+                        ParamSchema paramSchema = new ParamSchema();
+                        paramSchema.setName(methodSchema.getName() + "Request");
+                        paramSchema.setType(methodSchema.getName() + "Request");
+                        paramSchema.setIot("in");
+                        // 为method 设置 input入参列表
+                        methodSchema.addInput(paramSchema);
+                        for (JXNode jxNode : jxNodes) {
+                            buildParamByTable(ths, paramSchema, jxNode);
+                        }
+                        paramSchema.setDocUrl(methodSchema.getDocUrl());
+                    } else if (k.equalsIgnoreCase("output")) {
+                        ParamSchema paramSchema = new ParamSchema();
+                        paramSchema.setName(methodSchema.getName() + "Response");
+                        paramSchema.setType(methodSchema.getName() + "Response");
+                        paramSchema.setIot("out");
+                        methodSchema.setOutput(paramSchema);
+                        for (JXNode jxNode : jxNodes) {
+                            buildParamByTable(ths, paramSchema, jxNode);
+                        }
+                        paramSchema.setDocUrl(methodSchema.getDocUrl());
+                    } else {
+                        for (JXNode jxNode : jxNodes) {
+                            sb.append(jxNode.asString() + "\n");
+                        }
+                        methodSchema.setFieldValue(k, sb.toString());
+                    }
+                    log.info("jxNodes:{}", jxNodes);
+
+                });
             }
             if (catalog.getChilds().size() != 0) {
-                tree(catalog.getChilds());
+                buildModuleSchema(catalog.getChilds(), moduleSchemas, beanSchemas, moduleSchema, beanSchema);
             }
         }
     }
 
-    public Map<String, BeanSchema> get(String seed, String regex, String regex1) {
-        //List<WeixinPayLinkModel> weixinLinkSchemas = getLink(seed, regex);
-
-        //List<BeanSchema> beanSchemas = new ArrayList<>();
-        List<Catalog> catalogs = getCatalogs(seed, regex);
-
-
-
-        Map<String, BeanSchema> beanSchemaMap = new HashMap<>();
-        Map<String, String> map = new HashMap<>();
-        map.put("catalogTree", "//div[@class='Breadcrumb']/span/child::span/text()");
-        map.put("httpMethod", "//div[@class='language- extra-class']/pre/code/text()");
-        map.put("url", "//div[@class='language- extra-class']/pre/code/text()");
-        map.put("inputs", "//h3[@id='请求参数']/following-sibling::div[1]/table//tr");
-        map.put("output", "//h3[@id='返回参数']/following-sibling::div[1]/table//tr");
-        map.put("descr", "//h3[@id='功能描述']/following-sibling::p/text()");
-        map.put("explain", "//h3[@id='第三方调用']/following-sibling::ul/li/*/text()");
-
-//        for (WeixinPayLinkModel weixinLinkSchema : weixinLinkSchemas) {
-//            BeanSchema beanSchema = weixinLinkSchema.getBeanSchema();
-//            beanSchema = beanSchemaMap.get(beanSchema.getName());
-//            if (beanSchema == null) {
-//                beanSchema = weixinLinkSchema.getBeanSchema();
-//                beanSchemaMap.put(beanSchema.getName(), beanSchema);
-//            }
-//            Document document = getDocument(weixinLinkSchema.getHref());
-//            JXDocument jxDocument = JXDocument.create(document);
-//
-//            // 构建方法
-//            String method = weixinLinkSchema.getHref().
-//                    substring(weixinLinkSchema.getHref().lastIndexOf("/") + 1, weixinLinkSchema.getHref().lastIndexOf("."));
-//            MethodSchema methodSchema = new MethodSchema();
-//            methodSchema.setName(method);
-//
-//            beanSchema.addMethod(methodSchema);
-//            //beanSchemas.add(beanSchema);
-//
-//            // 构建参数
-//            map.forEach((k, v) -> {
-//                List<JXNode> jxNodes = jxDocument.selN(v);
-//
-//                List<JXNode> ths = new ArrayList<>();
-//                StringBuilder sb = new StringBuilder();
-//
-//                if (k.equalsIgnoreCase("inputs")) {
-//
-//                    ParamSchema paramSchema = new ParamSchema();
-//                    paramSchema.setName(method + "Request");
-//                    // 为method 设置 input入参列表
-//                    methodSchema.addInput(paramSchema);
-//                    for (JXNode jxNode : jxNodes) {
-//                        buildParam(ths, paramSchema, jxNode);
-//                    }
-//                } else if (k.equalsIgnoreCase("output")) {
-//                    ParamSchema paramSchema = new ParamSchema();
-//                    paramSchema.setName(method + "Response");
-//                    methodSchema.setOutput(paramSchema);
-//                    for (JXNode jxNode : jxNodes) {
-//                        buildParam(ths, paramSchema, jxNode);
-//                    }
-//                } else {
-//                    for (JXNode jxNode : jxNodes) {
-//                        sb.append(jxNode.asString());
-//                    }
-//                    methodSchema.setFieldValue(k, sb.toString());
-//                }
-//                log.info("jxNodes:{}", jxNodes);
-//            });
-//        }
-        return beanSchemaMap;
-    }
-
-    private void buildParam(List<JXNode> ths, ParamSchema paramSchema, JXNode jxNode) {
+    private void buildParamByTable(List<JXNode> ths, ParamSchema paramSchema, JXNode jxNode) {
         Element element = (Element) jxNode.value();
         if (element.tagName().equalsIgnoreCase("tr")) {
             // 处理表头
@@ -209,7 +269,7 @@ public class WeixinPayExtracter implements Extractable {
             FieldSchema fieldSchema = new FieldSchema();
             paramSchema.addField(fieldSchema);
 
-            Map<String, Field> fields = fieldSchema.getWexinFieldMap();
+            Map<String, Field> fields = fieldSchema.getWexinPayFieldMap();
             for (int i = 0; i < ths.size(); i++) {
                 Field field = fields.get(ths.get(i).selOne("/text()").asString());
                 if (field != null) {
@@ -227,4 +287,5 @@ public class WeixinPayExtracter implements Extractable {
             }
         }
     }
+
 }

@@ -60,7 +60,7 @@ public class ApiTest {
         String regex = "//div[@class='doc-menu ']/dl/dt,/following-sibling::dd//a";
 //        String menu2 = "//div[@class=\"doc-menu \"]/dl/dt/following-sibling::dd/a";
 //        String regex = "//div[@class=\"doc-menu \"]/dl//a";
-        Map<String, BeanSchema> beanSchemaMap = weixinPayExtracter.get(seed, regex, "");
+        weixinPayExtracter.genSdk(seed, regex);
         log.info("");
 
     }
