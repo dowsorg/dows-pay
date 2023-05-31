@@ -45,14 +45,22 @@ public class Catalog implements Treeable {
         }
     }
 
-    public String getPkg() {
+    public String getDouYinDocUrl() {
+        if (href.startsWith("http")) {
+            return href;
+        } else {
+            return "https://partner.open-douyin.com" + href;
+        }
+    }
+
+    public String getFullPkg() {
         if (patent != null) {
             return patent.getPkg() + (pkg == null ? "" : "." + pkg);
         }
         return pkg;
     }
 
-    public String getName() {
+    public String getFullName() {
         if (patent != null) {
             return patent.getName() + (name == null ? "" : "." + name);
         }

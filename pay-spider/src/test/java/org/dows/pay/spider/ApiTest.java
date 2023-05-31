@@ -9,6 +9,7 @@ import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.dows.pay.spider.extract.WeixinDeveloperExtracter;
 import org.dows.pay.spider.extract.WeixinPayExtracter;
+import org.dows.pay.spider.extract.ZijiePartnerExtracter;
 import org.dows.pay.spider.schema.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,9 @@ public class ApiTest {
     private WeixinPayExtracter weixinPayExtracter;
 
     @Autowired
+    private ZijiePartnerExtracter zijiePartnerExtracter;
+
+    @Autowired
     private CatalogCrawler catalogCrawler;
 
     @Autowired
@@ -52,6 +56,16 @@ public class ApiTest {
         catalogCrawler.crawlerApi();
     }
 
+    @Test
+    public void testZijie() {
+        String seed = "classpath://html/application-zijie-api.html";
+
+        String regex = "//ul[@role='menu']/li/ul//a,../..//span[@title]";
+
+        zijiePartnerExtracter.genSdk(seed, regex);
+        log.info("");
+
+    }
 
     @Test
     public void testPay() {
@@ -115,7 +129,7 @@ public class ApiTest {
             BeanSchema beanSchema = (BeanSchema) link.get(string);
             beanSchema.setDescr(string);
             String beanName = beanSchema.getName();
-            beanSchema.setModuleSchema(moduleSchema);
+            beanSchema.setModule(moduleSchema);
             moduleSchema.addBeanSchema(beanSchema);
             String path = beanSchema.getPath();
             try {

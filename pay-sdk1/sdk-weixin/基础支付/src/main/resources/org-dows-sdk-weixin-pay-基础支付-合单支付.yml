@@ -1,0 +1,56 @@
+dows:
+  sdk:
+    weixin:
+      "org.dows.sdk.weixin.pay.基础支付.合单支付.合单支付Api.合单APP下单": 
+https://api.mch.weixin.qq.com/v3/combine-transactions/app
+
+      "org.dows.sdk.weixin.pay.基础支付.合单支付.合单支付Api.合单H5下单": 
+https://api.mch.weixin.qq.com/v3/combine-transactions/h5
+
+      "org.dows.sdk.weixin.pay.基础支付.合单支付.合单支付Api.合单JSAPI下单": 
+https://api.mch.weixin.qq.com/v3/combine-transactions/jsapi
+
+      "org.dows.sdk.weixin.pay.基础支付.合单支付.合单支付Api.合单小程序下单": 
+https://api.mch.weixin.qq.com/v3/combine-transactions/jsapi
+
+      "org.dows.sdk.weixin.pay.基础支付.合单支付.合单支付Api.合单Native下单": 
+https://api.mch.weixin.qq.com/v3/combine-transactions/native
+
+      "org.dows.sdk.weixin.pay.基础支付.合单支付.合单支付Api.aPP调起支付": 
+      "org.dows.sdk.weixin.pay.基础支付.合单支付.合单支付Api.h5调起支付": 
+      "org.dows.sdk.weixin.pay.基础支付.合单支付.合单支付Api.jSAPI调起支付":
+      "org.dows.sdk.weixin.pay.基础支付.合单支付.合单支付Api.小程序调起支付":
+      "org.dows.sdk.weixin.pay.基础支付.合单支付.合单支付Api.native调起支付": 
+      "org.dows.sdk.weixin.pay.基础支付.合单支付.合单支付Api.合单查询订单": https://api.mch.weixin.qq.com/v3/combine-transactions/out-trade-no/{combine_out_trade_no}
+
+      "org.dows.sdk.weixin.pay.基础支付.合单支付.合单支付Api.合单关闭订单": 
+https://api.mch.weixin.qq.com/v3/combine-transactions/out-trade-no/{combine_out_trade_no}/close
+
+      "org.dows.sdk.weixin.pay.基础支付.合单支付.合单支付Api.支付通知": 
+该链接是通过[
+]、[
+]、[
+]、[
+]、[
+]提交notify_url参数设置，必须为https协议。如果链接无法访问，商户将无法接收到微信通知。 通知url必须为直接可访问的url，不能携带参数。示例： “https://pay.weixin.qq.com/wxpay/pay.action”
+
+      "org.dows.sdk.weixin.pay.基础支付.合单支付.合单支付Api.申请退款": 
+https://api.mch.weixin.qq.com/v3/refund/domestic/refunds
+
+      "org.dows.sdk.weixin.pay.基础支付.合单支付.合单支付Api.查询单笔退款": 
+https://api.mch.weixin.qq.com/v3/refund/domestic/refunds/{out_refund_no}
+
+      "org.dows.sdk.weixin.pay.基础支付.合单支付.合单支付Api.退款结果通知": 
+该链接是通过[申请退款接口]指定的notify_url，必须为https协议。如果链接无法访问，商户将无法接收到微信通知。 通知url必须为直接可访问的url，不能携带参数。示例：“https://pay.weixin.qq.com/wxpay/pay.action”
+
+      "org.dows.sdk.weixin.pay.基础支付.合单支付.合单支付Api.申请交易账单": 
+https://api.mch.weixin.qq.com/v3/bill/tradebill
+
+      "org.dows.sdk.weixin.pay.基础支付.合单支付.合单支付Api.申请资金账单": 
+https://api.mch.weixin.qq.com/v3/bill/fundflowbill
+
+      "org.dows.sdk.weixin.pay.基础支付.合单支付.合单支付Api.申请单个子商户资金账单": 
+      "org.dows.sdk.weixin.pay.基础支付.合单支付.合单支付Api.下载账单": 
+通过申请账单接口获取到“download_url”，URL有效期30s
+
+      "org.dows.sdk.weixin.pay.基础支付.合单支付.合单支付Api.付款码支付": 

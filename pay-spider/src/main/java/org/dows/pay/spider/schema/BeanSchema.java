@@ -51,7 +51,7 @@ public class BeanSchema {
     private BeanSchema parentClass;
 
     // 所属模块
-    private ModuleSchema moduleSchema;
+    private ModuleSchema module;
     /**
      * 需要导入的包
      */
@@ -120,8 +120,8 @@ public class BeanSchema {
     }
 
     public String getPkg() {
-        if (moduleSchema != null) {
-            return (null == moduleSchema.getPkg() ? "" : moduleSchema.getPkg()) + (StrUtil.isBlank(pkg) ? "" : "."
+        if (module != null) {
+            return (null == module.getPkg() ? "" : module.getPkg()) + (StrUtil.isBlank(pkg) ? "" : "."
                     + pkg.replaceAll("-", ".").replaceAll("/", "."));
         }
         return (StrUtil.isBlank(pkg) ? "" : "."
@@ -129,8 +129,8 @@ public class BeanSchema {
     }
 
     public String getPath() {
-        if (moduleSchema != null) {
-            return (null == moduleSchema.getPath() ? "" : moduleSchema.getPath()) + "/" + getPkg().replaceAll("\\.", "/");
+        if (module != null) {
+            return (null == module.getPath() ? "" : module.getPath()) + "/" + getPkg().replaceAll("\\.", "/");
         }
         return getPkg().replaceAll("\\.", "/");
     }

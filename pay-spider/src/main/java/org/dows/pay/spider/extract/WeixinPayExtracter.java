@@ -31,32 +31,27 @@ import java.util.stream.Collectors;
 public class WeixinPayExtracter implements Extractable {
 
     @Autowired
-    private TemplateEngine templateEngine;
+    private final TemplateEngine templateEngine;
     private static Map<String, String> map = new HashMap<>();
 
     static {
         map.put("overview", "//div[@class='overview']/*/text()");
-        map.put("url", "//strong[contains(text(),'请求URL：')]/parent::p/text()");
-        map.put("httpMethod", "(//strong[contains(text(),'请求方式：')])[1]/parent::p/text()");
+        map.put("url", "//strong[contains(text(),'请求URL')]/parent::p/text()");
+        map.put("httpMethod", "//strong[contains(text(),'请求方式')]/parent::p/text()");
         map.put("inputs", "//h3[contains(text(),'请求参数')]/following-sibling::div[@class='table-wrp']/table//tr");
         map.put("output", "//h3[contains(text(),'返回参数')]/following-sibling::div[@class='table-wrp']/table//tr");
         map.put("descr", "//div[@class='overview']/*/text()");
     }
 
-//    public void genSdk(String seed, String regex) {
-//
-//        List<Catalog> catalogs = ;
-//
-////        ProjectSchema projectSchema = buildProjectSchema(catalogs);
-//
-//        genSdk();
-//
-//        Map<String, BeanSchema> beanSchemaMap = new HashMap<>();
-//
-//    }
 
+    private void genApiYml(List<BeanSchema> beanSchemas, Template template) {
+
+    }
 
     public void genSdk(String seed, String regex) {
+
+        List<Catalog> catalogs = getCatalogs(seed, regex);
+
 
         List<ModuleSchema> moduleSchemas = new ArrayList<>();
         List<BeanSchema> beanSchemas = new ArrayList<>();
@@ -66,12 +61,24 @@ public class WeixinPayExtracter implements Extractable {
         projectSchema.setRootPath("E:/workspaces/java/projects/dows/dows-pay/pay-sdk1");
         projectSchema.setBasePkg("org.dows.sdk.weixin.pay");
         projectSchema.setModules(moduleSchemas);
-        buildModuleSchema(getCatalogs(seed, regex), projectSchema, moduleSchemas, beanSchemas, null, null);
+        buildModuleSchema(catalogs, projectSchema, moduleSchemas, beanSchemas, null, null);
 
 
+        Template apiSchemaTemplate = templateEngine.getTemplate("api-schema.ftl");
         Template template = templateEngine.getTemplate("api1.ftl");
         Template modelTemplate = templateEngine.getTemplate("param1.ftl");
         Template ymlTemplate = templateEngine.getTemplate("wexiapi.ftl");
+//        genApiYml(beanSchemas, apiSchemaTemplate);
+
+        try {
+            Path of = Path.of(projectSchema.getRootPath());
+            Files.createDirectories(of);
+            Map<String, Object> map = new HashMap<>();
+            map.put("beanSchemas", beanSchemas);
+            Files.write(of.resolve("weixin-api-schema.yml"), apiSchemaTemplate.render(map).getBytes());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
 
         for (BeanSchema beanSchema : beanSchemas) {
@@ -107,7 +114,7 @@ public class WeixinPayExtracter implements Extractable {
         Map<String, List<BeanSchema>> collect = beanSchemas.stream().collect(Collectors.groupingBy(BeanSchema::getPkg));
         collect.forEach((k, v) -> {
             try {
-                ModuleSchema moduleSchema = v.get(0).getModuleSchema();
+                ModuleSchema moduleSchema = v.get(0).getModule();
                 Files.createDirectories(Path.of(moduleSchema.getResourcesPath()));
                 BeanUtil.beanToMap(v);
                 Map<String, List<BeanSchema>> map = new HashMap<>();
@@ -123,9 +130,7 @@ public class WeixinPayExtracter implements Extractable {
 
     private List<Catalog> getCatalogs(String seed, String regex) {
         List<Catalog> catalogs = new ArrayList<>();
-
-        Document document = getDocument(seed);
-        JXDocument jxDocument = JXDocument.create(document);
+        JXDocument jxDocument = JXDocument.create(getDocument(seed));
 
         String[] regexs = regex.split(",");
         List<JXNode> jxNodes = jxDocument.selN(regexs[0]);
@@ -201,7 +206,7 @@ public class WeixinPayExtracter implements Extractable {
                 beanSchema.setName(catalog.getName());
                 if (moduleSchema != null) {
                     moduleSchema.addBeanSchema(beanSchema);
-                    beanSchema.setModuleSchema(moduleSchema);
+                    beanSchema.setModule(moduleSchema);
                 }
                 beanSchemas.add(beanSchema);
             } else {
@@ -242,9 +247,14 @@ public class WeixinPayExtracter implements Extractable {
                         paramSchema.setDocUrl(methodSchema.getDocUrl());
                     } else {
                         for (JXNode jxNode : jxNodes) {
-                            sb.append(jxNode.asString() + "\n");
+                            String string = jxNode.asString();
+                            if (!StrUtil.isBlank(string)) {
+                                sb.append(string + ",");
+                            }
                         }
-                        methodSchema.setFieldValue(k, sb.toString());
+                        if(sb.length() != 0){
+                            methodSchema.setFieldValue(k, sb.deleteCharAt(sb.length() - 1).toString().trim());
+                        }
                     }
                     log.info("jxNodes:{}", jxNodes);
                 });

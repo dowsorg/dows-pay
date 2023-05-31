@@ -1,0 +1,53 @@
+dows:
+  sdk:
+    weixin:
+      api-beans:
+        - module: 基础支付
+          pkg: pay
+          bean: JsPay
+          descr: JSAPI支付
+          methods:
+            - name: yyy
+              overview: 商户系统先调用该接口在微信支付服务后台生成预支付交易单，返回正确的预支付交易会话标识后再按Native、JSAPI、APP等不同场景生成交易串调起支付。
+              descr: 商户系统先调用该接口在微信支付服务后台生成预支付交易单，返回正确的预支付交易会话标识后再按Native、JSAPI、APP等不同场景生成交易串调起支付。
+              docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_2_1.shtml
+              url: https://api.mch.weixin.qq.com/v3/pay/transactions/id/{transaction_id}
+              httpMethod: post
+
+        - module:
+          pkg: pay
+          bean: AppPay
+          descr: APP支付
+          methods:
+            - name:
+              descr:
+              docUrl:
+              overview:
+              httpMethod:
+
+    zijie:
+      api-beans:
+        - module: 基础支付
+          pkg: pay
+          bean: 字节JsPay
+          descr: 字节JSAPI支付
+          methods:
+            - name: yyy
+              overview: 商户系统先调用该接口在微信支付服务后台生成预支付交易单，返回正确的预支付交易会话标识后再按Native、JSAPI、APP等不同场景生成交易串调起支付。
+              descr: 商户系统先调用该接口在微信支付服务后台生成预支付交易单，返回正确的预支付交易会话标识后再按Native、JSAPI、APP等不同场景生成交易串调起支付。
+              docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_2_1.shtml
+              url: https://api.mch.weixin.qq.com/v3/pay/transactions/id/{transaction_id}
+              httpMethod: post
+
+        - module:
+          pkg: pay
+          bean: AppPay
+          descr: APP支付
+          methods:
+            - name:
+              descr:
+              docUrl:
+              overview:
+              httpMethod:
+
+
