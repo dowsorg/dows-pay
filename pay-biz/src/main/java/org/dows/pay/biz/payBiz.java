@@ -245,6 +245,7 @@ public class payBiz implements PayApi {
                 payApply.setChecked(true);
             }
             payApply.setUpdateTime(new Date());
+            payApply.setSubMchid(result.getSubMchid());
             payApplyService.updateById(payApply);
             return response;
         }).orElseThrow(() -> new BizException(String.format("payApply query is null and merchantNo:[%s]", res.getMerchantNo())));
