@@ -47,19 +47,18 @@ public class WeixinDeveloperExtracter implements Extractable {
     }
 
 
-    public Map<String, BeanSchema> get(String seed, String regex, String regex1) {
+    public Map<String, BeanSchema> get(String seed, String regex) {
         List<WeixinDeveloperLinkModel> weixinLinkSchemas = getLink(seed, regex);
 
         //List<BeanSchema> beanSchemas = new ArrayList<>();
         Map<String, BeanSchema> beanSchemaMap = new HashMap<>();
         Map<String, String> map = new HashMap<>();
-        map.put("catalogTree", "//div[@class='Breadcrumb']/span/child::span/text()");
         map.put("httpMethod", "//div[@class='language- extra-class']/pre/code/text()");
         map.put("url", "//div[@class='language- extra-class']/pre/code/text()");
         map.put("inputs", "//h3[@id='请求参数']/following-sibling::div[1]/table//tr");
         map.put("output", "//h3[@id='返回参数']/following-sibling::div[1]/table//tr");
         map.put("descr", "//h3[@id='功能描述']/following-sibling::p/text()");
-        map.put("explain", "//h3[@id='第三方调用']/following-sibling::ul/li/*/text()");
+        map.put("overview", "//h3[@id='第三方调用']/following-sibling::ul/li/*/text()");
 
         for (WeixinDeveloperLinkModel weixinLinkSchema : weixinLinkSchemas) {
             BeanSchema beanSchema = weixinLinkSchema.getBeanSchema();

@@ -27,6 +27,11 @@ public class MethodSchema {
     @AlipayField("")
     @WexinOpenField("name")
     private String name;
+
+    /**
+     * 方法code
+     */
+    private String code;
     /**
      * 方法描述
      */
@@ -101,23 +106,22 @@ public class MethodSchema {
     }
 
 
-    private final static Map<String, Field> weixinMethodMap = new ConcurrentHashMap<>();
+    private final static Map<String, Field> methodFieldMap = new ConcurrentHashMap<>();
 
     static {
 
-/*        weixinMethodMap.putAll(Arrays.stream(MethodSchema.class.getDeclaredFields()).filter(f -> f.getAnnotation(WexinOpenField.class) != null)
-                .collect(Collectors.toMap(f -> f.getAnnotation(WexinOpenField.class).value(), Function.identity())));*/
-        weixinMethodMap.putAll(Arrays.stream(MethodSchema.class.getDeclaredFields())
-                .collect(Collectors.toMap(f -> f.getName(), Function.identity())));
+        /*
+        weixinMethodMap.putAll(Arrays.stream(MethodSchema.class.getDeclaredFields()).filter(f -> f.getAnnotation(WexinOpenField.class) != null)
+                .collect(Collectors.toMap(f -> f.getAnnotation(WexinOpenField.class).value(), Function.identity())));
         // todo 支付宝
+        */
+        methodFieldMap.putAll(Arrays.stream(MethodSchema.class.getDeclaredFields())
+                .collect(Collectors.toMap(f -> f.getName(), Function.identity())));
     }
 
-    public Map<String, Field> getWeixinMethodMap() {
-        return weixinMethodMap;
-    }
 
     public void setFieldValue(String filed, Object val) {
-        Field field = weixinMethodMap.get(filed);
+        Field field = methodFieldMap.get(filed);
         if (field != null) {
             try {
                 field.set(this, val);

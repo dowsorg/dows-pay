@@ -8,8 +8,9 @@ import cn.hutool.extra.template.TemplateEngine;
 import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.dows.pay.spider.extract.WeixinDeveloperExtracter;
-import org.dows.pay.spider.extract.WeixinPayExtracter;
-import org.dows.pay.spider.extract.ZijiePartnerExtracter;
+import org.dows.pay.spider.extract.WxOpenExtracter;
+import org.dows.pay.spider.extract.WxPayExtracter;
+import org.dows.pay.spider.extract.DyOpenExtracter;
 import org.dows.pay.spider.schema.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,10 +41,13 @@ public class ApiTest {
     private WeixinDeveloperExtracter weixinDeveloperExtracter;
 
     @Autowired
-    private WeixinPayExtracter weixinPayExtracter;
+    private WxPayExtracter wxPayExtracter;
 
     @Autowired
-    private ZijiePartnerExtracter zijiePartnerExtracter;
+    private WxOpenExtracter wxOpenExtracter;
+
+    @Autowired
+    private DyOpenExtracter dyOpenExtracter;
 
     @Autowired
     private CatalogCrawler catalogCrawler;
@@ -57,31 +61,43 @@ public class ApiTest {
     }
 
     @Test
-    public void testZijie() {
+    public void testDyOpen() {
         String seed = "classpath://html/application-zijie-api.html";
-
         String regex = "//ul[@role='menu']/li/ul//a,../..//span[@title]";
-
-        zijiePartnerExtracter.genSdk(seed, regex);
+        dyOpenExtracter.genSdk(seed, regex);
         log.info("");
-
     }
 
     @Test
-    public void testPay() {
+    public void testWxOpen() {
+        String seed = "https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc";
+        //String regex = "//div[@class='TreeNavigation']/div/ul/li/div/ul//li/span/a";
+        // //div[@class='TreeNavigation']/div/ul/li/div//ul/li
+        String regex = "//div[@class='TreeNavigation']/div/ul/li/div//ul,li//a";
+        wxOpenExtracter.genSdk(seed, regex);
+        log.info("");
+    }
+
+
+    @Test
+    public void testWxPay() {
         String seed = "https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/index.shtml";
-
-        String regex = "//div[@class='doc-menu ']/dl/dt,/following-sibling::dd//a";
-//        String menu2 = "//div[@class=\"doc-menu \"]/dl/dt/following-sibling::dd/a";
-//        String regex = "//div[@class=\"doc-menu \"]/dl//a";
-        weixinPayExtracter.genSdk(seed, regex);
+        String regex = "//div[@class='doc-menu']/dl/dt,/following-sibling::dd//a";
+        wxPayExtracter.genSdk(seed, regex);
         log.info("");
-
     }
 
 
+
+
+
+
+
+
+
+
     @Test
-    public void testA() {
+    public void testWxOpen1() {
         log.info("");
         String file = this.getClass().getResource("").getPath() + File.separator + "bean-schema.json";
 
@@ -93,16 +109,12 @@ public class ApiTest {
 
         }
         if (link.size() == 0) {
-            link = weixinDeveloperExtracter.get("https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc", "//div[@class=\"TreeNavigation\"]/div/ul/li/div/ul//li/span/a", "");
+            link = weixinDeveloperExtracter.get("https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc", "//div[@class=\"TreeNavigation\"]/div/ul/li/div/ul//li/span/a");
             String jsonPrettyStr = JSONUtil.toJsonPrettyStr(link);
             FileUtil.writeString(jsonPrettyStr, file, Charset.defaultCharset());
         }
-        //Map<String, BeanSchema> link = new HashMap<>();
-
 
         List<ModuleSchema> moduleSchemas = new ArrayList<>();
-        //List<BeanSchema> beanSchemas = new ArrayList<>();
-
         ProjectSchema projectSchema = new ProjectSchema();
         projectSchema.setName("sdk-weixin");
         projectSchema.setRootPath("E:/workspaces/java/projects/dows/dows-pay/pay-sdk");

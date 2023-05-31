@@ -1,0 +1,15 @@
+dows:
+  sdk:
+    weixin:
+      "org.dows.sdk.weixin.pay.基础支付.H5支付.H5支付Api.h5下单": https://api.mch.weixin.qq.com/v3/transfer/batches
+      "org.dows.sdk.weixin.pay.基础支付.H5支付.H5支付Api.查询订单": https://api.mch.weixin.qq.com/v3/transfer/batches/batch-id/{batch_id}
+      "org.dows.sdk.weixin.pay.基础支付.H5支付.H5支付Api.关闭订单": https://api.mch.weixin.qq.com/v3/transfer/batches/batch-id/{batch_id}/details/detail-id/{detail_id}
+      "org.dows.sdk.weixin.pay.基础支付.H5支付.H5支付Api.h5调起支付": 
+      "org.dows.sdk.weixin.pay.基础支付.H5支付.H5支付Api.支付通知": https://api.mch.weixin.qq.com/v3/transfer/batches/out-batch-no/{out_batch_no}
+      "org.dows.sdk.weixin.pay.基础支付.H5支付.H5支付Api.申请退款": https://api.mch.weixin.qq.com/v3/transfer-detail/electronic-receipts
+      "org.dows.sdk.weixin.pay.基础支付.H5支付.H5支付Api.查询单笔退款": https://api.mch.weixin.qq.com/v3/transfer-detail/electronic-receipts
+      "org.dows.sdk.weixin.pay.基础支付.H5支付.H5支付Api.退款结果通知": 通过申请账单接口获取到“download_url”，URL有效期10min
+      "org.dows.sdk.weixin.pay.基础支付.H5支付.H5支付Api.申请交易账单": https://api.mch.weixin.qq.com/v3/transfer/batches/out-batch-no/{out_batch_no}/details/out-detail-no/{out_detail_no}
+      "org.dows.sdk.weixin.pay.基础支付.H5支付.H5支付Api.申请资金账单": https://api.mch.weixin.qq.com/v3/transfer/bill-receipt
+      "org.dows.sdk.weixin.pay.基础支付.H5支付.H5支付Api.申请单个子商户资金账单": 
+      "org.dows.sdk.weixin.pay.基础支付.H5支付.H5支付Api.下载账单": https://api.mch.weixin.qq.com/v3/transfer/bill-receipt/{out_batch_no}
