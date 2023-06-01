@@ -74,7 +74,6 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
             HttpClientResult uploadTemplateResult = HttpClientUtils.doPost(WX_API_UPLOAD_TEMPLATE_URL + "?component_access_token=" + authorizerAccessToken, param, 1);
 
             String content = uploadTemplateResult.getContent();
-            JSONObject jsonObject = JSON.parseObject(content);
             WxOpenResult wxOpenResult = JSON.parseObject(content, WxOpenResult.class);
             if (Objects.equals(wxOpenResult.getErrcode(),"0")) {
                 // 提交审核
