@@ -21,12 +21,9 @@ public class Catalog implements Treeable {
     private Catalog patent;
     // 孩子节点
     private final List<Catalog> childs = new ArrayList<>();
-
-    //private final static Map<String, BeanSchema> beanSchemaMap = new HashMap<>();
     public void addChild(Catalog catalog) {
         childs.add(catalog);
     }
-
 
     public String getUrl(String prefix) {
         if (href.startsWith("http")) {
@@ -36,8 +33,7 @@ public class Catalog implements Treeable {
         }
     }
 
-
-    public String getWeixinPayDocUrl() {
+    public String getWxPayDocUrl() {
         if (href.startsWith("http")) {
             return href;
         } else {
@@ -45,7 +41,7 @@ public class Catalog implements Treeable {
         }
     }
 
-    public String getDouYinDocUrl() {
+    public String getDyOpenDocUrl() {
         if (href.startsWith("http")) {
             return href;
         } else {

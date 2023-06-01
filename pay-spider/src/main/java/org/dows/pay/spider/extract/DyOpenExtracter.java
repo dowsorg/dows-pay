@@ -192,8 +192,8 @@ public class DyOpenExtracter implements Extractable {
                 if (beanSchema != null) {
                     beanSchema.addMethod(methodSchema);
                 }
-                methodSchema.setDocUrl(catalog.getDouYinDocUrl());
-                Document document = getDocument(catalog.getDouYinDocUrl());
+                methodSchema.setDocUrl(catalog.getDyOpenDocUrl());
+                Document document = getDocument(catalog.getDyOpenDocUrl());
                 JXDocument jxDocument = JXDocument.create(document);
                 //    xpath://div[@class='markdown-render-content']
                 map.forEach((k, v) -> {

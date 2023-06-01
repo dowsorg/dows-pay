@@ -125,78 +125,65 @@ public class WxOpenExtracter implements Extractable {
     private List<Catalog> getCatalogs(String seed, String regex) {
         List<Catalog> catalogs = new ArrayList<>();
         JXDocument jxDocument = JXDocument.create(getDocument(seed));
-
         String[] regexs = regex.split(",");
         List<JXNode> jxNodes = jxDocument.selN(regexs[0]);
         Long id1 = 1L;
+        Catalog catalogPkg = null;
         for (JXNode jxNode : jxNodes) {
-
-            Map<String,Catalog> map = new HashMap<>();
-            List<JXNode> subs = jxNode.sel(regexs[1]);
-            if (subs.size() != 0) {
-                JXNode parent = jxNode.selOne("../..//a");
-                Catalog bean = map.get(parent.selOne("/text()"));
-                if (bean == null) {
-                    bean = new Catalog();
-                    bean.setName(parent.selOne("/text()").asString());
-                    bean.setType("bean");
-                } else {
-                    List<JXNode> methods = jxNode.sel(regexs[1]);
-                    for (JXNode sel : methods) {
-                        JXNode href = sel.selOne("/@href");
-                        JXNode text = sel.selOne("/text()");
-
-                        Catalog method = new Catalog();
-                        method.setName(text.asString());
-                        method.setHref(href.asString());
-                        method.setType("method");
-                        method.setId(id1);
+            Catalog catalogBean = null;
+            List<JXNode> methodNodes = jxNode.sel("li/span/a");
+            if (methodNodes.size() != 0) {
+                JXNode beanNode = jxNode.selOne("../..//a");
+                if (beanNode != null) {
+                    // bean
+                    log.info("bean:{}", beanNode.asString());
+                    catalogBean = new Catalog();
+                    catalogBean.setName(beanNode.selOne("/text()").asString());
+                    catalogBean.setId(id1);
+                    catalogBean.setType("bean");
+                    if (catalogPkg != null) {
+                        catalogBean.setPid(catalogPkg.getId());
+                        catalogBean.setPatent(catalogPkg);
+                    } else {
+                        catalogBean.setPid(0L);
+                    }
+                    id1++;
+                    catalogs.add(catalogBean);
+                }
+                // method
+                for (JXNode methodNode : methodNodes) {
+                    log.info("method:{}", methodNode.asString());
+                    Catalog catalogMethod = new Catalog();
+                    catalogMethod.setName(methodNode.selOne("/text()").asString());
+                    catalogMethod.setHref(methodNode.selOne("/@href").asString());
+                    catalogMethod.setType("method");
+                    catalogMethod.setId(id1);
+                    catalogMethod.setPid(catalogBean.getId());
+                    catalogMethod.setPatent(catalogBean);
+                    id1++;
+                    catalogBean.addChild(catalogMethod);
+                    catalogs.add(catalogMethod);
+                    if (catalogPkg != null) {
+                        catalogPkg = null;
                     }
                 }
-
+            } else {
+                // pkg
+                JXNode pkg = jxNode.selOne("../..//a");
+                if (pkg != null) {
+                    log.info("pkg:{}", pkg.asString());
+                    catalogPkg = new Catalog();
+                    catalogPkg.setName(pkg.selOne("/text()").asString());
+                    catalogPkg.setId(id1);
+                    catalogPkg.setType("pkg");
+                    catalogPkg.setPid(0L);
+                    id1++;
+                    if (catalogBean != null) {
+                        catalogPkg.addChild(catalogBean);
+                    }
+                    catalogs.add(catalogPkg);
+                }
             }
-
-
-//            String menu1 = jxNode.selOne("../..//a/text()").asString();
-//            Catalog catalog = new Catalog();
-//            catalog.setName(menu1);
-//            catalog.setId(id1);
-//            catalog.setType("pkg");
-//            catalog.setPid(0L);
-//            id1++;
-//            catalogs.add(catalog);
-//            Catalog catalog2 = null;
-//            List<JXNode> sels = jxNode.sel(regexs[1]);
-//            for (JXNode sel : sels) {
-//                JXNode href = sel.selOne("/@href");
-//                JXNode text = sel.selOne("/text()");
-//                if (href.asString().startsWith("javascript")) {
-//                    catalog2 = new Catalog();
-//                    catalog2.setName(text.asString());
-//                    catalog2.setHref(href.asString());
-//                    catalog2.setType("bean");
-//                    catalog2.setId(id1);
-//                    catalog2.setPid(catalog.getId());
-//                    catalog2.setPatent(catalog);
-//                    catalog.addChild(catalog2);
-//                } else {
-//                    Catalog catalog3 = new Catalog();
-//                    catalog3.setName(text.asString());
-//                    catalog3.setHref(href.asString());
-//                    catalog3.setType("method");
-//                    catalog3.setId(id1);
-//                    if (catalog2 != null) {
-//                        catalog3.setPid(catalog2.getId());
-//                        catalog2.addChild(catalog3);
-//                        catalog3.setPatent(catalog2);
-//                    } else {
-//                        catalog3.setPid(catalog.getId());
-//                        catalog.addChild(catalog3);
-//                        catalog3.setPatent(catalog);
-//                    }
-//                }
-//                id1++;
-//            }
         }
         return catalogs;
     }
@@ -207,21 +194,32 @@ public class WxOpenExtracter implements Extractable {
                                    ModuleSchema moduleSchema, BeanSchema beanSchema) {
         for (Catalog catalog : catalogs) {
 
+            log.info("catalogType:{}, module:{} ,bean:{}", catalog.getType(), catalog.getName(), catalog.getFullName());
             if (catalog.getName().contains("商户进件")) {
                 continue;
             }
             if (catalog.getName().contains("经营能力")) {
                 return;
             }
+            if (catalog.getName().contains("代商家管理小程序")) {
+                return;
+            }
             if (catalog.getType().equals("pkg")) {
-                catalog.setPkg(catalog.getName());
                 moduleSchema = new ModuleSchema();
-                //moduleSchema.setName(catalog.getName());
                 moduleSchema.setPkg(catalog.getName());
                 moduleSchema.setProjectSchema(projectSchema);
 
                 moduleSchemas.add(moduleSchema);
             } else if (catalog.getType().equals("bean")) {
+                if (catalog.getPatent() == null) {
+                    ModuleSchema ms = new ModuleSchema();
+                    ms.setName(catalog.getName());
+                    ms.setPkg(catalog.getName());
+                    //ms.setProjectSchema(projectSchema);
+                    if (moduleSchema != null) {
+                        moduleSchema.addModule(ms);
+                    }
+                }
                 beanSchema = new BeanSchema();
                 beanSchema.setPkg(catalog.getName());
                 beanSchema.setName(catalog.getName());
@@ -230,14 +228,14 @@ public class WxOpenExtracter implements Extractable {
                     beanSchema.setModule(moduleSchema);
                 }
                 beanSchemas.add(beanSchema);
-            } else {
+            } else if (catalog.getType().equals("method")) {
                 MethodSchema methodSchema = new MethodSchema();
                 methodSchema.setName(catalog.getName());
                 if (beanSchema != null) {
                     beanSchema.addMethod(methodSchema);
                 }
-                methodSchema.setDocUrl(catalog.getWeixinPayDocUrl());
-                Document document = getDocument(catalog.getWeixinPayDocUrl());
+                methodSchema.setDocUrl(catalog.getWxPayDocUrl());
+                Document document = getDocument(catalog.getWxPayDocUrl());
                 JXDocument jxDocument = JXDocument.create(document);
                 map.forEach((k, v) -> {
                     List<JXNode> jxNodes = jxDocument.selN(v);
@@ -281,7 +279,8 @@ public class WxOpenExtracter implements Extractable {
                 });
             }
             if (catalog.getChilds().size() != 0) {
-                buildModuleSchema(catalog.getChilds(), projectSchema, moduleSchemas, beanSchemas, moduleSchema, beanSchema);
+                List<Catalog> childs = catalog.getChilds();
+                buildModuleSchema(childs, projectSchema, moduleSchemas, beanSchemas, moduleSchema, beanSchema);
             }
         }
     }

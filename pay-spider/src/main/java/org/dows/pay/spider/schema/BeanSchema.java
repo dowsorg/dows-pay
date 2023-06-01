@@ -22,6 +22,11 @@ public class BeanSchema {
      * bean名称
      */
     private String name;
+
+    /**
+     * bean code
+     */
+    private String code;
     /**
      * interface|class|annotation....
      */

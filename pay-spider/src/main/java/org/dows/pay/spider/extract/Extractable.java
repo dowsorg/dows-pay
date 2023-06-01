@@ -30,12 +30,12 @@ public interface Extractable {
             /** 启用JS(非常重要) */
             webClient.getOptions().setJavaScriptEnabled(true);
             // webClient.getOptions().setActiveXNative(false);
-            webClient.getOptions().setTimeout(10000);
+            //webClient.getOptions().setTimeout(3000);
             /** 支持AJAX(非常重要) */
             webClient.setAjaxController(new NicelyResynchronizingAjaxController());
             webClient.setJavaScriptErrorListener(new SilentJavaScriptErrorListener());
             /** JS执行需要一定时间，设置等待时间(非常重要) */
-            webClient.waitForBackgroundJavaScript(10000);
+            webClient.waitForBackgroundJavaScript(1000);
 
 
             /** 加载网页 */

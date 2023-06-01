@@ -24,7 +24,7 @@ public class ModuleSchema {
 
     private final List<BeanSchema> beanSchemas = new ArrayList<>();
     //子模块
-    private List<ModuleSchema> childModules;
+    private final List<ModuleSchema> childModules = new ArrayList<>();
 
     public void addBeanSchema(BeanSchema beanSchema) {
         this.beanSchemas.add(beanSchema);
@@ -48,6 +48,10 @@ public class ModuleSchema {
     public String getPkg() {
         return projectSchema.getBasePkg() + (StrUtil.isBlank(pkg) ? "" : "."
                 + pkg.replaceAll("/", ".").replaceAll("-", "."));
+    }
+
+    public void addModule(ModuleSchema moduleSchema) {
+        childModules.add(moduleSchema);
     }
 
 }

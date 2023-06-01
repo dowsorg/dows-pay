@@ -82,7 +82,7 @@ public class ApiTest {
     @Test
     public void testWxPay() {
         String seed = "https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/index.shtml";
-        String regex = "//div[@class='doc-menu']/dl/dt,/following-sibling::dd//a";
+        String regex = "//div[@class='doc-menu ']/dl/dt,/following-sibling::dd//a";
         wxPayExtracter.genSdk(seed, regex);
         log.info("");
     }

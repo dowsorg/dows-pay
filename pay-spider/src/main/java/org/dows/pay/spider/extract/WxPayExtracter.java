@@ -210,8 +210,8 @@ public class WxPayExtracter implements Extractable {
                 if (beanSchema != null) {
                     beanSchema.addMethod(methodSchema);
                 }
-                methodSchema.setDocUrl(catalog.getWeixinPayDocUrl());
-                Document document = getDocument(catalog.getWeixinPayDocUrl());
+                methodSchema.setDocUrl(catalog.getWxPayDocUrl());
+                Document document = getDocument(catalog.getWxPayDocUrl());
                 JXDocument jxDocument = JXDocument.create(document);
                 map.forEach((k, v) -> {
                     List<JXNode> jxNodes = jxDocument.selN(v);
