@@ -75,9 +75,7 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
 
             String content = uploadTemplateResult.getContent();
             JSONObject jsonObject = JSON.parseObject(content);
-            String resContent = jsonObject.getString("content");
-            log.info("uploadMini res is {}",JSON.toJSONString(resContent));
-            WxOpenResult wxOpenResult = JSON.parseObject(resContent, WxOpenResult.class);
+            WxOpenResult wxOpenResult = JSON.parseObject(content, WxOpenResult.class);
             if (Objects.equals(wxOpenResult.getErrcode(),"0")) {
                 // 提交审核
                 Map<String, String> submitMap = new HashMap<>();
