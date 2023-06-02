@@ -55,7 +55,7 @@ public class DyOpenExtracter implements Extractable {
         projectSchema.setRootPath("E:/workspaces/java/projects/dows/dows-pay/pay-sdk1");
         projectSchema.setBasePkg("org.dows.sdk.douyin");
         projectSchema.setModules(moduleSchemas);
-        buildModuleSchema(catalogs, projectSchema, moduleSchemas, beanSchemas, null, null);
+        buildModuleSchema(catalogs, projectSchema, moduleSchemas, beanSchemas);
 
 
         Template apiSchemaTemplate = templateEngine.getTemplate("weixin-api-schema.ftl");
@@ -121,6 +121,327 @@ public class DyOpenExtracter implements Extractable {
         });
     }
 
+    private List<Catalog> getCatalogs(String seed, String regex) {
+        List<Catalog> catalogs = new ArrayList<>();
+        JXDocument jxDocument = JXDocument.create(getDocument(seed));
+        String[] regexs = regex.split(",");
+        List<JXNode> jxNodes = jxDocument.selN(regexs[0]);
+        Long id1 = 1L;
+        Catalog catalogPkg = null;
+        for (JXNode jxNode : jxNodes) {
+            Catalog catalogBean = null;
+            List<JXNode> methodNodes = jxNode.sel("li/span/a");
+            if (methodNodes.size() != 0) {
+                JXNode beanNode = jxNode.selOne("../..//a");
+                if (beanNode != null) {
+                    // bean
+                    log.info("bean:{}", beanNode.asString());
+                    catalogBean = new Catalog();
+                    catalogBean.setName(beanNode.selOne("/text()").asString());
+                    catalogBean.setId(id1);
+                    catalogBean.setType("bean");
+                    catalogBean.setPatent(catalogPkg);
+                    if (catalogPkg != null) {
+                        catalogBean.setPid(catalogPkg.getId());
+                    } else {
+                        catalogBean.setPid(0L);
+                    }
+                    id1++;
+                    catalogs.add(catalogBean);
+                }
+                // method
+                for (JXNode methodNode : methodNodes) {
+                    log.info("method:{}", methodNode.asString());
+                    Catalog catalogMethod = new Catalog();
+                    catalogMethod.setName(methodNode.selOne("/text()").asString());
+                    catalogMethod.setHref(methodNode.selOne("/@href").asString());
+                    catalogMethod.setType("method");
+                    catalogMethod.setId(id1);
+                    catalogMethod.setPid(catalogBean.getId());
+                    catalogMethod.setPatent(catalogBean);
+                    id1++;
+                    catalogBean.addChild(catalogMethod);
+                    catalogs.add(catalogMethod);
+                }
+            } else {
+                // pkg
+                JXNode pkg = jxNode.selOne("../..//a");
+                if (pkg != null) {
+                    log.info("pkg:{}", pkg.asString());
+                    catalogPkg = new Catalog();
+                    catalogPkg.setName(pkg.selOne("/text()").asString());
+                    catalogPkg.setId(id1);
+                    catalogPkg.setType("pkg");
+                    catalogPkg.setPid(0L);
+                    id1++;
+                    if (catalogBean != null) {
+                        catalogPkg.addChild(catalogBean);
+                    }
+                    catalogs.add(catalogPkg);
+                }
+            }
+        }
+        return catalogs;
+    }
+
+
+    /*private List<Catalog> getCatalogs(String seed, String regex) {
+        List<Catalog> catalogs = new ArrayList<>();
+
+
+        JXDocument jxDocument = JXDocument.create(getDocument(seed));
+
+        String[] regexs = regex.split(",");
+        List<JXNode> jxNodes = jxDocument.selN(regexs[0]);
+
+        Map<String, Catalog> catalogMap = new HashMap<>();
+        Long id1 = 1L;
+        for (JXNode jxNode : jxNodes) {
+            String menu1 = jxNode.selOne(regexs[1] + "/text()").asString();
+            Catalog catalog = catalogMap.get(menu1);
+            if (catalog == null) {
+                catalog = new Catalog();
+                catalog.setName(menu1);
+                catalog.setId(id1);
+                catalog.setType("bean");
+                catalog.setPid(0L);
+                id1++;
+                catalogs.add(catalog);
+                catalogMap.put(menu1, catalog);
+            }
+
+            Catalog catalog2 = new Catalog();
+            catalog2.setName(jxNode.selOne("//span[@title]/text()").asString());
+            catalog2.setHref(jxNode.selOne("/@href").asString());
+            catalog2.setType("method");
+            catalog2.setId(id1);
+            catalog2.setPid(catalog.getId());
+            catalog2.setPatent(catalog);
+            catalog.addChild(catalog2);
+            id1++;
+        }
+        return catalogs;
+    }*/
+
+   /* private List<Catalog> getCatalogs(String seed, String regex) {
+        List<Catalog> catalogs = new ArrayList<>();
+        JXDocument jxDocument = JXDocument.create(getDocument(seed));
+        String[] regexs = regex.split(",");
+        List<JXNode> jxNodes = jxDocument.selN(regexs[0]);
+        Long id1 = 1L;
+        Catalog catalogPkg = null;
+        for (JXNode jxNode : jxNodes) {
+            Catalog catalogBean = null;
+            List<JXNode> methodNodes = jxNode.sel("li/span/a");
+            if (methodNodes.size() != 0) {
+                JXNode beanNode = jxNode.selOne("../..//a");
+                if (beanNode != null) {
+                    // bean
+                    log.info("bean:{}", beanNode.asString());
+                    catalogBean = new Catalog();
+                    catalogBean.setName(beanNode.selOne("/text()").asString());
+                    catalogBean.setId(id1);
+                    catalogBean.setType("bean");
+                    catalogBean.setPatent(catalogPkg);
+                    if (catalogPkg != null) {
+                        catalogBean.setPid(catalogPkg.getId());
+                    } else {
+                        catalogBean.setPid(0L);
+                    }
+                    id1++;
+                    catalogs.add(catalogBean);
+                }
+                // method
+                for (JXNode methodNode : methodNodes) {
+                    log.info("method:{}", methodNode.asString());
+                    Catalog catalogMethod = new Catalog();
+                    catalogMethod.setName(methodNode.selOne("/text()").asString());
+                    catalogMethod.setHref(methodNode.selOne("/@href").asString());
+                    catalogMethod.setType("method");
+                    catalogMethod.setId(id1);
+                    catalogMethod.setPid(catalogBean.getId());
+                    catalogMethod.setPatent(catalogBean);
+                    id1++;
+                    catalogBean.addChild(catalogMethod);
+                    catalogs.add(catalogMethod);
+                }
+            } else {
+                // pkg
+                JXNode pkg = jxNode.selOne("../..//a");
+                if (pkg != null) {
+                    log.info("pkg:{}", pkg.asString());
+                    catalogPkg = new Catalog();
+                    catalogPkg.setName(pkg.selOne("/text()").asString());
+                    catalogPkg.setId(id1);
+                    catalogPkg.setType("pkg");
+                    catalogPkg.setPid(0L);
+                    id1++;
+                    if (catalogBean != null) {
+                        catalogPkg.addChild(catalogBean);
+                    }
+                    catalogs.add(catalogPkg);
+                }
+            }
+        }
+        return catalogs;
+    }
+    */
+
+
+
+
+
+
+    private void buildModuleSchema(List<Catalog> catalogs, ProjectSchema projectSchema,
+                                   List<ModuleSchema> moduleSchemas, List<BeanSchema> beanSchemas) {
+
+
+        Map<String, ModuleSchema> moduleSchemaMap = new HashMap<>();
+        Map<String, BeanSchema> beanSchemaMap = new HashMap<>();
+
+        for (Catalog catalog : catalogs) {
+            log.info("catalogType:{}, module:{} ,bean:{}", catalog.getType(), catalog.getName(), catalog.getFullName());
+            /*if (catalog.getName().contains("商户进件")) {
+                continue;
+            }
+            if (catalog.getName().contains("经营能力")) {
+                return;
+            }
+            if (catalog.getName().contains("代商家管理小程序")) {
+                return;
+            }*/
+            if (catalog.getType().equals("pkg")) {
+
+                ModuleSchema moduleSchema = new ModuleSchema();
+                moduleSchema.setName(catalog.getName());
+                //moduleSchema.setPkg(catalog.getName());
+                moduleSchema.setProjectSchema(projectSchema);
+
+                if (catalog.getPatent() == null) {
+                    moduleSchema.setProjectSchema(projectSchema);
+                    moduleSchemas.add(moduleSchema);
+                } else {
+                    ModuleSchema parentModuleSchema = moduleSchemaMap.get(catalog.getPatent().getName());
+                    parentModuleSchema.addModule(moduleSchema);
+                }
+                moduleSchemaMap.put(catalog.getName(), moduleSchema);
+            } else if (catalog.getType().equals("bean")) {
+
+                BeanSchema beanSchema = new BeanSchema();
+                beanSchema.setPkg(catalog.getName());
+                beanSchema.setName(catalog.getName());
+
+                if (catalog.getPatent() == null) {
+                    ModuleSchema moduleSchema = new ModuleSchema();
+                    moduleSchema.setProjectSchema(projectSchema);
+                    moduleSchema.setName(catalog.getName());
+                    moduleSchema.addBeanSchema(beanSchema);
+                    moduleSchemas.add(moduleSchema);
+                    beanSchema.setModule(moduleSchema);
+                } else {
+                    ModuleSchema moduleSchema = moduleSchemaMap.get(catalog.getPatent().getName());
+                    moduleSchema.addBeanSchema(beanSchema);
+                    beanSchema.setModule(moduleSchema);
+                }
+
+                beanSchemas.add(beanSchema);
+                beanSchemaMap.put(catalog.getName(), beanSchema);
+            } else if (catalog.getType().equals("method")) {
+                BeanSchema beanSchema = beanSchemaMap.get(catalog.getPatent().getName());
+                if (beanSchema == null) {
+                    continue;
+                }
+                MethodSchema methodSchema = new MethodSchema();
+                methodSchema.setName(catalog.getName());
+                methodSchema.setDocUrl(catalog.getWxOpenDocUrl());
+                if (beanSchema != null) {
+                    beanSchema.addMethod(methodSchema);
+                }
+
+                Document document = getDocument(catalog.getWxOpenDocUrl());
+                JXDocument jxDocument = JXDocument.create(document);
+                map.forEach((k, v) -> {
+                    List<JXNode> jxNodes = jxDocument.selN(v);
+
+                    List<JXNode> ths = new ArrayList<>();
+                    StringBuilder sb = new StringBuilder();
+                    if (k.equalsIgnoreCase("inputs")) {
+
+                        ParamSchema paramSchema = new ParamSchema();
+                        paramSchema.setDescr(methodSchema.getName());
+                        paramSchema.setName(methodSchema.getName() + "Request");
+                        paramSchema.setType(methodSchema.getName() + "Request");
+                        paramSchema.setIot("in");
+                        // 为method 设置 input入参列表
+                        methodSchema.addInput(paramSchema);
+                        for (JXNode jxNode : jxNodes) {
+                            buildParamByTable(ths, paramSchema, jxNode);
+                        }
+                        paramSchema.setDocUrl(methodSchema.getDocUrl());
+                    } else if (k.equalsIgnoreCase("output")) {
+                        ParamSchema paramSchema = new ParamSchema();
+                        paramSchema.setDescr(methodSchema.getName());
+                        paramSchema.setName(methodSchema.getName() + "Response");
+                        paramSchema.setType(methodSchema.getName() + "Response");
+                        paramSchema.setIot("out");
+                        methodSchema.setOutput(paramSchema);
+                        for (JXNode jxNode : jxNodes) {
+                            buildParamByTable(ths, paramSchema, jxNode);
+                        }
+                        paramSchema.setDocUrl(methodSchema.getDocUrl());
+                    } else {
+                        for (JXNode jxNode : jxNodes) {
+                            String string = jxNode.asString();
+                            if (!StrUtil.isBlank(string)) {
+                                sb.append(string + ",");
+                            }
+                        }
+                        if (sb.length() != 0) {
+                            methodSchema.setFieldValue(k, sb.deleteCharAt(sb.length() - 1).toString().trim());
+                        }
+                    }
+                    //log.info("jxNodes:{}", jxNodes);
+                });
+            }
+        }
+    }
+
+    private void buildParamByTable(List<JXNode> ths, ParamSchema paramSchema, JXNode jxNode) {
+        Element element = (Element) jxNode.value();
+        if (element.tagName().equalsIgnoreCase("tr")) {
+            // 处理表头
+            if (ths.isEmpty()) {
+                ths.addAll(jxNode.sel("th"));
+            }
+
+            List<JXNode> tds = jxNode.sel("td");
+            if (tds.size() != ths.size()) {
+                return;
+            }
+
+            FieldSchema fieldSchema = new FieldSchema();
+            paramSchema.addField(fieldSchema);
+
+            Map<String, Field> fields = fieldSchema.getWexinOpenFieldMap();
+            for (int i = 0; i < ths.size(); i++) {
+                Field field = fields.get(ths.get(i).selOne("/text()").asString());
+                if (field != null) {
+                    field.setAccessible(true);
+                    try {
+                        JXNode jxNode1 = tds.get(i);
+                        JXNode jxNode2 = jxNode1.selOne("/text()");
+                        if (jxNode1 != null && jxNode2 != null) {
+                            field.set(fieldSchema, jxNode2.asString());
+                        }
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        }
+    }
+
+/*
 
     private List<Catalog> getCatalogs(String seed, String regex) {
         List<Catalog> catalogs = new ArrayList<>();
@@ -272,5 +593,5 @@ public class DyOpenExtracter implements Extractable {
                 }
             }
         }
-    }
+    }*/
 }

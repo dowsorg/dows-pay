@@ -7,8 +7,6 @@ import lombok.ToString;
 import java.util.List;
 
 @Data
-@ToString
-@EqualsAndHashCode
 public class ProjectSchema {
     /**
      * 项目名
@@ -29,4 +27,12 @@ public class ProjectSchema {
 
     private List<ModuleSchema> modules;
 
+    @Override
+    public String toString() {
+        return "ProjectSchema{" +
+                "name='" + name + '\'' +
+                ", rootPath='" + rootPath + '\'' +
+                ", basePkg='" + basePkg + '\'' +
+                '}';
+    }
 }

@@ -1,0 +1,7 @@
+dows:
+  sdk:
+    weixin:
+      "org.dows.sdk.weixin.open.模板库管理.模板库管理Api.获取草稿箱列表": GET https://api.weixin.qq.com/wxa/gettemplatedraftlist?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.模板库管理.模板库管理Api.将草稿添加到模板库": POST https://api.weixin.qq.com/wxa/addtotemplate?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.模板库管理.模板库管理Api.获取模板列表": GET https://api.weixin.qq.com/wxa/gettemplatelist?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.模板库管理.模板库管理Api.删除代码模板": POST https://api.weixin.qq.com/wxa/deletetemplate?access_token=ACCESS_TOKEN

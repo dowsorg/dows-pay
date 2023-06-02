@@ -2,17 +2,16 @@ package org.dows.pay.spider.schema;
 
 import cn.hutool.core.util.StrUtil;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import org.dows.pay.spider.util.PinyinUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@ToString
-@EqualsAndHashCode
 public class ModuleSchema {
     private String name;
+
+    private String code;
 
     private String pkg = "";
 
@@ -32,12 +31,12 @@ public class ModuleSchema {
 
     public String getJavaPath() {
         return projectSchema.getRootPath() + "/" + projectSchema.getName()
-                + "/" + (null == name ? "" : name) + "/" + "src/main/java";
+                + "/" + (null == code ? "" : code) + "/" + "src/main/java";
     }
 
     public String getResourcesPath() {
         return projectSchema.getRootPath() + "/" + projectSchema.getName()
-                + "/" + (null == name ? "" : name) + "/" + "src/main/resources";
+                + "/" + (null == code ? "" : code) + "/" + "src/main/resources";
     }
 
     public String getPath() {
@@ -47,11 +46,29 @@ public class ModuleSchema {
 
     public String getPkg() {
         return projectSchema.getBasePkg() + (StrUtil.isBlank(pkg) ? "" : "."
-                + pkg.replaceAll("/", ".").replaceAll("-", "."));
+                + pkg.trim().replaceAll("/", ".").replaceAll("-", "."));
+    }
+
+    public String getCode() {
+        if(code != null){
+            return code.trim();
+        }
+        if (!StrUtil.isBlank(name)) {
+            return PinyinUtil.getPingYin(name.trim());
+        }
+        return null;
     }
 
     public void addModule(ModuleSchema moduleSchema) {
         childModules.add(moduleSchema);
     }
 
+
+    @Override
+    public String toString() {
+        return "ModuleSchema{" +
+                "name='" + name + '\'' +
+                ", pkg='" + pkg + '\'' +
+                '}';
+    }
 }

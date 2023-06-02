@@ -1,0 +1,6 @@
+dows:
+  sdk:
+    weixin:
+      "org.dows.sdk.weixin.open.域名管理.域名管理Api.设置第三方平台服务器域名": POST https://api.weixin.qq.com/cgi-bin/component/modify_wxa_server_domain?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.域名管理.域名管理Api.获取第三方平台业务域名校验文件": POST https://api.weixin.qq.com/cgi-bin/component/get_domain_confirmfile?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.域名管理.域名管理Api.设置第三方平台业务域名": POST https://api.weixin.qq.com/cgi-bin/component/modify_wxa_jump_domain?access_token=ACCESS_TOKEN

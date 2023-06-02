@@ -1,0 +1,7 @@
+dows:
+  sdk:
+    weixin:
+      "org.dows.sdk.weixin.open.kfptzhgl.KaiFangPingTaiZhangHaoGuanLiApi.bangDingKaiFangPingTaiZhangHao": POST https://api.weixin.qq.com/cgi-bin/open/bind?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.kfptzhgl.KaiFangPingTaiZhangHaoGuanLiApi.jieChuBangDingKaiFangPingTaiZhangHao": POST https://api.weixin.qq.com/cgi-bin/open/unbind?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.kfptzhgl.KaiFangPingTaiZhangHaoGuanLiApi.huoQuKaiFangPingTaiZhangHao": POST https://api.weixin.qq.com/cgi-bin/open/get?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.kfptzhgl.KaiFangPingTaiZhangHaoGuanLiApi.chuangJianKaiFangPingTaiZhangHao": POST https://api.weixin.qq.com/cgi-bin/open/create?access_token=ACCESS_TOKEN

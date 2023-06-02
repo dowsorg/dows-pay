@@ -1,11 +1,13 @@
 package org.dows.pay.spider.schema;
 
+import cn.hutool.core.util.StrUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.dows.pay.spider.AlipayField;
 import org.dows.pay.spider.WexinOpenField;
+import org.dows.pay.spider.util.PinyinUtil;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -95,6 +97,16 @@ public class MethodSchema {
         return name.trim();
     }
 
+    public String getCode() {
+        if(code != null){
+            return code.trim().replace(" ","");
+        }
+        if (!StrUtil.isBlank(name)) {
+            return PinyinUtil.getPingYin(name.trim().replace(" ",""));
+        }
+        return null;
+    }
+
     public MethodSchema addInput(ParamSchema paramInfo) {
         inputs.add(paramInfo);
         return this;
@@ -144,4 +156,19 @@ public class MethodSchema {
     }
 
 
+    @Override
+    public String toString() {
+        return "MethodSchema{" +
+                "name='" + name + '\'' +
+                ", code='" + code + '\'' +
+                ", descr='" + descr + '\'' +
+                ", overview='" + overview + '\'' +
+                ", url='" + url + '\'' +
+                ", docUrl='" + docUrl + '\'' +
+                ", httpMethod='" + httpMethod + '\'' +
+                ", restMethod='" + restMethod + '\'' +
+                ", methodType='" + methodType + '\'' +
+                ", genericVal='" + genericVal + '\'' +
+                '}';
+    }
 }

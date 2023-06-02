@@ -2,8 +2,8 @@ package org.dows.pay.spider.schema;
 
 import cn.hutool.core.util.StrUtil;
 import lombok.Data;
-import lombok.ToString;
 import org.dows.pay.spider.model.schema.ApiSchema;
+import org.dows.pay.spider.util.PinyinUtil;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -15,7 +15,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Data
-@ToString
 public class BeanSchema {
 
     /**
@@ -120,8 +119,23 @@ public class BeanSchema {
      *
      * @return
      */
-    public String getName() {
+/*    public String getName() {
         return StrUtil.toCamelCase(name.replaceAll("-", "_")) + "Api";
+    }*/
+    public void setPkg(String pkg) {
+        this.pkg = PinyinUtil.getPinYinHeadChar(pkg.toLowerCase());
+    }
+
+    /**
+     * 如若自定义code 可在setName后setCode(xxx)
+     *
+     * @param name
+     */
+    public void setName(String name) {
+        this.name = name.trim();
+        String nn = StrUtil.toCamelCase(name.replaceAll(" ", "")
+                .replaceAll("-", "_")) + "Api";
+        this.code = PinyinUtil.getPingYin(nn);
     }
 
     public String getPkg() {
@@ -146,5 +160,20 @@ public class BeanSchema {
 
     public List<FieldSchema> getFields() {
         return this.fields;
+    }
+
+    @Override
+    public String toString() {
+        return "BeanSchema{" +
+                "name='" + name + '\'' +
+                ", code='" + code + '\'' +
+                ", type='" + type + '\'' +
+                ", descr='" + descr + '\'' +
+                ", pkg='" + pkg + '\'' +
+                ", suffix='" + suffix + '\'' +
+                ", genericTyp='" + genericTyp + '\'' +
+                ", fields=" + fields +
+                ", superInterfaces=" + superInterfaces +
+                '}';
     }
 }

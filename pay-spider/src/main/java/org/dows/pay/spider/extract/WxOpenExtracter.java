@@ -53,10 +53,10 @@ public class WxOpenExtracter implements Extractable {
 
         ProjectSchema projectSchema = new ProjectSchema();
         projectSchema.setName("sdk-weixin");
-        projectSchema.setRootPath("E:/workspace/java/projects/dows/dows-pay/pay-sdk1");
+        projectSchema.setRootPath("E:/workspaces/java/projects/dows/dows-pay/pay-sdk2");
         projectSchema.setBasePkg("org.dows.sdk.weixin.open");
         projectSchema.setModules(moduleSchemas);
-        buildModuleSchema(catalogs, projectSchema, moduleSchemas, beanSchemas, null, null);
+        buildModuleSchema(catalogs, projectSchema, moduleSchemas, beanSchemas);
 
 
         Template apiSchemaTemplate = templateEngine.getTemplate("weixin-api-schema.ftl");
@@ -69,14 +69,14 @@ public class WxOpenExtracter implements Extractable {
             Files.createDirectories(of);
             Map<String, Object> map = new HashMap<>();
             map.put("beanSchemas", beanSchemas);
-            Files.write(of.resolve("weixin-api-schema.yml"), apiSchemaTemplate.render(map).getBytes());
+            Files.write(of.resolve("weixin-open-schema.yml"), apiSchemaTemplate.render(map).getBytes());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
 
         for (BeanSchema beanSchema : beanSchemas) {
-            String beanName = beanSchema.getName();
+            String beanName = beanSchema.getCode();
             String path = beanSchema.getPath();
             try {
                 Files.createDirectories(Path.of(path));
@@ -141,9 +141,9 @@ public class WxOpenExtracter implements Extractable {
                     catalogBean.setName(beanNode.selOne("/text()").asString());
                     catalogBean.setId(id1);
                     catalogBean.setType("bean");
+                    catalogBean.setPatent(catalogPkg);
                     if (catalogPkg != null) {
                         catalogBean.setPid(catalogPkg.getId());
-                        catalogBean.setPatent(catalogPkg);
                     } else {
                         catalogBean.setPid(0L);
                     }
@@ -163,9 +163,6 @@ public class WxOpenExtracter implements Extractable {
                     id1++;
                     catalogBean.addChild(catalogMethod);
                     catalogs.add(catalogMethod);
-                    if (catalogPkg != null) {
-                        catalogPkg = null;
-                    }
                 }
             } else {
                 // pkg
@@ -189,6 +186,156 @@ public class WxOpenExtracter implements Extractable {
     }
 
 
+    private void buildModuleSchema(List<Catalog> catalogs, ProjectSchema projectSchema,
+                                   List<ModuleSchema> moduleSchemas, List<BeanSchema> beanSchemas) {
+
+
+        Map<String, ModuleSchema> moduleSchemaMap = new HashMap<>();
+        Map<String, BeanSchema> beanSchemaMap = new HashMap<>();
+
+        for (Catalog catalog : catalogs) {
+            log.info("catalogType:{}, module:{} ,bean:{}", catalog.getType(), catalog.getName(), catalog.getFullName());
+            /*if (catalog.getName().contains("商户进件")) {
+                continue;
+            }
+            if (catalog.getName().contains("经营能力")) {
+                return;
+            }
+            if (catalog.getName().contains("代商家管理小程序")) {
+                return;
+            }*/
+            if (catalog.getType().equals("pkg")) {
+
+                ModuleSchema moduleSchema = new ModuleSchema();
+                moduleSchema.setName(catalog.getName());
+                //moduleSchema.setPkg(catalog.getName());
+                moduleSchema.setProjectSchema(projectSchema);
+
+                if (catalog.getPatent() == null) {
+                    moduleSchema.setProjectSchema(projectSchema);
+                    moduleSchemas.add(moduleSchema);
+                } else {
+                    ModuleSchema parentModuleSchema = moduleSchemaMap.get(catalog.getPatent().getName());
+                    parentModuleSchema.addModule(moduleSchema);
+                }
+                moduleSchemaMap.put(catalog.getName(), moduleSchema);
+            } else if (catalog.getType().equals("bean")) {
+
+                BeanSchema beanSchema = new BeanSchema();
+                beanSchema.setPkg(catalog.getName());
+                beanSchema.setName(catalog.getName());
+
+                if (catalog.getPatent() == null) {
+                    ModuleSchema moduleSchema = new ModuleSchema();
+                    moduleSchema.setProjectSchema(projectSchema);
+                    moduleSchema.setName(catalog.getName());
+                    moduleSchema.addBeanSchema(beanSchema);
+                    moduleSchemas.add(moduleSchema);
+                    beanSchema.setModule(moduleSchema);
+                } else {
+                    ModuleSchema moduleSchema = moduleSchemaMap.get(catalog.getPatent().getName());
+                    moduleSchema.addBeanSchema(beanSchema);
+                    beanSchema.setModule(moduleSchema);
+                }
+
+                beanSchemas.add(beanSchema);
+                beanSchemaMap.put(catalog.getName(), beanSchema);
+            } else if (catalog.getType().equals("method")) {
+                BeanSchema beanSchema = beanSchemaMap.get(catalog.getPatent().getName());
+                if (beanSchema == null) {
+                    continue;
+                }
+                MethodSchema methodSchema = new MethodSchema();
+                methodSchema.setName(catalog.getName());
+                methodSchema.setDocUrl(catalog.getWxOpenDocUrl());
+                if (beanSchema != null) {
+                    beanSchema.addMethod(methodSchema);
+                }
+
+                Document document = getDocument(catalog.getWxOpenDocUrl());
+                JXDocument jxDocument = JXDocument.create(document);
+                map.forEach((k, v) -> {
+                    List<JXNode> jxNodes = jxDocument.selN(v);
+
+                    List<JXNode> ths = new ArrayList<>();
+                    StringBuilder sb = new StringBuilder();
+                    if (k.equalsIgnoreCase("inputs")) {
+
+                        ParamSchema paramSchema = new ParamSchema();
+                        paramSchema.setDescr(methodSchema.getName());
+                        paramSchema.setName(methodSchema.getName() + "Request");
+                        paramSchema.setType(methodSchema.getName() + "Request");
+                        paramSchema.setIot("in");
+                        // 为method 设置 input入参列表
+                        methodSchema.addInput(paramSchema);
+                        for (JXNode jxNode : jxNodes) {
+                            buildParamByTable(ths, paramSchema, jxNode);
+                        }
+                        paramSchema.setDocUrl(methodSchema.getDocUrl());
+                    } else if (k.equalsIgnoreCase("output")) {
+                        ParamSchema paramSchema = new ParamSchema();
+                        paramSchema.setDescr(methodSchema.getName());
+                        paramSchema.setName(methodSchema.getName() + "Response");
+                        paramSchema.setType(methodSchema.getName() + "Response");
+                        paramSchema.setIot("out");
+                        methodSchema.setOutput(paramSchema);
+                        for (JXNode jxNode : jxNodes) {
+                            buildParamByTable(ths, paramSchema, jxNode);
+                        }
+                        paramSchema.setDocUrl(methodSchema.getDocUrl());
+                    } else {
+                        for (JXNode jxNode : jxNodes) {
+                            String string = jxNode.asString();
+                            if (!StrUtil.isBlank(string)) {
+                                sb.append(string + ",");
+                            }
+                        }
+                        if (sb.length() != 0) {
+                            methodSchema.setFieldValue(k, sb.deleteCharAt(sb.length() - 1).toString().trim());
+                        }
+                    }
+                    //log.info("jxNodes:{}", jxNodes);
+                });
+            }
+        }
+    }
+
+    private void buildParamByTable(List<JXNode> ths, ParamSchema paramSchema, JXNode jxNode) {
+        Element element = (Element) jxNode.value();
+        if (element.tagName().equalsIgnoreCase("tr")) {
+            // 处理表头
+            if (ths.isEmpty()) {
+                ths.addAll(jxNode.sel("th"));
+            }
+
+            List<JXNode> tds = jxNode.sel("td");
+            if (tds.size() != ths.size()) {
+                return;
+            }
+
+            FieldSchema fieldSchema = new FieldSchema();
+            paramSchema.addField(fieldSchema);
+
+            Map<String, Field> fields = fieldSchema.getWexinOpenFieldMap();
+            for (int i = 0; i < ths.size(); i++) {
+                Field field = fields.get(ths.get(i).selOne("/text()").asString());
+                if (field != null) {
+                    field.setAccessible(true);
+                    try {
+                        JXNode jxNode1 = tds.get(i);
+                        JXNode jxNode2 = jxNode1.selOne("/text()");
+                        if (jxNode1 != null && jxNode2 != null) {
+                            field.set(fieldSchema, jxNode2.asString());
+                        }
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        }
+    }
+
+    /*
     private void buildModuleSchema(List<Catalog> catalogs,
                                    ProjectSchema projectSchema, List<ModuleSchema> moduleSchemas, List<BeanSchema> beanSchemas,
                                    ModuleSchema moduleSchema, BeanSchema beanSchema) {
@@ -206,7 +353,8 @@ public class WxOpenExtracter implements Extractable {
             }
             if (catalog.getType().equals("pkg")) {
                 moduleSchema = new ModuleSchema();
-                moduleSchema.setPkg(catalog.getName());
+                moduleSchema.setName(catalog.getName());
+                //moduleSchema.setPkg(catalog.getName());
                 moduleSchema.setProjectSchema(projectSchema);
 
                 moduleSchemas.add(moduleSchema);
@@ -283,41 +431,6 @@ public class WxOpenExtracter implements Extractable {
                 buildModuleSchema(childs, projectSchema, moduleSchemas, beanSchemas, moduleSchema, beanSchema);
             }
         }
-    }
-
-    private void buildParamByTable(List<JXNode> ths, ParamSchema paramSchema, JXNode jxNode) {
-        Element element = (Element) jxNode.value();
-        if (element.tagName().equalsIgnoreCase("tr")) {
-            // 处理表头
-            if (ths.isEmpty()) {
-                ths.addAll(jxNode.sel("th"));
-            }
-
-            List<JXNode> tds = jxNode.sel("td");
-            if (tds.size() != ths.size()) {
-                return;
-            }
-
-            FieldSchema fieldSchema = new FieldSchema();
-            paramSchema.addField(fieldSchema);
-
-            Map<String, Field> fields = fieldSchema.getWexinPayFieldMap();
-            for (int i = 0; i < ths.size(); i++) {
-                Field field = fields.get(ths.get(i).selOne("/text()").asString());
-                if (field != null) {
-                    field.setAccessible(true);
-                    try {
-                        JXNode jxNode1 = tds.get(i);
-                        JXNode jxNode2 = jxNode1.selOne("/text()");
-                        if (jxNode1 != null && jxNode2 != null) {
-                            field.set(fieldSchema, jxNode2.asString());
-                        }
-                    } catch (IllegalAccessException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            }
-        }
-    }
+    }*/
 
 }

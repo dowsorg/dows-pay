@@ -27,7 +27,7 @@ import java.math.BigDecimal;
 <#--@Schema(name = "${parameter.type} 对象", title = "${(parameter.descr!"")}")-->
 <#--@ApiModel(value = "${parameter.type} 对象", description = "${(parameter.descr!"")}")-->
 @Schema(name = "${(name!"")?cap_first}", title = "${(name!"")?cap_first}")
-public class ${(name!"")?cap_first}{
+public class ${(code!"")?cap_first}{
 <#if fields?? && (fields?size >0)>
     <#list fields as field >
         <#if field.notnull??>
@@ -39,7 +39,7 @@ public class ${(name!"")?cap_first}{
         <#if field.fieldType?has_content>
         <#--    @ApiModelProperty("${field.descr!""}")-->
     @Schema(title = "${field.descr!""}")
-    private ${(field.fieldType!"")?cap_first} ${field.name!""};
+    private ${(field.fieldType!"")?cap_first} ${field.code!""};
         </#if>
     </#list>
 </#if>

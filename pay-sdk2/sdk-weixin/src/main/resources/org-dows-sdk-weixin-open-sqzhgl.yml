@@ -1,0 +1,7 @@
+dows:
+  sdk:
+    weixin:
+      "org.dows.sdk.weixin.open.sqzhgl.ShouQuanZhangHaoGuanLiApi.laQuYiShouQuanDeZhangHaoXinXi": POST https://api.weixin.qq.com/cgi-bin/component/api_get_authorizer_list?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.sqzhgl.ShouQuanZhangHaoGuanLiApi.huoQuShouQuanZhangHaoXiangQing": POST https://api.weixin.qq.com/cgi-bin/component/api_get_authorizer_info?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.sqzhgl.ShouQuanZhangHaoGuanLiApi.sheZhiShouQuanFangXuanXiangXinXi": POST https://api.weixin.qq.com/cgi-bin/component/set_authorizer_option?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.sqzhgl.ShouQuanZhangHaoGuanLiApi.huoQuShouQuanFangXuanXiangXinXi": POST https://api.weixin.qq.com/cgi-bin/component/get_authorizer_option?access_token=ACCESS_TOKEN

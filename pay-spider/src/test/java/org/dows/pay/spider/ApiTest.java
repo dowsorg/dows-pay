@@ -12,6 +12,7 @@ import org.dows.pay.spider.extract.WxOpenExtracter;
 import org.dows.pay.spider.extract.WxPayExtracter;
 import org.dows.pay.spider.extract.DyOpenExtracter;
 import org.dows.pay.spider.schema.*;
+import org.dows.pay.spider.util.PinyinUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -60,6 +61,13 @@ public class ApiTest {
         catalogCrawler.crawlerApi();
     }
 
+
+
+    @Test
+    public void test(){
+        String 测试小程序 = PinyinUtil.getPingYin("测试小程序Api");
+        log.info(测试小程序);
+    }
     @Test
     public void testDyOpen() {
         String seed = "classpath://html/application-zijie-api.html";

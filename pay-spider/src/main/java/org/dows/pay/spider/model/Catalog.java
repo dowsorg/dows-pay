@@ -41,6 +41,14 @@ public class Catalog implements Treeable {
         }
     }
 
+    public String getWxOpenDocUrl() {
+        if (href.startsWith("http")) {
+            return href;
+        } else {
+            return "https://developers.weixin.qq.com" + href;
+        }
+    }
+
     public String getDyOpenDocUrl() {
         if (href.startsWith("http")) {
             return href;
@@ -61,5 +69,18 @@ public class Catalog implements Treeable {
             return patent.getName() + (name == null ? "" : "." + name);
         }
         return name;
+    }
+
+    @Override
+    public String toString() {
+        return "Catalog{" +
+                "id=" + id +
+                ", pid=" + pid +
+                ", name='" + name + '\'' +
+                ", icon='" + icon + '\'' +
+                ", href='" + href + '\'' +
+                ", pkg='" + pkg + '\'' +
+                ", type='" + type + '\'' +
+                '}';
     }
 }

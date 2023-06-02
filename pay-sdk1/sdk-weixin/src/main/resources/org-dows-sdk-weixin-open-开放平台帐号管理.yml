@@ -1,0 +1,7 @@
+dows:
+  sdk:
+    weixin:
+      "org.dows.sdk.weixin.open.开放平台帐号管理.开放平台帐号管理Api.绑定开放平台帐号": POST https://api.weixin.qq.com/cgi-bin/open/bind?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.开放平台帐号管理.开放平台帐号管理Api.解除绑定开放平台帐号": POST https://api.weixin.qq.com/cgi-bin/open/unbind?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.开放平台帐号管理.开放平台帐号管理Api.获取开放平台帐号": POST https://api.weixin.qq.com/cgi-bin/open/get?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.开放平台帐号管理.开放平台帐号管理Api.创建开放平台帐号": POST https://api.weixin.qq.com/cgi-bin/open/create?access_token=ACCESS_TOKEN

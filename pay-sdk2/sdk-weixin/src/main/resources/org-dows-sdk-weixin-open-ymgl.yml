@@ -1,0 +1,6 @@
+dows:
+  sdk:
+    weixin:
+      "org.dows.sdk.weixin.open.ymgl.YuMingGuanLiApi.sheZhiDiSanFangPingTaiFuWuQiYuMing": POST https://api.weixin.qq.com/cgi-bin/component/modify_wxa_server_domain?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.ymgl.YuMingGuanLiApi.huoQuDiSanFangPingTaiYeWuYuMingXiaoYanWenJian": POST https://api.weixin.qq.com/cgi-bin/component/get_domain_confirmfile?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.ymgl.YuMingGuanLiApi.sheZhiDiSanFangPingTaiYeWuYuMing": POST https://api.weixin.qq.com/cgi-bin/component/modify_wxa_jump_domain?access_token=ACCESS_TOKEN

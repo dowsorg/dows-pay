@@ -1,0 +1,15 @@
+dows:
+  sdk:
+    weixin:
+      "org.dows.sdk.weixin.pay.jsapizf.JSAPIZhiFuApi.jSAPIXiaDan": https://api.mch.weixin.qq.com/v3/pay/partner/transactions/jsapi
+      "org.dows.sdk.weixin.pay.jsapizf.JSAPIZhiFuApi.chaXunDingDan": https://api.mch.weixin.qq.com/v3/pay/partner/transactions/id/{transaction_id},https://api.mch.weixin.qq.com/v3/pay/partner/transactions/out-trade-no/{out_trade_no}
+      "org.dows.sdk.weixin.pay.jsapizf.JSAPIZhiFuApi.guanBiDingDan": https://api.mch.weixin.qq.com/v3/pay/partner/transactions/out-trade-no/{out_trade_no}/close
+      "org.dows.sdk.weixin.pay.jsapizf.JSAPIZhiFuApi.jSAPIDiaoQiZhiFu": 
+      "org.dows.sdk.weixin.pay.jsapizf.JSAPIZhiFuApi.zhiFuTongZhi": 
+      "org.dows.sdk.weixin.pay.jsapizf.JSAPIZhiFuApi.shenQingTuiKuan": https://api.mch.weixin.qq.com/v3/refund/domestic/refunds
+      "org.dows.sdk.weixin.pay.jsapizf.JSAPIZhiFuApi.chaXunDanBiTuiKuan": https://api.mch.weixin.qq.com/v3/refund/domestic/refunds/{out_refund_no}
+      "org.dows.sdk.weixin.pay.jsapizf.JSAPIZhiFuApi.tuiKuanJieGuoTongZhi": 该链接是通过[申请退款接口]指定的notify_url，必须为https协议。如果链接无法访问，商户将无法接收到微信通知。 通知url必须为直接可访问的url，不能携带参数。示例：“https://pay.weixin.qq.com/wxpay/pay.action”
+      "org.dows.sdk.weixin.pay.jsapizf.JSAPIZhiFuApi.shenQingJiaoYiZhangDan": https://api.mch.weixin.qq.com/v3/bill/tradebill
+      "org.dows.sdk.weixin.pay.jsapizf.JSAPIZhiFuApi.shenQingZiJinZhangDan": https://api.mch.weixin.qq.com/v3/bill/fundflowbill
+      "org.dows.sdk.weixin.pay.jsapizf.JSAPIZhiFuApi.shenQingDanGeZiShangHuZiJinZhangDan": 
+      "org.dows.sdk.weixin.pay.jsapizf.JSAPIZhiFuApi.xiaZaiZhangDan": 通过申请账单接口获取到“download_url”，URL有效期30s

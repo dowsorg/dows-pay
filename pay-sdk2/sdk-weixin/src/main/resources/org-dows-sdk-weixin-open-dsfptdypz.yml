@@ -1,0 +1,8 @@
+dows:
+  sdk:
+    weixin:
+      "org.dows.sdk.weixin.open.dsfptdypz.DiSanFangPingTaiDiaoYongPingZhengApi.qiDongPiaoJuTuiSongFuWu": POST https://api.weixin.qq.com/cgi-bin/component/api_start_push_ticket
+      "org.dows.sdk.weixin.open.dsfptdypz.DiSanFangPingTaiDiaoYongPingZhengApi.huoQuYuShouQuanMa": POST https://api.weixin.qq.com/cgi-bin/component/api_create_preauthcode?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.dsfptdypz.DiSanFangPingTaiDiaoYongPingZhengApi.huoQuShouQuanZhangHaoDiaoYongLingPai": POST https://api.weixin.qq.com/cgi-bin/component/api_authorizer_token?component_access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.dsfptdypz.DiSanFangPingTaiDiaoYongPingZhengApi.huoQuShuaXinLingPai": POST https://api.weixin.qq.com/cgi-bin/component/api_query_auth?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.dsfptdypz.DiSanFangPingTaiDiaoYongPingZhengApi.huoQuLingPai": POST https://api.weixin.qq.com/cgi-bin/component/api_component_token

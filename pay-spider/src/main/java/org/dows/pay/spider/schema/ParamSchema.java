@@ -2,6 +2,7 @@ package org.dows.pay.spider.schema;
 
 import cn.hutool.core.util.StrUtil;
 import lombok.Data;
+import org.dows.pay.spider.util.PinyinUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,6 +12,7 @@ import java.util.List;
 public class ParamSchema {
     private String type;
     private String name;
+    private String code;
     private String descr;
 
     // 参数类型，输入参数还是输出参数，默认输入参数
@@ -43,9 +45,18 @@ public class ParamSchema {
 
 
     public String getType() {
-        return StrUtil.upperFirst(type);
+        return StrUtil.upperFirst(PinyinUtil.getPingYin(type.trim().replace(" ", "")));
     }
 
+    public String getCode() {
+        if (code != null) {
+            return code.trim().replace(" ", "");
+        }
+        if (!StrUtil.isBlank(name.trim())) {
+            return PinyinUtil.getPingYin(name.trim().replace(" ", ""));
+        }
+        return null;
+    }
 
     public String getClazz() {
         if (!javaType.contains(type)) {

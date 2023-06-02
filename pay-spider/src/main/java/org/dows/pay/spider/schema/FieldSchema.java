@@ -73,6 +73,7 @@ public class FieldSchema {
     public Map<String, Field> getWexinPayFieldMap() {
         return weixinPayFieldMap;
     }
+
     public String getDescr() {
         if (StrUtil.isBlank(descr)) {
             return "";
@@ -83,6 +84,8 @@ public class FieldSchema {
     public String getFieldType() {
         if (StrUtil.isBlank(fieldType)) {
             return "";
+        } else if (fieldType.contains("[")) {
+            return fieldType.substring(0, fieldType.indexOf("["));
         } else if (fieldType.startsWith("Array<string") || fieldType.startsWith("array<string")) {
             return "List<String>";
         } else if (fieldType.equalsIgnoreCase("number")) {

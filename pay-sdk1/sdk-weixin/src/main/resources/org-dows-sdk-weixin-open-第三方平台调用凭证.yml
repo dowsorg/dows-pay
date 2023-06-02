@@ -1,0 +1,8 @@
+dows:
+  sdk:
+    weixin:
+      "org.dows.sdk.weixin.open.第三方平台调用凭证.第三方平台调用凭证Api.启动票据推送服务": POST https://api.weixin.qq.com/cgi-bin/component/api_start_push_ticket
+      "org.dows.sdk.weixin.open.第三方平台调用凭证.第三方平台调用凭证Api.获取预授权码": POST https://api.weixin.qq.com/cgi-bin/component/api_create_preauthcode?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.第三方平台调用凭证.第三方平台调用凭证Api.获取授权帐号调用令牌": POST https://api.weixin.qq.com/cgi-bin/component/api_authorizer_token?component_access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.第三方平台调用凭证.第三方平台调用凭证Api.获取刷新令牌": POST https://api.weixin.qq.com/cgi-bin/component/api_query_auth?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.第三方平台调用凭证.第三方平台调用凭证Api.获取令牌": POST https://api.weixin.qq.com/cgi-bin/component/api_component_token

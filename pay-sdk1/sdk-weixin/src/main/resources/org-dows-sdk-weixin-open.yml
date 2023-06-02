@@ -1,0 +1,33 @@
+dows:
+  sdk:
+    weixin:
+      "org.dows.sdk.weixin.open.第三方平台调用凭证Api.启动票据推送服务": POST https://api.weixin.qq.com/cgi-bin/component/api_start_push_ticket
+      "org.dows.sdk.weixin.open.第三方平台调用凭证Api.获取预授权码": POST https://api.weixin.qq.com/cgi-bin/component/api_create_preauthcode?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.第三方平台调用凭证Api.获取授权帐号调用令牌": POST https://api.weixin.qq.com/cgi-bin/component/api_authorizer_token?component_access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.第三方平台调用凭证Api.获取刷新令牌": POST https://api.weixin.qq.com/cgi-bin/component/api_query_auth?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.第三方平台调用凭证Api.获取令牌": POST https://api.weixin.qq.com/cgi-bin/component/api_component_token
+      "org.dows.sdk.weixin.open.授权帐号管理Api.拉取已授权的帐号信息": POST https://api.weixin.qq.com/cgi-bin/component/api_get_authorizer_list?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.授权帐号管理Api.获取授权帐号详情": POST https://api.weixin.qq.com/cgi-bin/component/api_get_authorizer_info?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.授权帐号管理Api.设置授权方选项信息": POST https://api.weixin.qq.com/cgi-bin/component/set_authorizer_option?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.授权帐号管理Api.获取授权方选项信息": POST https://api.weixin.qq.com/cgi-bin/component/get_authorizer_option?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.OpenApi管理Api.重置API调用次数": POST https://api.weixin.qq.com/cgi-bin/clear_quota?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.OpenApi管理Api.查询API调用额度": POST https://api.weixin.qq.com/cgi-bin/openapi/quota/get?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.OpenApi管理Api.查询rid信息": POST https://api.weixin.qq.com/cgi-bin/openapi/rid/get?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.OpenApi管理Api.使用AppSecret重置第三方平台 API 调用次数": POST https://api.weixin.qq.com/cgi-bin/component/clear_quota/v2
+      "org.dows.sdk.weixin.open.模板库管理Api.获取草稿箱列表": GET https://api.weixin.qq.com/wxa/gettemplatedraftlist?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.模板库管理Api.将草稿添加到模板库": POST https://api.weixin.qq.com/wxa/addtotemplate?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.模板库管理Api.获取模板列表": GET https://api.weixin.qq.com/wxa/gettemplatelist?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.模板库管理Api.删除代码模板": POST https://api.weixin.qq.com/wxa/deletetemplate?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.域名管理Api.设置第三方平台服务器域名": POST https://api.weixin.qq.com/cgi-bin/component/modify_wxa_server_domain?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.域名管理Api.获取第三方平台业务域名校验文件": POST https://api.weixin.qq.com/cgi-bin/component/get_domain_confirmfile?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.域名管理Api.设置第三方平台业务域名": POST https://api.weixin.qq.com/cgi-bin/component/modify_wxa_jump_domain?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.开放平台帐号管理Api.绑定开放平台帐号": POST https://api.weixin.qq.com/cgi-bin/open/bind?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.开放平台帐号管理Api.解除绑定开放平台帐号": POST https://api.weixin.qq.com/cgi-bin/open/unbind?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.开放平台帐号管理Api.获取开放平台帐号": POST https://api.weixin.qq.com/cgi-bin/open/get?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.开放平台帐号管理Api.创建开放平台帐号": POST https://api.weixin.qq.com/cgi-bin/open/create?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.注册企业小程序Api.快速注册企业小程序": POST https://api.weixin.qq.com/cgi-bin/component/fastregisterweapp?action=create&component_access_token=TOKEN,POST https://api.weixin.qq.com/cgi-bin/component/fastregisterweapp?action=search&component_access_token=TOKEN,{ "errcode":0, // 状态码，0成功，其他失败 "errmsg":"OK" // 错误信息 }
+      "org.dows.sdk.weixin.open.复用公众号注册小程序Api.复用公众号主体快速注册小程序": POST https://api.weixin.qq.com/cgi-bin/account/fastregister?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.注册个人小程序Api.快速注册个人小程序": POST https://api.weixin.qq.com/wxa/component/fastregisterpersonalweapp?action=create&component_access_token=ACCESS_TOKEN,POST https://api.weixin.qq.com/wxa/component/fastregisterpersonalweapp?action=query&component_access_token=ACCESS_TOKEN,<xml> <AppId><![CDATA[第三方平台appid]]></AppId> <CreateTime>1535442403</CreateTime> <InfoType><![CDATA[notify_third_fasteregister]]></InfoType> <appid>创建小程序appid</appid> <status>0</status> <auth_code>xxxxx第三方授权码</auth_code> <msg>OK</msg> <info> <wxuser><![CDATA[用户微信号]]></wxuser> <idname><![CDATA[用户姓名]]></wxidnnn> <component_phone><![CDATA[第三方联系电话]]></component_phone> </info> </xml>
+      "org.dows.sdk.weixin.open.注册试用小程序Api.修改试用小程序名称": POST https://api.weixin.qq.com/wxa/setbetaweappnickname?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.注册试用小程序Api.试用小程序快速认证": POST https://api.weixin.qq.com/wxa/verifybetaweapp?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.注册试用小程序Api.注册试用小程序": POST https://api.weixin.qq.com/wxa/component/fastregisterbetaweapp?access_token=ACCESS_TOKEN
