@@ -14,26 +14,42 @@ public class UriSchema {
 
     /**
      * https://api.weixin.qq.com/wxa/operationams?action=agency_set_mp_amscategory_blacklist&access_token=ACCESS_TOKEN
-     *
+     * todo 考虑支持更多协议如 ws://
      * @param orgUri
      */
     private UriSchema(String orgUri) {
-        this.orgUri = orgUri;
-        String[] split1 = orgUri.split(" ");
-        this.method = split1[0];
-        this.url = split1[1].replace("ACCESS_TOKEN", ApiAccessTokenContext.getToken());
-        ApiAccessTokenContext.removeToken();
+        this.orgUri = orgUri.toLowerCase();
+        // http协议
+        if(this.isPost() || this.isGet() || this.isPut() ||this.isDelete()){
+            String[] split1 = orgUri.split(" ");
+            if(split1.length != 2){
+                this.orgUri = orgUri;
+                this.url = orgUri;
+                this.method = "post";
+            }
+            if(orgUri.contains("ACCESS_TOKEN")){
+                this.url = split1[1].replace("ACCESS_TOKEN", ApiAccessTokenContext.getToken());
+            }else {
+                this.url = split1[1];
+            }
+            this.method = split1[0];
+            ApiAccessTokenContext.removeToken();
+            // sql协议
+        } else if(this.isSelect()||this.isInsert()||this.isUpdate()||this.isSqlDelete() ) {
+
+        }
     }
 
     public boolean isPost() {
-        if (orgUri.startsWith("post ") || orgUri.startsWith("POST ")) {
+        if (orgUri.startsWith("post ") || orgUri.contains("http")) {
             return true;
         }
+
         return false;
     }
 
     public boolean isGet() {
-        if (orgUri.startsWith("get ") || orgUri.startsWith("GET ")) {
+        if (orgUri.startsWith("get ") || orgUri.contains("http")) {
             return true;
         }
         return false;
@@ -41,7 +57,7 @@ public class UriSchema {
 
 
     public boolean isPut() {
-        if (orgUri.startsWith("put ") || orgUri.startsWith("PUT ")) {
+        if (orgUri.startsWith("put ") || orgUri.contains("http")) {
             return true;
         }
         return false;
@@ -49,7 +65,7 @@ public class UriSchema {
 
 
     public boolean isDelete() {
-        if (orgUri.startsWith("delete ") || orgUri.startsWith("DELETE ")) {
+        if (orgUri.startsWith("delete ") || orgUri.contains("http")) {
             return true;
         }
         return false;
@@ -57,28 +73,28 @@ public class UriSchema {
 
     ////////////////sql///////////////////
     public boolean isSelect() {
-        if (orgUri.startsWith("delete ") || orgUri.startsWith("DELETE ")) {
+        if (orgUri.startsWith("select ") || orgUri.contains("select ")) {
             return true;
         }
         return false;
     }
 
     public boolean isInsert() {
-        if (orgUri.startsWith("delete ") || orgUri.startsWith("DELETE ")) {
+        if (orgUri.startsWith("insert ") || orgUri.contains("insert ")) {
             return true;
         }
         return false;
     }
 
     public boolean isUpdate() {
-        if (orgUri.startsWith("delete ") || orgUri.startsWith("DELETE ")) {
+        if (orgUri.startsWith("update ") || orgUri.contains("update ")) {
             return true;
         }
         return false;
     }
 
     public boolean isSqlDelete() {
-        if (orgUri.startsWith("delete ") || orgUri.startsWith("DELETE ")) {
+        if (orgUri.startsWith("delete ") || orgUri.contains("delete ")) {
             return true;
         }
         return false;
