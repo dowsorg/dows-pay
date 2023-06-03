@@ -50,7 +50,7 @@ public class HeDanNativeXiaDanRequest{
     @Schema(title = "结算信息")
     private Object settle_info;
     @Schema(title = "是否分账，枚举值：")
-    private Bool profit_sharing;
+    private Boolean profit_sharing;
     @Schema(title = "SettleInfo.profit_sharing为true时，该金额才生效。")
     private Int64 subsidy_amount;
     @Schema(title = "")

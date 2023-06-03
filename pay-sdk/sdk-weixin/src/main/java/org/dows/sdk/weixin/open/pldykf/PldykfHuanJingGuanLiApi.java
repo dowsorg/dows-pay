@@ -1,7 +1,7 @@
 package org.dows.sdk.weixin.open.pldykf;
 
-import org.dows.sdk.weixin.open.pldykf.request.ChuangJianHuanJingRequest;
-import org.dows.sdk.weixin.open.pldykf.response.ChuangJianHuanJingResponse;
+import org.dows.sdk.weixin.open.pldykf.request.*;
+import org.dows.sdk.weixin.open.pldykf.response.*;
 
 /**
  * 环境管理
@@ -10,7 +10,7 @@ import org.dows.sdk.weixin.open.pldykf.response.ChuangJianHuanJingResponse;
  * @descr
  * @date 2023年6月3日 上午10:27:31
  */
-public interface HuanJingGuanLiApi {
+public interface PldykfHuanJingGuanLiApi {
 
     /**
      * 转换云环境

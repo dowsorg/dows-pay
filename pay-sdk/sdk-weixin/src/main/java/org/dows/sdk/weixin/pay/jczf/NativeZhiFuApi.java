@@ -1,7 +1,7 @@
 package org.dows.sdk.weixin.pay.jczf;
 
-import org.dows.sdk.weixin.pay.jczf.request.ShenQingDanGeZiShangHuZiJinZhangDanRequest;
-import org.dows.sdk.weixin.pay.jczf.response.ShenQingDanGeZiShangHuZiJinZhangDanResponse;
+import org.dows.sdk.weixin.pay.jczf.request.*;
+import org.dows.sdk.weixin.pay.jczf.response.*;
 
 /**
  * Native支付

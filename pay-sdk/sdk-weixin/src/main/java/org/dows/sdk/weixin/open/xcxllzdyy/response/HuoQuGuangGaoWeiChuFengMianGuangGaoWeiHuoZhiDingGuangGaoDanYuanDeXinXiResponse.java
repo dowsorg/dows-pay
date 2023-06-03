@@ -12,6 +12,6 @@ import lombok.Data;
  */
 @Data
 @Schema(name = "获取广告位（除封面广告位）或指定广告单元的信息Response", title = "获取广告位（除封面广告位）或指定广告单元的信息Response")
-public class HuoQuGuangGaoWei（ChuFengMianGuangGaoWei）HuoZhiDingGuangGaoDanYuanDeXinXiResponse{
-        }
+public class HuoQuGuangGaoWeiChuFengMianGuangGaoWeiHuoZhiDingGuangGaoDanYuanDeXinXiResponse {
+}
 

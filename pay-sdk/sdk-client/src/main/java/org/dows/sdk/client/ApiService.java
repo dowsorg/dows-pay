@@ -104,6 +104,17 @@ public class ApiService {
         return factory.create(null, null, new ApiMethodHandler(serviceCls));
     }
 
+    @Override
+    public String toString() {
+        return "ApiService{" +
+//                "apiUrlProperties=" + apiUrlProperties +
+//                ", apiDispatcher=" + apiDispatcher +
+//                ", configuration=" + configuration +
+//                ", startInvoker=" + startInvoker +
+//                ", serviceCache=" + serviceCache +
+                '}';
+    }
+
     class ApiMethodHandler implements MethodHandler {
 
         private Class<?> serviceCls;
@@ -131,10 +142,20 @@ public class ApiService {
              *
              */
             JSONObject result = apiDispatcher.dispatch("", url, jsonObject);
+            // todo 参数码表，确认具体平台-业务线
+            if(result.containsKey("errcode")){
+                throw new RuntimeException("error: "+result.toString());
+            }
             return result.toBean(returnType);
         }
 
 
+        @Override
+        public String toString() {
+            return "ApiMethodHandler{" +
+                    //"serviceCls=" + serviceCls +
+                    '}';
+        }
     }
 
 

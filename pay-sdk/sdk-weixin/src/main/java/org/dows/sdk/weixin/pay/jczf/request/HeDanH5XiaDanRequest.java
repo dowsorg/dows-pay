@@ -3,6 +3,8 @@ package org.dows.sdk.weixin.pay.jczf.request;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter5_1_2.shtml
  *
@@ -38,7 +40,7 @@ public class HeDanH5XiaDanRequest {
     @Schema(title = "Android平台PackageName")
     private String package_name;
     @Schema(title = "")
-    private Array sub_orders;
+    private List<String> sub_orders;
     @Schema(title = "子单发起方商户号即合单参与方商户号，必须与发起方appid有绑定关系。")
     private String mchid;
     @Schema(title = "附加数据，在查询API和支付通知中原样返回，可作为自定义参数使用。")
@@ -46,7 +48,7 @@ public class HeDanH5XiaDanRequest {
     @Schema(title = "订单金额信息")
     private Object amount;
     @Schema(title = "子单金额，单位为分")
-    private Int64 total_amount;
+    private Integer  total_amount;
     @Schema(title = "符合ISO 4217标准的三位字母代码，人民币：CNY 。")
     private String currency;
     @Schema(title = "商户系统内部订单号，要求32个字符内，只能是数字、大小写字母_-|*@ ，且在同一个商户号下唯一。")
@@ -58,9 +60,9 @@ public class HeDanH5XiaDanRequest {
     @Schema(title = "结算信息")
     private Object settle_info;
     @Schema(title = "是否分账，枚举值：")
-    private Bool profit_sharing;
+    private Boolean profit_sharing;
     @Schema(title = "SettleInfo.profit_sharing为true时，该金额才生效。")
-    private Int64 subsidy_amount;
+    private Integer  subsidy_amount;
     @Schema(title = "")
     private String time_start;
     @Schema(title = "")

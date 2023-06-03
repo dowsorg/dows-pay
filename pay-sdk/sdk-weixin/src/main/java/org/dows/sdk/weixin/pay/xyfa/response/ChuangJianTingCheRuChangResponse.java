@@ -26,7 +26,7 @@ public class ChuangJianTingCheRuChangResponse {
     @Schema(title = "所在停车位车场的名称")
     private String parking_name;
     @Schema(title = "停车场的免费停车时长，单位为秒")
-    private Int free_duration;
+    private Integer free_duration;
     @Schema(title = "本次入场车牌的服务状态，")
     private String state;
     @Schema(title = "block服务状态描述，返回车牌状态为BLOCKED，会返回该字段，描述具体BLOCKED的原因，")

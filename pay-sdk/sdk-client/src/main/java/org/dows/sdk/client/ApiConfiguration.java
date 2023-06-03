@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 @RequiredArgsConstructor
-@PropertySource(value = {"classpath:bak/org-dows-sdk-weixin-ams.yml"}, factory = YamlPropertySourceFactory.class)
+@PropertySource(value = {"classpath:open/org-dows-sdk-weixin-open-dsfptdypz.yml"}, factory = YamlPropertySourceFactory.class)
 @EnableConfigurationProperties(ApiUrlProperties.class)
 @Getter
 @Configuration

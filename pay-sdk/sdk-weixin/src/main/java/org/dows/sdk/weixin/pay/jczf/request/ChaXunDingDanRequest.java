@@ -19,10 +19,10 @@ public class ChaXunDingDanRequest {
     private String sub_mchid;
     @Schema(title = "")
     private String transaction_id;
-    @Schema(title = "")
-    private String sp_mchid;
-    @Schema(title = "")
-    private String sub_mchid;
+//    @Schema(title = "")
+//    private String sp_mchid;
+//    @Schema(title = "")
+//    private String sub_mchid;
     @Schema(title = "")
     private String out_trade_no;
 }

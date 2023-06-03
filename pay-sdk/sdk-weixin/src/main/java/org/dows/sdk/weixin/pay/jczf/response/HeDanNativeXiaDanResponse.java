@@ -14,6 +14,6 @@ import lombok.Data;
 @Schema(name = "合单Native下单Response", title = "合单Native下单Response")
 public class HeDanNativeXiaDanResponse {
     @Schema(title = "二维码链接")
-    private String（512）code_url;
+    private String code_url;
 }
 

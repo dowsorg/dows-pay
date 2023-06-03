@@ -6,7 +6,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @EnableFeignClients(basePackages={"org.dows.sdk.client.rpc"})
 @SpringBootApplication
-@ApiScan(scanPackages = {"org.dows.sdk.weixin.ams", "org.dows.sdk.weixin.cloudrun"}, urlLocations = {})
+@ApiScan(scanPackages = {"org.dows.sdk.weixin.open"}, urlLocations = {})
 public class ClientApplication {
 
 

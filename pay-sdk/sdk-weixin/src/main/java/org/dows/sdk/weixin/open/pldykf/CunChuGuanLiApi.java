@@ -3,9 +3,11 @@ package org.dows.sdk.weixin.open.pldykf;
 import org.dows.sdk.weixin.open.pldykf.request.HuoQuShangChuanWenJianLianJieRequest;
 import org.dows.sdk.weixin.open.pldykf.request.HuoQuWenJianLieBiaoRequest;
 import org.dows.sdk.weixin.open.pldykf.request.HuoQuXiaZaiWenJianLianJieRequest;
+import org.dows.sdk.weixin.open.pldykf.request.ShanChuWenJianRequest;
 import org.dows.sdk.weixin.open.pldykf.response.HuoQuShangChuanWenJianLianJieResponse;
 import org.dows.sdk.weixin.open.pldykf.response.HuoQuWenJianLieBiaoResponse;
 import org.dows.sdk.weixin.open.pldykf.response.HuoQuXiaZaiWenJianLianJieResponse;
+import org.dows.sdk.weixin.open.pldykf.response.ShanChuWenJianResponse;
 
 /**
  * 存储管理

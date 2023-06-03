@@ -1,5 +1,14 @@
 package org.dows.sdk.weixin.open.dsjglgzh;
 
+import org.dows.sdk.weixin.open.dsjglgzh.request.FaBuYiSheZhiDeErWeiMaGuiZeRequest;
+import org.dows.sdk.weixin.open.dsjglgzh.request.HuoQuYiSheZhiDeErWeiMaGuiZeRequest;
+import org.dows.sdk.weixin.open.dsjglgzh.request.ShanChuYiSheZhiDeErWeiMaGuiZeRequest;
+import org.dows.sdk.weixin.open.dsjglgzh.request.ZengJiaHuoXiuGaiErWeiMaGuiZeRequest;
+import org.dows.sdk.weixin.open.dsjglgzh.response.FaBuYiSheZhiDeErWeiMaGuiZeResponse;
+import org.dows.sdk.weixin.open.dsjglgzh.response.HuoQuYiSheZhiDeErWeiMaGuiZeResponse;
+import org.dows.sdk.weixin.open.dsjglgzh.response.ShanChuYiSheZhiDeErWeiMaGuiZeResponse;
+import org.dows.sdk.weixin.open.dsjglgzh.response.ZengJiaHuoXiuGaiErWeiMaGuiZeResponse;
+
 /**
  * 扫服务号二维码打开小程序
  *

@@ -17,5 +17,9 @@ public class ShangChuanXiaoChengXuYongHuYinSiBaoHuZhiYinRequest {
     private String access_token;
     @Schema(title = "只支持传txt文件")
     private Bufffer file;
+
+    static class Bufffer {
+
+    }
 }
 

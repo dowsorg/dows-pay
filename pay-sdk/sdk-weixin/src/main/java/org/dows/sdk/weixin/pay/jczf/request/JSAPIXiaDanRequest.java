@@ -3,6 +3,8 @@ package org.dows.sdk.weixin.pay.jczf.request;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter4_5_1.shtml
  *
@@ -36,13 +38,13 @@ public class JSAPIXiaDanRequest {
     @Schema(title = "")
     private Object settle_info;
     @Schema(title = "是否指定分账，枚举值")
-    private Bool profit_sharing;
+    private Boolean profit_sharing;
     @Schema(title = "SettleInfo.profit_sharing为true时，该金额才生效。")
-    private Int64 subsidy_amount;
+    private Integer subsidy_amount;
     @Schema(title = "")
     private Object amount;
     @Schema(title = "订单总金额，单位为分。")
-    private Int total;
+    private Integer  total;
     @Schema(title = "CNY：人民币，境内商户号仅支持人民币。")
     private String currency;
     @Schema(title = "")
@@ -54,11 +56,11 @@ public class JSAPIXiaDanRequest {
     @Schema(title = "")
     private Object detail;
     @Schema(title = "1、商户侧一张小票订单可能被分多次支付，订单原价用于记录整张小票的交易金额。")
-    private Int cost_price;
+    private Integer  cost_price;
     @Schema(title = "商家小票ID")
     private String invoice_id;
     @Schema(title = "单品列表信息")
-    private Array goods_detail;
+    private List<String> goods_detail;
     @Schema(title = "由半角的大小写字母、数字、中划线、下划线中的一种或几种组成。")
     private String merchant_goods_id;
     @Schema(title = "微信支付定义的统一商品编号（没有可不传）")
@@ -66,9 +68,9 @@ public class JSAPIXiaDanRequest {
     @Schema(title = "商品的实际名称")
     private String goods_name;
     @Schema(title = "用户购买的数量")
-    private Int quantity;
+    private Integer  quantity;
     @Schema(title = "商品单价，单位为分")
-    private Int unit_price;
+    private Integer  unit_price;
     @Schema(title = "")
     private Object scene_info;
     @Schema(title = "用户的客户端IP，支持IPv4和IPv6两种格式的IP地址。")

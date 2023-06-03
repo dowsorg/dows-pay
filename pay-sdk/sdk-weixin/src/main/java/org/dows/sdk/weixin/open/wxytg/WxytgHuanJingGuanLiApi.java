@@ -1,9 +1,7 @@
 package org.dows.sdk.weixin.open.wxytg;
 
-import org.dows.sdk.weixin.open.wxytg.request.ChuangJianYunTuoGuanHuanJingRequest;
-import org.dows.sdk.weixin.open.wxytg.request.JieChuHuanJingGongXiangGuanLianGuanXiRequest;
-import org.dows.sdk.weixin.open.wxytg.response.ChuangJianYunTuoGuanHuanJingResponse;
-import org.dows.sdk.weixin.open.wxytg.response.JieChuHuanJingGongXiangGuanLianGuanXiResponse;
+import org.dows.sdk.weixin.open.wxytg.request.*;
+import org.dows.sdk.weixin.open.wxytg.response.*;
 
 /**
  * 环境管理
@@ -12,7 +10,7 @@ import org.dows.sdk.weixin.open.wxytg.response.JieChuHuanJingGongXiangGuanLianGu
  * @descr
  * @date 2023年6月3日 上午10:27:31
  */
-public interface HuanJingGuanLiApi {
+public interface WxytgHuanJingGuanLiApi {
 
     /**
      * 查询环境共享信息

@@ -13,11 +13,11 @@ import lombok.Data;
 @Data
 @Schema(name = "获取授权帐号详情Response", title = "获取授权帐号详情Response")
 public class HuoQuShouQuanZhangHaoXiangQingResponse {
-    @Schema(title = "订阅号")
-    private 0;
-    @Schema(title = "由历史老帐号升级后的订阅号")
-    private 1;
-    @Schema(title = "服务号")
-    private 2;
+//    @Schema(title = "订阅号")
+//    private 0;
+//    @Schema(title = "由历史老帐号升级后的订阅号")
+//    private 1;
+//    @Schema(title = "服务号")
+//    private 2;
 }
 

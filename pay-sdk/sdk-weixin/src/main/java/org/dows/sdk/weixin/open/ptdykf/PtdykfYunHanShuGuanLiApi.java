@@ -10,7 +10,7 @@ import org.dows.sdk.weixin.open.ptdykf.response.*;
  * @descr
  * @date 2023年6月3日 上午10:27:31
  */
-public interface YunHanShuGuanLiApi {
+public interface PtdykfYunHanShuGuanLiApi {
 
     /**
      * 触发云函数

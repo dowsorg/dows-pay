@@ -3,6 +3,8 @@ package org.dows.sdk.weixin.pay.jczf.response;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter5_1_14.shtml
  *
@@ -36,31 +38,31 @@ public class ShenQingTuiKuanResponse {
     @Schema(title = "金额详细信息")
     private Object amount;
     @Schema(title = "订单总金额，单位为分")
-    private Int total;
+    private Integer total;
     @Schema(title = "退款标价金额，单位为分，可以做部分退款")
-    private Int refund;
+    private Integer refund;
     @Schema(title = "退款出资的账户类型及金额信息")
-    private Array from;
+    private List<String> from;
     @Schema(title = "下面枚举值多选一。")
     private String account;
     @Schema(title = "对应账户出资金额")
-    private Int amount;
+    private Integer amount0;
     @Schema(title = "现金支付金额，单位为分，只能为整数")
-    private Int payer_total;
+    private Integer payer_total;
     @Schema(title = "退款给用户的金额，不包含所有优惠券金额")
-    private Int payer_refund;
+    private Integer payer_refund;
     @Schema(title = "去掉非充值代金券退款金额后的退款金额，单位为分，退款金额=申请退款金额-非充值代金券退款金额，退款金额<=申请退款金额")
-    private Int settlement_refund;
+    private Integer settlement_refund;
     @Schema(title = "应结订单金额=订单金额-免充值代金券金额，应结订单金额<=订单金额，单位为分")
-    private Int settlement_total;
+    private Integer settlement_total;
     @Schema(title = "优惠退款金额<=退款金额，退款金额-代金券或立减优惠退款金额为现金，说明详见代金券或立减优惠，单位为分")
-    private Int discount_refund;
+    private Integer discount_refund;
     @Schema(title = "符合ISO 4217标准的三位字母代码，目前只支持人民币：CNY。")
     private String currency;
     @Schema(title = "手续费退款金额，单位为分。")
-    private Int refund_fee;
+    private Integer refund_fee;
     @Schema(title = "优惠退款信息")
-    private Array promotion_detail;
+    private List<String> promotion_detail;
     @Schema(title = "券或者立减优惠id")
     private String promotion_id;
     @Schema(title = "枚举值：")
@@ -68,11 +70,11 @@ public class ShenQingTuiKuanResponse {
     @Schema(title = "枚举值：")
     private String type;
     @Schema(title = "用户享受优惠的金额（优惠券面额=微信出资金额+商家出资金额+其他出资方金额 ），单位为分")
-    private Int amount;
+    private Integer amount1;
     @Schema(title = "优惠退款金额<=退款金额，退款金额-代金券或立减优惠退款金额为用户支付的现金，说明详见代金券或立减优惠，单位为分")
-    private Int refund_amount;
+    private Integer refund_amount;
     @Schema(title = "优惠商品发生退款时返回商品信息")
-    private Array goods_detail;
+    private List<String> goods_detail;
     @Schema(title = "由半角的大小写字母、数字、中划线、下划线中的一种或几种组成")
     private String merchant_goods_id;
     @Schema(title = "微信支付定义的统一商品编号（没有可不传）")
@@ -80,10 +82,10 @@ public class ShenQingTuiKuanResponse {
     @Schema(title = "商品的实际名称")
     private String goods_name;
     @Schema(title = "商品单价金额，单位为分")
-    private Int unit_price;
+    private Integer unit_price;
     @Schema(title = "商品退款金额，单位为分")
-    private Int refund_amount;
+    private Integer refund_amount1;
     @Schema(title = "单品的退款数量")
-    private Int refund_quantity;
+    private Integer refund_quantity;
 }
 

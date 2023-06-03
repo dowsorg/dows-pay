@@ -2,7 +2,6 @@ package org.dows.sdk.weixin.open.xcxllzdyy;
 
 import org.dows.sdk.weixin.open.xcxllzdyy.request.*;
 import org.dows.sdk.weixin.open.xcxllzdyy.response.*;
-import org.dows.sdk.weixin.open.xcxllzdyy.response.HuoQuGuangGaoWei;
 
 /**
  * 广告位管理

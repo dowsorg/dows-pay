@@ -1,13 +1,7 @@
 package org.dows.sdk.weixin.open.ptdykf;
 
-import org.dows.sdk.weixin.open.ptdykf.request.HuoQuWenJianShangChuanLianJieRequest;
-import org.dows.sdk.weixin.open.ptdykf.request.HuoQuWenJianXiaZaiLianJieRequest;
-import org.dows.sdk.weixin.open.ptdykf.request.ShuJuKuGengXinJiLuRequest;
-import org.dows.sdk.weixin.open.ptdykf.request.ShuJuKuQianYiZhuangTaiChaXunRequest;
-import org.dows.sdk.weixin.open.ptdykf.response.HuoQuWenJianShangChuanLianJieResponse;
-import org.dows.sdk.weixin.open.ptdykf.response.HuoQuWenJianXiaZaiLianJieResponse;
-import org.dows.sdk.weixin.open.ptdykf.response.ShuJuKuGengXinJiLuResponse;
-import org.dows.sdk.weixin.open.ptdykf.response.ShuJuKuQianYiZhuangTaiChaXunResponse;
+import org.dows.sdk.weixin.open.ptdykf.request.*;
+import org.dows.sdk.weixin.open.ptdykf.response.*;
 
 /**
  * 文件管理

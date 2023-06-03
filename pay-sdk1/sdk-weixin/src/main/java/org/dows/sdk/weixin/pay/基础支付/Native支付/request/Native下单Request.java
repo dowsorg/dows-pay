@@ -40,7 +40,7 @@ public class Native下单Request{
     @Schema(title = "")
     private Object ;
     @Schema(title = "是否指定分账，枚举值")
-    private Bool 是否指定分账;
+    private Boolean 是否指定分账;
     @Schema(title = "SettleInfo.profit_sharing为true时，该金额才生效。")
     private Int64 补差金额;
     @Schema(title = "")

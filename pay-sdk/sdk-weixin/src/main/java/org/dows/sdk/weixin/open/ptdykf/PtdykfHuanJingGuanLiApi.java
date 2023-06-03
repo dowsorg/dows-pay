@@ -16,7 +16,7 @@ import org.dows.sdk.weixin.open.ptdykf.response.ZhuanHuanYunHuanJingResponse;
  * @descr
  * @date 2023年6月3日 上午10:27:31
  */
-public interface HuanJingGuanLiApi {
+public interface PtdykfHuanJingGuanLiApi {
 
     /**
      * 转换云环境

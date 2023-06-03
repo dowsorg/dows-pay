@@ -3,6 +3,8 @@ package org.dows.sdk.weixin.pay.xyfa.response;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter8_8_4.shtml
  *
@@ -54,7 +56,7 @@ public class ChaXunDingDanResponse {
     @Schema(title = "所在停车位车场的名称")
     private String parking_name;
     @Schema(title = "计费的时间长，单位为秒")
-    private Int charging_duration;
+    private Integer  charging_duration;
     @Schema(title = "停车场设备id")
     private String device_id;
     @Schema(title = "支付者信息")
@@ -66,15 +68,15 @@ public class ChaXunDingDanResponse {
     @Schema(title = "订单金额信息")
     private Object amount;
     @Schema(title = "订单总金额，单位为分，只能为整数")
-    private Int total;
+    private Integer  total;
     @Schema(title = "符合ISO 4217标准的三位字母代码，目前只支持人民币：CNY")
     private String currency;
     @Schema(title = "用户实际支付金额，单位为分，只能为整数")
-    private Int payer_total;
+    private Integer  payer_total;
     @Schema(title = "订单折扣")
-    private Int discount_total;
+    private Integer  discount_total;
     @Schema(title = "优惠信息")
-    private Array promotion_detail;
+    private List<String> promotion_detail;
     @Schema(title = "券或者立减优惠id")
     private String coupon_id;
     @Schema(title = "优惠名称")
@@ -86,14 +88,14 @@ public class ChaXunDingDanResponse {
     @Schema(title = "在微信商户后台配置的批次ID")
     private String stock_id;
     @Schema(title = "用户享受优惠的金额")
-    private Int amount;
+    private Integer  amount1;
     @Schema(title = "特指由微信支付商户平台创建的优惠，出资金额等于本项优惠总金额，单位为分")
-    private Int wechatpay_contribute;
+    private Integer  wechatpay_contribute;
     @Schema(title = "特指商户自己创建的优惠，出资金额等于本项优惠总金额，单位为分")
-    private Int merchant_contribute;
+    private Integer  merchant_contribute;
     @Schema(title = "其他出资方出资金额，单位为分")
-    private Int other_contribute;
+    private Integer  other_contribute;
     @Schema(title = "CNY：人民币，境内商户号仅支持人民币。")
-    private String currency;
+    private String currency1;
 }
 

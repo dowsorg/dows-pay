@@ -3,6 +3,8 @@ package org.dows.sdk.weixin.pay.jczf.response;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter4_5_2.shtml
  *
@@ -46,9 +48,9 @@ public class ChaXunDingDanResponse {
     @Schema(title = "订单金额信息，当支付成功时返回该字段。")
     private Object amount;
     @Schema(title = "订单总金额，单位为分。")
-    private Int total;
+    private Integer  total;
     @Schema(title = "用户支付金额，单位为分。")
-    private Int payer_total;
+    private Integer  payer_total;
     @Schema(title = "CNY：人民币，境内商户号仅支持人民币。")
     private String currency;
     @Schema(title = "用户支付币种")
@@ -58,7 +60,7 @@ public class ChaXunDingDanResponse {
     @Schema(title = "商户端设备号（发起扣款请求的商户服务器设备号）。")
     private String device_id;
     @Schema(title = "优惠功能，享受优惠时返回该字段。")
-    private Array promotion_detail;
+    private List<String> promotion_detail;
     @Schema(title = "券ID")
     private String coupon_id;
     @Schema(title = "优惠名称")
@@ -68,27 +70,27 @@ public class ChaXunDingDanResponse {
     @Schema(title = "CASH：充值")
     private String type;
     @Schema(title = "优惠券面额")
-    private Int amount;
+    private Integer  amount1;
     @Schema(title = "活动ID")
     private String stock_id;
     @Schema(title = "微信出资，单位为分")
-    private Int wechatpay_contribute;
+    private Integer  wechatpay_contribute;
     @Schema(title = "商户出资，单位为分")
-    private Int merchant_contribute;
+    private Integer  merchant_contribute;
     @Schema(title = "其他出资，单位为分")
-    private Int other_contribute;
+    private Integer  other_contribute;
     @Schema(title = "CNY：人民币，境内商户号仅支持人民币。")
-    private String currency;
+    private String currency1;
     @Schema(title = "单品列表信息")
-    private Array goods_detail;
+    private List<String> goods_detail;
     @Schema(title = "商品编码")
     private String goods_id;
     @Schema(title = "用户购买的数量")
-    private Int quantity;
+    private Integer  quantity;
     @Schema(title = "商品单价，单位为分")
-    private Int unit_price;
+    private Integer  unit_price;
     @Schema(title = "商品优惠金额")
-    private Int discount_amount;
+    private Integer  discount_amount;
     @Schema(title = "商品备注信息")
     private String goods_remark;
 }

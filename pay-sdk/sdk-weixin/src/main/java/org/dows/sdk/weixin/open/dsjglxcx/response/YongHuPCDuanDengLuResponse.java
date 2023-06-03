@@ -13,7 +13,7 @@ import lombok.Data;
 @Data
 @Schema(name = "用户PC端登录Response", title = "用户PC端登录Response")
 public class YongHuPCDuanDengLuResponse {
-    @Schema(title = "")
-    private String;
+//    @Schema(title = "")
+//    private String;
 }
 

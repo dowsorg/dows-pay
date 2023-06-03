@@ -3,6 +3,8 @@ package org.dows.sdk.weixin.open.pldykf.request;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * https://developers.weixin.qq.com/doc/oplatform/openApi/OpenApiDoc/cloudbase-batch/db-mgnt/dbindexManage.html
  *
@@ -22,6 +24,6 @@ public class ShuJuKuSuoYinGuanLiRequest {
     @Schema(title = "集合名称")
     private String collection_name;
     @Schema(title = "索引信息")
-    private Array .<Object>indexes;
+    private List<Object> indexes;
 }
 

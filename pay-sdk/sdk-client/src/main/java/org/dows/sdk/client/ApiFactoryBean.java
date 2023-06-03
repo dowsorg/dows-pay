@@ -6,7 +6,6 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 
-
 @Slf4j
 @Data
 public class ApiFactoryBean<T> implements FactoryBean<T>, BeanPostProcessor {
