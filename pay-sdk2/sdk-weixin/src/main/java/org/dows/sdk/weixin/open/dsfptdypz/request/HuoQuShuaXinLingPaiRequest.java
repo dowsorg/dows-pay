@@ -1,4 +1,4 @@
-package org.dows.sdk.weixin.open.dsfptdypz.request;
+package org.dows.sdk.weixin.open1.dsfptdypz.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;

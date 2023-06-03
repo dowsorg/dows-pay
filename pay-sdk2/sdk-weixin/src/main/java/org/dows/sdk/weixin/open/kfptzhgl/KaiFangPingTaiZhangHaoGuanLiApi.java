@@ -1,4 +1,4 @@
-package org.dows.sdk.weixin.open.kfptzhgl;
+package org.dows.sdk.weixin.open1.kfptzhgl;
 
 /**
  * 开放平台帐号管理Api

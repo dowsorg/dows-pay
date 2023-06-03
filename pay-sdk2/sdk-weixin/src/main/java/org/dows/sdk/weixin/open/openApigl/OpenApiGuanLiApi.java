@@ -1,4 +1,4 @@
-package org.dows.sdk.weixin.open.openApigl;
+package org.dows.sdk.weixin.open1.openApigl;
 
 /**
  * openApi管理Api

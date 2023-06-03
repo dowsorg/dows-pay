@@ -1,4 +1,4 @@
-package org.dows.sdk.weixin.open.开放平台帐号管理;
+package org.dows.sdk.weixin.open1.开放平台帐号管理;
 
 /**
  * @description 

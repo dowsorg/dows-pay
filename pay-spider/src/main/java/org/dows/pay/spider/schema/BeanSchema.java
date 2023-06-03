@@ -3,7 +3,7 @@ package org.dows.pay.spider.schema;
 import cn.hutool.core.util.StrUtil;
 import lombok.Data;
 import org.dows.pay.spider.model.schema.ApiSchema;
-import org.dows.pay.spider.util.PinyinUtil;
+import org.dows.pay.spider.util.SchemaUtil;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -123,7 +123,8 @@ public class BeanSchema {
         return StrUtil.toCamelCase(name.replaceAll("-", "_")) + "Api";
     }*/
     public void setPkg(String pkg) {
-        this.pkg = PinyinUtil.getPinYinHeadChar(pkg.toLowerCase());
+        String s = SchemaUtil.filterBeanPkgChar(pkg);
+        this.pkg = SchemaUtil.getPinYinHeadChar(s);
     }
 
     /**
@@ -133,18 +134,15 @@ public class BeanSchema {
      */
     public void setName(String name) {
         this.name = name.trim();
-        String nn = StrUtil.toCamelCase(name.replaceAll(" ", "")
-                .replaceAll("-", "_")) + "Api";
-        this.code = PinyinUtil.getPingYin(nn);
+        String nn = StrUtil.toCamelCase(SchemaUtil.filterBeanNameChar(name)) + "Api";
+        this.code = SchemaUtil.getPingYin(nn);
     }
 
     public String getPkg() {
         if (module != null) {
-            return (null == module.getPkg() ? "" : module.getPkg()) + (StrUtil.isBlank(pkg) ? "" : "."
-                    + pkg.replaceAll("-", ".").replaceAll("/", "."));
+            return (null == module.getPkg() ? "" : module.getPkg()) + (StrUtil.isBlank(pkg) ? "" : "." + pkg);
         }
-        return (StrUtil.isBlank(pkg) ? "" : "."
-                + pkg.replaceAll("-", ".").replaceAll("/", "."));
+        return (StrUtil.isBlank(pkg) ? "" : "." + pkg);
     }
 
     public String getPath() {

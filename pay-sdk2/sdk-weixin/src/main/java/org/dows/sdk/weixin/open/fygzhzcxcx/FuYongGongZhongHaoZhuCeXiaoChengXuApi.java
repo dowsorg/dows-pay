@@ -1,4 +1,4 @@
-package org.dows.sdk.weixin.open.fygzhzcxcx;
+package org.dows.sdk.weixin.open1.fygzhzcxcx;
 
 /**
  * 复用公众号注册小程序Api

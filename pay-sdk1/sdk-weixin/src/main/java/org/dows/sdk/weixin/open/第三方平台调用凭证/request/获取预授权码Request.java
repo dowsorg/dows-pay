@@ -1,4 +1,4 @@
-package org.dows.sdk.weixin.open.第三方平台调用凭证.request;
+package org.dows.sdk.weixin.open1.第三方平台调用凭证.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;

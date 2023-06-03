@@ -1,9 +1,9 @@
 package org.dows.sdk.client;
 
 import lombok.extern.slf4j.Slf4j;
-import org.dows.sdk.weixin.ams.AdBlackApi;
-import org.dows.sdk.weixin.ams.request.SetAmsCategoryBlackListRequest;
-import org.dows.sdk.weixin.ams.response.SetAmsCategoryBlackListResponse;
+import org.dows.sdk.weixin.bak.ams.AdBlackApi;
+import org.dows.sdk.weixin.bak.ams.request.SetAmsCategoryBlackListRequest;
+import org.dows.sdk.weixin.bak.ams.response.SetAmsCategoryBlackListResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

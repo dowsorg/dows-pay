@@ -2,7 +2,7 @@ package org.dows.pay.spider.schema;
 
 import cn.hutool.core.util.StrUtil;
 import lombok.Data;
-import org.dows.pay.spider.util.PinyinUtil;
+import org.dows.pay.spider.util.SchemaUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,16 +45,35 @@ public class ModuleSchema {
     }
 
     public String getPkg() {
-        return projectSchema.getBasePkg() + (StrUtil.isBlank(pkg) ? "" : "."
-                + pkg.trim().replaceAll("/", ".").replaceAll("-", "."));
+        String spkg = "";
+        if (!StrUtil.isBlank(pkg)) {
+            spkg = SchemaUtil.filterBeanPkgChar(pkg);
+        } else {
+            spkg = SchemaUtil.getPinYinHeadChar(SchemaUtil.filterBeanNameChar(name)).toLowerCase();
+        }
+        return projectSchema.getBasePkg() + (StrUtil.isBlank(spkg) ? "" : "." + spkg);
     }
 
     public String getCode() {
-        if(code != null){
-            return code.trim();
+        if (code != null) {
+            return SchemaUtil.filterBeanNameChar(code);
+            /*code.trim()
+                    .replaceAll(" ", "")
+                    .replaceAll("（", "")
+                    .replaceAll("）", "")
+                    .replaceAll("\\(", "")
+                    .replaceAll("\\)", "")
+                    .replaceAll("-", "_");*/
         }
         if (!StrUtil.isBlank(name)) {
-            return PinyinUtil.getPingYin(name.trim());
+            return SchemaUtil.getPingYin(SchemaUtil.filterBeanNameChar(name));
+                    /*name.trim()
+                    .replaceAll(" ", "")
+                    .replaceAll("（", "")
+                    .replaceAll("）", "")
+                    .replaceAll("\\(", "")
+                    .replaceAll("\\)", "")
+                    .replaceAll("-", "_")*/
         }
         return null;
     }

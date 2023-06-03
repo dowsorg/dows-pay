@@ -4,7 +4,7 @@ package org.dows.sdk.weixin.pay.jsapizf;
  * JSAPI支付
  * @descr 
  * @author lait.zhang@gmail.com
- * @date  2023年6月2日 下午5:32:38
+ * @date  2023年6月3日 上午9:06:55
  */
 public interface JSAPIZhiFuApi{
 

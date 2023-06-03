@@ -1,4 +1,4 @@
-package org.dows.sdk.weixin.open.ymgl;
+package org.dows.sdk.weixin.open1.ymgl;
 
 /**
  * 域名管理Api

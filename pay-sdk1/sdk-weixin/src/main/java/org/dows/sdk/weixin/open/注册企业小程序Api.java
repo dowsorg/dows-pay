@@ -1,4 +1,4 @@
-package org.dows.sdk.weixin.open;
+package org.dows.sdk.weixin.open1;
 
 /**
  * @description 

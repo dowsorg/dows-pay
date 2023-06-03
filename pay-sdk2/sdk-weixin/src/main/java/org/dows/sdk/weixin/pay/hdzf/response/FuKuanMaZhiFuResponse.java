@@ -12,7 +12,7 @@ import java.math.BigDecimal;
  * https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/index.shtml#menu00
  * @description 
  * @author lait.zhang@gmail.com
- * @date 2023年6月2日 下午5:32:39
+ * @date 2023年6月3日 上午9:06:55
  */
 @Data
 @Schema(name = "付款码支付Response", title = "付款码支付Response")

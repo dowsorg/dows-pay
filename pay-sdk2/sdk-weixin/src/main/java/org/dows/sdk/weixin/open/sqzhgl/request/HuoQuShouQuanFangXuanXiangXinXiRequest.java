@@ -1,4 +1,4 @@
-package org.dows.sdk.weixin.open.sqzhgl.request;
+package org.dows.sdk.weixin.open1.sqzhgl.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;

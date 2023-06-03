@@ -1,4 +1,4 @@
-package org.dows.sdk.weixin.open.zcgrxcx.response;
+package org.dows.sdk.weixin.open1.zcgrxcx.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;

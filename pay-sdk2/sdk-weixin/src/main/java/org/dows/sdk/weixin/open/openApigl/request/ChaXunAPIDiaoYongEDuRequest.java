@@ -1,4 +1,4 @@
-package org.dows.sdk.weixin.open.openApigl.request;
+package org.dows.sdk.weixin.open1.openApigl.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;

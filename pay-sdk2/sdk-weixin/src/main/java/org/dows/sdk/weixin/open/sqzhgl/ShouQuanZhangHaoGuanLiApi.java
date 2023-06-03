@@ -1,4 +1,4 @@
-package org.dows.sdk.weixin.open.sqzhgl;
+package org.dows.sdk.weixin.open1.sqzhgl;
 
 /**
  * 授权帐号管理Api

@@ -12,7 +12,7 @@ import java.math.BigDecimal;
  * https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter4_1_7.shtml
  * @description 
  * @author lait.zhang@gmail.com
- * @date 2023年6月2日 下午5:32:38
+ * @date 2023年6月3日 上午9:06:55
  */
 @Data
 @Schema(name = "申请资金账单Response", title = "申请资金账单Response")

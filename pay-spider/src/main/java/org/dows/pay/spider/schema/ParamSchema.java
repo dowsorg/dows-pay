@@ -2,7 +2,7 @@ package org.dows.pay.spider.schema;
 
 import cn.hutool.core.util.StrUtil;
 import lombok.Data;
-import org.dows.pay.spider.util.PinyinUtil;
+import org.dows.pay.spider.util.SchemaUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,7 +45,7 @@ public class ParamSchema {
 
 
     public String getType() {
-        return StrUtil.upperFirst(PinyinUtil.getPingYin(type.trim().replace(" ", "")));
+        return StrUtil.upperFirst(SchemaUtil.getPingYin(type.trim().replace(" ", "")));
     }
 
     public String getCode() {
@@ -53,7 +53,7 @@ public class ParamSchema {
             return code.trim().replace(" ", "");
         }
         if (!StrUtil.isBlank(name.trim())) {
-            return PinyinUtil.getPingYin(name.trim().replace(" ", ""));
+            return SchemaUtil.getPingYin(name.trim().replace(" ", ""));
         }
         return null;
     }

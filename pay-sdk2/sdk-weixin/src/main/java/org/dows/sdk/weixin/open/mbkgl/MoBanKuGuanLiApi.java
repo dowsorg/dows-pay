@@ -1,4 +1,4 @@
-package org.dows.sdk.weixin.open.mbkgl;
+package org.dows.sdk.weixin.open1.mbkgl;
 
 /**
  * 模板库管理Api

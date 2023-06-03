@@ -35,7 +35,7 @@ public interface Extractable {
             webClient.setAjaxController(new NicelyResynchronizingAjaxController());
             webClient.setJavaScriptErrorListener(new SilentJavaScriptErrorListener());
             /** JS执行需要一定时间，设置等待时间(非常重要) */
-            webClient.waitForBackgroundJavaScript(1000);
+            webClient.waitForBackgroundJavaScript(3000);
 
 
             /** 加载网页 */

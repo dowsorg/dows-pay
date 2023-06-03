@@ -1,4 +1,4 @@
-package org.dows.sdk.weixin.open.注册个人小程序;
+package org.dows.sdk.weixin.open1.注册个人小程序;
 
 /**
  * @description 

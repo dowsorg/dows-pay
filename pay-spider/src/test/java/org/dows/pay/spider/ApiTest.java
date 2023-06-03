@@ -7,12 +7,12 @@ import cn.hutool.extra.template.Template;
 import cn.hutool.extra.template.TemplateEngine;
 import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.dows.pay.spider.extract.WeixinDeveloperExtracter;
+import org.dows.pay.spider.handler.WeixinDeveloperExtracter;
 import org.dows.pay.spider.extract.WxOpenExtracter;
 import org.dows.pay.spider.extract.WxPayExtracter;
 import org.dows.pay.spider.extract.DyOpenExtracter;
 import org.dows.pay.spider.schema.*;
-import org.dows.pay.spider.util.PinyinUtil;
+import org.dows.pay.spider.util.SchemaUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -65,7 +65,7 @@ public class ApiTest {
 
     @Test
     public void test(){
-        String 测试小程序 = PinyinUtil.getPingYin("测试小程序Api");
+        String 测试小程序 = SchemaUtil.getPingYin("测试小程序Api");
         log.info(测试小程序);
     }
     @Test

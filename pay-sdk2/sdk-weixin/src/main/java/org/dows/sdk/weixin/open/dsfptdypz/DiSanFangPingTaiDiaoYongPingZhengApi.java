@@ -1,4 +1,4 @@
-package org.dows.sdk.weixin.open.dsfptdypz;
+package org.dows.sdk.weixin.open1.dsfptdypz;
 
 /**
  * 第三方平台调用凭证Api

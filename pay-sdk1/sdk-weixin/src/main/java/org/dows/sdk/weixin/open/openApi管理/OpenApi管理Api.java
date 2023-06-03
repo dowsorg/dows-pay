@@ -1,4 +1,4 @@
-package org.dows.sdk.weixin.open.openApi管理;
+package org.dows.sdk.weixin.open1.openApi管理;
 
 /**
  * @description 

@@ -1,4 +1,4 @@
-package org.dows.sdk.weixin.open.复用公众号注册小程序.response;
+package org.dows.sdk.weixin.open1.复用公众号注册小程序.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;

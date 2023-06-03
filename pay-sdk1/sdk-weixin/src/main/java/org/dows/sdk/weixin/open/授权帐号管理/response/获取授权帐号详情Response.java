@@ -1,4 +1,4 @@
-package org.dows.sdk.weixin.open.授权帐号管理.response;
+package org.dows.sdk.weixin.open1.授权帐号管理.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;

@@ -1,4 +1,4 @@
-package org.dows.sdk.weixin.open.注册企业小程序.response;
+package org.dows.sdk.weixin.open1.注册企业小程序.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;

@@ -53,7 +53,7 @@ public class WxOpenExtracter implements Extractable {
 
         ProjectSchema projectSchema = new ProjectSchema();
         projectSchema.setName("sdk-weixin");
-        projectSchema.setRootPath("E:/workspaces/java/projects/dows/dows-pay/pay-sdk2");
+        projectSchema.setRootPath("E:/workspace/java/projects/dows/dows-pay/pay-sdk");
         projectSchema.setBasePkg("org.dows.sdk.weixin.open");
         projectSchema.setModules(moduleSchemas);
         buildModuleSchema(catalogs, projectSchema, moduleSchemas, beanSchemas);
@@ -195,7 +195,7 @@ public class WxOpenExtracter implements Extractable {
 
         for (Catalog catalog : catalogs) {
             log.info("catalogType:{}, module:{} ,bean:{}", catalog.getType(), catalog.getName(), catalog.getFullName());
-            /*if (catalog.getName().contains("商户进件")) {
+ /*           if (catalog.getName().contains("商户进件")) {
                 continue;
             }
             if (catalog.getName().contains("经营能力")) {
@@ -222,7 +222,8 @@ public class WxOpenExtracter implements Extractable {
             } else if (catalog.getType().equals("bean")) {
 
                 BeanSchema beanSchema = new BeanSchema();
-                beanSchema.setPkg(catalog.getName());
+                // todo config 生成包的方式不同
+                //beanSchema.setPkg(catalog.getName());
                 beanSchema.setName(catalog.getName());
 
                 if (catalog.getPatent() == null) {

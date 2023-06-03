@@ -4,7 +4,7 @@ package org.dows.sdk.weixin.pay.xcxzf;
  * 小程序支付
  * @descr 
  * @author lait.zhang@gmail.com
- * @date  2023年6月2日 下午5:32:39
+ * @date  2023年6月3日 上午9:06:55
  */
 public interface XiaoChengXuZhiFuApi{
 

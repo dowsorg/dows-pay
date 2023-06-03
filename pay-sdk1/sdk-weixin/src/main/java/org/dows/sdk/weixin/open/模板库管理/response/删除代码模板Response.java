@@ -1,4 +1,4 @@
-package org.dows.sdk.weixin.open.模板库管理.response;
+package org.dows.sdk.weixin.open1.模板库管理.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;

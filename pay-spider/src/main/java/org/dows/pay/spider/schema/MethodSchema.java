@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.dows.pay.spider.AlipayField;
 import org.dows.pay.spider.WexinOpenField;
-import org.dows.pay.spider.util.PinyinUtil;
+import org.dows.pay.spider.util.SchemaUtil;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -102,7 +102,7 @@ public class MethodSchema {
             return code.trim().replace(" ","");
         }
         if (!StrUtil.isBlank(name)) {
-            return PinyinUtil.getPingYin(name.trim().replace(" ",""));
+            return SchemaUtil.getPingYin(name.trim().replace(" ",""));
         }
         return null;
     }

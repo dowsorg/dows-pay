@@ -1,4 +1,4 @@
-package org.dows.sdk.weixin.open.域名管理;
+package org.dows.sdk.weixin.open1.域名管理;
 
 /**
  * @description 
