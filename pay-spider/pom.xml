@@ -21,6 +21,20 @@
             <artifactId>jsoup</artifactId>
             <version>1.16.1</version>
         </dependency>-->
+
+        <!-- https://mvnrepository.com/artifact/org.webjars.npm/posthtml -->
+        <dependency>
+            <groupId>org.webjars.npm</groupId>
+            <artifactId>posthtml</artifactId>
+            <version>0.11.3</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.webjars.npm/posthtml-parser -->
+        <dependency>
+            <groupId>org.webjars.npm</groupId>
+            <artifactId>posthtml-parser</artifactId>
+            <version>0.4.1</version>
+        </dependency>
+
         <dependency>
             <groupId>com.belerweb</groupId>
             <artifactId>pinyin4j</artifactId>
