@@ -133,8 +133,8 @@ public class BeanSchema {
      * @param name
      */
     public void setName(String name) {
-        this.name = name.trim();
-        String nn = StrUtil.toCamelCase(SchemaUtil.filterBeanNameChar(name)) + "Api";
+        this.name = SchemaUtil.filterBeanNameChar(name);
+        String nn = StrUtil.toCamelCase(this.name) + "Api";
         this.code = SchemaUtil.getPingYin(nn);
     }
 

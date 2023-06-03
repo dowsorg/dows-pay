@@ -1,0 +1,9 @@
+dows:
+  sdk:
+    weixin:
+      "org.dows.sdk.weixin.open.dsjzcxcx.ZhuCeQiYeXiaoChengXuApi.kuaiSuZhuCeQiYeXiaoChengXu": POST https://api.weixin.qq.com/cgi-bin/component/fastregisterweapp?action=create&component_access_token=TOKEN,POST https://api.weixin.qq.com/cgi-bin/component/fastregisterweapp?action=search&component_access_token=TOKEN,{ "errcode":0, // 状态码，0成功，其他失败 "errmsg":"OK" // 错误信息 }
+      "org.dows.sdk.weixin.open.dsjzcxcx.FuYongGongZhongHaoZhuCeXiaoChengXuApi.fuYongGongZhongHaoZhuTiKuaiSuZhuCeXiaoChengXu": POST https://api.weixin.qq.com/cgi-bin/account/fastregister?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.dsjzcxcx.ZhuCeGeRenXiaoChengXuApi.kuaiSuZhuCeGeRenXiaoChengXu": POST https://api.weixin.qq.com/wxa/component/fastregisterpersonalweapp?action=create&component_access_token=ACCESS_TOKEN,POST https://api.weixin.qq.com/wxa/component/fastregisterpersonalweapp?action=query&component_access_token=ACCESS_TOKEN,<xml> <AppId><![CDATA[第三方平台appid]]></AppId> <CreateTime>1535442403</CreateTime> <InfoType><![CDATA[notify_third_fasteregister]]></InfoType> <appid>创建小程序appid</appid> <status>0</status> <auth_code>xxxxx第三方授权码</auth_code> <msg>OK</msg> <info> <wxuser><![CDATA[用户微信号]]></wxuser> <idname><![CDATA[用户姓名]]></wxidnnn> <component_phone><![CDATA[第三方联系电话]]></component_phone> </info> </xml>
+      "org.dows.sdk.weixin.open.dsjzcxcx.ZhuCeShiYongXiaoChengXuApi.xiuGaiShiYongXiaoChengXuMingCheng": POST https://api.weixin.qq.com/wxa/setbetaweappnickname?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.dsjzcxcx.ZhuCeShiYongXiaoChengXuApi.shiYongXiaoChengXuKuaiSuRenZheng": POST https://api.weixin.qq.com/wxa/verifybetaweapp?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.dsjzcxcx.ZhuCeShiYongXiaoChengXuApi.zhuCeShiYongXiaoChengXu": POST https://api.weixin.qq.com/wxa/component/fastregisterbetaweapp?access_token=ACCESS_TOKEN

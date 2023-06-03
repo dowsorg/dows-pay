@@ -1,0 +1,10 @@
+dows:
+  sdk:
+    weixin:
+      "org.dows.sdk.weixin.open.dsjglgzh.GongZhongHaoGuanLianXiaoChengXuApi.huoQuGongZhongHaoGuanLianDeXiaoChengXu": POST https://api.weixin.qq.com/cgi-bin/wxopen/wxamplinkget?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.dsjglgzh.GongZhongHaoGuanLianXiaoChengXuApi.gongZhongHaoGuanLianXiaoChengXu": POST https://api.weixin.qq.com/cgi-bin/wxopen/wxamplink?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.dsjglgzh.GongZhongHaoGuanLianXiaoChengXuApi.gongZhongHaoJieChuGuanLianXiaoChengXu": POST https://api.weixin.qq.com/cgi-bin/wxopen/wxampunlink?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.dsjglgzh.SaoFuWuHaoErWeiMaDaKaiXiaoChengXuApi.huoQuYiSheZhiDeErWeiMaGuiZe": POST https://api.weixin.qq.com/cgi-bin/wxopen/qrcodejumpget?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.dsjglgzh.SaoFuWuHaoErWeiMaDaKaiXiaoChengXuApi.zengJiaHuoXiuGaiErWeiMaGuiZe": POST https://api.weixin.qq.com/cgi-bin/wxopen/qrcodejumpadd?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.dsjglgzh.SaoFuWuHaoErWeiMaDaKaiXiaoChengXuApi.faBuYiSheZhiDeErWeiMaGuiZe": POST https://api.weixin.qq.com/cgi-bin/wxopen/qrcodejumppublish?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.dsjglgzh.SaoFuWuHaoErWeiMaDaKaiXiaoChengXuApi.shanChuYiSheZhiDeErWeiMaGuiZe": POST https://api.weixin.qq.com/cgi-bin/wxopen/qrcodejumpdelete?access_token=ACCESS_TOKEN

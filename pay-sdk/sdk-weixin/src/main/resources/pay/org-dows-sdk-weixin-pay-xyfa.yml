@@ -1,0 +1,116 @@
+dows:
+  sdk:
+    weixin:
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongShangHuJinJianApi.erJiShangHuJinJian": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongShangHuJinJianApi.chaXunShenQingZhuangTai": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongShangHuJinJianApi.xiaZaiPingTaiZhengShu": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongShangHuJinJianApi.xiuGaiJieSuanZhangHao": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongShangHuJinJianApi.chaXunJieSuanZhangHao": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongShangHuJinJianApi.chaXunJieSuanZhangHuXiuGaiShenQingZhuangTai": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongPuTongZhiFuApi.aPPXiaDan": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongPuTongZhiFuApi.jSAPIXiaDan": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongPuTongZhiFuApi.xiaoChengXuXiaDan": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongPuTongZhiFuApi.h5XiaDan": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongPuTongZhiFuApi.nativeXiaDan": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongPuTongZhiFuApi.chaXunDingDan": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongPuTongZhiFuApi.guanBiDingDan": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongPuTongZhiFuApi.aPPDiaoQiZhiFu": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongPuTongZhiFuApi.jSAPIDiaoQiZhiFu": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongPuTongZhiFuApi.xiaoChengXuDiaoQiZhiFu": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongPuTongZhiFuApi.h5DiaoQiZhiFu": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongPuTongZhiFuApi.nativeDiaoQiZhiFu": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongPuTongZhiFuApi.zhiFuTongZhi": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongHeDanZhiFuApi.heDanAPPXiaDan": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongHeDanZhiFuApi.heDanH5XiaDan": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongHeDanZhiFuApi.heDanJSAPIXiaDan": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongHeDanZhiFuApi.heDanXiaoChengXuXiaDan": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongHeDanZhiFuApi.heDanNativeXiaDan": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongHeDanZhiFuApi.aPPDiaoQiZhiFu": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongHeDanZhiFuApi.h5DiaoQiZhiFu": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongHeDanZhiFuApi.jSAPIDiaoQiZhiFu": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongHeDanZhiFuApi.xiaoChengXuDiaoQiZhiFu": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongHeDanZhiFuApi.nativeDiaoQiZhiFu": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongHeDanZhiFuApi.heDanChaXunDingDan": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongHeDanZhiFuApi.heDanGuanBiDingDan": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongHeDanZhiFuApi.zhiFuTongZhi": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongFenZhangApi.qingQiuFenZhang": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongFenZhangApi.chaXunFenZhangJieGuo": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongFenZhangApi.qingQiuFenZhangHuiTui": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongFenZhangApi.chaXunFenZhangHuiTuiJieGuo": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongFenZhangApi.wanJieFenZhang": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongFenZhangApi.chaXunDingDanShengYuDaiFenJinE": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongFenZhangApi.tianJiaFenZhangJieShouFang": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongFenZhangApi.shanChuFenZhangJieShouFang": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongFenZhangApi.fenZhangDongZhangTongZhi": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongBuChaApi.qingQiuBuCha": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongBuChaApi.qingQiuBuChaHuiTui": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongBuChaApi.quXiaoBuCha": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongTuiKuanApi.shenQingTuiKuan": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongTuiKuanApi.chaXunTuiKuan": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongTuiKuanApi.tuiKuanJieGuoTongZhi": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongTuiKuanApi.dianFuTuiKuanHuiBu": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongTuiKuanApi.chaXunDianFuHuiBuJieGuo": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongYuEChaXunApi.chaXunErJiShangHuZhangHuShiShiYuE": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongYuEChaXunApi.chaXunErJiShangHuZhangHuRiZhongYuE": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongYuEChaXunApi.chaXunDianShangPingTaiZhangHuShiShiYuE": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongYuEChaXunApi.chaXunDianShangPingTaiZhangHuRiZhongYuE": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongShangHuTiXianApi.erJiShangHuYuYueTiXian": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongShangHuTiXianApi.erJiShangHuChaXunYuYueTiXianZhuangTai": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongShangHuTiXianApi.dianShangPingTaiYuYueTiXian": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongShangHuTiXianApi.dianShangPingTaiChaXunYuYueTiXianZhuangTai": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongShangHuTiXianApi.anRiXiaZaiTiXianYiChangWenJian": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongZhuXiaoShenQingApi.tiJiaoZhuXiaoShenQingDan": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongZhuXiaoShenQingApi.chaXunZhuXiaoDanZhuangTai": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongZhuXiaoShenQingApi.tuPianShangChuan": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongZhuXiaoHouTiXianApi.shangHuTiXianShenQingDanHaoChaXunTiXianShenQingDanZhuangTai": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongZhuXiaoHouTiXianApi.weiXinZhiFuTiXianShenQingDanHaoChaXunTiXianShenQingDanZhuangTai": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongZhuXiaoHouTiXianApi.tiJiaoYiZhuXiaoShangHuHaoKeYongYuETiXianShenQingDan": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongKuaJingFuKuanApi.chaXunDingDanShengYuKeChuJingYuE": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongKuaJingFuKuanApi.shenQingZiJinChuJing": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongKuaJingFuKuanApi.chaXunChuJingJieGuo": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongKuaJingFuKuanApi.huoQuGouFuHuiZhangDanWenJianXiaZaiLianJie": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongXiaZaiZhangDanApi.shenQingJiaoYiZhangDan": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongXiaZaiZhangDanApi.shenQingZiJinZhangDan": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongXiaZaiZhangDanApi.shenQingFenZhangZhangDan": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongXiaZaiZhangDanApi.shenQingErJiShangHuZiJinZhangDan": 
+      "org.dows.sdk.weixin.pay.xyfa.DianShangShouFuTongXiaZaiZhangDanApi.xiaZaiZhangDan": 
+      "org.dows.sdk.weixin.pay.xyfa.ZhiHuiShangQuanApi.shangQuanHuiYuanJiFenFuWuShouQuanJieGuoTongZhi": 
+      "org.dows.sdk.weixin.pay.xyfa.ZhiHuiShangQuanApi.shangQuanHuiYuanChangNeiZhiFuJieGuoTongZhi": 
+      "org.dows.sdk.weixin.pay.xyfa.ZhiHuiShangQuanApi.shangQuanHuiYuanJiFenTongBu": 
+      "org.dows.sdk.weixin.pay.xyfa.ZhiHuiShangQuanApi.shangQuanHuiYuanChangNeiTuiKuanTongZhi": 
+      "org.dows.sdk.weixin.pay.xyfa.ZhiHuiShangQuanApi.shangQuanHuiYuanJiFenFuWuShouQuanChaXun": 
+      "org.dows.sdk.weixin.pay.xyfa.ZhiHuiShangQuanApi.shangQuanHuiYuanDaiJiFenZhuangTaiChaXun": 
+      "org.dows.sdk.weixin.pay.xyfa.ZhiHuiShangQuanApi.shangQuanHuiYuanTingCheZhuangTaiTongBu": 
+      "org.dows.sdk.weixin.pay.xyfa.WeiXinZhiFuFenTingCheFuWuApi.chaXunChePaiFuWuKaiTongXinXi": https://api.mch.weixin.qq.com/v3/vehicle/parking/services/find
+      "org.dows.sdk.weixin.pay.xyfa.WeiXinZhiFuFenTingCheFuWuApi.chuangJianTingCheRuChang": https://api.mch.weixin.qq.com/v3/vehicle/parking/parkings
+      "org.dows.sdk.weixin.pay.xyfa.WeiXinZhiFuFenTingCheFuWuApi.kouFeiShouLi": https://api.mch.weixin.qq.com/v3/vehicle/transactions/parking
+      "org.dows.sdk.weixin.pay.xyfa.WeiXinZhiFuFenTingCheFuWuApi.chaXunDingDan": https://api.mch.weixin.qq.com/v3/vehicle/transactions/out-trade-no/{out_trade_no}
+      "org.dows.sdk.weixin.pay.xyfa.WeiXinZhiFuFenTingCheFuWuApi.tingCheRuChangZhuangTaiBianGengTongZhi": 该链接是商户[,]提交的notify_url参数，必须为https协议。如果链接无法访问，商户将无法接收到微信通知。 通知url必须为直接可访问的url，不能携带参数。示例： “https://pay.weixin.qq.com/wxpay/pay.action”
+      "org.dows.sdk.weixin.pay.xyfa.WeiXinZhiFuFenTingCheFuWuApi.dingDanZhiFuJieGuoTongZhi": 该链接是通过商户[,]提交notify_url参数，必须为https协议。如果链接无法访问，商户将无法接收到微信通知。 通知url必须为直接可访问的url，不能携带参数。示例： “https://pay.weixin.qq.com/wxpay/pay.action”
+      "org.dows.sdk.weixin.pay.xyfa.WeiXinZhiFuFenTingCheFuWuApi.xiaoChengXuDiaoQiWeiXinZhiFuFenTingCheFuWuKaiTongYe": 
+      "org.dows.sdk.weixin.pay.xyfa.WeiXinZhiFuFenTingCheFuWuApi.h5DiaoQiWeiXinZhiFuFenTingCheFuWuKaiTongYe": 
+      "org.dows.sdk.weixin.pay.xyfa.WeiXinZhiFuFenTingCheFuWuApi.aPPLaQiWeiXinZhiFuFenTingCheFuWuKaiTongYe": 
+      "org.dows.sdk.weixin.pay.xyfa.WeiXinZhiFuFenTingCheFuWuApi.weiXinDianZiHaiKuan": 
+      "org.dows.sdk.weixin.pay.xyfa.WeiXinZhiFuFenTingCheFuWuApi.shenQingTuiKuan": https://api.mch.weixin.qq.com/v3/refund/domestic/refunds
+      "org.dows.sdk.weixin.pay.xyfa.WeiXinZhiFuFenTingCheFuWuApi.tuiKuanJieGuoTongZhi": 该链接是通过[申请退款接口]指定的notify_url，必须为https协议。如果链接无法访问，商户将无法接收到微信通知。 通知url必须为直接可访问的url，不能携带参数。示例：“https://pay.weixin.qq.com/wxpay/pay.action”
+      "org.dows.sdk.weixin.pay.xyfa.WeiXinZhiFuFenTingCheFuWuApi.chaXunDanBiTuiKuan": https://api.mch.weixin.qq.com/v3/refund/domestic/refunds/{out_refund_no}
+      "org.dows.sdk.weixin.pay.xyfa.DianZiFaPiaoApi.jianChaZiShangHuKaiPiaoGongNengZhuangTai": 
+      "org.dows.sdk.weixin.pay.xyfa.DianZiFaPiaoApi.chuangJianDianZiFaPiaoKaQuanMoBan": 
+      "org.dows.sdk.weixin.pay.xyfa.DianZiFaPiaoApi.peiZhiKaiFaXuanXiang": 
+      "org.dows.sdk.weixin.pay.xyfa.DianZiFaPiaoApi.chaXunShangHuPeiZhiDeKaiFaXuanXiang": 
+      "org.dows.sdk.weixin.pay.xyfa.DianZiFaPiaoApi.huoQuTaiTouTianXieLianJie": 
+      "org.dows.sdk.weixin.pay.xyfa.DianZiFaPiaoApi.yongHuFaPiaoTaiTouTianXieWanChengTongZhi": 该链接是通过,接口提交的callback_url参数 ，必须为HTTPS协议。如果链接无法访问，商户将无法接收到微信通知。 通知URL必须为直接可访问的URL，不能携带参数。示例:"http://pay.weixin.qq.com/wxpay/pay.action"
+      "org.dows.sdk.weixin.pay.xyfa.DianZiFaPiaoApi.huoQuYongHuTianXieDeTaiTou": 
+      "org.dows.sdk.weixin.pay.xyfa.DianZiFaPiaoApi.faPiaoKaQuanZuoFeiTongZhi": 该链接是通过,接口提交的callback_url参数 ，必须为HTTPS协议。如果链接无法访问，商户将无法接收到微信通知。 通知URL必须为直接可访问的URL，不能携带参数。示例:"http://pay.weixin.qq.com/wxpay/pay.action"
+      "org.dows.sdk.weixin.pay.xyfa.DianZiFaPiaoApi.huoQuShangHuKaiPiaoJiChuXinXi": 
+      "org.dows.sdk.weixin.pay.xyfa.DianZiFaPiaoApi.huoQuShangPinHeFuWuShuiShouFenLeiDuiZhaoBiao": 
+      "org.dows.sdk.weixin.pay.xyfa.DianZiFaPiaoApi.kaiJuDianZiFaPiao": 
+      "org.dows.sdk.weixin.pay.xyfa.DianZiFaPiaoApi.chongHongDianZiFaPiao": 
+      "org.dows.sdk.weixin.pay.xyfa.DianZiFaPiaoApi.chaXunDianZiFaPiao": 
+      "org.dows.sdk.weixin.pay.xyfa.DianZiFaPiaoApi.huoQuFaPiaoXiaZaiXinXi": 
+      "org.dows.sdk.weixin.pay.xyfa.DianZiFaPiaoApi.xiaZaiFaPiaoWenJian": 通过,口获取到“download_url”，URL有效期为30s，仅能下载ISSUED状态的发票。
+      "org.dows.sdk.weixin.pay.xyfa.DianZiFaPiaoApi.faPiaoKaiJuChengGongTongZhi": 该链接是通过,接口提交的callback_url参数 ，必须为HTTPS协议。如果链接无法访问，商户将无法接收到微信通知。 通知URL必须为直接可访问的URL，不能携带参数。示例:"http://pay.weixin.qq.com/wxpay/pay.action"
+      "org.dows.sdk.weixin.pay.xyfa.DianZiFaPiaoApi.faPiaoChongHongChengGongTongZhi": 该链接是通过,接口提交的callback_url参数 ，必须为HTTPS协议。如果链接无法访问，商户将无法接收到微信通知。 通知URL必须为直接可访问的URL，不能携带参数。示例:"http://pay.weixin.qq.com/wxpay/pay.action"
+      "org.dows.sdk.weixin.pay.xyfa.DianZiFaPiaoApi.shangChuanDianZiFaPiaoWenJian": 
+      "org.dows.sdk.weixin.pay.xyfa.DianZiFaPiaoApi.jiangDianZiFaPiaoChaRuWeiXinYongHuKaBao": 
+      "org.dows.sdk.weixin.pay.xyfa.DianZiFaPiaoApi.faPiaoChaRuYongHuKaBaoChengGongTongZhi": 该链接是通过,接口提交的callback_url参数 ，必须为HTTPS协议。如果链接无法访问，商户将无法接收到微信通知。 通知URL必须为直接可访问的URL，不能携带参数。示例:"http://pay.weixin.qq.com/wxpay/pay.action"

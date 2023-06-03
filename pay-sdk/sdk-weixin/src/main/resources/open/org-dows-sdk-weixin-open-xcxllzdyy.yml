@@ -1,0 +1,29 @@
+dows:
+  sdk:
+    weixin:
+      "org.dows.sdk.weixin.open.xcxllzdyy.JieSuanFenChengBiLiApi.sheZhiMoRenFenZhangBiLi": POST https://api.weixin.qq.com/wxa/setdefaultamsinfo?action=set_share_ratio&access_token=xxxxxxxxxxxxxxx
+      "org.dows.sdk.weixin.open.xcxllzdyy.JieSuanFenChengBiLiApi.chaXunFenZhangBiLi": POST https://api.weixin.qq.com/wxa/getdefaultamsinfo?action=get_share_ratio&access_token=xxxxxxxxxxxxxxx
+      "org.dows.sdk.weixin.open.xcxllzdyy.JieSuanFenChengBiLiApi.sheZhiZiDingYiFenZhangBiLi": POST https://api.weixin.qq.com/wxa/setdefaultamsinfo?action=agency_set_custom_share_ratio&access_token=xxxxxxxxxxxxxxx
+      "org.dows.sdk.weixin.open.xcxllzdyy.JieSuanFenChengBiLiApi.chaXunZiDingYiFenZhangBiLi": POST https://api.weixin.qq.com/wxa/getdefaultamsinfo?action=agency_get_custom_share_ratio&access_token=xxxxxxxxxxxxxxx
+      "org.dows.sdk.weixin.open.xcxllzdyy.KaiTongLiuLiangZhuApi.jianCeShiFouNengKaiTongLiuLiangZhu": POST https://api.weixin.qq.com/wxa/operationams?action=agency_check_can_open_publisher&access_token=xxxxxxxxxxxxxxx
+      "org.dows.sdk.weixin.open.xcxllzdyy.KaiTongLiuLiangZhuApi.kaiTongLiuLiangZhu": POST https://api.weixin.qq.com/wxa/operationams?action=agency_create_publisher&access_token=xxxxxxxxxxxxxxx
+      "org.dows.sdk.weixin.open.xcxllzdyy.GuangGaoWeiGuanLiApi.chuangJianGuangGaoDanYuan": POST https://api.weixin.qq.com/wxa/operationams?action=agency_create_adunit&access_token=xxxxxxxxxxxxxxx
+      "org.dows.sdk.weixin.open.xcxllzdyy.GuangGaoWeiGuanLiApi.gengXinGuangGaoDanYuan": POST https://api.weixin.qq.com/wxa/operationams?action=agency_update_adunit&access_token=xxxxxxxxxxxxxxx
+      "org.dows.sdk.weixin.open.xcxllzdyy.GuangGaoWeiGuanLiApi.huoQuYuanShengMoBanGuangGaoMoBanLeiXing": POST https://api.weixin.qq.com/wxa/operationams?action=agency_get_tmpl_type&access_token=xxxxxxxxxxxxxxx
+      "org.dows.sdk.weixin.open.xcxllzdyy.GuangGaoWeiGuanLiApi.huoQuYuanShengMoBanGuangGaoZiDingYiMoBanBangDingQingKuang": POST https://api.weixin.qq.com/wxa/operationams?action=get_agency_ad_unit_list&access_token=xxxxxxxxxxxxxxx
+      "org.dows.sdk.weixin.open.xcxllzdyy.GuangGaoWeiGuanLiApi.sheZhiFengMianGuangGaoWeiKaiGuanZhuangTai": POST https://api.weixin.qq.com/wxa/operationams?action=agency_set_cover_adpos_status&access_token=xxxxxxxxxxxxxxx
+      "org.dows.sdk.weixin.open.xcxllzdyy.GuangGaoWeiGuanLiApi.sheZhiFengMianGuangGaoWeiChangJingZhi": POST https://api.weixin.qq.com/wxa/operationams?action=agency_set_cover_adpos_scene&access_token=xxxxxxxxxxxxxxx
+      "org.dows.sdk.weixin.open.xcxllzdyy.GuangGaoWeiGuanLiApi.huoQuFengMianGuangGaoWeiZhuangTai": POST https://api.weixin.qq.com/wxa/operationams?action=agency_get_cover_adpos_status&access_token=xxxxxxxxxxxxxxx
+      "org.dows.sdk.weixin.open.xcxllzdyy.GuangGaoWeiGuanLiApi.huoQuFengMianGuangGaoWeiChangJingSheZhi": POST https://api.weixin.qq.com/wxa/operationams?action=agency_get_cover_adpos_scene&access_token=xxxxxxxxxxxxxxx
+      "org.dows.sdk.weixin.open.xcxllzdyy.GuangGaoWeiGuanLiApi.huoQuGuangGaoWei（ChuFengMianGuangGaoWei）HuoZhiDingGuangGaoDanYuanDeXinXi": POST https://api.weixin.qq.com/wxa/operationams?action=agency_get_adunit_list&access_token=xxxxxxxxxxxxxxx
+      "org.dows.sdk.weixin.open.xcxllzdyy.GuangGaoWeiGuanLiApi.huoQuGuangGaoDanYuanDaiMa": POST https://api.weixin.qq.com/wxa/operationams?action=agency_get_adunit_code&access_token=xxxxxxxxxxxxxxx
+      "org.dows.sdk.weixin.open.xcxllzdyy.GuangGaoPingBiApi.huoQuPingBiDeGuangGaoZhu": POST https://api.weixin.qq.com/wxa/operationams?action=agency_get_black_list&access_token=xxxxxxxxxxxxxxx
+      "org.dows.sdk.weixin.open.xcxllzdyy.GuangGaoPingBiApi.sheZhiPingBiDeGuangGaoZhu": POST https://api.weixin.qq.com/wxa/operationams?action=agency_set_black_list&access_token=xxxxxxxxxxxxxxx
+      "org.dows.sdk.weixin.open.xcxllzdyy.GuangGaoPingBiApi.huoQuXingYePingBiXinXi": POST https://api.weixin.qq.com/wxa/operationams?action=agency_get_mp_amscategory_blacklist&access_token=xxxxxxxxxxxxxxx
+      "org.dows.sdk.weixin.open.xcxllzdyy.GuangGaoPingBiApi.sheZhiXingYePingBiXinXi": POST https://api.weixin.qq.com/wxa/operationams?action=agency_set_mp_amscategory_blacklist&access_token=xxxxxxxxxxxxxxx
+      "org.dows.sdk.weixin.open.xcxllzdyy.GuangGaoShuJuApi.huoQuXiaoChengXuGuangGaoHuiZongShuJu": POST https://api.weixin.qq.com/wxa/operationams?action=agency_get_adpos_genenral&access_token=xxxxxxxxxxxxxxx
+      "org.dows.sdk.weixin.open.xcxllzdyy.GuangGaoShuJuApi.huoQuXiaoChengXuGuangGaoXiFenShuJu": POST https://api.weixin.qq.com/wxa/operationams?action=agency_get_adunit_general&access_token=xxxxxxxxxxxxxxx
+      "org.dows.sdk.weixin.open.xcxllzdyy.GuangGaoShuJuApi.huoQuFuWuShangGuangGaoHuiZongShuJu": POST https://api.weixin.qq.com/wxa/getdefaultamsinfo?action=get_agency_ads_stat&access_token=xxxxxxxxxxxxxxx
+      "org.dows.sdk.weixin.open.xcxllzdyy.GuangGaoShuJuApi.huoQuFuWuShangGuangGaoMingXiShuJu": POST https://api.weixin.qq.com/wxa/getdefaultamsinfo?action=get_agency_ads_detail&access_token=xxxxxxxxxxxxxxx
+      "org.dows.sdk.weixin.open.xcxllzdyy.JieSuanShuJuApi.huoQuXiaoChengXuJieSuanShouRuShuJu": POST https://api.weixin.qq.com/wxa/operationams?action=agency_get_settlement&access_token=xxxxxxxxxxxxxxx
+      "org.dows.sdk.weixin.open.xcxllzdyy.JieSuanShuJuApi.huoQuFuWuShangJieSuanShouRuShuJu": POST https://api.weixin.qq.com/wxa/operationams?action=get_agency_settled_revenue&access_token=xxxxxxxxxxxxxxx

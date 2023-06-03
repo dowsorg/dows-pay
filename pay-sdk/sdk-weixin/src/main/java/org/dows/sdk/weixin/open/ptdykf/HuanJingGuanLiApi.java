@@ -1,9 +1,13 @@
 package org.dows.sdk.weixin.open.ptdykf;
 
 import org.dows.sdk.weixin.open.ptdykf.request.ChuangJianYunHuanJingRequest;
+import org.dows.sdk.weixin.open.ptdykf.request.HuanJingGongXiangRequest;
 import org.dows.sdk.weixin.open.ptdykf.request.HuoQuYunHuanJingRequest;
+import org.dows.sdk.weixin.open.ptdykf.request.ZhuanHuanYunHuanJingRequest;
 import org.dows.sdk.weixin.open.ptdykf.response.ChuangJianYunHuanJingResponse;
+import org.dows.sdk.weixin.open.ptdykf.response.HuanJingGongXiangResponse;
 import org.dows.sdk.weixin.open.ptdykf.response.HuoQuYunHuanJingResponse;
+import org.dows.sdk.weixin.open.ptdykf.response.ZhuanHuanYunHuanJingResponse;
 
 /**
  * 环境管理

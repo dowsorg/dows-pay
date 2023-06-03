@@ -63,7 +63,8 @@ public class SchemaUtil {
                 .replaceAll("）", "")
                 .replaceAll("\\(", "")
                 .replaceAll("\\)", "")
-                .replaceAll("-", "_");
+                .replaceAll("-", "_")
+                .replaceAll("\\.","");
     }
 
     public static String filterBeanPkgChar(String pkg) {

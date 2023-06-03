@@ -1,9 +1,11 @@
 package org.dows.sdk.weixin.open.ptdykf;
 
 import org.dows.sdk.weixin.open.ptdykf.request.ChaXunShiFouBangDingShouJiHaoRequest;
+import org.dows.sdk.weixin.open.ptdykf.request.GuanLiWeiXinLingPaiQuanXianRequest;
 import org.dows.sdk.weixin.open.ptdykf.request.HuoQuTengXunYunAPIDiaoYongPingZhengRequest;
 import org.dows.sdk.weixin.open.ptdykf.request.KaiTongYunKaiFaRequest;
 import org.dows.sdk.weixin.open.ptdykf.response.ChaXunShiFouBangDingShouJiHaoResponse;
+import org.dows.sdk.weixin.open.ptdykf.response.GuanLiWeiXinLingPaiQuanXianResponse;
 import org.dows.sdk.weixin.open.ptdykf.response.HuoQuTengXunYunAPIDiaoYongPingZhengResponse;
 import org.dows.sdk.weixin.open.ptdykf.response.KaiTongYunKaiFaResponse;
 

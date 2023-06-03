@@ -1,0 +1,13 @@
+dows:
+  sdk:
+    weixin:
+      "org.dows.sdk.weixin.open.wxytg.HuanJingGuanLiApi.chaXunHuanJingGongXiangXinXi": POST https://api.weixin.qq.com/componenttcb/batchgetenvid?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.wxytg.HuanJingGuanLiApi.huanJingGongXiang": POST https://api.weixin.qq.com/componenttcb/batchshareenv?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.wxytg.HuanJingGuanLiApi.huoQuHuanJingXinXi": POST https://api.weixin.qq.com/componenttcb/describecloudbaserunenvs?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.wxytg.HuanJingGuanLiApi.chuangJianYunTuoGuanHuanJing": POST https://api.weixin.qq.com/componenttcb/createcloudbaserunenv?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.wxytg.HuanJingGuanLiApi.jieChuHuanJingGongXiangGuanLianGuanXi": POST https://api.weixin.qq.com/componenttcb/batchunshareenv?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.wxytg.FuWuGuanLiApi.chuangJianFuWu": POST https://api.weixin.qq.com/componenttcb/establishcloudbaserunserver?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.wxytg.FuWuGuanLiApi.chuangJianFuWuBanBen": POST https://api.weixin.qq.com/componenttcb/createcloudbaserunserverversion?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.wxytg.FuWuGuanLiApi.gunDongGengXinFuWuBanBen": POST https://api.weixin.qq.com/componenttcb/rollupdatecloudbaserunserverversion?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.wxytg.FuWuGuanLiApi.shanChuFuWuBanBen": POST https://api.weixin.qq.com/componenttcb/deletecloudbaserunserverversion?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.wxytg.FuWuGuanLiApi.faBuFuWu": POST https://api.weixin.qq.com/componenttcb/releasecloudbaserunversion?access_token=ACCESS_TOKEN

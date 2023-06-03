@@ -1,0 +1,40 @@
+dows:
+  sdk:
+    weixin:
+      "org.dows.sdk.weixin.open.ptdykf.KaiTongYuQuanXianGuanLiApi.guanLiWeiXinLingPaiQuanXian": POST https://api.weixin.qq.com/tcb/usecloudaccesstoken?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.ptdykf.KaiTongYuQuanXianGuanLiApi.kaiTongYunKaiFa": POST https://api.weixin.qq.com/tcb/createclouduser?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.ptdykf.KaiTongYuQuanXianGuanLiApi.huoQuTengXunYunAPIDiaoYongPingZheng": POST https://api.weixin.qq.com/tcb/getqcloudtoken?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.ptdykf.KaiTongYuQuanXianGuanLiApi.chaXunShiFouBangDingShouJiHao": POST https://api.weixin.qq.com/tcb/checkmobile?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.ptdykf.HuanJingGuanLiApi.zhuanHuanYunHuanJing": POST https://api.weixin.qq.com/tcb/modifyenv?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.ptdykf.HuanJingGuanLiApi.chuangJianYunHuanJing": POST https://api.weixin.qq.com/tcb/createenvandresource?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.ptdykf.HuanJingGuanLiApi.huoQuYunHuanJing": POST https://api.weixin.qq.com/tcb/getenvinfo?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.ptdykf.HuanJingGuanLiApi.huanJingGongXiang": POST https://api.weixin.qq.com/tcb/shareenv?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.ptdykf.XiaoXiTuiSongApi.shangChuanXiaoXiTuiSongPeiZhi": POST https://api.weixin.qq.com/tcb/setcallbackconfig?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.ptdykf.XiaoXiTuiSongApi.huoQuXiaoXiTuiSongPeiZhi": POST https://api.weixin.qq.com/tcb/getcallbackconfig?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.ptdykf.YunHanShuGuanLiApi.chuFaYunHanShu": POST New https://api.weixin.qq.com/tcb/invokecloudfunction?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.ptdykf.YunHanShuGuanLiApi.chuangJianYunHanShu": POST https://api.weixin.qq.com/tcb/createfunction?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.ptdykf.YunHanShuGuanLiApi.huoQuDaiMaBaoHuMiYao": POST https://api.weixin.qq.com/tcb/getcodesecret?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.ptdykf.YunHanShuGuanLiApi.huoQuShangChuanPingZheng": POST https://api.weixin.qq.com/tcb/getuploadsignature?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.ptdykf.YunHanShuGuanLiApi.huoQuYunHanShuLieBiao": POST https://api.weixin.qq.com/tcb/listfunctions?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.ptdykf.YunHanShuGuanLiApi.huoQuYunHanShuXiaZaiDiZhi": POST https://api.weixin.qq.com/tcb/downloadfunction?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.ptdykf.YunHanShuGuanLiApi.shangChuanYunHanShuPeiZhi": POST https://api.weixin.qq.com/tcb/uploadfuncconfig?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.ptdykf.YunHanShuGuanLiApi.huoQuYunHanShuPeiZhi": POST https://api.weixin.qq.com/tcb/getfuncconfig?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.ptdykf.WenJianGuanLiApi.huoQuWenJianShangChuanLianJie": POST https://api.weixin.qq.com/tcb/uploadfile?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.ptdykf.WenJianGuanLiApi.shanChuWenJian": POST https://api.weixin.qq.com/tcb/batchdeletefile?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.ptdykf.WenJianGuanLiApi.huoQuWenJianXiaZaiLianJie": POST https://api.weixin.qq.com/tcb/batchdownloadfile?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.ptdykf.WenJianGuanLiApi.shuJuKuJuHe": POST https://api.weixin.qq.com/tcb/databaseaggregate?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.ptdykf.WenJianGuanLiApi.shuJuKuQianYiZhuangTaiChaXun": POST https://api.weixin.qq.com/tcb/databasemigratequeryinfo?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.ptdykf.WenJianGuanLiApi.shuJuKuGengXinJiLu": POST https://api.weixin.qq.com/tcb/databaseupdate?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.ptdykf.ShuJuKuGuanLiApi.shuJuKuJiHeGuanLi": POST https://api.weixin.qq.com/componenttcb/dbcollection?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.ptdykf.ShuJuKuGuanLiApi.shuJuKuChaRuJiLu": POST https://api.weixin.qq.com/tcb/databaseadd?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.ptdykf.ShuJuKuGuanLiApi.xinZengJiHe": POST https://api.weixin.qq.com/tcb/databasecollectionadd?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.ptdykf.ShuJuKuGuanLiApi.shanChuJiHe": POST https://api.weixin.qq.com/tcb/databasecollectiondelete?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.ptdykf.ShuJuKuGuanLiApi.huoQuJiHeXinXi": POST https://api.weixin.qq.com/tcb/databasecollectionget?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.ptdykf.ShuJuKuGuanLiApi.tongJiJiHeJiLuShu": POST https://api.weixin.qq.com/tcb/databasecount?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.ptdykf.ShuJuKuGuanLiApi.shuJuKuShanChuJiLu": POST https://api.weixin.qq.com/tcb/databasedelete?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.ptdykf.ShuJuKuGuanLiApi.shuJuKuDaoChu": POST https://api.weixin.qq.com/tcb/databasemigrateexport?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.ptdykf.ShuJuKuGuanLiApi.shuJuKuDaoRu": POST https://api.weixin.qq.com/tcb/databasemigrateimport?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.ptdykf.ShuJuKuGuanLiApi.shuJuKuChaXunJiLu": POST https://api.weixin.qq.com/tcb/databasequery?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.ptdykf.ShuJuKuGuanLiApi.gengXinShuJuKuSuoYin": POST https://api.weixin.qq.com/tcb/updateindex?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.ptdykf.WeiXinZhiFuApi.huoQuShouQuanBangDingDeShangHuHaoLieBiao": POST https://api.weixin.qq.com/tcb/wxpaylist?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.ptdykf.WeiXinZhiFuApi.shenQingShangHuHaoShouQuan": POST https://api.weixin.qq.com/tcb/wxpayopenauth?access_token=ACCESS_TOKEN

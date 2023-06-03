@@ -1,0 +1,14 @@
+dows:
+  sdk:
+    weixin:
+      "org.dows.sdk.weixin.open.dsfptgl.MoBanKuGuanLiApi.huoQuCaoGaoXiangLieBiao": GET https://api.weixin.qq.com/wxa/gettemplatedraftlist?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.dsfptgl.MoBanKuGuanLiApi.jiangCaoGaoTianJiaDaoMoBanKu": POST https://api.weixin.qq.com/wxa/addtotemplate?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.dsfptgl.MoBanKuGuanLiApi.huoQuMoBanLieBiao": GET https://api.weixin.qq.com/wxa/gettemplatelist?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.dsfptgl.MoBanKuGuanLiApi.shanChuDaiMaMoBan": POST https://api.weixin.qq.com/wxa/deletetemplate?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.dsfptgl.YuMingGuanLiApi.sheZhiDiSanFangPingTaiFuWuQiYuMing": POST https://api.weixin.qq.com/cgi-bin/component/modify_wxa_server_domain?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.dsfptgl.YuMingGuanLiApi.huoQuDiSanFangPingTaiYeWuYuMingXiaoYanWenJian": POST https://api.weixin.qq.com/cgi-bin/component/get_domain_confirmfile?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.dsfptgl.YuMingGuanLiApi.sheZhiDiSanFangPingTaiYeWuYuMing": POST https://api.weixin.qq.com/cgi-bin/component/modify_wxa_jump_domain?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.dsfptgl.KaiFangPingTaiZhangHaoGuanLiApi.bangDingKaiFangPingTaiZhangHao": POST https://api.weixin.qq.com/cgi-bin/open/bind?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.dsfptgl.KaiFangPingTaiZhangHaoGuanLiApi.jieChuBangDingKaiFangPingTaiZhangHao": POST https://api.weixin.qq.com/cgi-bin/open/unbind?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.dsfptgl.KaiFangPingTaiZhangHaoGuanLiApi.huoQuKaiFangPingTaiZhangHao": POST https://api.weixin.qq.com/cgi-bin/open/get?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.dsfptgl.KaiFangPingTaiZhangHaoGuanLiApi.chuangJianKaiFangPingTaiZhangHao": POST https://api.weixin.qq.com/cgi-bin/open/create?access_token=ACCESS_TOKEN

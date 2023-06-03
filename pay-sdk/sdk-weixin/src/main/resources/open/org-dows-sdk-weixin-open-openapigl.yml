@@ -1,0 +1,7 @@
+dows:
+  sdk:
+    weixin:
+      "org.dows.sdk.weixin.open.openapigl.OpenApiGuanLiApi.zhongZhiAPIDiaoYongCiShu": POST https://api.weixin.qq.com/cgi-bin/clear_quota?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.openapigl.OpenApiGuanLiApi.chaXunAPIDiaoYongEDu": POST https://api.weixin.qq.com/cgi-bin/openapi/quota/get?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.openapigl.OpenApiGuanLiApi.chaXunridXinXi": POST https://api.weixin.qq.com/cgi-bin/openapi/rid/get?access_token=ACCESS_TOKEN
+      "org.dows.sdk.weixin.open.openapigl.OpenApiGuanLiApi.shiYongAppSecretZhongZhiDiSanFangPingTaiAPIDiaoYongCiShu": POST https://api.weixin.qq.com/cgi-bin/component/clear_quota/v2

@@ -50,10 +50,10 @@ public class ParamSchema {
 
     public String getCode() {
         if (code != null) {
-            return code.trim().replace(" ", "");
+            return SchemaUtil.filterBeanNameChar(code);
         }
         if (!StrUtil.isBlank(name.trim())) {
-            return SchemaUtil.getPingYin(name.trim().replace(" ", ""));
+            return SchemaUtil.getPingYin(SchemaUtil.filterBeanNameChar(name));
         }
         return null;
     }
