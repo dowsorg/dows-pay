@@ -41,7 +41,7 @@ dows:
       "org.dows.sdk.weixin.open.dsjglxcx.XiaoChengXuChengYuanGuanLiApi.huoQuTiYanZheLieBiao": POST https://api.weixin.qq.com/wxa/memberauth?access_token=ACCESS_TOKEN
       "org.dows.sdk.weixin.open.dsjglxcx.XiaoChengXuDaiMaGuanLiApi.shangChuanDaiMaBingShengChengTiYanBan": POST https://api.weixin.qq.com/wxa/commit?access_token=ACCESS_TOKEN
       "org.dows.sdk.weixin.open.dsjglxcx.XiaoChengXuDaiMaGuanLiApi.huoQuYiShangChuanDeDaiMaYeMianLieBiao": GET https://api.weixin.qq.com/wxa/get_page?access_token=ACCESS_TOKEN
-      "org.dows.sdk.weixin.open.dsjglxcx.XiaoChengXuDaiMaGuanLiApi.huoQuTiYanBanErWeiMa": GET https://api.weixin.qq.com/wxa/get_qrcode?access_token=ACCESS_TOKEN,HTTP/1.1 200 OK Connection: close Content-Type: image/jpeg Content-disposition: attachment; filename="QRCode.jpg" Date: Sun, 06 Jan 2013 10:20:18 GMT Cache-Control: no-cache, must-revalidate Content-Length: 339721
+      "org.dows.sdk.weixin.open.dsjglxcx.XiaoChengXuDaiMaGuanLiApi.huoQuTiYanBanErWeiMa": GET https://api.weixin.qq.com/wxa/get_qrcode?access_token=ACCESS_TOKEN
       "org.dows.sdk.weixin.open.dsjglxcx.XiaoChengXuDaiMaGuanLiApi.tiJiaoDaiMaShenHe": POST https://api.weixin.qq.com/wxa/submit_audit?access_token=ACCESS_TOKEN
       "org.dows.sdk.weixin.open.dsjglxcx.XiaoChengXuDaiMaGuanLiApi.chaXunShenHeDanZhuangTai": POST https://api.weixin.qq.com/wxa/get_auditstatus?access_token=ACCESS_TOKEN
       "org.dows.sdk.weixin.open.dsjglxcx.XiaoChengXuDaiMaGuanLiApi.cheHuiDaiMaShenHe": GET https://api.weixin.qq.com/wxa/undocodeaudit?access_token=ACCESS_TOKEN
