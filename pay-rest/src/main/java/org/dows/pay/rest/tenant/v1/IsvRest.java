@@ -26,9 +26,15 @@ public class IsvRest {
     private final IsvBiz isvBiz;
 
     @PostMapping("/isv/create")
-    @ApiOperation(value = "代商户创建小程序")
+    @ApiOperation(value = "代商户创建支付小程序")
     public Response<PayResponse> create(@Validated @RequestBody IsvCreateForm isvCreateForm) {
         isvBiz.isvCreate(isvCreateForm);
+        return Response.ok();
+    }
+    @PostMapping("/isv/apply")
+    @ApiOperation(value = "代商户创建小程序")
+    public Response<PayResponse> apply(@Validated @RequestBody IsvCreateForm isvCreateForm) {
+        isvBiz.isvApply(isvCreateForm);
         return Response.ok();
     }
     @PostMapping("/isv/ty/create")

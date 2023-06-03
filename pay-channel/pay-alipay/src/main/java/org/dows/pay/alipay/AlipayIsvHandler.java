@@ -19,7 +19,10 @@ import org.dows.app.api.mini.request.AppApplyRequest;
 import org.dows.app.biz.AppApplyBiz;
 import org.dows.app.entity.AppApply;
 import org.dows.framework.api.Response;
-import org.dows.pay.api.*;
+import org.dows.pay.api.PayEvent;
+import org.dows.pay.api.PayHandler;
+import org.dows.pay.api.PayMessage;
+import org.dows.pay.api.PayRequest;
 import org.dows.pay.api.annotation.PayMapping;
 import org.dows.pay.api.enums.PayChannels;
 import org.dows.pay.api.enums.PayMethods;
@@ -48,6 +51,7 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
     private final UserCompanyBiz userCompanyBiz;
 
 
+
     private final IdGenerator idGenerator = new SimpleIdGenerator();
 
     public static void main(String[] args) {
@@ -62,16 +66,10 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
      * @param
      */
     @PayMapping(method = PayMethods.ISV_CREATE)
-    public void createIsvMini(PayRequest payRequest) {
+    public AlipayOpenMiniIsvCreateResponse createIsvMini(PayRequest payRequest) {
         UUID uuid = idGenerator.generateId();
         IsvCreateBo isvCreateBo = (IsvCreateBo)payRequest.getBizModel();
         // todo 先查询该营业执照有没有申请过，如果没有就保存，如果有直接查询比对是否是相同的申请（orderNo为空 其他字段值全部相同通道+应用名）
-//        AppApplyRequest appApply = AppApplyRequest.builder()
-//                .appName(isvCreateBo.getAppName())
-//                .platform(PayChannels.ALIPAY.name())
-//                .contactName(isvCreateBo.getContactName())
-//                .contactPhone(isvCreateBo.getContactPhone())
-//                .build();
         AppApplyRequest appApply = new AppApplyRequest();
         appApply.setAppName(isvCreateBo.getAppName());
         appApply.setPlatform(PayChannels.ALIPAY.name());
@@ -124,10 +122,6 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
             /**
              * todo 建立关联关系（小程序申请对象） [小程序与营业执照的关系],通过营业执照来关联 小程序名 及对应的orderNo
              */
-//            AppApplyRequest appApplyUpdateRequest = AppApplyRequest.builder()
-//                    .applyOrderNo(appApply.getApplyOrderNo())
-//                    .platformOrderNo(orderNo)
-//                    .build();
             AppApplyRequest appApplyUpdateRequest = new AppApplyRequest();
             appApplyUpdateRequest.setApplyOrderNo(appApply.getApplyOrderNo());
             appApplyUpdateRequest.setPlatformOrderNo(orderNo);
@@ -136,6 +130,7 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
         } else {
             log.error("调用失败,响应信息:{}", JSONUtil.toJsonStr(response));
         }
+        return response;
     }
 
     /**

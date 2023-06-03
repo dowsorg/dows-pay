@@ -1,20 +1,17 @@
 package org.dows.pay.boot;
 
+import cn.binarywang.wx.miniapp.api.WxMaService;
 import cn.hutool.core.util.StrUtil;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.msg.AlipayMsgClient;
-import com.github.binarywang.wxpay.bean.result.BaseWxPayResult;
 import com.github.binarywang.wxpay.service.WxPayService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import me.chanjar.weixin.open.api.WxOpenConfigStorage;
 import me.chanjar.weixin.open.api.WxOpenMaService;
 import me.chanjar.weixin.open.api.WxOpenService;
-import me.chanjar.weixin.open.api.impl.WxOpenInMemoryConfigStorage;
 import org.dows.pay.api.PayEvent;
-import org.dows.pay.api.PayException;
 import org.dows.pay.api.enums.PayChannels;
 import org.dows.pay.api.message.AlipayMessage;
 import org.dows.pay.boot.properties.PayClientProperties;
@@ -28,7 +25,6 @@ import org.springframework.util.ResourceUtils;
 
 import javax.annotation.PostConstruct;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
@@ -47,6 +43,7 @@ public class PayClientFactory {
     private static final Map<String, WxPayService> WEIXIN_CLIENT_MAP = new ConcurrentHashMap<>();
     private static final Map<String, WxOpenService> WEIXIN_OPEN_MAP = new ConcurrentHashMap<>();
     private static final Map<String, WxOpenMaService> WEIXIN_OPEN_MA_MAP = new ConcurrentHashMap<>();
+    private static final Map<String, WxMaService> WEIXIN_MA_MAP = new ConcurrentHashMap<>();
     // 事件发布
     private final ApplicationEventPublisher applicationEventPublisher;
     /**
@@ -69,7 +66,7 @@ public class PayClientFactory {
     @EventListener
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
         //todo 从数据查询客户端配置列表payClientConfigService.selectAll(profiles);
-        List<PayClientProperties> payClientPropertiesList = null;
+        //List<PayInstance> payInstanceList = payInstanceService.list();
         //PCM.putAll(payClientPropertiesList.stream().collect(Collectors.toMap(PayClientProperties::getAppId, Function.identity())));
         PCM.putAll(payClientConfig.getClientConfigs().stream()
                 .filter(pc -> StrUtil.isNotBlank(pc.getAppId()))
@@ -245,12 +242,15 @@ public class PayClientFactory {
             return client;
         }
         PayClientProperties payClientProperties = PCM.get(appId + "@" + PayChannels.WEIXIN.name().toLowerCase());
-        if (payClientProperties.getCertModel() == 3) {
+        if (payClientProperties.getCertModel() == 1) {
             client = PayClientBuilder.buildWxOpenMaClient(payClientProperties);
         }
         WEIXIN_OPEN_MA_MAP.put(appId, client);
         return client;
     }
+
+
+
     public static void main(String[] args) {
         try {
             System.out.println(AlipaySignature.getCertSN("E:\\workspaces\\java\\projects\\dows\\dows-pay\\pay-boot\\src\\main\\resources\\alipay\\appCertPublicKey_2021003129694075.crt"));

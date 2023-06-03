@@ -89,7 +89,9 @@ public class PayTransactionForm implements Serializable, BizForm {
     @ApiModelProperty("通道code")
     private String channel;
 
-
+    // 下单交易类型(APP/JSAPI/NATIVE/MWEB)
+    @ApiModelProperty("下单交易类型")
+    private String tradeType;
 
 }
 

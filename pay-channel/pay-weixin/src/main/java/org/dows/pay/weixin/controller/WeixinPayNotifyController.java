@@ -1,3 +1,12 @@
+/**
+ * @ProjectName:zhyt_contract
+ * @PackageName:com.zhyt.contract.controller
+ * @Description: 地址管理业务请求分发
+ * @author gaozh
+ * @Date: 2022年11月10日
+ * @Company: crudoil
+ * @Copyright: Copyright (c) 2021-2050
+ */
 package org.dows.pay.weixin.controller;
 
 
@@ -27,9 +36,12 @@ import org.dows.app.api.mini.request.AppLicenseRequest;
 import org.dows.framework.api.Response;
 import org.dows.order.api.OrderInstanceBizApiService;
 import org.dows.order.bo.OrderInstanceBo;
+import org.dows.order.bo.OrderUpdatePaymentStatusBo;
 import org.dows.order.enums.OrderPayTypeEnum;
 import org.dows.pay.api.util.HttpRequestUtils;
 import org.dows.pay.boot.PayClientFactory;
+import org.dows.store.api.StoreInstanceApi;
+import org.dows.store.api.request.StoreInstanceRequest;
 import org.dows.user.api.api.UserCompanyApi;
 import org.dows.user.api.dto.UserCompanyDTO;
 import org.dows.user.api.vo.UserCompanyVo;
@@ -77,6 +89,7 @@ public class WeixinPayNotifyController {
 
     private final OrderInstanceBizApiService orderInstanceBizApiService;
 
+    private final StoreInstanceApi storeInstanceApi;
 
 
     static {
@@ -121,7 +134,7 @@ public class WeixinPayNotifyController {
                 PartnerTransactionsNotifyResult notifyResult = new PartnerTransactionsNotifyResult();
                 notifyResult.setRawData(notifyResponse);
                 notifyResult.setResult(transactionsResult);
-                OrderInstanceBo instanceBo =new OrderInstanceBo();
+                OrderUpdatePaymentStatusBo instanceBo = new OrderUpdatePaymentStatusBo();
                 instanceBo.setPayTime(new Date());
                 instanceBo.setPayState(OrderPayTypeEnum.pay_finish.getCode());
                 orderInstanceBizApiService.updateOrderInstance(instanceBo);
@@ -243,6 +256,9 @@ public class WeixinPayNotifyController {
                                @RequestParam String nonce,
                                @RequestParam String encrypt_type,
                                @RequestParam String msg_signature) {
+        log.info("收到事件回调通知APPID{}, format{}，signature{}，timestamp{}，nonce{}，encrypt_type{}，msg_signature{}",
+                APPID, format, signature, timestamp, nonce, encrypt_type, msg_signature
+        );
         String route = "";
         try {
             WxOpenXmlMessage wxMessage = new WxOpenXmlMessage();
@@ -286,11 +302,11 @@ public class WeixinPayNotifyController {
         return route;
     }*/
     @PostMapping("/wtr/wechat/auth_event")
-    public String wxAuthUrlNotify( HttpServletRequest request, String signature, String timestamp,
-                                   String nonce, String encrypt_type, String msg_signature,
-                                   String auth_code,String AuthorizerAppid,String AuthorizationCode) {
+    public String wxAuthUrlNotify(HttpServletRequest request, String signature, String timestamp,
+                                  String nonce, String encrypt_type, String msg_signature,
+                                  String auth_code, String AuthorizerAppid, String AuthorizationCode) {
 
-        try (InputStream inputStream = request.getInputStream()){
+        try (InputStream inputStream = request.getInputStream()) {
             String xml = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
             if (!StringUtils.isEmpty(auth_code)) {
                 log.info("接收票据信息 预授权码独立信息");
@@ -310,7 +326,7 @@ public class WeixinPayNotifyController {
             String InfoType = wxMessage.getInfoType();
             if (InfoType.equals("component_verify_ticket")) {
                 String componentVerifyTicket = wxMessage.getComponentVerifyTicket();
-                Long createTime =  wxMessage.getCreateTime();
+                Long createTime = wxMessage.getCreateTime();
                 log.info("收到授权事件：验证票据通知 ComponentVerifyTicket=" + componentVerifyTicket);
 
                 if (!StringUtils.isEmpty(componentVerifyTicket)) {
@@ -319,8 +335,8 @@ public class WeixinPayNotifyController {
                 }
             } else if (InfoType.equals("authorized") || InfoType.equals("updateauthorized")) {//获取授权AuthorizationCode
 
-                 AuthorizerAppid = wxMessage.getAuthorizerAppid();
-                 AuthorizationCode = wxMessage.getAuthorizationCode();
+                AuthorizerAppid = wxMessage.getAuthorizerAppid();
+                AuthorizationCode = wxMessage.getAuthorizationCode();
                 //todo 根据appid获取信息，获取后进行更新AuthorizationCode信息
                 log.info("收到授权事件：回调填写授权码信息！appid={}", AuthorizerAppid);
             } else if (InfoType.equals("notify_third_fasteregister")) {
@@ -351,6 +367,7 @@ public class WeixinPayNotifyController {
                 Response<AccountTenantVo> accountTenant = acountTenantApi.getAccountTenant(accountTenantBo);
                 AccountTenantVo accountTenantVo = accountTenant.getData();
                 //保存应用许可证
+
                 AppLicenseRequest appLicenseRequest = AppLicenseRequest.builder()
                         .appId(appid)
                         .appKey(get_auth_code)
@@ -360,6 +377,7 @@ public class WeixinPayNotifyController {
                         .tenantId(accountTenantVo.getTenantId())
                         .build();
                 appLicenseApi.saveAppLicense(appLicenseRequest);
+
                 //企业
                 String infoLegalPersonaName = wxMessage.getInfo().getLegalPersonaName();//法人姓名
                 String infoLegalPersonaWechat = wxMessage.getInfo().getLegalPersonaWechat();//法人微信号
@@ -371,7 +389,7 @@ public class WeixinPayNotifyController {
                 String msg = wxMessage.getMsg();//推送返回结果内容
                 int status = wxMessage.getStatus();//推送事件结果状态
 
-                String taskid =  wxMessage.getInfo().getUniqueId();//推送事件id
+                String taskid = wxMessage.getInfo().getUniqueId();//推送事件id
 
                 //修改完成信息
                 //分为个人与企业
@@ -382,7 +400,11 @@ public class WeixinPayNotifyController {
                     log.info("收到授权事件：企业回调修改注册信息！code={},legalPersonaName={},legalPersonaWechat={}", infoCode, infoLegalPersonaName, infoLegalPersonaWechat);
                     //todo 企业回调修改注册信息
                 }
+            } else if (InfoType.equals("wxa_nickname_audit")) {
+                //todo 小程序更名逻辑实现
+
             }
+
         } catch (Exception e) {
             log.error("接收票据事件异常" + e.getMessage(), e);
         }

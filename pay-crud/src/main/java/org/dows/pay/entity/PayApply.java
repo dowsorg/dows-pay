@@ -60,6 +60,27 @@ public class PayApply implements CrudEntity {
     @ApiModelProperty("审核是否通过（0:否，1：是）")
     private Boolean checked;
 
+    @ApiModelProperty("子商户号")
+    private String subMchid;
+
+    @ApiModelProperty("申请类型 1-微信 2-支付宝")
+    private Integer applyType;
+
+    /**
+     * 1、APPLYMENT_STATE_EDITTING（编辑中）
+     * 2、APPLYMENT_STATE_AUDITING（审核中）
+     * 3、APPLYMENT_STATE_REJECTED（已驳回）
+     * 4、APPLYMENT_STATE_TO_BE_CONFIRMED（待账户验证）
+     * 5、APPLYMENT_STATE_TO_BE_SIGNED（待签约）
+     * 6、APPLYMENT_STATE_SIGNING（开通权限中）
+     * 7、APPLYMENT_STATE_FINISHED（已完成）
+     * 8、APPLYMENT_STATE_CANCELED（已作废）
+     *
+     */
+    @ApiModelProperty("申请状态 1-微信 2-支付宝")
+    private String applymentState;
+
+
     @JsonIgnore
     @TableLogic
     @TableField(fill = FieldFill.INSERT)
@@ -68,6 +89,9 @@ public class PayApply implements CrudEntity {
 
     @ApiModelProperty("时间戳")
     private Date dt;
+
+    @ApiModelProperty("更新时间")
+    private Date updateTime;
 
 }
 

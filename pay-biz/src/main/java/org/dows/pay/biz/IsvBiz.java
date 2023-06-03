@@ -44,7 +44,26 @@ public class IsvBiz {
         PayResponse data = response.getData();
         log.info("返回结果:{}", data);
     }
-
+    /**
+     * isv 创建
+     *
+     * @param isvCreateForm
+     */
+    public void isvApply(IsvCreateForm isvCreateForm) {
+        PayIsvRequest payRequest = new PayIsvRequest();
+        // todo
+        IsvCreateBo isvCreateBo = BeanUtil.copyProperties(isvCreateForm, IsvCreateBo.class);
+        // 设置请求方法
+        payRequest.setMethod(PayMethods.ISV_APPLY.getNamespace());
+        // 设置业务参数对象bizModel
+        payRequest.setBizModel(isvCreateBo);
+        // 填充公共参数
+        payRequest.autoSet(isvCreateForm);
+        // 请求分发
+        Response<PayResponse> response = payDispatcher.dispatcher(payRequest);
+        PayResponse data = response.getData();
+        log.info("返回结果:{}", data);
+    }
     /**
      * isvTy 创建
      *

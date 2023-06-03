@@ -26,22 +26,27 @@
         <!--业务依赖引入-->
         <dependency>
             <groupId>org.dows.saas</groupId>
-            <artifactId>app-biz</artifactId>
+            <artifactId>app-api</artifactId>
             <version>20220701-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.dows.cloud</groupId>
-            <artifactId>user-biz</artifactId>
+            <artifactId>user-api</artifactId>
             <version>20220701-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.dows.cloud</groupId>
-            <artifactId>account-biz</artifactId>
+            <artifactId>account-api</artifactId>
             <version>20220701-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.dows.saas</groupId>
-            <artifactId>order-biz</artifactId>
+            <artifactId>order-api</artifactId>
+            <version>20220701-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.dows.saas</groupId>
+            <artifactId>store-api</artifactId>
             <version>20220701-SNAPSHOT</version>
         </dependency>
         <dependency>

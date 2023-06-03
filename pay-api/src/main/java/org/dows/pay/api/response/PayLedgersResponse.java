@@ -1,4 +1,4 @@
-package org.dows.pay.api.resonse;
+package org.dows.pay.api.response;
 
 import lombok.Data;
 import org.dows.pay.api.PayResponse;

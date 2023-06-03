@@ -16,6 +16,12 @@
             <artifactId>pay-api</artifactId>
             <version>20220701-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>org.dows.cloud</groupId>
+            <artifactId>auth-api</artifactId>
+            <version>20220701-SNAPSHOT</version>
+        </dependency>
+
         <!--################### 第三方通道SDK ###################-->
         <dependency>
             <groupId>com.alipay.sdk</groupId>

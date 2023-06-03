@@ -26,5 +26,36 @@
             <artifactId>pay-pojo</artifactId>
             <version>20220701-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>org.dows.cloud</groupId>
+            <artifactId>auth-boot</artifactId>
+            <version>20220701-SNAPSHOT</version>
+        </dependency>
+
+ <!--       <dependency>
+            <groupId>org.dows.saas</groupId>
+            <artifactId>store-biz</artifactId>
+            <version>20220701-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.dows.cloud</groupId>
+            <artifactId>account-biz</artifactId>
+            <version>20220701-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.dows.cloud</groupId>
+            <artifactId>user-biz</artifactId>
+            <version>20220701-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.dows.saas</groupId>
+            <artifactId>order-biz</artifactId>
+            <version>20220701-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.dows.saas</groupId>
+            <artifactId>app-biz</artifactId>
+            <version>20220701-SNAPSHOT</version>
+        </dependency>-->
     </dependencies>
 </project>

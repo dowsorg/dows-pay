@@ -51,3 +51,5 @@ wx:
         token: #微信小程序消息服务器配置的token
         aesKey: #微信小程序消息服务器配置的EncodingAESKey
         msgDataFormat: JSON
+ws:
+  port: 9999
