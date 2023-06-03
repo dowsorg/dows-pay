@@ -53,6 +53,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.IdGenerator;
 import org.springframework.util.SimpleIdGenerator;
 
@@ -605,19 +606,21 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
         }
 
         //受益人列表 受益人正反面照片
-        if(!ObjectUtil.isEmpty(isvCreateTyBo.getSubjectInfo())){
+        if(!ObjectUtil.isEmpty(isvCreateTyBo.getSubjectInfo()) && !isvCreateTyBo.getSubjectInfo().getIdentityInfo().getOwner()){
             List<WxPayApplyment4SubCreateRequest.SubjectInfo.UboInfo> uboInfoList
                     = isvCreateTyBo.getSubjectInfo().getUboInfoList();
-            uboInfoList.forEach(x->{
-                if(!ObjectUtil.isEmpty(x.getUboIdDocCopy())){
-                    File uboIdDocCopyFile=new File(getFilePath(x.getUboIdDocCopy()));
-                    map.put("uboIdDocCopyFile"+x.getUboIdDocNumber(),upload(uboIdDocCopyFile,payRequest));
-                }
-                if(!ObjectUtil.isEmpty(x.getUboIdDocCopyBack())){
-                    File UboIdDocCopyBackFile=new File(getFilePath(x.getUboIdDocCopyBack()));
-                    map.put("UboIdDocCopyBackFile"+x.getUboIdDocNumber(),upload(UboIdDocCopyBackFile,payRequest));
-                }
-            });
+            if(!CollectionUtils.isEmpty(uboInfoList)){
+                uboInfoList.forEach(x->{
+                    if(!ObjectUtil.isEmpty(x.getUboIdDocCopy())){
+                        File uboIdDocCopyFile=new File(getFilePath(x.getUboIdDocCopy()));
+                        map.put("uboIdDocCopyFile"+x.getUboIdDocNumber(),upload(uboIdDocCopyFile,payRequest));
+                    }
+                    if(!ObjectUtil.isEmpty(x.getUboIdDocCopyBack())){
+                        File UboIdDocCopyBackFile=new File(getFilePath(x.getUboIdDocCopyBack()));
+                        map.put("UboIdDocCopyBackFile"+x.getUboIdDocNumber(),upload(UboIdDocCopyBackFile,payRequest));
+                    }
+                });
+            }
         }
         //补充资料
         if(!ObjectUtil.isEmpty(isvCreateTyBo.getAdditionInfo())) {
