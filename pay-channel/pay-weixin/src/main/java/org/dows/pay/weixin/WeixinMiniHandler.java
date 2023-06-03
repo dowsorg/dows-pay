@@ -57,7 +57,6 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
     // 提交审核
     private final String WX_API_TEMPLATE_SUBMIT_URL = "https://api.weixin.qq.com/wxa/submit_audit";
 
-
     private static final Gson GSON = new GsonBuilder().create();
     /**
      * 上传小程序模板
