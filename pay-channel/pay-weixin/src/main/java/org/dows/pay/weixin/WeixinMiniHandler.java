@@ -1,6 +1,9 @@
 package org.dows.pay.weixin;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpResponse;
+import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alipay.api.request.AlipayOpenMiniVersionAuditApplyRequest;
@@ -77,12 +80,7 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
             WxOpenResult wxOpenResult = JSON.parseObject(content, WxOpenResult.class);
             if (Objects.equals(wxOpenResult.getErrcode(),"0")) {
                 // 提交审核
-                Map<String, String> submitMap = new HashMap<>();
-                submitMap.put("item_list",listSubmitContent());
-                HttpClientResult submitResult = HttpClientUtils.doPost(WX_API_TEMPLATE_SUBMIT_URL + "?component_access_token=" + authorizerAccessToken, submitMap, 1);
-                String submitResultContent = submitResult.getContent();
-                String auditid = JSON.parseObject(submitResultContent).getString("auditid");
-                log.info("auditid is {}",auditid);
+                submit(authorizerAccessToken);
             }
             return wxOpenResult;
         }catch (Exception e) {
@@ -91,16 +89,30 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
         }
     }
 
-    private String listSubmitContent() {
+    private void submit(String authorizerAccessToken) {
+        // 提交审核
+        Map<String, Object> paramsMap = new HashMap<>();
+        paramsMap.put("item_list",listSubmitContent());
+        log.info("item_list====={}",JSON.toJSONString(paramsMap));
+        HttpResponse submitResult = HttpRequest.post(WX_API_TEMPLATE_SUBMIT_URL + "?component_access_token="
+                + authorizerAccessToken).body(JSON.toJSONString(paramsMap)).execute();
+        log.info("submitResult is {}", submitResult);
+        String body = submitResult.body();
+        String auditid = JSON.parseObject(body).getString("auditid");
+        log.info("auditid is {}",auditid);
+        // todo:保存数据库
+    }
+
+    private List<TemplateSubmitReq> listSubmitContent() {
         TemplateSubmitReq templateSubmitReq = new TemplateSubmitReq();
-        templateSubmitReq.setAddress("pages\\/home\\/index");
-        templateSubmitReq.setTag("餐饮");
-        templateSubmitReq.setFirst_class("餐饮服务");
-        templateSubmitReq.setSecond_class("餐厅排队");
-        templateSubmitReq.setFirst_id(220);
-        templateSubmitReq.setSecond_id(634);
+        templateSubmitReq.setAddress("index");
+        templateSubmitReq.setTag("生活服务");
+        templateSubmitReq.setFirst_class("生活服务");
+        templateSubmitReq.setSecond_class("跑腿");
+        templateSubmitReq.setFirst_id(150);
+        templateSubmitReq.setSecond_id(1259);
         templateSubmitReq.setTitle("首页");
-        return JSON.toJSONString(Collections.singletonList(templateSubmitReq));
+        return Collections.singletonList(templateSubmitReq);
 
     }
 
