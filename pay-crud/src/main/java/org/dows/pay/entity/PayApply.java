@@ -77,8 +77,11 @@ public class PayApply implements CrudEntity {
      * 8、APPLYMENT_STATE_CANCELED（已作废）
      *
      */
-    @ApiModelProperty("申请状态 1-微信 2-支付宝")
+    @ApiModelProperty("申请状态")
     private String applymentState;
+
+    @ApiModelProperty("申请状态描述")
+    private String applymentStateDesc;
 
 
     @JsonIgnore

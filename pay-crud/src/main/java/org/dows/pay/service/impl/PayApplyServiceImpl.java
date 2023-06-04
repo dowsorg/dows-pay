@@ -25,7 +25,6 @@ public class PayApplyServiceImpl extends MybatisCrudServiceImpl<PayApplyMapper, 
         LambdaQueryWrapper<PayApply> queryWrapper = new LambdaQueryWrapper<PayApply>()
                 .eq(PayApply::getMerchantNo, merchantNo)
                 .eq(PayApply::getApplyType, applyType)
-                .eq(PayApply::getChecked, 0)
                 .eq(PayApply::getDeleted, 0)
                 .orderByDesc(PayApply::getId)
                 .last(" limit 1");
