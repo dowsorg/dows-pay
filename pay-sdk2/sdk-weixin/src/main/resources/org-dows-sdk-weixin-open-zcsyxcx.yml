@@ -1,6 +1,0 @@
-dows:
-  sdk:
-    weixin:
-      "org.dows.sdk.weixin.open.zcsyxcx.ZhuCeShiYongXiaoChengXuApi.xiuGaiShiYongXiaoChengXuMingCheng": POST https://api.weixin.qq.com/wxa/setbetaweappnickname?access_token=ACCESS_TOKEN
-      "org.dows.sdk.weixin.open.zcsyxcx.ZhuCeShiYongXiaoChengXuApi.shiYongXiaoChengXuKuaiSuRenZheng": POST https://api.weixin.qq.com/wxa/verifybetaweapp?access_token=ACCESS_TOKEN
-      "org.dows.sdk.weixin.open.zcsyxcx.ZhuCeShiYongXiaoChengXuApi.zhuCeShiYongXiaoChengXu": POST https://api.weixin.qq.com/wxa/component/fastregisterbetaweapp?access_token=ACCESS_TOKEN

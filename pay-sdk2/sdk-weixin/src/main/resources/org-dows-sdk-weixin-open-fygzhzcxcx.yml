@@ -1,4 +1,0 @@
-dows:
-  sdk:
-    weixin:
-      "org.dows.sdk.weixin.open.fygzhzcxcx.FuYongGongZhongHaoZhuCeXiaoChengXuApi.fuYongGongZhongHaoZhuTiKuaiSuZhuCeXiaoChengXu": POST https://api.weixin.qq.com/cgi-bin/account/fastregister?access_token=ACCESS_TOKEN

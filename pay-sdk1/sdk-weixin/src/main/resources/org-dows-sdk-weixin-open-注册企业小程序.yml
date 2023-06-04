@@ -1,4 +1,0 @@
-dows:
-  sdk:
-    weixin:
-      "org.dows.sdk.weixin.open.注册企业小程序.注册企业小程序Api.快速注册企业小程序": POST https://api.weixin.qq.com/cgi-bin/component/fastregisterweapp?action=create&component_access_token=TOKEN,POST https://api.weixin.qq.com/cgi-bin/component/fastregisterweapp?action=search&component_access_token=TOKEN,{ "errcode":0, // 状态码，0成功，其他失败 "errmsg":"OK" // 错误信息 }

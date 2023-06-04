@@ -1,6 +1,0 @@
-dows:
-  sdk:
-    weixin:
-      "org.dows.sdk.weixin.open.注册试用小程序.注册试用小程序Api.修改试用小程序名称": POST https://api.weixin.qq.com/wxa/setbetaweappnickname?access_token=ACCESS_TOKEN
-      "org.dows.sdk.weixin.open.注册试用小程序.注册试用小程序Api.试用小程序快速认证": POST https://api.weixin.qq.com/wxa/verifybetaweapp?access_token=ACCESS_TOKEN
-      "org.dows.sdk.weixin.open.注册试用小程序.注册试用小程序Api.注册试用小程序": POST https://api.weixin.qq.com/wxa/component/fastregisterbetaweapp?access_token=ACCESS_TOKEN

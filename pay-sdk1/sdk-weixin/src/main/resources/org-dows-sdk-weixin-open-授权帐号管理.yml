@@ -1,7 +1,0 @@
-dows:
-  sdk:
-    weixin:
-      "org.dows.sdk.weixin.open.授权帐号管理.授权帐号管理Api.拉取已授权的帐号信息": POST https://api.weixin.qq.com/cgi-bin/component/api_get_authorizer_list?access_token=ACCESS_TOKEN
-      "org.dows.sdk.weixin.open.授权帐号管理.授权帐号管理Api.获取授权帐号详情": POST https://api.weixin.qq.com/cgi-bin/component/api_get_authorizer_info?access_token=ACCESS_TOKEN
-      "org.dows.sdk.weixin.open.授权帐号管理.授权帐号管理Api.设置授权方选项信息": POST https://api.weixin.qq.com/cgi-bin/component/set_authorizer_option?access_token=ACCESS_TOKEN
-      "org.dows.sdk.weixin.open.授权帐号管理.授权帐号管理Api.获取授权方选项信息": POST https://api.weixin.qq.com/cgi-bin/component/get_authorizer_option?access_token=ACCESS_TOKEN

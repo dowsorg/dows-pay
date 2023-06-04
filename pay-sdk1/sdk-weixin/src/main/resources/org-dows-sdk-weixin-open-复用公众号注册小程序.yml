@@ -1,4 +1,0 @@
-dows:
-  sdk:
-    weixin:
-      "org.dows.sdk.weixin.open.复用公众号注册小程序.复用公众号注册小程序Api.复用公众号主体快速注册小程序": POST https://api.weixin.qq.com/cgi-bin/account/fastregister?access_token=ACCESS_TOKEN
