@@ -13,5 +13,5 @@ public class ApiUrlProperties {
 
     private Map<String, String> alipay;
 
-    private Map<String, String> zijie;
+    private Map<String, String> douyin;
 }
