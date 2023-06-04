@@ -1,12 +1,14 @@
 package org.dows.sdk.weixin.auth.certificate;
 
 import lombok.extern.slf4j.Slf4j;
+import org.dows.sdk.client.certificate.CertificateHandler;
+import org.dows.sdk.client.certificate.CertificateProvider;
 import org.dows.sdk.weixin.auth.certificate.model.Data;
 import org.dows.sdk.weixin.auth.certificate.model.DownloadCertificateResponse;
 import org.dows.sdk.weixin.auth.certificate.model.EncryptCertificate;
-import org.dows.sdk.weixin.auth.cipher.AeadCipher;
-import org.dows.sdk.weixin.auth.http.*;
-import org.dows.sdk.weixin.auth.util.PemUtil;
+import org.dows.sdk.client.cipher.AeadCipher;
+import org.dows.sdk.client.http.*;
+import org.dows.sdk.client.util.PemUtil;
 
 import java.nio.charset.StandardCharsets;
 import java.security.cert.X509Certificate;

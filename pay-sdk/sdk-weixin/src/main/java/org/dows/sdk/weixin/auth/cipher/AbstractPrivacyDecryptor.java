@@ -1,6 +1,7 @@
 package org.dows.sdk.weixin.auth.cipher;
 
-import org.dows.sdk.weixin.auth.exception.DecryptionException;
+import org.dows.sdk.client.cipher.PrivacyDecryptor;
+import org.dows.sdk.client.exception.DecryptionException;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;

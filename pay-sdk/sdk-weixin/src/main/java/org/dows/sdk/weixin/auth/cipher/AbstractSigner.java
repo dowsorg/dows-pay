@@ -1,5 +1,8 @@
 package org.dows.sdk.weixin.auth.cipher;
 
+import org.dows.sdk.client.cipher.SignatureResult;
+import org.dows.sdk.client.cipher.Signer;
+
 import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.util.Base64;

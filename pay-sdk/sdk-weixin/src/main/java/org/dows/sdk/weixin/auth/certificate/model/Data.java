@@ -1,6 +1,6 @@
 package org.dows.sdk.weixin.auth.certificate.model;
 
-import com.wechat.pay.java.core.util.GsonUtil;
+import org.dows.sdk.client.util.GsonUtil;
 
 /**
  * 获取平台证书列表返回数据

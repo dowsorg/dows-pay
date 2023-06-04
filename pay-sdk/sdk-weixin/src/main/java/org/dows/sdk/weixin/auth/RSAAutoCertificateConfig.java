@@ -1,13 +1,13 @@
 package org.dows.sdk.weixin.auth;
 
-import org.dows.sdk.weixin.auth.certificate.CertificateProvider;
+import org.dows.sdk.client.http.AbstractHttpClientBuilder;
+import org.dows.sdk.client.http.HttpClient;
+import org.dows.sdk.client.certificate.CertificateProvider;
 import org.dows.sdk.weixin.auth.certificate.RSAAutoCertificateProvider;
 import org.dows.sdk.weixin.auth.cipher.AeadAesCipher;
-import org.dows.sdk.weixin.auth.cipher.AeadCipher;
+import org.dows.sdk.client.cipher.AeadCipher;
 import org.dows.sdk.weixin.auth.cipher.RSAVerifier;
-import org.dows.sdk.weixin.auth.cipher.Verifier;
-import org.dows.sdk.weixin.auth.http.AbstractHttpClientBuilder;
-import org.dows.sdk.weixin.auth.http.HttpClient;
+import org.dows.sdk.client.cipher.Verifier;
 import org.dows.sdk.weixin.auth.notification.NotificationConfig;
 
 import java.nio.charset.StandardCharsets;
@@ -19,18 +19,13 @@ import static org.dows.sdk.weixin.auth.notification.Constant.RSA_SIGN_TYPE;
 /**
  * 具有自动下载平台证书能力的RSA配置类
  */
-public final class RSAAutoCertificateConfig extends AbstractRSAConfig
-        implements NotificationConfig {
+public final class RSAAutoCertificateConfig extends AbstractRSAConfig implements NotificationConfig {
 
     private final CertificateProvider certificateProvider;
     private final AeadCipher aeadCipher;
 
     private RSAAutoCertificateConfig(Builder builder) {
-        super(
-                builder.merchantId,
-                builder.privateKey,
-                builder.merchantSerialNumber,
-                builder.certificateProvider);
+        super(builder.merchantId, builder.privateKey, builder.merchantSerialNumber, builder.certificateProvider);
         this.certificateProvider = builder.certificateProvider;
         this.aeadCipher = new AeadAesCipher(builder.apiV3Key);
     }

@@ -1,9 +1,9 @@
 package org.dows.sdk.weixin.auth.notification;
 
-import org.dows.sdk.weixin.auth.certificate.CertificateProvider;
-import org.dows.sdk.weixin.auth.cipher.AeadCipher;
+import org.dows.sdk.client.certificate.CertificateProvider;
+import org.dows.sdk.client.cipher.AeadCipher;
 import org.dows.sdk.weixin.auth.cipher.RSAVerifier;
-import org.dows.sdk.weixin.auth.cipher.Verifier;
+import org.dows.sdk.client.cipher.Verifier;
 
 public abstract class AbstractNotificationConfig implements NotificationConfig {
 

@@ -1,7 +1,7 @@
 package org.dows.sdk.weixin.auth.certificate.model;
 
 import com.google.gson.annotations.SerializedName;
-import com.wechat.pay.java.core.util.GsonUtil;
+import org.dows.sdk.client.util.GsonUtil;
 
 import java.util.List;
 

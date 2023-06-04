@@ -1,8 +1,8 @@
 package org.dows.sdk.weixin.auth;
 
-import org.dows.sdk.weixin.auth.certificate.CertificateProvider;
+import org.dows.sdk.client.util.PemUtil;
+import org.dows.sdk.client.certificate.CertificateProvider;
 import org.dows.sdk.weixin.auth.certificate.InMemoryCertificateProvider;
-import org.dows.sdk.weixin.auth.util.PemUtil;
 
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;

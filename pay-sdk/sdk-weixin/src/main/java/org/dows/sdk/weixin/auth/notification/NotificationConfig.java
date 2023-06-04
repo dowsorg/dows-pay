@@ -1,7 +1,7 @@
 package org.dows.sdk.weixin.auth.notification;
 
-import org.dows.sdk.weixin.auth.cipher.AeadCipher;
-import org.dows.sdk.weixin.auth.cipher.Verifier;
+import org.dows.sdk.client.cipher.AeadCipher;
+import org.dows.sdk.client.cipher.Verifier;
 
 /**
  * 用于解析通知的配置

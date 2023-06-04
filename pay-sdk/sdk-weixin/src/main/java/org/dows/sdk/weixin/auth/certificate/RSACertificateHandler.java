@@ -1,7 +1,8 @@
 package org.dows.sdk.weixin.auth.certificate;
 
-import com.wechat.pay.java.core.exception.ValidationException;
-import com.wechat.pay.java.core.util.PemUtil;
+import org.dows.sdk.client.certificate.CertificateHandler;
+import org.dows.sdk.client.exception.ValidationException;
+import org.dows.sdk.client.util.PemUtil;
 
 import java.security.cert.*;
 import java.util.*;
@@ -60,11 +61,8 @@ final class RSACertificateHandler implements CertificateHandler {
             CertPathValidator validator = CertPathValidator.getInstance("PKIX");
             validator.validate(certPath, params);
         } catch (Exception e) {
-            throw new ValidationException(
-                    String.format(
-                            "certificate[%s] validation failed: %s",
-                            PemUtil.getSerialNumber(certificate), e.getMessage()),
-                    e);
+            throw new ValidationException(String.format("certificate[%s] validation failed: %s",
+                            PemUtil.getSerialNumber(certificate), e.getMessage()), e);
         }
     }
 }

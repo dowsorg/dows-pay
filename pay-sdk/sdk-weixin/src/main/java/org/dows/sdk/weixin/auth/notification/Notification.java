@@ -1,7 +1,7 @@
 package org.dows.sdk.weixin.auth.notification;
 
 import com.google.gson.annotations.SerializedName;
-import org.dows.sdk.weixin.auth.util.GsonUtil;
+import org.dows.sdk.client.util.GsonUtil;
 
 /**
  * 微信支付回调通知

@@ -1,6 +1,6 @@
 package org.dows.sdk.weixin.auth.notification;
 
-import org.dows.sdk.weixin.auth.util.GsonUtil;
+import org.dows.sdk.client.util.GsonUtil;
 
 /**
  * 通知数据

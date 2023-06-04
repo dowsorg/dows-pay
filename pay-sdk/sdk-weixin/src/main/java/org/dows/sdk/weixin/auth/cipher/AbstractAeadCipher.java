@@ -1,6 +1,7 @@
 package org.dows.sdk.weixin.auth.cipher;
 
-import org.dows.sdk.weixin.auth.exception.DecryptionException;
+import org.dows.sdk.client.cipher.AeadCipher;
+import org.dows.sdk.client.exception.DecryptionException;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -42,8 +43,7 @@ public abstract class AbstractAeadCipher implements AeadCipher {
     public String encrypt(byte[] associatedData, byte[] nonce, byte[] plaintext) {
         try {
             javax.crypto.Cipher cipher = javax.crypto.Cipher.getInstance(transformation);
-            cipher.init(
-                    javax.crypto.Cipher.ENCRYPT_MODE,
+            cipher.init(javax.crypto.Cipher.ENCRYPT_MODE,
                     new SecretKeySpec(key, algorithm),
                     new GCMParameterSpec(tagLengthBit, nonce));
             if (associatedData != null) {

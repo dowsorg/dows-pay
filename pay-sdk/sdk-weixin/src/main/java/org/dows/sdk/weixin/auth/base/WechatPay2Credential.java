@@ -1,9 +1,10 @@
 package org.dows.sdk.weixin.auth.base;
 
 import lombok.extern.slf4j.Slf4j;
-import org.dows.sdk.weixin.auth.cipher.SignatureResult;
-import org.dows.sdk.weixin.auth.cipher.Signer;
-import org.dows.sdk.weixin.auth.util.NonceUtil;
+import org.dows.sdk.client.security.Credential;
+import org.dows.sdk.client.cipher.SignatureResult;
+import org.dows.sdk.client.cipher.Signer;
+import org.dows.sdk.client.util.NonceUtil;
 
 import java.net.URI;
 import java.time.Instant;
@@ -48,28 +49,26 @@ public final class WechatPay2Credential implements Credential {
         String message = buildMessage(nonceStr, timestamp, uri, httpMethod, signBody);
         log.debug("authorization message[{}]", message);
         SignatureResult signature = signer.sign(message);
-        String token =
-                "mchid=\""
-                        + getMerchantId()
-                        + "\","
-                        + "nonce_str=\""
-                        + nonceStr
-                        + "\","
-                        + "timestamp=\""
-                        + timestamp
-                        + "\","
-                        + "serial_no=\""
-                        + signature.getCertificateSerialNumber()
-                        + "\","
-                        + "signature=\""
-                        + signature.getSign()
-                        + "\"";
+        String token = "mchid=\""
+                + getMerchantId()
+                + "\","
+                + "nonce_str=\""
+                + nonceStr
+                + "\","
+                + "timestamp=\""
+                + timestamp
+                + "\","
+                + "serial_no=\""
+                + signature.getCertificateSerialNumber()
+                + "\","
+                + "signature=\""
+                + signature.getSign()
+                + "\"";
         log.debug("The generated request signature information is[{}]", token);
         return token;
     }
 
-    private String buildMessage(
-            String nonce, long timestamp, URI uri, String httpMethod, String signBody) {
+    private String buildMessage(String nonce, long timestamp, URI uri, String httpMethod, String signBody) {
         String canonicalUrl = uri.getRawPath();
         if (uri.getQuery() != null) {
             canonicalUrl += "?" + uri.getRawQuery();

@@ -1,8 +1,8 @@
 package org.dows.sdk.weixin.auth.notification;
 
-import com.wechat.pay.java.core.util.GsonUtil;
+import org.dows.sdk.client.util.GsonUtil;
 
-import static com.wechat.pay.java.core.notification.Constant.RSA_SIGN_TYPE;
+import static org.dows.sdk.weixin.auth.notification.Constant.RSA_SIGN_TYPE;
 
 /**
  * 微信支付通知请求参数

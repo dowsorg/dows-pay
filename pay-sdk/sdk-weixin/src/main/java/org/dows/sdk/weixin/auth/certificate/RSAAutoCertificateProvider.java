@@ -1,15 +1,16 @@
 package org.dows.sdk.weixin.auth.certificate;
 
-import org.dows.sdk.weixin.auth.base.Credential;
-import org.dows.sdk.weixin.auth.base.Validator;
+import org.dows.sdk.client.security.Credential;
+import org.dows.sdk.client.security.Validator;
+import org.dows.sdk.client.certificate.CertificateHandler;
+import org.dows.sdk.client.http.AbstractHttpClientBuilder;
+import org.dows.sdk.client.http.DefaultHttpClientBuilder;
+import org.dows.sdk.client.http.HttpClient;
+import org.dows.sdk.client.http.HttpHeaders;
 import org.dows.sdk.weixin.auth.base.WechatPay2Credential;
 import org.dows.sdk.weixin.auth.cipher.AeadAesCipher;
-import org.dows.sdk.weixin.auth.cipher.AeadCipher;
+import org.dows.sdk.client.cipher.AeadCipher;
 import org.dows.sdk.weixin.auth.cipher.RSASigner;
-import org.dows.sdk.weixin.auth.http.AbstractHttpClientBuilder;
-import org.dows.sdk.weixin.auth.http.DefaultHttpClientBuilder;
-import org.dows.sdk.weixin.auth.http.HttpClient;
-import org.dows.sdk.weixin.auth.http.HttpHeaders;
 
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
