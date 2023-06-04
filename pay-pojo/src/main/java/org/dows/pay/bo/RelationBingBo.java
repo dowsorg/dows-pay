@@ -18,6 +18,9 @@ public class RelationBingBo implements ChannelBizModel {
     @AlipayApiField(name = "type")
     private String type;
 
+    @WeixinApiField(name = "appid")
+    private String appId;
+
     /**
      * 分账接收账号（支付宝|微信等第三方通道账号[账号ID,支付宝账接收方方类型，userId：表示是支付宝账号对应的支付宝唯一用户号；]）
      */

@@ -107,7 +107,7 @@ public class WeixinRoyaltyRelationHandler extends AbstractWeixinHandler {
     public void tradeRoyaltyRelationBind(PayRequest payRequest) {
         RelationBingBo relationBingBo = (RelationBingBo)payRequest.getBizModel();
         ProfitSharingReceiverRequest profitSharingReceiverRequest = new ProfitSharingReceiverRequest();
-        profitSharingReceiverRequest.setRelationType("PARTNER");
+        profitSharingReceiverRequest.setRelationType("SERVICE_PROVIDER");
         profitSharingReceiverRequest.setAccount(relationBingBo.getChannelAccountNo());
         profitSharingReceiverRequest.setAppid(relationBingBo.getAppId());
         profitSharingReceiverRequest.setType("MERCHANT_ID");
