@@ -1,8 +1,0 @@
-dows:
-  sdk:
-    weixin:
-      "org.dows.sdk.weixin.pay.shjj.TeYueShangHuJinJianApi.tiJiaoShenQingDan":
-      "org.dows.sdk.weixin.pay.shjj.TeYueShangHuJinJianApi.chaXunShenQingDanZhuangTai":
-      "org.dows.sdk.weixin.pay.shjj.TeYueShangHuJinJianApi.xiuGaiJieSuanZhangHao":
-      "org.dows.sdk.weixin.pay.shjj.TeYueShangHuJinJianApi.chaXunJieSuanZhangHao":
-      "org.dows.sdk.weixin.pay.shjj.TeYueShangHuJinJianApi.chaXunJieSuanZhangHuXiuGaiShenQingZhuangTai": 
