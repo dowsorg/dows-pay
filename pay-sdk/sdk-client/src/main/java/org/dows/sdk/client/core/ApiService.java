@@ -1,4 +1,4 @@
-package org.dows.sdk.client;
+package org.dows.sdk.client.core;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
@@ -8,6 +8,9 @@ import javassist.util.proxy.ProxyFactory;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.dows.sdk.client.ApiChain;
+import org.dows.sdk.client.ApiConfiguration;
+import org.dows.sdk.client.ApiInvoker;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.InvocationTargetException;
@@ -143,8 +146,8 @@ public class ApiService {
              */
             JSONObject result = apiDispatcher.dispatch("", url, jsonObject);
             // todo 参数码表，确认具体平台-业务线
-            if(result.containsKey("errcode")){
-                throw new RuntimeException("error: "+result.toString());
+            if (result.containsKey("errcode")) {
+                throw new RuntimeException("error: " + result.toString());
             }
             return result.toBean(returnType);
         }

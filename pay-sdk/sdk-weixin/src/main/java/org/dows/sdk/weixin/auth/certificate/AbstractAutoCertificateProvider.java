@@ -3,12 +3,12 @@ package org.dows.sdk.weixin.auth.certificate;
 import lombok.extern.slf4j.Slf4j;
 import org.dows.sdk.client.certificate.CertificateHandler;
 import org.dows.sdk.client.certificate.CertificateProvider;
-import org.dows.sdk.weixin.auth.certificate.model.Data;
-import org.dows.sdk.weixin.auth.certificate.model.DownloadCertificateResponse;
-import org.dows.sdk.weixin.auth.certificate.model.EncryptCertificate;
 import org.dows.sdk.client.cipher.AeadCipher;
 import org.dows.sdk.client.http.*;
 import org.dows.sdk.client.util.PemUtil;
+import org.dows.sdk.weixin.auth.certificate.model.Data;
+import org.dows.sdk.weixin.auth.certificate.model.DownloadCertificateResponse;
+import org.dows.sdk.weixin.auth.certificate.model.EncryptCertificate;
 
 import java.nio.charset.StandardCharsets;
 import java.security.cert.X509Certificate;
@@ -27,6 +27,10 @@ public abstract class AbstractAutoCertificateProvider implements CertificateProv
     protected static final int UPDATE_INTERVAL_MINUTE = 60;
     // 安全的单线程定时执行器实例
     protected final SafeSingleScheduleExecutor executor = SafeSingleScheduleExecutor.getInstance();
+    // http请求
+    private final HttpRequest httpRequest;
+    // 证书map
+    private final Map<String, Map<String, X509Certificate>> certificateMap;
     // 商户号
     protected String merchantId;
     // 证书处理器
@@ -35,29 +39,15 @@ public abstract class AbstractAutoCertificateProvider implements CertificateProv
     protected AeadCipher aeadCipher;
     // 下载平台证书的httpClient
     protected HttpClient httpClient;
-    // http请求
-    private final HttpRequest httpRequest;
     // 自动更新次数
     private int updateCount;
     // 成功次数
     private int succeedCount;
-    // 证书map
-    private final Map<String, Map<String, X509Certificate>> certificateMap;
 
-    protected AbstractAutoCertificateProvider(
-            String requestUrl,
-            CertificateHandler certificateHandler,
-            AeadCipher aeadCipher,
-            HttpClient httpClient,
-            String merchantId,
-            Map<String, Map<String, X509Certificate>> wechatPayCertificateMap) {
-        this(
-                requestUrl,
-                certificateHandler,
-                aeadCipher,
-                httpClient,
-                merchantId,
-                wechatPayCertificateMap,
+    protected AbstractAutoCertificateProvider(String requestUrl, CertificateHandler certificateHandler,
+                                              AeadCipher aeadCipher, HttpClient httpClient, String merchantId,
+                                              Map<String, Map<String, X509Certificate>> wechatPayCertificateMap) {
+        this(requestUrl, certificateHandler, aeadCipher, httpClient, merchantId, wechatPayCertificateMap,
                 UPDATE_INTERVAL_MINUTE * 60);
     }
 
@@ -150,8 +140,7 @@ public abstract class AbstractAutoCertificateProvider implements CertificateProv
      * @param httpResponse httpResponse
      * @return 应答报文解密后，生成X.509证书对象的Map
      */
-    protected Map<String, X509Certificate> decryptCertificate(
-            HttpResponse<DownloadCertificateResponse> httpResponse) {
+    protected Map<String, X509Certificate> decryptCertificate(HttpResponse<DownloadCertificateResponse> httpResponse) {
         List<Data> dataList = httpResponse.getServiceResponse().getData();
         Map<String, X509Certificate> downloadCertMap = new HashMap<>();
         for (Data data : dataList) {

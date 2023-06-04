@@ -1,13 +1,13 @@
 package org.dows.sdk.weixin.auth;
 
+import org.dows.sdk.client.certificate.CertificateProvider;
+import org.dows.sdk.client.cipher.AeadCipher;
+import org.dows.sdk.client.cipher.Verifier;
 import org.dows.sdk.client.http.AbstractHttpClientBuilder;
 import org.dows.sdk.client.http.HttpClient;
-import org.dows.sdk.client.certificate.CertificateProvider;
 import org.dows.sdk.weixin.auth.certificate.RSAAutoCertificateProvider;
 import org.dows.sdk.weixin.auth.cipher.AeadAesCipher;
-import org.dows.sdk.client.cipher.AeadCipher;
 import org.dows.sdk.weixin.auth.cipher.RSAVerifier;
-import org.dows.sdk.client.cipher.Verifier;
 import org.dows.sdk.weixin.auth.notification.NotificationConfig;
 
 import java.nio.charset.StandardCharsets;

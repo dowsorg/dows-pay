@@ -26,6 +26,6 @@ public class ChuangJianTingCheRuChangRequest {
     @Schema(title = "")
     private String parking_name;
     @Schema(title = "")
-    private Integer  free_duration;
+    private Integer free_duration;
 }
 

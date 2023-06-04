@@ -8,9 +8,6 @@ import com.google.gson.annotations.Expose;
  */
 public class GsonUtil {
 
-    private GsonUtil() {
-    }
-
     private static final Gson gson;
 
     static {
@@ -44,6 +41,9 @@ public class GsonUtil {
                             }
                         })
                 .create();
+    }
+
+    private GsonUtil() {
     }
 
     /**

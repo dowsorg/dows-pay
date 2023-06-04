@@ -1,6 +1,7 @@
 package org.dows.sdk.client;
 
 import lombok.extern.slf4j.Slf4j;
+import org.dows.sdk.client.core.ApiAccessTokenContext;
 import org.dows.sdk.weixin.bak.ams.AdBlackApi;
 import org.dows.sdk.weixin.open.dsfptdypz.DiSanFangPingTaiDiaoYongPingZhengApi;
 import org.dows.sdk.weixin.open.dsfptdypz.request.HuoQuLingPaiRequest;

@@ -1,25 +1,25 @@
 dows:
   sdk:
     weixin:
-      "org.dows.sdk.weixin.pay.fxhg.ShangHuKaiHuYiYuanQueRenApi.tiJiaoShenQingDan": 
-      "org.dows.sdk.weixin.pay.fxhg.ShangHuKaiHuYiYuanQueRenApi.cheXiaoShenQingDan": 
-      "org.dows.sdk.weixin.pay.fxhg.ShangHuKaiHuYiYuanQueRenApi.chaXunShenQingDanShenHeJieGuo": 
-      "org.dows.sdk.weixin.pay.fxhg.ShangHuKaiHuYiYuanQueRenApi.huoQuShangHuKaiHuYiYuanQueRenZhuangTai": 
-      "org.dows.sdk.weixin.pay.fxhg.XiaoFeiZheTouSu2.0Api.chaXunTouSuDanLieBiao": 
-      "org.dows.sdk.weixin.pay.fxhg.XiaoFeiZheTouSu2.0Api.chaXunTouSuDanXiangQing": 
-      "org.dows.sdk.weixin.pay.fxhg.XiaoFeiZheTouSu2.0Api.chaXunTouSuXieShangLiShi": 
-      "org.dows.sdk.weixin.pay.fxhg.XiaoFeiZheTouSu2.0Api.touSuTongZhiHuiDiao": 
-      "org.dows.sdk.weixin.pay.fxhg.XiaoFeiZheTouSu2.0Api.chuangJianTouSuTongZhiHuiDiaoDiZhi": 
-      "org.dows.sdk.weixin.pay.fxhg.XiaoFeiZheTouSu2.0Api.chaXunTouSuTongZhiHuiDiaoDiZhi": 
-      "org.dows.sdk.weixin.pay.fxhg.XiaoFeiZheTouSu2.0Api.gengXinTouSuTongZhiHuiDiaoDiZhi": 
-      "org.dows.sdk.weixin.pay.fxhg.XiaoFeiZheTouSu2.0Api.shanChuTouSuTongZhiHuiDiaoDiZhi": 
-      "org.dows.sdk.weixin.pay.fxhg.XiaoFeiZheTouSu2.0Api.huiFuYongHu": 
-      "org.dows.sdk.weixin.pay.fxhg.XiaoFeiZheTouSu2.0Api.fanKuiChuLiWanCheng": 
-      "org.dows.sdk.weixin.pay.fxhg.XiaoFeiZheTouSu2.0Api.gengXinTuiKuanShenPiJieGuo": 
-      "org.dows.sdk.weixin.pay.fxhg.XiaoFeiZheTouSu2.0Api.shangHuShangChuanFanKuiTuPian": 
-      "org.dows.sdk.weixin.pay.fxhg.XiaoFeiZheTouSu2.0Api.tuPianXiaZai": 
-      "org.dows.sdk.weixin.pay.fxhg.ShangHuWeiGuiTongZhiHuiDiaoApi.chuangJianShangHuWeiGuiTongZhiHuiDiaoDiZhi": 
-      "org.dows.sdk.weixin.pay.fxhg.ShangHuWeiGuiTongZhiHuiDiaoApi.chaXunShangHuWeiGuiTongZhiHuiDiaoDiZhi": 
-      "org.dows.sdk.weixin.pay.fxhg.ShangHuWeiGuiTongZhiHuiDiaoApi.xiuGaiShangHuWeiGuiTongZhiHuiDiaoDiZhi": 
-      "org.dows.sdk.weixin.pay.fxhg.ShangHuWeiGuiTongZhiHuiDiaoApi.shanChuShangHuWeiGuiTongZhiHuiDiaoDiZhi": 
+      "org.dows.sdk.weixin.pay.fxhg.ShangHuKaiHuYiYuanQueRenApi.tiJiaoShenQingDan":
+      "org.dows.sdk.weixin.pay.fxhg.ShangHuKaiHuYiYuanQueRenApi.cheXiaoShenQingDan":
+      "org.dows.sdk.weixin.pay.fxhg.ShangHuKaiHuYiYuanQueRenApi.chaXunShenQingDanShenHeJieGuo":
+      "org.dows.sdk.weixin.pay.fxhg.ShangHuKaiHuYiYuanQueRenApi.huoQuShangHuKaiHuYiYuanQueRenZhuangTai":
+      "org.dows.sdk.weixin.pay.fxhg.XiaoFeiZheTouSu2.0Api.chaXunTouSuDanLieBiao":
+      "org.dows.sdk.weixin.pay.fxhg.XiaoFeiZheTouSu2.0Api.chaXunTouSuDanXiangQing":
+      "org.dows.sdk.weixin.pay.fxhg.XiaoFeiZheTouSu2.0Api.chaXunTouSuXieShangLiShi":
+      "org.dows.sdk.weixin.pay.fxhg.XiaoFeiZheTouSu2.0Api.touSuTongZhiHuiDiao":
+      "org.dows.sdk.weixin.pay.fxhg.XiaoFeiZheTouSu2.0Api.chuangJianTouSuTongZhiHuiDiaoDiZhi":
+      "org.dows.sdk.weixin.pay.fxhg.XiaoFeiZheTouSu2.0Api.chaXunTouSuTongZhiHuiDiaoDiZhi":
+      "org.dows.sdk.weixin.pay.fxhg.XiaoFeiZheTouSu2.0Api.gengXinTouSuTongZhiHuiDiaoDiZhi":
+      "org.dows.sdk.weixin.pay.fxhg.XiaoFeiZheTouSu2.0Api.shanChuTouSuTongZhiHuiDiaoDiZhi":
+      "org.dows.sdk.weixin.pay.fxhg.XiaoFeiZheTouSu2.0Api.huiFuYongHu":
+      "org.dows.sdk.weixin.pay.fxhg.XiaoFeiZheTouSu2.0Api.fanKuiChuLiWanCheng":
+      "org.dows.sdk.weixin.pay.fxhg.XiaoFeiZheTouSu2.0Api.gengXinTuiKuanShenPiJieGuo":
+      "org.dows.sdk.weixin.pay.fxhg.XiaoFeiZheTouSu2.0Api.shangHuShangChuanFanKuiTuPian":
+      "org.dows.sdk.weixin.pay.fxhg.XiaoFeiZheTouSu2.0Api.tuPianXiaZai":
+      "org.dows.sdk.weixin.pay.fxhg.ShangHuWeiGuiTongZhiHuiDiaoApi.chuangJianShangHuWeiGuiTongZhiHuiDiaoDiZhi":
+      "org.dows.sdk.weixin.pay.fxhg.ShangHuWeiGuiTongZhiHuiDiaoApi.chaXunShangHuWeiGuiTongZhiHuiDiaoDiZhi":
+      "org.dows.sdk.weixin.pay.fxhg.ShangHuWeiGuiTongZhiHuiDiaoApi.xiuGaiShangHuWeiGuiTongZhiHuiDiaoDiZhi":
+      "org.dows.sdk.weixin.pay.fxhg.ShangHuWeiGuiTongZhiHuiDiaoApi.shanChuShangHuWeiGuiTongZhiHuiDiaoDiZhi":
       "org.dows.sdk.weixin.pay.fxhg.ShangHuWeiGuiTongZhiHuiDiaoApi.shangHuPingTaiChuZhiJiLuHuiDiaoTongZhi": 

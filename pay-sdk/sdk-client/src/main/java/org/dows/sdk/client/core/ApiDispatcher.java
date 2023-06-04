@@ -1,10 +1,11 @@
-package org.dows.sdk.client;
+package org.dows.sdk.client.core;
 
 import cn.hutool.crypto.digest.MD5;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.dows.sdk.client.ApiClient;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;

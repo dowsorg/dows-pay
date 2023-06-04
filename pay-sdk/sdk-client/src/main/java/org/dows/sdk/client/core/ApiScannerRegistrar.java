@@ -1,5 +1,6 @@
-package org.dows.sdk.client;
+package org.dows.sdk.client.core;
 
+import org.dows.sdk.client.ApiScan;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.annotation.AnnotationAttributes;
@@ -17,11 +18,5 @@ public class ApiScannerRegistrar implements ImportBeanDefinitionRegistrar {
         scanner.register();
         scanner.doScan(scanPackages);
     }
-
-//    @Bean
-//    ApiScannerConfigurer apiScannerConfigurer() {
-//        return new ApiScannerConfigurer();
-//    }
-
 
 }

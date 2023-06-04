@@ -29,8 +29,10 @@ public class ParamSchema {
 
     private final List<FieldSchema> fields = new ArrayList<>();
 
-    private static List<String> javaType = Arrays.asList("String", "string", "Long", "long", "Integer", "integer", "int", "Float", "float", "Double", "double",
-            "List", "list", "Map", "map", "Collection", "collection", "Boolean", "boolean", "Void", "void", "Date", "date");
+    private static List<String> javaType = Arrays.asList(
+            "String", "string", "Long", "long", "Integer", "integer", "int",
+            "Float", "float", "Double", "double", "List", "list", "Map", "map",
+            "Collection", "collection", "Boolean", "boolean", "Void", "void", "Date", "date");
 
 
     public ParamSchema addField(FieldSchema fieldInfo) {

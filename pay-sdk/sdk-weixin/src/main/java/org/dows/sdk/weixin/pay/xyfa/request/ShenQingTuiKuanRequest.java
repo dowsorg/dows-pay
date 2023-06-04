@@ -28,15 +28,15 @@ public class ShenQingTuiKuanRequest {
     @Schema(title = "")
     private Object amount;
     @Schema(title = "退款金额，单位为分，只能为整数，不能超过原订单支付金额。")
-    private Integer  refund;
+    private Integer refund;
     @Schema(title = "退款需要从指定账户出资时，传递此参数指定出资金额（币种的最小单位，只能为整数）。")
     private List from;
     @Schema(title = "下面枚举值多选一。")
     private String account;
     @Schema(title = "对应账户出资金额")
-    private Integer  amount1;
+    private Integer amount1;
     @Schema(title = "原支付交易的订单总金额，单位为分，只能为整数。")
-    private Integer  total;
+    private Integer total;
     @Schema(title = "符合ISO 4217标准的三位字母代码，目前只支持人民币：CNY。")
     private String currency;
     @Schema(title = "")
@@ -48,10 +48,10 @@ public class ShenQingTuiKuanRequest {
     @Schema(title = "商品的实际名称")
     private String goods_name;
     @Schema(title = "商品单价金额，单位为分")
-    private Integer  unit_price;
+    private Integer unit_price;
     @Schema(title = "商品退款金额，单位为分")
-    private Integer  refund_amount;
+    private Integer refund_amount;
     @Schema(title = "单品的退款数量")
-    private Integer  refund_quantity;
+    private Integer refund_quantity;
 }
 

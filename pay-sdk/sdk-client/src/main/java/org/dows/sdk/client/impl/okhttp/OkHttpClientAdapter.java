@@ -1,16 +1,16 @@
-package org.dows.sdk.client.http.okhttp;
+package org.dows.sdk.client.impl.okhttp;
 
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.MultipartBody;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import org.dows.sdk.client.exception.HttpException;
+import org.dows.sdk.client.exception.MalformedMessageException;
+import org.dows.sdk.client.exception.ServiceException;
+import org.dows.sdk.client.http.*;
 import org.dows.sdk.client.security.Credential;
 import org.dows.sdk.client.security.Validator;
-import org.dows.sdk.client.exception.MalformedMessageException;
-import org.dows.sdk.client.http.*;
-import org.dows.sdk.client.http.HttpException;
-import org.dows.sdk.client.exception.ServiceException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -60,8 +60,7 @@ public final class OkHttpClientAdapter extends AbstractHttpClient {
         return okHttpRequestBuilder.build();
     }
 
-    private RequestBody buildOkHttpRequestBody(
-            org.dows.sdk.client.http.RequestBody wechatPayRequestBody) {
+    private RequestBody buildOkHttpRequestBody(org.dows.sdk.client.http.RequestBody wechatPayRequestBody) {
         if (wechatPayRequestBody == null) {
             return null;
         }
@@ -98,7 +97,7 @@ public final class OkHttpClientAdapter extends AbstractHttpClient {
     private RequestBody createOkHttpMultipartRequestBody(org.dows.sdk.client.http.RequestBody wechatPayRequestBody) {
         FileRequestBody fileRequestBody = (FileRequestBody) wechatPayRequestBody;
         okhttp3.RequestBody okHttpFileBody = createRequestBody(
-                        fileRequestBody.getFile(), okhttp3.MediaType.parse(fileRequestBody.getContentType()));
+                fileRequestBody.getFile(), okhttp3.MediaType.parse(fileRequestBody.getContentType()));
         return new okhttp3.MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart(META_NAME, fileRequestBody.getMeta())
@@ -124,7 +123,7 @@ public final class OkHttpClientAdapter extends AbstractHttpClient {
                     .headers(responseHeaders)
                     .statusCode(okHttpResponse.code())
                     .contentType(okHttpResponse.body() == null || okHttpResponse.body().contentType() == null
-                                    ? null : okHttpResponse.body().contentType().toString())
+                            ? null : okHttpResponse.body().contentType().toString())
                     .body(okHttpResponse.body().string())
                     .build();
         } catch (IOException e) {

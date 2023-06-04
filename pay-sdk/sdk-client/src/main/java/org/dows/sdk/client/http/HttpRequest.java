@@ -1,6 +1,7 @@
 package org.dows.sdk.client.http;
 
-import org.dows.sdk.weixin.auth.util.GsonUtil;
+import org.dows.sdk.client.exception.HttpException;
+import org.dows.sdk.client.util.GsonUtil;
 
 import java.net.MalformedURLException;
 import java.net.URI;

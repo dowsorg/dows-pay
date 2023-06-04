@@ -48,7 +48,7 @@ public class HeDanH5XiaDanRequest {
     @Schema(title = "订单金额信息")
     private Object amount;
     @Schema(title = "子单金额，单位为分")
-    private Integer  total_amount;
+    private Integer total_amount;
     @Schema(title = "符合ISO 4217标准的三位字母代码，人民币：CNY 。")
     private String currency;
     @Schema(title = "商户系统内部订单号，要求32个字符内，只能是数字、大小写字母_-|*@ ，且在同一个商户号下唯一。")
@@ -62,7 +62,7 @@ public class HeDanH5XiaDanRequest {
     @Schema(title = "是否分账，枚举值：")
     private Boolean profit_sharing;
     @Schema(title = "SettleInfo.profit_sharing为true时，该金额才生效。")
-    private Integer  subsidy_amount;
+    private Integer subsidy_amount;
     @Schema(title = "")
     private String time_start;
     @Schema(title = "")

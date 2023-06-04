@@ -4,6 +4,7 @@ package org.dows.sdk.client;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.dows.framework.api.util.YamlPropertySourceFactory;
+import org.dows.sdk.client.core.ApiUrlProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;

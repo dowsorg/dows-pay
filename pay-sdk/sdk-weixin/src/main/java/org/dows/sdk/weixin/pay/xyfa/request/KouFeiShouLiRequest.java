@@ -32,7 +32,7 @@ public class KouFeiShouLiRequest {
     @Schema(title = "")
     private Object amount;
     @Schema(title = "订单总金额，单位为分，只能为整数")
-    private Integer  total;
+    private Integer total;
     @Schema(title = "符合ISO 4217标准的三位字母代码，目前只支持人民币：CNY")
     private String currency;
     @Schema(title = "")
@@ -50,7 +50,7 @@ public class KouFeiShouLiRequest {
     @Schema(title = "所在停车位车场的名称")
     private String parking_name;
     @Schema(title = "计费的时间长，单位为秒")
-    private Integer  charging_duration;
+    private Integer charging_duration;
     @Schema(title = "停车场设备id")
     private String device_id;
 }

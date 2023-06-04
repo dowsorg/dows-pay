@@ -12,12 +12,11 @@ import static java.util.Objects.requireNonNull;
  */
 public class ShaUtil {
 
-    private ShaUtil() {
-    }
-
     public static final int BUFFER_SIZE = 1024;
     public static final String SHA1 = "SHA-1";
     public static final String SHA256 = "SHA-256";
+    private ShaUtil() {
+    }
 
     /**
      * 生成SHA1的HEX编码消息摘要字符串

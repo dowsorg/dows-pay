@@ -59,7 +59,7 @@ public class ChuangJianFuWuBanBenRequest {
     private String package_name;
     @Schema(title = "代码包的版本")
     private String package_version;
-//    @Schema(title = "Image的详情")
+    //    @Schema(title = "Image的详情")
 //    private CloudBaseRunImageInfo image_info;
 //    @Schema(title = "Github等拉取代码的详情")
 //    private CloudBaseCodeRepoDetail code_detail;
@@ -71,17 +71,17 @@ public class ChuangJianFuWuBanBenRequest {
     private String custom_logs;
     @Schema(title = "延迟多长时间开始健康检查（单位s）")
     private Integer initial_delay_seconds;
-//    @Schema(title = "cfs挂载信息")
+    //    @Schema(title = "cfs挂载信息")
 //    private List<CloudBaseRunVolumeMount>mount_volume_info;
     @Schema(title = "4 代表只能微信链路访问")
     private Integer access_type;
-//    @Schema(title = "es信息")
+    //    @Schema(title = "es信息")
 //    private CloudBaseEsInfo es_info;
     @Schema(title = "是否使用统一域名")
     private Boolean enable_union;
     @Schema(title = "服务路径")
     private String server_path;
-//    @Schema(title = "容器的描述文件")
+    //    @Schema(title = "容器的描述文件")
 //    private List<CloudBaseRunSideSpec>sidecar_specs;
 //    @Schema(title = "安全特性")
 //    private CloudBaseSecurityContext security;
@@ -102,6 +102,6 @@ public class ChuangJianFuWuBanBenRequest {
     @Schema(title = "）")
     private String upload_filename;
     @Schema(title = "自动扩缩容策略组")
-    private List<HpaPolicy>policy_detail;
+    private List<HpaPolicy> policy_detail;
 }
 

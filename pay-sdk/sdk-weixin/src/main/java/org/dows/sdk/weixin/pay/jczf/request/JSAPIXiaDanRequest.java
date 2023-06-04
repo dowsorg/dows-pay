@@ -44,7 +44,7 @@ public class JSAPIXiaDanRequest {
     @Schema(title = "")
     private Object amount;
     @Schema(title = "订单总金额，单位为分。")
-    private Integer  total;
+    private Integer total;
     @Schema(title = "CNY：人民币，境内商户号仅支持人民币。")
     private String currency;
     @Schema(title = "")
@@ -56,7 +56,7 @@ public class JSAPIXiaDanRequest {
     @Schema(title = "")
     private Object detail;
     @Schema(title = "1、商户侧一张小票订单可能被分多次支付，订单原价用于记录整张小票的交易金额。")
-    private Integer  cost_price;
+    private Integer cost_price;
     @Schema(title = "商家小票ID")
     private String invoice_id;
     @Schema(title = "单品列表信息")
@@ -68,9 +68,9 @@ public class JSAPIXiaDanRequest {
     @Schema(title = "商品的实际名称")
     private String goods_name;
     @Schema(title = "用户购买的数量")
-    private Integer  quantity;
+    private Integer quantity;
     @Schema(title = "商品单价，单位为分")
-    private Integer  unit_price;
+    private Integer unit_price;
     @Schema(title = "")
     private Object scene_info;
     @Schema(title = "用户的客户端IP，支持IPv4和IPv6两种格式的IP地址。")

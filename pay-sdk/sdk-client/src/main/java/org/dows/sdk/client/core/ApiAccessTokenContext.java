@@ -1,4 +1,4 @@
-package org.dows.sdk.client;
+package org.dows.sdk.client.core;
 
 import lombok.Data;
 

@@ -1,10 +1,10 @@
 package org.dows.sdk.client.http;
 
+import org.dows.sdk.client.impl.okhttp.OkHttpClientAdapter;
+import org.dows.sdk.client.impl.okhttp.OkHttpMultiDomainInterceptor;
 import org.dows.sdk.client.security.Config;
 import org.dows.sdk.client.security.Credential;
 import org.dows.sdk.client.security.Validator;
-import org.dows.sdk.client.http.okhttp.OkHttpClientAdapter;
-import org.dows.sdk.client.http.okhttp.OkHttpMultiDomainInterceptor;
 
 import java.net.Proxy;
 import java.util.concurrent.TimeUnit;
@@ -16,9 +16,11 @@ import static java.util.Objects.requireNonNull;
  */
 public class DefaultHttpClientBuilder implements AbstractHttpClientBuilder<DefaultHttpClientBuilder> {
 
+    private static final okhttp3.OkHttpClient defaultOkHttpClient = new okhttp3.OkHttpClient();
+    private static final OkHttpMultiDomainInterceptor multiDomainInterceptor =
+            new OkHttpMultiDomainInterceptor();
     private Credential credential;
     private Validator validator;
-    private static final okhttp3.OkHttpClient defaultOkHttpClient = new okhttp3.OkHttpClient();
     private okhttp3.OkHttpClient customizeOkHttpClient;
     private int readTimeoutMs = -1;
     private int writeTimeoutMs = -1;
@@ -26,8 +28,6 @@ public class DefaultHttpClientBuilder implements AbstractHttpClientBuilder<Defau
     private Proxy proxy;
     private boolean retryMultiDomain = false;
     private Boolean retryOnConnectionFailure = null;
-    private static final OkHttpMultiDomainInterceptor multiDomainInterceptor =
-            new OkHttpMultiDomainInterceptor();
 
     /**
      * 复制工厂，复制一个当前对象

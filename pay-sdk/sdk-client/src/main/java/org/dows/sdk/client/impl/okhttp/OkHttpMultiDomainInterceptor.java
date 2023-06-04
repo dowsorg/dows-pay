@@ -1,4 +1,4 @@
-package org.dows.sdk.client.http.okhttp;
+package org.dows.sdk.client.impl.okhttp;
 
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
@@ -52,8 +52,7 @@ public class OkHttpMultiDomainInterceptor implements Interceptor {
 
         Request.Builder reqBuilder = originalRequest.newBuilder();
         reqBuilder.url(urlBuilder.build());
-        reqBuilder.header(
-                Constant.USER_AGENT, originalRequest.header(Constant.USER_AGENT) + " (Retried-V1)");
+        reqBuilder.header(Constant.USER_AGENT, originalRequest.header(Constant.USER_AGENT) + " (Retried-V1)");
 
         return reqBuilder.build();
     }

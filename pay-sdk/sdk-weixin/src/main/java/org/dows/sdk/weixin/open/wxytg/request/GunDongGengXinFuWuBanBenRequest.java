@@ -60,7 +60,7 @@ public class GunDongGengXinFuWuBanBenRequest {
     private String package_name;
     @Schema(title = "代码包版本")
     private String package_version;
-//    @Schema(title = "Image的详情")
+    //    @Schema(title = "Image的详情")
 //    private CloudBaseRunImageInfo image_info;
 //    @Schema(title = "Github等拉取代码的详情")
 //    private CloudBaseCodeRepoDetail code_detail;
@@ -68,7 +68,7 @@ public class GunDongGengXinFuWuBanBenRequest {
     private Boolean is_rebuild;
     @Schema(title = "延迟多长时间开始健康检查（单位s）")
     private Integer initial_delay_seconds;
-//    @Schema(title = "cfs挂载信息")
+    //    @Schema(title = "cfs挂载信息")
 //    private List<CloudBaseRunVolumeMount> mount_volume_info;
     @Schema(title = "是否回滚")
     private Boolean rollback;

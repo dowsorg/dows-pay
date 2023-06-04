@@ -54,15 +54,15 @@ public class HeDanChaXunDingDanResponse {
     @Schema(title = "CASH：充值型代金券")
     private String type;
     @Schema(title = "当前子单中享受的优惠券金额")
-    private Integer  amount;
+    private Integer amount;
     @Schema(title = "活动ID，批次ID")
     private String stock_id;
     @Schema(title = "单位为分")
-    private Integer  wechatpay_contribute;
+    private Integer wechatpay_contribute;
     @Schema(title = "单位为分")
-    private Integer  merchant_contribute;
+    private Integer merchant_contribute;
     @Schema(title = "单位为分")
-    private Integer  other_contribute;
+    private Integer other_contribute;
     @Schema(title = "CNY：人民币，境内商户号仅支持人民币。")
     private String currency;
     @Schema(title = "单品列表")
@@ -70,11 +70,11 @@ public class HeDanChaXunDingDanResponse {
     @Schema(title = "商品编码")
     private String goods_id;
     @Schema(title = "商品数量")
-    private Integer  quantity;
+    private Integer quantity;
     @Schema(title = "商品价格")
-    private Integer  unit_price;
+    private Integer unit_price;
     @Schema(title = "商品优惠金额")
-    private Integer  discount_amount;
+    private Integer discount_amount;
     @Schema(title = "商品备注")
     private String goods_remark;
     @Schema(title = "订单金额信息")

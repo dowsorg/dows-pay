@@ -17,12 +17,24 @@ public class Resource {
         return algorithm;
     }
 
+    public void setAlgorithm(String algorithm) {
+        this.algorithm = algorithm;
+    }
+
     public String getCiphertext() {
         return ciphertext;
     }
 
+    public void setCiphertext(String ciphertext) {
+        this.ciphertext = ciphertext;
+    }
+
     public String getAssociatedData() {
         return associatedData;
+    }
+
+    public void setAssociatedData(String associatedData) {
+        this.associatedData = associatedData;
     }
 
     public String createNonce() {
@@ -31,22 +43,6 @@ public class Resource {
 
     public String getOriginalType() {
         return originalType;
-    }
-
-    public void setAlgorithm(String algorithm) {
-        this.algorithm = algorithm;
-    }
-
-    public void setCiphertext(String ciphertext) {
-        this.ciphertext = ciphertext;
-    }
-
-    public void setAssociatedData(String associatedData) {
-        this.associatedData = associatedData;
-    }
-
-    public void setNonce(String nonce) {
-        this.nonce = nonce;
     }
 
     public void setOriginalType(String originalType) {
@@ -60,5 +56,9 @@ public class Resource {
 
     public String getNonce() {
         return nonce;
+    }
+
+    public void setNonce(String nonce) {
+        this.nonce = nonce;
     }
 }

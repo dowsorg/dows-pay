@@ -48,9 +48,9 @@ public class ChaXunDingDanResponse {
     @Schema(title = "订单金额信息，当支付成功时返回该字段。")
     private Object amount;
     @Schema(title = "订单总金额，单位为分。")
-    private Integer  total;
+    private Integer total;
     @Schema(title = "用户支付金额，单位为分。")
-    private Integer  payer_total;
+    private Integer payer_total;
     @Schema(title = "CNY：人民币，境内商户号仅支持人民币。")
     private String currency;
     @Schema(title = "用户支付币种")
@@ -70,15 +70,15 @@ public class ChaXunDingDanResponse {
     @Schema(title = "CASH：充值")
     private String type;
     @Schema(title = "优惠券面额")
-    private Integer  amount1;
+    private Integer amount1;
     @Schema(title = "活动ID")
     private String stock_id;
     @Schema(title = "微信出资，单位为分")
-    private Integer  wechatpay_contribute;
+    private Integer wechatpay_contribute;
     @Schema(title = "商户出资，单位为分")
-    private Integer  merchant_contribute;
+    private Integer merchant_contribute;
     @Schema(title = "其他出资，单位为分")
-    private Integer  other_contribute;
+    private Integer other_contribute;
     @Schema(title = "CNY：人民币，境内商户号仅支持人民币。")
     private String currency1;
     @Schema(title = "单品列表信息")
@@ -86,11 +86,11 @@ public class ChaXunDingDanResponse {
     @Schema(title = "商品编码")
     private String goods_id;
     @Schema(title = "用户购买的数量")
-    private Integer  quantity;
+    private Integer quantity;
     @Schema(title = "商品单价，单位为分")
-    private Integer  unit_price;
+    private Integer unit_price;
     @Schema(title = "商品优惠金额")
-    private Integer  discount_amount;
+    private Integer discount_amount;
     @Schema(title = "商品备注信息")
     private String goods_remark;
 }

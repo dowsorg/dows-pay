@@ -1,8 +1,9 @@
 package org.dows.sdk.client.http;
 
-import org.dows.sdk.weixin.auth.exception.MalformedMessageException;
+import org.dows.sdk.client.exception.HttpException;
+import org.dows.sdk.client.exception.MalformedMessageException;
 import org.dows.sdk.client.exception.ServiceException;
-import org.dows.sdk.weixin.auth.exception.ValidationException;
+import org.dows.sdk.client.exception.ValidationException;
 
 import java.io.InputStream;
 

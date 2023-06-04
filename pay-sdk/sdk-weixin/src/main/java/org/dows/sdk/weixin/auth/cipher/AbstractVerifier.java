@@ -1,7 +1,7 @@
 package org.dows.sdk.weixin.auth.cipher;
 
-import org.dows.sdk.client.cipher.Verifier;
 import org.dows.sdk.client.certificate.CertificateProvider;
+import org.dows.sdk.client.cipher.Verifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

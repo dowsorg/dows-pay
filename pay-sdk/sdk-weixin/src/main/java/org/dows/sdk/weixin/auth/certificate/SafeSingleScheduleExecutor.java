@@ -16,18 +16,13 @@ public class SafeSingleScheduleExecutor extends ScheduledThreadPoolExecutor {
     private static final int MAXIMUM_POOL_SIZE = 1; // 最大线程池数量
     private static final int CORE_POOL_SIZE = 1; // 核心线程池大小
 
-    private static final class InstanceHolder {
-
-        static final SafeSingleScheduleExecutor instance = new SafeSingleScheduleExecutor();
+    private SafeSingleScheduleExecutor() {
+        super(CORE_POOL_SIZE);
+        super.setMaximumPoolSize(MAXIMUM_POOL_SIZE);
     }
 
     public static SafeSingleScheduleExecutor getInstance() {
         return InstanceHolder.instance;
-    }
-
-    private SafeSingleScheduleExecutor() {
-        super(CORE_POOL_SIZE);
-        super.setMaximumPoolSize(MAXIMUM_POOL_SIZE);
     }
 
     @Override
@@ -38,5 +33,9 @@ public class SafeSingleScheduleExecutor extends ScheduledThreadPoolExecutor {
         } else {
             throw new RejectedExecutionException("当前任务数量超过最大队列最大数量");
         }
+    }
+
+    private static final class InstanceHolder {
+        static final SafeSingleScheduleExecutor instance = new SafeSingleScheduleExecutor();
     }
 }

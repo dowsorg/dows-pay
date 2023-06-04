@@ -1,9 +1,9 @@
 package org.dows.sdk.weixin.auth.base;
 
 import lombok.extern.slf4j.Slf4j;
-import org.dows.sdk.client.security.Credential;
 import org.dows.sdk.client.cipher.SignatureResult;
 import org.dows.sdk.client.cipher.Signer;
+import org.dows.sdk.client.security.Credential;
 import org.dows.sdk.client.util.NonceUtil;
 
 import java.net.URI;
@@ -16,8 +16,8 @@ import static java.util.Objects.requireNonNull;
  */
 @Slf4j
 public final class WechatPay2Credential implements Credential {
-    private static final int NONCE_LENGTH = 32;
     public static final String SCHEMA_PREFIX = "WECHATPAY2-";
+    private static final int NONCE_LENGTH = 32;
     private final String merchantId;
     private final Signer signer;
 

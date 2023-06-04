@@ -1,14 +1,10 @@
 package org.dows.sdk.client.http;
 
-import org.dows.sdk.client.security.Credential;
-import org.dows.sdk.client.security.Validator;
 import org.dows.sdk.client.exception.MalformedMessageException;
 import org.dows.sdk.client.exception.ServiceException;
 import org.dows.sdk.client.exception.ValidationException;
-//import org.dows.sdk.weixin.auth.base.Credential;
-//import org.dows.sdk.weixin.auth.base.Validator;
-//import org.dows.sdk.weixin.auth.exception.MalformedMessageException;
-//import org.dows.sdk.weixin.auth.exception.ValidationException;
+import org.dows.sdk.client.security.Credential;
+import org.dows.sdk.client.security.Validator;
 
 import java.io.InputStream;
 

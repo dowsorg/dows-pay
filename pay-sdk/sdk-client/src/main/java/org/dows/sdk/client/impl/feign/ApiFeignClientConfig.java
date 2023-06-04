@@ -1,4 +1,4 @@
-package org.dows.sdk.client.feign;
+package org.dows.sdk.client.impl.feign;
 
 import feign.RequestInterceptor;
 import feign.RequestTemplate;

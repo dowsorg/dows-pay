@@ -7,12 +7,11 @@ import java.security.SecureRandom;
  */
 public class NonceUtil {
 
-    private NonceUtil() {
-    }
-
     private static final char[] SYMBOLS =
             "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
     private static final SecureRandom random = new SecureRandom();
+    private NonceUtil() {
+    }
 
     /**
      * 使用SecureRandom生成随机串

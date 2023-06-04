@@ -1,10 +1,10 @@
 package org.dows.sdk.weixin.auth.notification;
 
 import org.dows.sdk.client.certificate.CertificateProvider;
-import org.dows.sdk.weixin.auth.certificate.InMemoryCertificateProvider;
-import org.dows.sdk.weixin.auth.cipher.AeadAesCipher;
 import org.dows.sdk.client.cipher.AeadCipher;
 import org.dows.sdk.client.util.PemUtil;
+import org.dows.sdk.weixin.auth.certificate.InMemoryCertificateProvider;
+import org.dows.sdk.weixin.auth.cipher.AeadAesCipher;
 
 import java.nio.charset.StandardCharsets;
 import java.security.cert.X509Certificate;

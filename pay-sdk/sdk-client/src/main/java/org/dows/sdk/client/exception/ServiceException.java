@@ -27,7 +27,7 @@ public class ServiceException extends RuntimeException {
      */
     public ServiceException(HttpRequest httpRequest, int httpStatusCode, String responseBody) {
         super(String.format("Wrong HttpStatusCode[%d]%nhttpResponseBody[%.1024s]\tHttpRequest[%s]",
-                        httpStatusCode, responseBody, httpRequest));
+                httpStatusCode, responseBody, httpRequest));
         this.httpRequest = httpRequest;
         this.httpStatusCode = httpStatusCode;
         this.responseBody = responseBody;

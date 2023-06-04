@@ -1,5 +1,6 @@
 package org.dows.sdk.client;
 
+import org.dows.sdk.client.core.ApiScannerRegistrar;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;

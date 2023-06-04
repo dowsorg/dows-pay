@@ -1,4 +1,4 @@
-package org.dows.sdk.client.feign;
+package org.dows.sdk.client.impl.feign;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;

@@ -6,48 +6,48 @@ dows:
           pkg: org.dows.sdk.weixin.pay.shjj
           name: 特约商户进件
           code: TeYueShangHuJinJianApi
-          descr: 
+          descr:
           methods:
             - name: 提交申请单
               code: TiJiaoShenQingDan
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter11_1_1.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 查询申请单状态
               code: ChaXunShenQingDanZhuangTai
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter11_1_2.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 修改结算账号
               code: XiuGaiJieSuanZhangHao
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/docs/partner/apis/modify-settlement/sub-merchants/modify-settlement.html
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 查询结算账号
               code: ChaXunJieSuanZhangHao
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/docs/partner/apis/modify-settlement/sub-merchants/get-settlement.html
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 查询结算账户修改申请状态
               code: ChaXunJieSuanZhangHuXiuGaiShenQingZhuangTai
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/docs/partner/apis/modify-settlement/sub-merchants/get-application.html
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
         - module: 基础支付
           pkg: org.dows.sdk.weixin.pay.jczf
           name: JSAPI支付
           code: JSAPIZhiFuApi
-          descr: 
+          descr:
           methods:
             - name: JSAPI下单
               code: JSAPIXiaDan
@@ -75,15 +75,15 @@ dows:
               overview: JSAPI调起支付API,最新更新时间：2023.05.18,通过JSAPI下单接口获取到发起支付的必要参数prepay_id，然后使用微信支付提供的前端JS方法调起公众号支付。
               descr: JSAPI调起支付API,最新更新时间：2023.05.18,通过JSAPI下单接口获取到发起支付的必要参数prepay_id，然后使用微信支付提供的前端JS方法调起公众号支付。
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter4_1_4.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 支付通知
               code: ZhiFuTongZhi
               overview: 支付通知API,最新更新时间：2020.05.26,微信支付通过支付通知接口将用户支付成功消息通知给商户
               descr: 支付通知API,最新更新时间：2020.05.26,微信支付通过支付通知接口将用户支付成功消息通知给商户
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter4_1_5.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 申请退款
               code: ShenQingTuiKuan
               overview: 申请退款API,最新更新时间：2022.08.29,当交易发生之后一年内，由于买家或者卖家的原因需要退款时，卖家可以通过退款接口将支付金额退还给买家，微信支付将在收到退款请求并且验证成功之后，将支付款按原路退还至买家账号上。,退款状态转变如下：
@@ -121,11 +121,11 @@ dows:
               httpMethod: GET
             - name: 申请单个子商户资金账单
               code: ShenQingDanGeZiShangHuZiJinZhangDan
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter4_1_12.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 下载账单
               code: XiaZaiZhangDan
               overview: 下载账单API,最新更新时间：2021.12.10,下载账单API为通用接口，交易/资金账单都可以通过该接口获取到对应的账单。
@@ -137,7 +137,7 @@ dows:
           pkg: org.dows.sdk.weixin.pay.jczf
           name: APP支付
           code: APPZhiFuApi
-          descr: 
+          descr:
           methods:
             - name: APP下单
               code: APPXiaDan
@@ -165,15 +165,15 @@ dows:
               overview: APP调起支付API,最新更新时间：2020.09.29,通过APP下单接口获取到发起支付的必要参数prepay_id，可以按照接口定义中的规则，使用微信支付提供的SDK调起APP支付。
               descr: APP调起支付API,最新更新时间：2020.09.29,通过APP下单接口获取到发起支付的必要参数prepay_id，可以按照接口定义中的规则，使用微信支付提供的SDK调起APP支付。
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter4_2_4.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 支付通知
               code: ZhiFuTongZhi
               overview: 支付通知API,最新更新时间：2020.05.26,微信支付通过支付通知接口将用户支付成功消息通知给商户
               descr: 支付通知API,最新更新时间：2020.05.26,微信支付通过支付通知接口将用户支付成功消息通知给商户
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter4_2_5.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 申请退款
               code: ShenQingTuiKuan
               overview: 申请退款API,最新更新时间：2022.08.29,当交易发生之后一年内，由于买家或者卖家的原因需要退款时，卖家可以通过退款接口将支付金额退还给买家，微信支付将在收到退款请求并且验证成功之后，将支付款按原路退还至买家账号上。,退款状态转变如下：
@@ -211,11 +211,11 @@ dows:
               httpMethod: GET
             - name: 申请单个子商户资金账单
               code: ShenQingDanGeZiShangHuZiJinZhangDan
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter4_2_12.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 下载账单
               code: XiaZaiZhangDan
               overview: 下载账单API,最新更新时间：2021.12.10,下载账单API为通用接口，交易/资金账单都可以通过该接口获取到对应的账单。
@@ -227,7 +227,7 @@ dows:
           pkg: org.dows.sdk.weixin.pay.jczf
           name: H5支付
           code: H5ZhiFuApi
-          descr: 
+          descr:
           methods:
             - name: H5下单
               code: H5XiaDan
@@ -255,8 +255,8 @@ dows:
               overview: H5调起支付API,最新更新时间：2020.05.26,商户后台系统先调用微信支付的,接口，微信后台系统返回链接参数h5_url，用户使用微信外部的浏览器访问该h5_url地址调起微信支付中间页
               descr: H5调起支付API,最新更新时间：2020.05.26,商户后台系统先调用微信支付的,接口，微信后台系统返回链接参数h5_url，用户使用微信外部的浏览器访问该h5_url地址调起微信支付中间页
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter4_3_4.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 支付通知
               code: ZhiFuTongZhi
               overview: 商家批次单号查询批次单API,最新更新时间：2022.4.6,商户可以通过该接口查询转账批次单以及指定状态的转账明细单。
@@ -301,11 +301,11 @@ dows:
               httpMethod: POST
             - name: 申请单个子商户资金账单
               code: ShenQingDanGeZiShangHuZiJinZhangDan
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter4_3_12.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 下载账单
               code: XiaZaiZhangDan
               overview: 查询转账电子回单API,最新更新时间：2021.10.26,查询转账电子回单接口，商户通过该接口可以查询电子回单受理进度信息，包括电子回单据信息，电子回单文件的hash值，电子回单文件的下载地址等
@@ -317,7 +317,7 @@ dows:
           pkg: org.dows.sdk.weixin.pay.jczf
           name: Native支付
           code: NativeZhiFuApi
-          descr: 
+          descr:
           methods:
             - name: Native下单
               code: NativeXiaDan
@@ -345,15 +345,15 @@ dows:
               overview: Native调起支付API,最新更新时间：2020.04.29,商户后台系统先调用微信支付的,接口，微信后台系统返回链接参数code_url，商户后台系统将code_url值生成二维码图片，用户使用微信客户端扫码后发起支付。
               descr: Native调起支付API,最新更新时间：2020.04.29,商户后台系统先调用微信支付的,接口，微信后台系统返回链接参数code_url，商户后台系统将code_url值生成二维码图片，用户使用微信客户端扫码后发起支付。
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter4_4_4.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 支付通知
               code: ZhiFuTongZhi
               overview: 支付通知API,最新更新时间：2022.03.04,微信支付通过支付通知接口将用户支付成功消息通知给商户
               descr: 支付通知API,最新更新时间：2022.03.04,微信支付通过支付通知接口将用户支付成功消息通知给商户
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter4_4_5.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 申请退款
               code: ShenQingTuiKuan
               overview: 申请退款API,最新更新时间：2022.08.29,当交易发生之后一年内，由于买家或者卖家的原因需要退款时，卖家可以通过退款接口将支付金额退还给买家，微信支付将在收到退款请求并且验证成功之后，将支付款按原路退还至买家账号上。,退款状态转变如下：
@@ -391,11 +391,11 @@ dows:
               httpMethod: GET
             - name: 申请单个子商户资金账单
               code: ShenQingDanGeZiShangHuZiJinZhangDan
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter4_4_12.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 下载账单
               code: XiaZaiZhangDan
               overview: 下载账单API,最新更新时间：2021.12.10,下载账单API为通用接口，交易/资金账单都可以通过该接口获取到对应的账单。
@@ -407,7 +407,7 @@ dows:
           pkg: org.dows.sdk.weixin.pay.jczf
           name: 小程序支付
           code: XiaoChengXuZhiFuApi
-          descr: 
+          descr:
           methods:
             - name: JSAPI下单
               code: JSAPIXiaDan
@@ -435,15 +435,15 @@ dows:
               overview: 小程序调起支付API,最新更新时间：2020.05.26,通过JSAPI下单接口获取到发起支付的必要参数prepay_id，然后使用微信支付提供的小程序方法调起小程序支付。
               descr: 小程序调起支付API,最新更新时间：2020.05.26,通过JSAPI下单接口获取到发起支付的必要参数prepay_id，然后使用微信支付提供的小程序方法调起小程序支付。
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter4_5_4.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 支付通知
               code: ZhiFuTongZhi
               overview: 支付通知API,最新更新时间：2020.05.26,微信支付通过支付通知接口将用户支付成功消息通知给商户
               descr: 支付通知API,最新更新时间：2020.05.26,微信支付通过支付通知接口将用户支付成功消息通知给商户
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter4_5_5.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 申请退款
               code: ShenQingTuiKuan
               overview: 申请退款API,最新更新时间：2022.08.29,当交易发生之后一年内，由于买家或者卖家的原因需要退款时，卖家可以通过退款接口将支付金额退还给买家，微信支付将在收到退款请求并且验证成功之后，将支付款按原路退还至买家账号上。,退款状态转变如下：
@@ -481,11 +481,11 @@ dows:
               httpMethod: GET
             - name: 申请单个子商户资金账单
               code: ShenQingDanGeZiShangHuZiJinZhangDan
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter4_5_12.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 下载账单
               code: XiaZaiZhangDan
               overview: 下载账单API,最新更新时间：2021.12.10,下载账单API为通用接口，交易/资金账单都可以通过该接口获取到对应的账单。
@@ -497,7 +497,7 @@ dows:
           pkg: org.dows.sdk.weixin.pay.jczf
           name: 合单支付
           code: HeDanZhiFuApi
-          descr: 
+          descr:
           methods:
             - name: 合单APP下单
               code: HeDanAPPXiaDan
@@ -539,36 +539,36 @@ dows:
               overview: APP调起支付API,最新更新时间：2020.09.29,通过APP下单接口获取到发起支付的必要参数prepay_id，可以按照接口定义中的规则，使用微信支付提供的SDK调起小程序支付。
               descr: APP调起支付API,最新更新时间：2020.09.29,通过APP下单接口获取到发起支付的必要参数prepay_id，可以按照接口定义中的规则，使用微信支付提供的SDK调起小程序支付。
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter5_1_6.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: H5调起支付
               code: H5DiaoQiZhiFu
               overview: H5调起支付API,最新更新时间：2020.05.26,商户后台系统先调用微信支付的,接口，微信后台系统返回链接参数h5_url，用户使用微信外部的浏览器访问该h5_url地址调起微信支付中间页
               descr: H5调起支付API,最新更新时间：2020.05.26,商户后台系统先调用微信支付的,接口，微信后台系统返回链接参数h5_url，用户使用微信外部的浏览器访问该h5_url地址调起微信支付中间页
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter5_1_7.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: JSAPI调起支付
               code: JSAPIDiaoQiZhiFu
               overview: JSAPI调起支付API,最新更新时间：2023.05.18,通过JSAPI下单接口获取到发起支付的必要参数prepay_id，然后使用微信支付提供的前端JS方法调起公众号支付。
               descr: JSAPI调起支付API,最新更新时间：2023.05.18,通过JSAPI下单接口获取到发起支付的必要参数prepay_id，然后使用微信支付提供的前端JS方法调起公众号支付。
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter5_1_8.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 小程序调起支付
               code: XiaoChengXuDiaoQiZhiFu
               overview: 小程序调起支付API,最新更新时间：2020.05.26,通过JSAPI下单接口获取到发起支付的必要参数prepay_id，然后使用微信支付提供的小程序方法调起小程序支付。
               descr: 小程序调起支付API,最新更新时间：2020.05.26,通过JSAPI下单接口获取到发起支付的必要参数prepay_id，然后使用微信支付提供的小程序方法调起小程序支付。
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter5_1_9.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: Native调起支付
               code: NativeDiaoQiZhiFu
               overview: Native调起支付API,最新更新时间：2020.04.29,商户后台系统先调用微信支付的,接口，微信后台系统返回链接参数code_url，商户后台系统将code_url值生成二维码图片，用户使用微信客户端扫码后发起支付。
               descr: Native调起支付API,最新更新时间：2020.04.29,商户后台系统先调用微信支付的,接口，微信后台系统返回链接参数code_url，商户后台系统将code_url值生成二维码图片，用户使用微信客户端扫码后发起支付。
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter5_1_10.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 合单查询订单
               code: HeDanChaXunDingDan
               overview: 合单查询订单API,最新更新时间：2021.04.21,商户通过合单查询订单API查询订单状态，完成下一步的业务逻辑。
@@ -589,7 +589,7 @@ dows:
               descr: 支付通知API,最新更新时间：2019.09.10,微信支付通过支付通知接口将用户支付成功消息通知给商户
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter5_1_13.shtml
               url: 该链接是通过[,]、[,]、[,]、[,]、[,]提交notify_url参数设置，必须为https协议。如果链接无法访问，商户将无法接收到微信通知。 通知url必须为直接可访问的url，不能携带参数。示例： “https://pay.weixin.qq.com/wxpay/pay.action”
-              httpMethod: 
+              httpMethod:
             - name: 申请退款
               code: ShenQingTuiKuan
               overview: 申请退款API,最新更新时间：2022.08.29,当交易发生之后一年内，由于买家或者卖家的原因需要退款时，卖家可以通过退款接口将支付金额退还给买家，微信支付将在收到退款请求并且验证成功之后，将支付款按原路退还至买家账号上。,退款状态转变如下：
@@ -627,11 +627,11 @@ dows:
               httpMethod: GET
             - name: 申请单个子商户资金账单
               code: ShenQingDanGeZiShangHuZiJinZhangDan
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter5_1_20.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 下载账单
               code: XiaZaiZhangDan
               overview: 下载账单API,最新更新时间：2021.12.10,下载账单API为通用接口，交易/资金账单都可以通过该接口获取到对应的账单。
@@ -641,734 +641,734 @@ dows:
               httpMethod: GET
             - name: 付款码支付
               code: FuKuanMaZhiFu
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/index.shtml#menu00
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
         - module: 经营能力
           pkg: org.dows.sdk.weixin.pay.jynl
           name: 支付即服务
           code: ZhiFuJiFuWuApi
-          descr: 
+          descr:
           methods:
             - name: 服务人员注册
               code: FuWuRenYuanZhuCe
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter8_4_1.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 服务人员分配
               code: FuWuRenYuanFenPei
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter8_4_2.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 服务人员查询
               code: FuWuRenYuanChaXun
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter8_4_3.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 服务人员信息更新
               code: FuWuRenYuanXinXiGengXin
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter8_4_4.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
         - module: 经营能力
           pkg: org.dows.sdk.weixin.pay.jynl
           name: 点金计划
           code: DianJinJiHuaApi
-          descr: 
+          descr:
           methods:
             - name: 点金计划管理
               code: DianJinJiHuaGuanLi
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter8_5_1.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 商家小票管理
               code: ShangJiaXiaoPiaoGuanLi
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter8_5_2.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 同业过滤标签管理
               code: TongYeGuoLvBiaoQianGuanLi
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter8_5_3.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 开通广告展示
               code: KaiTongGuangGaoZhanShi
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter8_5_4.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 关闭广告展示
               code: GuanBiGuangGaoZhanShi
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter8_5_5.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
         - module: 行业方案
           pkg: org.dows.sdk.weixin.pay.xyfa
           name: 电商收付通（商户进件）
           code: DianShangShouFuTongShangHuJinJianApi
-          descr: 
+          descr:
           methods:
             - name: 二级商户进件
               code: ErJiShangHuJinJian
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_1_1.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 查询申请状态
               code: ChaXunShenQingZhuangTai
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_1_2.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 下载平台证书
               code: XiaZaiPingTaiZhengShu
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_1_3.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 修改结算账号
               code: XiuGaiJieSuanZhangHao
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/docs/partner/apis/modify-settlement/sub-merchants/modify-settlement.html
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 查询结算账号
               code: ChaXunJieSuanZhangHao
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/docs/partner/apis/modify-settlement/sub-merchants/get-settlement.html
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 查询结算账户修改申请状态
               code: ChaXunJieSuanZhangHuXiuGaiShenQingZhuangTai
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/docs/partner/apis/modify-settlement/sub-merchants/get-application.html
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
         - module: 行业方案
           pkg: org.dows.sdk.weixin.pay.xyfa
           name: 电商收付通（普通支付）
           code: DianShangShouFuTongPuTongZhiFuApi
-          descr: 
+          descr:
           methods:
             - name: APP下单
               code: APPXiaDan
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_2_1.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: JSAPI下单
               code: JSAPIXiaDan
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_2_2.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 小程序下单
               code: XiaoChengXuXiaDan
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_2_3.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: H5下单
               code: H5XiaDan
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_2_4.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: Native下单
               code: NativeXiaDan
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_2_12.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 查询订单
               code: ChaXunDingDan
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_2_5.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 关闭订单
               code: GuanBiDingDan
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_2_6.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: APP调起支付
               code: APPDiaoQiZhiFu
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_2_7.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: JSAPI调起支付
               code: JSAPIDiaoQiZhiFu
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_2_8.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 小程序调起支付
               code: XiaoChengXuDiaoQiZhiFu
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_2_9.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: H5调起支付
               code: H5DiaoQiZhiFu
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_2_10.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: Native调起支付
               code: NativeDiaoQiZhiFu
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_2_13.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 支付通知
               code: ZhiFuTongZhi
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_2_11.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
         - module: 行业方案
           pkg: org.dows.sdk.weixin.pay.xyfa
           name: 电商收付通（合单支付）
           code: DianShangShouFuTongHeDanZhiFuApi
-          descr: 
+          descr:
           methods:
             - name: 合单APP下单
               code: HeDanAPPXiaDan
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_3_1.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 合单H5下单
               code: HeDanH5XiaDan
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_3_2.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 合单JSAPI下单
               code: HeDanJSAPIXiaDan
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_3_3.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 合单小程序下单
               code: HeDanXiaoChengXuXiaDan
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_3_4.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 合单Native下单
               code: HeDanNativeXiaDan
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_3_5.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: APP调起支付
               code: APPDiaoQiZhiFu
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_3_6.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: H5调起支付
               code: H5DiaoQiZhiFu
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_3_7.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: JSAPI调起支付
               code: JSAPIDiaoQiZhiFu
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_3_8.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 小程序调起支付
               code: XiaoChengXuDiaoQiZhiFu
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_3_9.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: Native调起支付
               code: NativeDiaoQiZhiFu
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_3_10.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 合单查询订单
               code: HeDanChaXunDingDan
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_3_11.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 合单关闭订单
               code: HeDanGuanBiDingDan
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_3_12.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 支付通知
               code: ZhiFuTongZhi
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_3_13.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
         - module: 行业方案
           pkg: org.dows.sdk.weixin.pay.xyfa
           name: 电商收付通（分账）
           code: DianShangShouFuTongFenZhangApi
-          descr: 
+          descr:
           methods:
             - name: 请求分账
               code: QingQiuFenZhang
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_4_1.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 查询分账结果
               code: ChaXunFenZhangJieGuo
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_4_2.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 请求分账回退
               code: QingQiuFenZhangHuiTui
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_4_3.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 查询分账回退结果
               code: ChaXunFenZhangHuiTuiJieGuo
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_4_4.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 完结分账
               code: WanJieFenZhang
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_4_5.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 查询订单剩余待分金额
               code: ChaXunDingDanShengYuDaiFenJinE
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_4_9.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 添加分账接收方
               code: TianJiaFenZhangJieShouFang
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_4_7.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 删除分账接收方
               code: ShanChuFenZhangJieShouFang
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_4_8.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 分账动账通知
               code: FenZhangDongZhangTongZhi
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_4_6.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
         - module: 行业方案
           pkg: org.dows.sdk.weixin.pay.xyfa
           name: 电商收付通（补差）
           code: DianShangShouFuTongBuChaApi
-          descr: 
+          descr:
           methods:
             - name: 请求补差
               code: QingQiuBuCha
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_5_1.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 请求补差回退
               code: QingQiuBuChaHuiTui
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_5_2.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 取消补差
               code: QuXiaoBuCha
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_5_3.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
         - module: 行业方案
           pkg: org.dows.sdk.weixin.pay.xyfa
           name: 电商收付通（退款）
           code: DianShangShouFuTongTuiKuanApi
-          descr: 
+          descr:
           methods:
             - name: 申请退款
               code: ShenQingTuiKuan
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_6_1.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 查询退款
               code: ChaXunTuiKuan
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_6_2.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 退款结果通知
               code: TuiKuanJieGuoTongZhi
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_6_3.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 垫付退款回补
               code: DianFuTuiKuanHuiBu
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_6_4.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 查询垫付回补结果
               code: ChaXunDianFuHuiBuJieGuo
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_6_5.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
         - module: 行业方案
           pkg: org.dows.sdk.weixin.pay.xyfa
           name: 电商收付通（余额查询）
           code: DianShangShouFuTongYuEChaXunApi
-          descr: 
+          descr:
           methods:
             - name: 查询二级商户账户实时余额
               code: ChaXunErJiShangHuZhangHuShiShiYuE
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_7_1.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 查询二级商户账户日终余额
               code: ChaXunErJiShangHuZhangHuRiZhongYuE
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_7_2.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 查询电商平台账户实时余额
               code: ChaXunDianShangPingTaiZhangHuShiShiYuE
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_7_3.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 查询电商平台账户日终余额
               code: ChaXunDianShangPingTaiZhangHuRiZhongYuE
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_7_4.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
         - module: 行业方案
           pkg: org.dows.sdk.weixin.pay.xyfa
           name: 电商收付通（商户提现）
           code: DianShangShouFuTongShangHuTiXianApi
-          descr: 
+          descr:
           methods:
             - name: 二级商户预约提现
               code: ErJiShangHuYuYueTiXian
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_8_2.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 二级商户查询预约提现状态
               code: ErJiShangHuChaXunYuYueTiXianZhuangTai
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_8_3.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 电商平台预约提现
               code: DianShangPingTaiYuYueTiXian
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_8_5.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 电商平台查询预约提现状态
               code: DianShangPingTaiChaXunYuYueTiXianZhuangTai
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_8_6.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 按日下载提现异常文件
               code: AnRiXiaZaiTiXianYiChangWenJian
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_8_4.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
         - module: 行业方案
           pkg: org.dows.sdk.weixin.pay.xyfa
           name: 电商收付通（注销申请）
           code: DianShangShouFuTongZhuXiaoShenQingApi
-          descr: 
+          descr:
           methods:
             - name: 提交注销申请单
               code: TiJiaoZhuXiaoShenQingDan
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/docs/partner/apis/ecommerce-cancel/cancel-applications/create-cancel-application.html
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 查询注销单状态
               code: ChaXunZhuXiaoDanZhuangTai
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/docs/partner/apis/ecommerce-cancel/cancel-applications/get-cancel-application.html
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 图片上传
               code: TuPianShangChuan
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/docs/partner/apis/ecommerce-cancel/media/upload-media.html
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
         - module: 行业方案
           pkg: org.dows.sdk.weixin.pay.xyfa
           name: 电商收付通（注销后提现）
           code: DianShangShouFuTongZhuXiaoHouTiXianApi
-          descr: 
+          descr:
           methods:
             - name: 商户提现申请单号查询提现申请单状态
               code: ShangHuTiXianShenQingDanHaoChaXunTiXianShenQingDanZhuangTai
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_8_7.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 微信支付提现申请单号查询提现申请单状态
               code: WeiXinZhiFuTiXianShenQingDanHaoChaXunTiXianShenQingDanZhuangTai
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_8_8.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 提交已注销商户号可用余额提现申请单
               code: TiJiaoYiZhuXiaoShangHuHaoKeYongYuETiXianShenQingDan
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_8_9.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
         - module: 行业方案
           pkg: org.dows.sdk.weixin.pay.xyfa
           name: 电商收付通（跨境付款）
           code: DianShangShouFuTongKuaJingFuKuanApi
-          descr: 
+          descr:
           methods:
             - name: 查询订单剩余可出境余额
               code: ChaXunDingDanShengYuKeChuJingYuE
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter7_10_1.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 申请资金出境
               code: ShenQingZiJinChuJing
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter7_10_2.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 查询出境结果
               code: ChaXunChuJingJieGuo
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter7_10_3.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 获取购付汇账单文件下载链接
               code: HuoQuGouFuHuiZhangDanWenJianXiaZaiLianJie
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter7_10_4.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
         - module: 行业方案
           pkg: org.dows.sdk.weixin.pay.xyfa
           name: 电商收付通（下载账单）
           code: DianShangShouFuTongXiaZaiZhangDanApi
-          descr: 
+          descr:
           methods:
             - name: 申请交易账单
               code: ShenQingJiaoYiZhangDan
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_9_1.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 申请资金账单
               code: ShenQingZiJinZhangDan
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_9_2.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 申请分账账单
               code: ShenQingFenZhangZhangDan
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_9_6.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 申请二级商户资金账单
               code: ShenQingErJiShangHuZiJinZhangDan
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_9_5.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 下载账单
               code: XiaZaiZhangDan
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter7_9_3.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
         - module: 行业方案
           pkg: org.dows.sdk.weixin.pay.xyfa
           name: 智慧商圈
           code: ZhiHuiShangQuanApi
-          descr: 
+          descr:
           methods:
             - name: 商圈会员积分服务授权结果通知
               code: ShangQuanHuiYuanJiFenFuWuShouQuanJieGuoTongZhi
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter8_6_6.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 商圈会员场内支付结果通知
               code: ShangQuanHuiYuanChangNeiZhiFuJieGuoTongZhi
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter8_6_1.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 商圈会员积分同步
               code: ShangQuanHuiYuanJiFenTongBu
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter8_6_2.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 商圈会员场内退款通知
               code: ShangQuanHuiYuanChangNeiTuiKuanTongZhi
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter8_6_3.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 商圈会员积分服务授权查询
               code: ShangQuanHuiYuanJiFenFuWuShouQuanChaXun
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter8_6_4.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 商圈会员待积分状态查询
               code: ShangQuanHuiYuanDaiJiFenZhuangTaiChaXun
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter8_6_7.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 商圈会员停车状态同步
               code: ShangQuanHuiYuanTingCheZhuangTaiTongBu
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter8_6_5.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
         - module: 行业方案
           pkg: org.dows.sdk.weixin.pay.xyfa
           name: 微信支付分停车服务
           code: WeiXinZhiFuFenTingCheFuWuApi
-          descr: 
+          descr:
           methods:
             - name: 查询车牌服务开通信息
               code: ChaXunChePaiFuWuKaiTongXinXi
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter8_8_1.shtml
               url: https://api.mch.weixin.qq.com/v3/vehicle/parking/services/find
               httpMethod: GET
@@ -1399,42 +1399,42 @@ dows:
               descr: 停车入场状态变更通知API,最新更新时间：2021.08.06,从用户进入开通微信支付分停车服务的停车场（用户入场通知接口），到用户离场期间（扣款接口），这个时间段内如果停车入场状态变为可用或者不可用，微信会把相关状态变更情况（可用/不可用）异步发送给商户，回调url为调用用户入场通知接口时填写的notify_url字段。商户在收到停车入场状态变更通知后，需进行接收处理并返回应答。
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter8_8_5.shtml
               url: 该链接是商户[,]提交的notify_url参数，必须为https协议。如果链接无法访问，商户将无法接收到微信通知。 通知url必须为直接可访问的url，不能携带参数。示例： “https://pay.weixin.qq.com/wxpay/pay.action”
-              httpMethod: 
+              httpMethod:
             - name: 订单支付结果通知
               code: DingDanZhiFuJieGuoTongZhi
               overview: 订单支付结果通知API,最新更新时间：2021.08.06,商户请求微信支付分停车服务扣费受理接口，会完成订单受理。订单实际支付完成后，微信支付会把订单支付结果信息发送给商户，商户需要接收处理，并返回应答。同时，如果由于用户余额不足等原因，微信支付会进行垫资，用户对该垫资单进行了还款以后，微信支付会把该笔订单还款信息通知到商户。
               descr: 订单支付结果通知API,最新更新时间：2021.08.06,商户请求微信支付分停车服务扣费受理接口，会完成订单受理。订单实际支付完成后，微信支付会把订单支付结果信息发送给商户，商户需要接收处理，并返回应答。同时，如果由于用户余额不足等原因，微信支付会进行垫资，用户对该垫资单进行了还款以后，微信支付会把该笔订单还款信息通知到商户。
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter8_8_6.shtml
               url: 该链接是通过商户[,]提交notify_url参数，必须为https协议。如果链接无法访问，商户将无法接收到微信通知。 通知url必须为直接可访问的url，不能携带参数。示例： “https://pay.weixin.qq.com/wxpay/pay.action”
-              httpMethod: 
+              httpMethod:
             - name: 小程序调起微信支付分停车服务开通页
               code: XiaoChengXuDiaoQiWeiXinZhiFuFenTingCheFuWuKaiTongYe
               overview: 小程序调起微信支付分停车服务开通页API,最新更新时间：2021.08.06,商户通过该接口，打开微信支付分开通小程序，引导用户进行服务开通。 来源小程序的appid必须与商户号相关联。
               descr: 小程序调起微信支付分停车服务开通页API,最新更新时间：2021.08.06,商户通过该接口，打开微信支付分开通小程序，引导用户进行服务开通。 来源小程序的appid必须与商户号相关联。
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter8_8_7.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: H5调起微信支付分停车服务开通页
               code: H5DiaoQiWeiXinZhiFuFenTingCheFuWuKaiTongYe
               overview: H5调起微信支付分停车服务开通页API,最新更新时间：2021.08.06,通过调用该接口打开微信支付分停车服务小程序，引导用户进行服务开通。 商户的来源appid必须要和商户号相关联。
               descr: H5调起微信支付分停车服务开通页API,最新更新时间：2021.08.06,通过调用该接口打开微信支付分停车服务小程序，引导用户进行服务开通。 商户的来源appid必须要和商户号相关联。
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter8_8_8.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: APP拉起微信支付分停车服务开通页
               code: APPLaQiWeiXinZhiFuFenTingCheFuWuKaiTongYe
               overview: APP拉起微信支付分停车服务开通页API,最新更新时间：2021.08.06,通过调用该接口打开微信支付分停车服务小程序，引导用户进行服务开通。 商户的来源appid必须要和商户号相关联。
               descr: APP拉起微信支付分停车服务开通页API,最新更新时间：2021.08.06,通过调用该接口打开微信支付分停车服务小程序，引导用户进行服务开通。 商户的来源appid必须要和商户号相关联。
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter8_8_9.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 微信垫资还款
               code: WeiXinDianZiHaiKuan
               overview: 微信垫资还款API,最新更新时间：2021.11.29,该接口可以实现从商户的业务跳转至还款小程序。现在支持商户业务类型为小程序和APP。,未接入垫资功能的商户无需调用
               descr: 微信垫资还款API,最新更新时间：2021.11.29,该接口可以实现从商户的业务跳转至还款小程序。现在支持商户业务类型为小程序和APP。,未接入垫资功能的商户无需调用
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter8_8_10.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 申请退款
               code: ShenQingTuiKuan
               overview: 申请退款API,最新更新时间：2022.08.29,当交易发生之后一年内，由于买家或者卖家的原因需要退款时，卖家可以通过退款接口将支付金额退还给买家，微信支付将在收到退款请求并且验证成功之后，将支付款按原路退还至买家账号上。,退款状态转变如下：
@@ -1460,856 +1460,856 @@ dows:
           pkg: org.dows.sdk.weixin.pay.xyfa
           name: 电子发票
           code: DianZiFaPiaoApi
-          descr: 
+          descr:
           methods:
             - name: 检查子商户开票功能状态
               code: JianChaZiShangHuKaiPiaoGongNengZhuangTai
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/docs/partner/apis/fapiao/fapiao-merchant/check-merchant-status.html
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 创建电子发票卡券模板
               code: ChuangJianDianZiFaPiaoKaQuanMoBan
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/docs/partner/apis/fapiao/fapiao-card-template/create-fapiao-card-template.html
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 配置开发选项
               code: PeiZhiKaiFaXuanXiang
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/docs/partner/apis/fapiao/fapiao-merchant/update-development-config.html
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 查询商户配置的开发选项
               code: ChaXunShangHuPeiZhiDeKaiFaXuanXiang
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/docs/partner/apis/fapiao/fapiao-merchant/query-development-config.html
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 获取抬头填写链接
               code: HuoQuTaiTouTianXieLianJie
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/docs/partner/apis/fapiao/user-title/acquire-fapiao-title-url.html
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 用户发票抬头填写完成通知
               code: YongHuFaPiaoTaiTouTianXieWanChengTongZhi
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/docs/partner/apis/fapiao/fapiao-card-template/user-invoice-rise-write-notice.html
               url: 该链接是通过,接口提交的callback_url参数 ，必须为HTTPS协议。如果链接无法访问，商户将无法接收到微信通知。 通知URL必须为直接可访问的URL，不能携带参数。示例:"http://pay.weixin.qq.com/wxpay/pay.action"
-              httpMethod: 
+              httpMethod:
             - name: 获取用户填写的抬头
               code: HuoQuYongHuTianXieDeTaiTou
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/docs/partner/apis/fapiao/user-title/get-user-title.html
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 发票卡券作废通知
               code: FaPiaoKaQuanZuoFeiTongZhi
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/docs/partner/apis/fapiao/fapiao-card-template/invoice-card-cancel-notice.html
               url: 该链接是通过,接口提交的callback_url参数 ，必须为HTTPS协议。如果链接无法访问，商户将无法接收到微信通知。 通知URL必须为直接可访问的URL，不能携带参数。示例:"http://pay.weixin.qq.com/wxpay/pay.action"
-              httpMethod: 
+              httpMethod:
             - name: 获取商户开票基础信息
               code: HuoQuShangHuKaiPiaoJiChuXinXi
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/docs/partner/apis/fapiao/fapiao-merchant/get-merchant-info.html
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 获取商品和服务税收分类对照表
               code: HuoQuShangPinHeFuWuShuiShouFenLeiDuiZhaoBiao
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/docs/partner/apis/fapiao/fapiao-merchant/list-merchant-tax-codes.html
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 开具电子发票
               code: KaiJuDianZiFaPiao
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/docs/partner/apis/fapiao/fapiao-applications/issue-fapiao-applications.html
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 冲红电子发票
               code: ChongHongDianZiFaPiao
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/docs/partner/apis/fapiao/fapiao-applications/reverse-fapiao-applications.html
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 查询电子发票
               code: ChaXunDianZiFaPiao
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/docs/partner/apis/fapiao/fapiao-applications/get-fapiao-applications.html
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 获取发票下载信息
               code: HuoQuFaPiaoXiaZaiXinXi
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/docs/partner/apis/fapiao/fapiao-applications/get-fapiao-file-download-info.html
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 下载发票文件
               code: XiaZaiFaPiaoWenJian
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/docs/partner/apis/fapiao/fapiao-applications/download-invoice-file.html
               url: 通过,口获取到“download_url”，URL有效期为30s，仅能下载ISSUED状态的发票。
               httpMethod: GET
             - name: 发票开具成功通知
               code: FaPiaoKaiJuChengGongTongZhi
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/docs/partner/apis/fapiao/fapiao-applications/invoice-flush-success-notice.html
               url: 该链接是通过,接口提交的callback_url参数 ，必须为HTTPS协议。如果链接无法访问，商户将无法接收到微信通知。 通知URL必须为直接可访问的URL，不能携带参数。示例:"http://pay.weixin.qq.com/wxpay/pay.action"
-              httpMethod: 
+              httpMethod:
             - name: 发票冲红成功通知
               code: FaPiaoChongHongChengGongTongZhi
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/docs/partner/apis/fapiao/fapiao-applications/invoice-flush-success-notice.html
               url: 该链接是通过,接口提交的callback_url参数 ，必须为HTTPS协议。如果链接无法访问，商户将无法接收到微信通知。 通知URL必须为直接可访问的URL，不能携带参数。示例:"http://pay.weixin.qq.com/wxpay/pay.action"
-              httpMethod: 
+              httpMethod:
             - name: 上传电子发票文件
               code: ShangChuanDianZiFaPiaoWenJian
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/docs/partner/apis/fapiao/fapiao-applications/upload-fapiao-file.html
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 将电子发票插入微信用户卡包
               code: JiangDianZiFaPiaoChaRuWeiXinYongHuKaBao
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/docs/partner/apis/fapiao/fapiao-applications/insert-cards.html
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 发票插入用户卡包成功通知
               code: FaPiaoChaRuYongHuKaBaoChengGongTongZhi
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/docs/partner/apis/fapiao/fapiao-applications/invoice-insert-bag-success-notice.html
               url: 该链接是通过,接口提交的callback_url参数 ，必须为HTTPS协议。如果链接无法访问，商户将无法接收到微信通知。 通知URL必须为直接可访问的URL，不能携带参数。示例:"http://pay.weixin.qq.com/wxpay/pay.action"
-              httpMethod: 
+              httpMethod:
         - module: 营销工具
           pkg: org.dows.sdk.weixin.pay.yxgj
           name: 代金券
           code: DaiJinQuanApi
-          descr: 
+          descr:
           methods:
             - name: 创建代金券批次
               code: ChuangJianDaiJinQuanPiCi
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter9_1_1.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 激活代金券批次
               code: JiHuoDaiJinQuanPiCi
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter9_1_3.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 发放代金券批次
               code: FaFangDaiJinQuanPiCi
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter9_1_2.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 暂停代金券批次
               code: ZanTingDaiJinQuanPiCi
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter9_1_13.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 重启代金券批次
               code: ZhongQiDaiJinQuanPiCi
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter9_1_14.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 条件查询批次列表
               code: TiaoJianChaXunPiCiLieBiao
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter9_1_4.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 查询批次详情
               code: ChaXunPiCiXiangQing
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter9_1_5.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 查询代金券详情
               code: ChaXunDaiJinQuanXiangQing
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter9_1_6.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 查询代金券可用商户
               code: ChaXunDaiJinQuanKeYongShangHu
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter9_1_7.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 查询代金券可用单品
               code: ChaXunDaiJinQuanKeYongDanPin
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter9_1_8.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 根据商户号查用户的券
               code: GenJuShangHuHaoChaYongHuDeQuan
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter9_1_9.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 下载批次核销明细
               code: XiaZaiPiCiHeXiaoMingXi
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter9_1_10.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 下载批次退款明细
               code: XiaZaiPiCiTuiKuanMingXi
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter9_1_11.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 设置消息通知地址
               code: SheZhiXiaoXiTongZhiDiZhi
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter9_1_12.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 核销事件回调通知
               code: HeXiaoShiJianHuiDiaoTongZhi
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter9_1_15.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
         - module: 营销工具
           pkg: org.dows.sdk.weixin.pay.yxgj
           name: 商家券
           code: ShangJiaQuanApi
-          descr: 
+          descr:
           methods:
             - name: 创建商家券
               code: ChuangJianShangJiaQuan
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter9_2_1.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 查询商家券详情
               code: ChaXunShangJiaQuanXiangQing
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter9_2_2.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 核销用户券
               code: HeXiaoYongHuQuan
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter9_2_3.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 根据过滤条件查询用户券
               code: GenJuGuoLvTiaoJianChaXunYongHuQuan
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter9_2_4.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 查询用户单张券详情
               code: ChaXunYongHuDanZhangQuanXiangQing
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter9_2_5.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 上传预存code
               code: ShangChuanYuCuncode
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter9_2_6.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 设置商家券事件通知地址
               code: SheZhiShangJiaQuanShiJianTongZhiDiZhi
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter9_2_7.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 查询商家券事件通知地址
               code: ChaXunShangJiaQuanShiJianTongZhiDiZhi
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter9_2_8.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 关联订单信息
               code: GuanLianDingDanXinXi
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter9_2_9.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 取消关联订单信息
               code: QuXiaoGuanLianDingDanXinXi
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter9_2_10.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 修改批次预算
               code: XiuGaiPiCiYuSuan
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter9_2_11.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 修改商家券基本信息
               code: XiuGaiShangJiaQuanJiBenXinXi
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter9_2_12.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 申请退券
               code: ShenQingTuiQuan
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter9_2_13.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 使券失效
               code: ShiQuanShiXiao
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter9_2_14.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 营销补差付款
               code: YingXiaoBuChaFuKuan
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter9_2_16.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 查询营销补差付款单详情
               code: ChaXunYingXiaoBuChaFuKuanDanXiangQing
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter9_2_18.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 领券事件回调通知
               code: LingQuanShiJianHuiDiaoTongZhi
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter9_2_15.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
         - module: 营销工具
           pkg: org.dows.sdk.weixin.pay.yxgj
           name: 委托营销
           code: WeiTuoYingXiaoApi
-          descr: 
+          descr:
           methods:
             - name: 建立合作关系
               code: JianLiHeZuoGuanXi
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter9_5_1.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 查询合作关系列表
               code: ChaXunHeZuoGuanXiLieBiao
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter9_5_3.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
         - module: 营销工具
           pkg: org.dows.sdk.weixin.pay.yxgj
           name: 支付有礼
           code: ZhiFuYouLiApi
-          descr: 
+          descr:
           methods:
             - name: 创建全场满额送活动
               code: ChuangJianQuanChangManESongHuoDong
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter9_7_2.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 查询活动详情接口
               code: ChaXunHuoDongXiangQingJieKou
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter9_7_4.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 查询活动发券商户号
               code: ChaXunHuoDongFaQuanShangHuHao
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter9_7_5.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 查询活动指定商品列表
               code: ChaXunHuoDongZhiDingShangPinLieBiao
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter9_7_6.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 终止活动
               code: ZhongZhiHuoDong
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter9_7_7.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 新增活动发券商户号
               code: XinZengHuoDongFaQuanShangHuHao
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter9_7_8.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 获取支付有礼活动列表
               code: HuoQuZhiFuYouLiHuoDongLieBiao
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter9_7_9.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 删除活动发券商户号
               code: ShanChuHuoDongFaQuanShangHuHao
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter9_7_10.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 小程序发券插件
               code: XiaoChengXuFaQuanChaJian
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter9_3_1.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: H5发券
               code: H5FaQuan
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter9_4_1.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 图片上传(营销专用)
               code: TuPianShangChuan(YingXiaoZhuanYong)
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter9_0_1.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 现金红包
               code: XianJinHongBao
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/index.shtml#menu00
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
         - module: 资金应用
           pkg: org.dows.sdk.weixin.pay.zjyy
           name: 分账
           code: FenZhangApi
-          descr: 
+          descr:
           methods:
             - name: 请求分账
               code: QingQiuFenZhang
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter8_1_1.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 查询分账结果
               code: ChaXunFenZhangJieGuo
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter8_1_2.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 请求分账回退
               code: QingQiuFenZhangHuiTui
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter8_1_3.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 查询分账回退结果
               code: ChaXunFenZhangHuiTuiJieGuo
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter8_1_4.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 解冻剩余资金
               code: JieDongShengYuZiJin
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter8_1_5.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 查询剩余待分金额
               code: ChaXunShengYuDaiFenJinE
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter8_1_6.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 查询最大分账比例
               code: ChaXunZuiDaFenZhangBiLi
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter8_1_7.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 添加分账接收方
               code: TianJiaFenZhangJieShouFang
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter8_1_8.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 删除分账接收方
               code: ShanChuFenZhangJieShouFang
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter8_1_9.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 分账动账通知
               code: FenZhangDongZhangTongZhi
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter8_1_10.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 申请分账账单
               code: ShenQingFenZhangZhangDan
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter8_1_11.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 下载账单
               code: XiaZaiZhangDan
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter8_1_12.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
         - module: 资金应用
           pkg: org.dows.sdk.weixin.pay.zjyy
           name: 连锁品牌分账
           code: LianSuoPinPaiFenZhangApi
-          descr: 
+          descr:
           methods:
             - name: 请求分账
               code: QingQiuFenZhang
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter8_7_1.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 查询分账结果
               code: ChaXunFenZhangJieGuo
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter8_7_2.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 请求分账回退
               code: QingQiuFenZhangHuiTui
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter8_7_3.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 查询分账回退结果
               code: ChaXunFenZhangHuiTuiJieGuo
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter8_7_4.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 完结分账
               code: WanJieFenZhang
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter8_7_5.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 查询订单剩余待分账金额
               code: ChaXunDingDanShengYuDaiFenZhangJinE
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter8_7_9.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 查询最大分账比例
               code: ChaXunZuiDaFenZhangBiLi
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter8_7_10.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 添加分账接收方
               code: TianJiaFenZhangJieShouFang
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter8_7_7.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 删除分账接收方
               code: ShanChuFenZhangJieShouFang
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter8_7_8.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 分账动账通知
               code: FenZhangDongZhangTongZhi
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter8_7_6.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 申请分账账单
               code: ShenQingFenZhangZhangDan
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter8_7_11.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 下载账单
               code: XiaZaiZhangDan
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter8_7_12.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
         - module: 风险合规
           pkg: org.dows.sdk.weixin.pay.fxhg
           name: 商户开户意愿确认
           code: ShangHuKaiHuYiYuanQueRenApi
-          descr: 
+          descr:
           methods:
             - name: 提交申请单
               code: TiJiaoShenQingDan
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter10_1_1.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 撤销申请单
               code: CheXiaoShenQingDan
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter10_1_2.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 查询申请单审核结果
               code: ChaXunShenQingDanShenHeJieGuo
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter10_1_3.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 获取商户开户意愿确认状态
               code: HuoQuShangHuKaiHuYiYuanQueRenZhuangTai
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter10_1_4.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
         - module: 风险合规
           pkg: org.dows.sdk.weixin.pay.fxhg
           name: 消费者投诉2.0
           code: XiaoFeiZheTouSu2.0Api
-          descr: 
+          descr:
           methods:
             - name: 查询投诉单列表
               code: ChaXunTouSuDanLieBiao
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter10_2_11.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 查询投诉单详情
               code: ChaXunTouSuDanXiangQing
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter10_2_13.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 查询投诉协商历史
               code: ChaXunTouSuXieShangLiShi
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter10_2_12.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 投诉通知回调
               code: TouSuTongZhiHuiDiao
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter10_2_16.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 创建投诉通知回调地址
               code: ChuangJianTouSuTongZhiHuiDiaoDiZhi
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter10_2_2.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 查询投诉通知回调地址
               code: ChaXunTouSuTongZhiHuiDiaoDiZhi
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter10_2_3.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 更新投诉通知回调地址
               code: GengXinTouSuTongZhiHuiDiaoDiZhi
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter10_2_4.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 删除投诉通知回调地址
               code: ShanChuTouSuTongZhiHuiDiaoDiZhi
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter10_2_5.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 回复用户
               code: HuiFuYongHu
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter10_2_14.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 反馈处理完成
               code: FanKuiChuLiWanCheng
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter10_2_15.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 更新退款审批结果
               code: GengXinTuiKuanShenPiJieGuo
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter10_2_19.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 商户上传反馈图片
               code: ShangHuShangChuanFanKuiTuPian
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter10_2_10.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 图片下载
               code: TuPianXiaZai
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/apis/chapter10_2_18.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
         - module: 风险合规
           pkg: org.dows.sdk.weixin.pay.fxhg
           name: 商户违规通知回调
           code: ShangHuWeiGuiTongZhiHuiDiaoApi
-          descr: 
+          descr:
           methods:
             - name: 创建商户违规通知回调地址
               code: ChuangJianShangHuWeiGuiTongZhiHuiDiaoDiZhi
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter10_3_1.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 查询商户违规通知回调地址
               code: ChaXunShangHuWeiGuiTongZhiHuiDiaoDiZhi
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter10_3_2.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 修改商户违规通知回调地址
               code: XiuGaiShangHuWeiGuiTongZhiHuiDiaoDiZhi
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter10_3_3.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 删除商户违规通知回调地址
               code: ShanChuShangHuWeiGuiTongZhiHuiDiaoDiZhi
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter10_3_4.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
             - name: 商户平台处置记录回调通知
               code: ShangHuPingTaiChuZhiJiLuHuiDiaoTongZhi
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter10_3_5.shtml
-              url: 
-              httpMethod: 
+              url:
+              httpMethod:
         - module: 其他能力
           pkg: org.dows.sdk.weixin.pay.qtnl
           name: 微信支付平台证书
           code: WeiXinZhiFuPingTaiZhengShuApi
-          descr: 
+          descr:
           methods:
             - name: 获取平台证书列表
               code: HuoQuPingTaiZhengShuLieBiao
-              overview: 
-              descr: 
+              overview:
+              descr:
               docUrl: https://pay.weixin.qq.com/wiki/doc/apiv3/apis//wiki/doc/apiv3_partner/wechatpay/wechatpay5_1.shtml
-              url: 
+              url:
               httpMethod: 

@@ -13,8 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public final class InMemoryCertificateProvider implements CertificateProvider {
 
-    private final ConcurrentHashMap<BigInteger, X509Certificate> certificates =
-            new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<BigInteger, X509Certificate> certificates = new ConcurrentHashMap<>();
     private final X509Certificate availableCertificate;
 
     public InMemoryCertificateProvider(List<X509Certificate> certificates) {

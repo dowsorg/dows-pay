@@ -1,9 +1,9 @@
 package org.dows.sdk.weixin.auth.base;
 
 import lombok.extern.slf4j.Slf4j;
-import org.dows.sdk.client.security.Validator;
-import org.dows.sdk.client.http.HttpHeaders;
 import org.dows.sdk.client.cipher.Verifier;
+import org.dows.sdk.client.http.HttpHeaders;
+import org.dows.sdk.client.security.Validator;
 
 import java.time.DateTimeException;
 import java.time.Duration;

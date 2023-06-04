@@ -17,10 +17,6 @@ public class EncryptCertificate {
         this.algorithm = algorithm;
     }
 
-    public void setNonce(String nonce) {
-        this.nonce = nonce;
-    }
-
     public String getAssociatedData() {
         return associatedData;
     }
@@ -44,5 +40,9 @@ public class EncryptCertificate {
 
     public String getNonce() {
         return nonce;
+    }
+
+    public void setNonce(String nonce) {
+        this.nonce = nonce;
     }
 }
