@@ -259,7 +259,12 @@ public class payBiz implements PayApi {
             payApply.setSubMchid(result.getSubMchid());
             payApplyService.updateById(payApply);
             return response;
-        }).orElseThrow(() -> new BizException(String.format("payApply query is null and merchantNo:[%s]", res.getMerchantNo())));
+        }).orElseGet(()->{
+            ApplymentsStatusResult statusResult = new ApplymentsStatusResult();
+            statusResult.setApplymentState("NOT_APPLYMENT");
+            statusResult.setApplymentStateDesc("未申请");
+            return Response.ok(statusResult);
+        });
     }
 
     @Override
