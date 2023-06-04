@@ -1,0 +1,32 @@
+package org.dows.sdk.weixin.cloudbase.common.response;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.*;
+
+import java.util.Date;
+import java.math.BigDecimal;
+
+/**
+* @description 
+*
+* @author 
+* @date 
+*/
+@Data
+@NoArgsConstructor
+public class UpdateDatabaseRecordResponse{
+    @Schema(title = "错误码")
+    private Integer errcode;
+    @Schema(title = "错误信息")
+    private String errmsg;
+    @Schema(title = "更新条件匹配到的结果数")
+    private Integer matched;
+    @Schema(title = "修改的记录数，注意：使用set操作新插入的数据不计入修改数目")
+    private Integer modified;
+    @Schema(title = "新插入记录的id，注意：只有使用set操作新插入数据时这个字段会有值")
+    private String id;
+
+}
