@@ -235,7 +235,17 @@ public class payBiz implements PayApi {
     public Response queryPayApplyStatus(PayApplyStatusReq res) {
         PayApply payApply = payApplyService.getByMerchantNoAndType(res.getMerchantNo(), res.getApplyType());
         return Optional.ofNullable(payApply).map(p -> {
-            Response response = queryApplymentStatus(payApply.getApplyNo());
+            Response response;
+            if (p.getChecked()) {
+                ApplymentsStatusResult statusResult = new ApplymentsStatusResult();
+                statusResult.setApplymentState(payApply.getApplymentState());
+                statusResult.setApplymentStateDesc(payApply.getApplymentStateDesc());
+                statusResult.setSignUrl(payApply.getAppUrl());
+                response = new Response();
+                response.setData(statusResult);
+                return response;
+            }
+             response = queryApplymentStatus(payApply.getApplyNo());
             ApplymentsStatusResult result = (ApplymentsStatusResult) response.getData();
             if (!Objects.nonNull(payApply.getAppUrl())) {
                 payApply.setAppUrl(result.getSignUrl());
@@ -244,11 +254,17 @@ public class payBiz implements PayApi {
             if (Objects.equals("APPLYMENT_STATE_FINISHED", payApply.getApplymentState())) {
                 payApply.setChecked(true);
             }
+            payApply.setApplymentStateDesc(result.getApplymentStateDesc());
             payApply.setUpdateTime(new Date());
             payApply.setSubMchid(result.getSubMchid());
             payApplyService.updateById(payApply);
             return response;
-        }).orElseThrow(() -> new BizException(String.format("payApply query is null and merchantNo:[%s]", res.getMerchantNo())));
+        }).orElseGet(()->{
+            ApplymentsStatusResult statusResult = new ApplymentsStatusResult();
+            statusResult.setApplymentState("NOT_APPLYMENT");
+            statusResult.setApplymentStateDesc("未申请");
+            return Response.ok(statusResult);
+        });
     }
 
     @Override
