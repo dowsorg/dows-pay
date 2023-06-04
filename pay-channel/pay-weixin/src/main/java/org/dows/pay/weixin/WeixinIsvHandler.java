@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.json.JSONUtil;
+import com.alibaba.fastjson.JSON;
 import com.alipay.service.schema.util.StringUtil;
 import com.github.binarywang.wxpay.bean.applyment.WxPayApplyment4SubCreateRequest;
 import com.github.binarywang.wxpay.bean.applyment.WxPayApplymentCreateResult;
@@ -30,6 +31,7 @@ import org.dows.app.api.mini.request.AppApplyRequest;
 import org.dows.app.api.mini.response.AppApplyResponse;
 import org.dows.auth.biz.context.SecurityUtils;
 import org.dows.framework.api.Response;
+import org.dows.framework.api.exceptions.BizException;
 import org.dows.pay.api.PayEvent;
 import org.dows.pay.api.PayException;
 import org.dows.pay.api.PayHandler;
@@ -421,29 +423,18 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
         //todo 逻辑待实现
         ApplymentsRequest request = new ApplymentsRequest();
         autoMappingValue(payRequest,request);
-        IsvCreateBo isvCreateBo = (IsvCreateBo)payRequest.getBizModel();
         String url = String.format("%s/v3/applyment4sub/applyment/applyment_id/%s", this.getWeixinClient(payRequest.getAppId()).getPayBaseUrl(), request.getOutRequestNo());
         String result = null;
         try {
             result = getWeixinClient(payRequest.getAppId()).getV3(url);
         } catch (WxPayException e) {
-            e.printStackTrace();
+           log.warn("queryIsvMini fail :",e);
+            throw new BizException("查询小程序申请支付能力失败......");
         }
-        //更新商户号
+        //更新商户号 这段写的很坨没办法，之前封装的有问题，没有精力改后面优化
         ApplymentsStatusResult applymentsStatusResult = GSON.fromJson(result, ApplymentsStatusResult.class);
-//        AccountTenantBo accountTenantBo = new AccountTenantBo();
-//        accountTenantBo.setMerchantNo(applymentsStatusResult.getSubMchid());
-//        accountTenantBo.setAccountId(isvCreateBo.getAccount());
-//        acountTenantApi.updateAccountTenant(accountTenantBo);
-//        PayAccount payAccount = new PayAccount();
-//        payAccount.setAccountNo(isvCreateBo.getAccount());
-//        payAccount.setChannelAccount(isvCreateBo.getAppId());
-//        payAccount.setChannelMerchantNo(applymentsStatusResult.getSubMchid());
-//        payAccountService.saveOrUpdate(payAccount);
-//        //更新门店信息
-//        StoreInstanceRequest storeInstanceRequest = new StoreInstanceRequest();
-//        storeInstanceRequest.setMerchantNo(applymentsStatusResult.getSubMchid());
-//        storeInstanceApi.updateStoreInstance(storeInstanceRequest);
+        String applyStateMsg = JSON.parseObject(result).getString("applyment_state_msg");
+        applymentsStatusResult.setApplymentStateDesc(applyStateMsg);
         return applymentsStatusResult;
 
     }

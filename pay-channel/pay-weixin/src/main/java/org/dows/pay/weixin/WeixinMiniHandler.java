@@ -54,8 +54,6 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
     // 上传模板
     private final String WX_API_UPLOAD_TEMPLATE_URL = "https://api.weixin.qq.com/wxa/commit";
 
-    // 提交审核
-    private final String WX_API_TEMPLATE_SUBMIT_URL = "https://api.weixin.qq.com/wxa/submit_audit";
 
     private static final Gson GSON = new GsonBuilder().create();
     /**
@@ -76,44 +74,13 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
             HttpClientResult uploadTemplateResult = HttpClientUtils.doPost(WX_API_UPLOAD_TEMPLATE_URL + "?component_access_token=" + authorizerAccessToken, param, 1);
 
             String content = uploadTemplateResult.getContent();
-            WxOpenResult wxOpenResult = JSON.parseObject(content, WxOpenResult.class);
-            if (Objects.equals(wxOpenResult.getErrcode(),"0")) {
-                // 提交审核
-                submit(authorizerAccessToken);
-            }
-            return wxOpenResult;
+            return JSON.parseObject(content, WxOpenResult.class);
         }catch (Exception e) {
             log.info("uploadMini fail :",e);
             throw new BizException(e.getMessage());
         }
     }
 
-    private void submit(String authorizerAccessToken) {
-        // 提交审核
-        Map<String, Object> paramsMap = new HashMap<>();
-        paramsMap.put("item_list",listSubmitContent());
-        log.info("item_list====={}",JSON.toJSONString(paramsMap));
-        HttpResponse submitResult = HttpRequest.post(WX_API_TEMPLATE_SUBMIT_URL + "?component_access_token="
-                + authorizerAccessToken).body(JSON.toJSONString(paramsMap)).execute();
-        log.info("submitResult is {}", submitResult);
-        String body = submitResult.body();
-        String auditid = JSON.parseObject(body).getString("auditid");
-        log.info("auditid is {}",auditid);
-        // todo:保存数据库
-    }
-
-    private List<TemplateSubmitReq> listSubmitContent() {
-        TemplateSubmitReq templateSubmitReq = new TemplateSubmitReq();
-        templateSubmitReq.setAddress("index");
-        templateSubmitReq.setTag("生活服务");
-        templateSubmitReq.setFirst_class("生活服务");
-        templateSubmitReq.setSecond_class("跑腿");
-        templateSubmitReq.setFirst_id(150);
-        templateSubmitReq.setSecond_id(1259);
-        templateSubmitReq.setTitle("首页");
-        return Collections.singletonList(templateSubmitReq);
-
-    }
 
 
     /**
