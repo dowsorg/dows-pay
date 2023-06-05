@@ -160,7 +160,7 @@ public class payBiz implements PayApi {
                 log.info("生成WxOpenResult参数{}", wxOpenResult);
                 if (wxOpenResult.isSuccess()) {
                     // todo 成功后的操作
-                    return Response.ok(true, "申请微信小程序成功");
+                    return Response.ok(true, "提交申请微信小程序成功");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -245,7 +245,7 @@ public class payBiz implements PayApi {
                 response.setData(statusResult);
                 return response;
             }
-             response = queryApplymentStatus(payApply.getApplyNo());
+            response = queryApplymentStatus(payApply.getApplyNo());
             ApplymentsStatusResult result = (ApplymentsStatusResult) response.getData();
             if (!Objects.nonNull(payApply.getAppUrl())) {
                 payApply.setAppUrl(result.getSignUrl());
@@ -259,7 +259,7 @@ public class payBiz implements PayApi {
             payApply.setSubMchid(result.getSubMchid());
             payApplyService.updateById(payApply);
             return response;
-        }).orElseGet(()->{
+        }).orElseGet(() -> {
             ApplymentsStatusResult statusResult = new ApplymentsStatusResult();
             statusResult.setApplymentState("NOT_APPLYMENT");
             statusResult.setApplymentStateDesc("未申请");
@@ -391,7 +391,8 @@ public class payBiz implements PayApi {
         idCardInfo.setCardPeriodEnd(appApplyRequest.getProprietorIdValidityPeriodEnd());
         idCardInfo.setIdCardAddress(appApplyRequest.getProprietorIdAddress());
         identityInfo.setIdCardInfo(idCardInfo);
-        if (appApplyRequest.getOwner().equals("true")) {
+        if (!StringUtil.isEmpty(appApplyRequest.getOwner())
+                && appApplyRequest.getOwner().equals("true")) {
             identityInfo.setOwner(true);
         } else {
             identityInfo.setOwner(false);
@@ -418,7 +419,6 @@ public class payBiz implements PayApi {
         // 经营资料信息
         isvCreateBo.setCertNo(appApplyRequest.getCertNo());
         isvCreateBo.setCertType(appApplyRequest.getCertType());
-//        isvCreateBo.setCertName(appApplyRequest.getBankAccountName());
         isvCreateBo.setCertName(appApplyRequest.getCertName());
         WxPayApplyment4SubCreateRequest.BusinessInfo businessInfo = new WxPayApplyment4SubCreateRequest.BusinessInfo();
         WxPayApplyment4SubCreateRequest.BusinessInfo.SalesInfo salesInfo = new WxPayApplyment4SubCreateRequest.BusinessInfo.SalesInfo();
@@ -447,14 +447,16 @@ public class payBiz implements PayApi {
         // 如果为1、主体为“个体工商户/企业/政府机关/事业单位/社会组织”，可选择：LEGAL：经营者/法人，SUPER：经办人
         // 。（经办人：经商户授权办理微信支付业务的人员）。
         //枚举值：LEGAL：经营者/法人、SUPER：经办人
-        contactInfo.setContactType(appApplyRequest.getContactType());
-        // 如类型为LEGAL则以下不需要传参
-//        contactInfo.setContactIdDocType("IDENTIFICATION_TYPE_IDCARD");
-//        contactInfo.setContactIdNumber(appApplyRequest.getSuperAdminId());
-//        contactInfo.setContactIdDocCopy(appApplyRequest.getProprietorIdPictureFront());
-//        contactInfo.setContactIdDocCopyBack(appApplyRequest.getProprietorIdPictureBack());
-//        contactInfo.setContactPeriodBegin(appApplyRequest.getProprietorIdValidityPeriod());
-//        contactInfo.setContactPeriodEnd(appApplyRequest.getProprietorIdValidityPeriod());
+        contactInfo.setContactType(appApplyRequest.getContactType() == null ? null : appApplyRequest.getContactType());
+        if (contactInfo.getContactType() != null && contactInfo.equals("SUPER")) {
+            // 如类型为LEGAL则以下不需要传参
+            contactInfo.setContactIdDocType("IDENTIFICATION_TYPE_IDCARD");
+            contactInfo.setContactIdNumber(appApplyRequest.getSuperAdminId());
+            contactInfo.setContactIdDocCopy(appApplyRequest.getProprietorIdPictureFront());
+            contactInfo.setContactIdDocCopyBack(appApplyRequest.getProprietorIdPictureBack());
+            contactInfo.setContactPeriodBegin(appApplyRequest.getProprietorIdValidityPeriodBegin());
+            contactInfo.setContactPeriodEnd(appApplyRequest.getProprietorIdValidityPeriodEnd());
+        }
         contactInfo.setBusinessAuthorizationLetter(appApplyRequest.getOtherCert());
         isvCreateBo.setContactInfo(contactInfo);
         // 结算规则
