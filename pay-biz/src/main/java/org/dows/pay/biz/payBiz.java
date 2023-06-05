@@ -172,6 +172,7 @@ public class payBiz implements PayApi {
 
     @Override
     public Response applyForPaymentAuth(AppApplyRequest appApplyRequest) {
+        // 申请支付权限并保存payAppl表
         Long payApplyId = payApplyService.createPayApply(appApplyRequest.getMerchantNo());
         PayRequest payRequest = new PayIsvRequest();
         log.info("生成appApplyRequest参数{}", appApplyRequest);
