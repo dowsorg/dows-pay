@@ -8,6 +8,7 @@ import org.dows.framework.api.Response;
 import org.dows.pay.api.PayApi;
 import org.dows.pay.api.PayResponse;
 import org.dows.pay.biz.MiniBiz;
+import org.dows.pay.form.SetWxBaseInfoForm;
 import org.dows.pay.form.WxBaseInfoForm;
 import org.dows.pay.form.WxFastMaCategoryForm;
 import org.springframework.validation.annotation.Validated;
@@ -92,4 +93,13 @@ public class MiniRest {
         Response response = payApi.queryApplymentStatus(applymentId);
         return response;
     }
+
+    @PostMapping("/mini/setWxinApplyInfo")
+    @ApiOperation(value = "设置小程序相关信息")
+    public Response<PayResponse> setWxinApplyInfo(@Validated @RequestBody SetWxBaseInfoForm setWxBaseInfoForm) {
+        Response response = miniBiz.setWxinApplyInfo(setWxBaseInfoForm);
+        return response;
+    }
+
+
 }

@@ -60,6 +60,21 @@ public class OrderPayBiz {
         log.info("返回结果:{}", data);
         return response;
     }
+    public Response toPayNoAcc(PayTransactionForm payTransactionForm) {
+        OrderPayRequest orderPayRequest = new OrderPayRequest();
+        PayTransactionBo payTransactionBo = BeanUtil.copyProperties(payTransactionForm, PayTransactionBo.class);
+        // 设置请求方法
+        orderPayRequest.setMethod(PayMethods.TRADE_ORDER_PAY_NoAcc.getNamespace());
+        // 设置业务参数对象bizModel
+        orderPayRequest.setBizModel(payTransactionBo);
+        // 填充公共参数
+        orderPayRequest.autoSet(payTransactionForm);
+        // 请求分发
+        Response<PayResponse> response = payDispatcher.dispatcher(orderPayRequest);
+        PayResponse data = response.getData();
+        log.info("返回结果:{}", data);
+        return response;
+    }
     public Response toCombinePay(PayCombineTransactionForm payCombineTransactionForm) {
         OrderPayRequest orderPayRequest = new OrderPayRequest();
         PayCombineTransactionBo payCombineTransactionBo = BeanUtil.copyProperties(payCombineTransactionForm, PayCombineTransactionBo.class);

@@ -5,14 +5,17 @@ package org.dows.pay.biz;
  */
 
 import cn.hutool.core.bean.BeanUtil;
+import com.alibaba.fastjson.JSONObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.dows.app.entity.AppApplyItem;
 import org.dows.framework.api.Response;
 import org.dows.pay.api.PayResponse;
 import org.dows.pay.api.enums.PayMethods;
 import org.dows.pay.api.request.PayIsvRequest;
 import org.dows.pay.bo.WxBaseInfoBo;
 import org.dows.pay.bo.WxFastMaCategoryBo;
+import org.dows.pay.form.SetWxBaseInfoForm;
 import org.dows.pay.form.WxBaseInfoForm;
 import org.dows.pay.form.WxFastMaCategoryForm;
 import org.dows.pay.gateway.PayDispatcher;
@@ -26,6 +29,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class MiniBiz {
     private final PayDispatcher payDispatcher;
+
     /**
      * MiniCategory 创建类目
      *
@@ -47,6 +51,7 @@ public class MiniBiz {
         log.info("返回结果:{}", data);
         return response;
     }
+
     /**
      * MiniCategory 查询类目
      *
@@ -68,6 +73,7 @@ public class MiniBiz {
         log.info("返回结果:{}", data);
         return response;
     }
+
     /**
      * MiniCategory 更新类目
      *
@@ -89,6 +95,7 @@ public class MiniBiz {
         log.info("返回结果:{}", data);
         return response;
     }
+
     /**
      * MiniCategory 删除类目
      *
@@ -110,6 +117,7 @@ public class MiniBiz {
         log.info("返回结果:{}", data);
         return response;
     }
+
     /**
      * MiniCategory 查询已设置类目
      *
@@ -131,6 +139,7 @@ public class MiniBiz {
         log.info("返回结果:{}", data);
         return response;
     }
+
     /**
      * MiniBaseInfo 代商户设置小程序名称
      *
@@ -152,6 +161,7 @@ public class MiniBiz {
         log.info("返回结果:{}", data);
         return response;
     }
+
     /**
      * MiniBaseInfo 查询小程序名称状态
      *
@@ -173,6 +183,7 @@ public class MiniBiz {
         log.info("返回结果:{}", data);
         return response;
     }
+
     /**
      * MiniBaseInfo 代商户设置小程序介绍
      *
@@ -194,6 +205,7 @@ public class MiniBiz {
         log.info("返回结果:{}", data);
         return response;
     }
+
     /**
      * MiniBaseInfo 代商户设置小程序头像
      *
@@ -213,6 +225,32 @@ public class MiniBiz {
         Response<PayResponse> response = payDispatcher.dispatcher(payRequest);
         PayResponse data = response.getData();
         log.info("返回结果:{}", data);
+        return response;
+    }
+
+    /**
+     * MiniBaseInfo 设置微信小程序 名称 、介绍、类目。头像等信息
+     *
+     * @param setWxBaseInfoForm
+     */
+    public Response setWxinApplyInfo(SetWxBaseInfoForm setWxBaseInfoForm) {
+        WxBaseInfoForm wxBaseInfoForm = BeanUtil.copyProperties(setWxBaseInfoForm, WxBaseInfoForm.class);
+        WxFastMaCategoryForm wxFastMaCategoryForm = BeanUtil.copyProperties(setWxBaseInfoForm, WxFastMaCategoryForm.class);
+        Response response = null;
+        if (setWxBaseInfoForm.getNickName() != null) {
+            response = setNickName(wxBaseInfoForm);
+            log.info("设置微信小程序名称结果：{}", JSONObject.toJSONString(response));
+        }
+        if (setWxBaseInfoForm.getHeadImgMediaId() != null) {
+            response = setHeadImage(wxBaseInfoForm);
+            log.info("设置微信小程序头像结果：{}", JSONObject.toJSONString(response));
+        }
+        if (setWxBaseInfoForm.getSignature() != null) {
+            response = setSignature(wxBaseInfoForm);
+            log.info("设置微信小程序简介结果：{}", JSONObject.toJSONString(response));
+        }
+        response = addCategory(wxFastMaCategoryForm);
+        log.info("设置微信小程序类目结果：{}", JSONObject.toJSONString(response));
         return response;
     }
 }
