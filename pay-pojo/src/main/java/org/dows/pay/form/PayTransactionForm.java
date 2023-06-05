@@ -64,7 +64,7 @@ public class PayTransactionForm implements Serializable, BizForm {
     @ApiModelProperty("备注")
     private String remark;
 
-    @ApiModelProperty("应用id")
+    @ApiModelProperty("应用openId")
     private String appId;
 
     @ApiModelProperty("租户号")
