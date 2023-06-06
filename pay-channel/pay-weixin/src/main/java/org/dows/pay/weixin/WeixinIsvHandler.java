@@ -88,11 +88,11 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
      */
     @PayMapping(method = PayMethods.ISV_CREATE)
     public ApplymentsResult createIsvMini(PayRequest payRequest) {
-        log.info("生成申请/创建小程序参数{}",payRequest);
+        log.info("生成申请/创建小程序参数{}", payRequest);
         //上传证件信息
         Map<String, ImageUploadResult> stringImageUploadResultMap = imageUploadV3(payRequest);
         UUID uuid = idGenerator.generateId();
-        IsvCreateBo isvCreateBo = (IsvCreateBo)payRequest.getBizModel();
+        IsvCreateBo isvCreateBo = (IsvCreateBo) payRequest.getBizModel();
         // todo 先查询该营业执照有没有申请过，如果没有就保存，如果有直接查询比对是否是相同的申请（orderNo为空 其他字段值全部相同通道+应用名）
         AppApplyRequest appApply = new AppApplyRequest();
         appApply.setAppName(isvCreateBo.getAppName());
@@ -100,84 +100,84 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
         appApply.setContactName(isvCreateBo.getContactName());
         appApply.setContactPhone(isvCreateBo.getContactPhone());
         Response<AppApplyResponse> responseAppApply = appApplyApi.getOneAppApply(appApply);
-        if (responseAppApply == null || responseAppApply.getData() == null ) {
+        if (responseAppApply == null || responseAppApply.getData() == null) {
             // todo 保存请求
             appApply.setApplyOrderNo(uuid.toString());
             appApplyApi.saveApply(appApply);
-        }else{
-            appApply.setApplyOrderNo(((AppApplyResponse)responseAppApply.getData()).getApplyOrderNo());
+        } else {
+            appApply.setApplyOrderNo(((AppApplyResponse) responseAppApply.getData()).getApplyOrderNo());
         }
         //todo 调用微信接口创建商户小程序
         String url = String.format("%s/v3/ecommerce/applyments/", this.getWeixinClient(payRequest.getAppId()).getPayBaseUrl());
         ApplymentsRequest request = new ApplymentsRequest();
-        autoMappingValue(payRequest,request);
+        autoMappingValue(payRequest, request);
         //图片路径
         //金融机构许可证图片
-        if(request.getFinanceInstitutionInfo()!=null){
+        if (request.getFinanceInstitutionInfo() != null) {
             request.getFinanceInstitutionInfo().setFinanceLicensePics
                     (!ObjectUtil.isEmpty(stringImageUploadResultMap.get("financeLicensePicsFile"))
-                            ?stringImageUploadResultMap.get("financeLicensePicsFile").getMediaId():"");
+                            ? stringImageUploadResultMap.get("financeLicensePicsFile").getMediaId() : "");
 
         }
         //营业执照扫描件
-        if(request.getBusinessLicenseInfo()!=null){
+        if (request.getBusinessLicenseInfo() != null) {
             request.getBusinessLicenseInfo().setBusinessLicenseCopy
                     (!ObjectUtil.isEmpty(stringImageUploadResultMap.get("businessLicenseFile"))
-                            ?stringImageUploadResultMap.get("businessLicenseFile").getMediaId():"");
+                            ? stringImageUploadResultMap.get("businessLicenseFile").getMediaId() : "");
         }
-        if(request.getIdCardInfo()!=null){
+        if (request.getIdCardInfo() != null) {
             //身份证人像面照片
             request.getIdCardInfo().setIdCardCopy
                     (!ObjectUtil.isEmpty(stringImageUploadResultMap.get("idCardCopyFile"))
-                            ?stringImageUploadResultMap.get("idCardCopyFile").getMediaId():"");
+                            ? stringImageUploadResultMap.get("idCardCopyFile").getMediaId() : "");
             //身份证国徽面照片
             request.getIdCardInfo().setIdCardNational
                     (!ObjectUtil.isEmpty(stringImageUploadResultMap.get("idCardNationalFile"))
-                            ?stringImageUploadResultMap.get("idCardNationalFile").getMediaId():"");
+                            ? stringImageUploadResultMap.get("idCardNationalFile").getMediaId() : "");
 
         }
-        if(request.getIdDocInfo()!=null){
+        if (request.getIdDocInfo() != null) {
             //经营者/法人身份证信息 正面照片
             request.getIdDocInfo().setIdDocCopy
                     (!ObjectUtil.isEmpty(stringImageUploadResultMap.get("idDocCopyFile"))
-                            ?stringImageUploadResultMap.get("idDocCopyFile").getMediaId():"");
+                            ? stringImageUploadResultMap.get("idDocCopyFile").getMediaId() : "");
             //经营者/法人身份证信息 反面照片
             request.getIdDocInfo().setIdDocCopyBack
                     (!ObjectUtil.isEmpty(stringImageUploadResultMap.get("idDocCopyBackFile"))
-                            ?stringImageUploadResultMap.get("idDocCopyBackFile").getMediaId():"");
+                            ? stringImageUploadResultMap.get("idDocCopyBackFile").getMediaId() : "");
 
         }
-        if(request.getIdDocInfo()!=null){
+        if (request.getIdDocInfo() != null) {
             //超级管理员身份证信息 正面照片
             request.getContactInfo().setContactIdDocCopy
                     (!ObjectUtil.isEmpty(stringImageUploadResultMap.get("contactIdDocCopyFile"))
-                            ?stringImageUploadResultMap.get("contactIdDocCopyFile").getMediaId():"");
+                            ? stringImageUploadResultMap.get("contactIdDocCopyFile").getMediaId() : "");
             //超级管理员身份证信息 反面照片
             request.getContactInfo().setContactIdDocCopyBack
                     (!ObjectUtil.isEmpty(stringImageUploadResultMap.get("contactIdDocCopyBackFile"))
-                            ?stringImageUploadResultMap.get("contactIdDocCopyBackFile").getMediaId():"");
+                            ? stringImageUploadResultMap.get("contactIdDocCopyBackFile").getMediaId() : "");
 
         }
-        if(request.getUboInfoList()!=null&&(request.getUboInfoList().size()>0)){
+        if (request.getUboInfoList() != null && (request.getUboInfoList().size() > 0)) {
             //受益人列表 受益人正反面照片
             request.getUboInfoList().forEach(
-                    x->{
+                    x -> {
                         x.setUboIdDocCopy
-                                (!ObjectUtil.isEmpty(stringImageUploadResultMap.get("uboIdDocCopyFile"+x.getUboIdDocNumber()))
-                                        ?stringImageUploadResultMap.get("uboIdDocCopyFile"+x.getUboIdDocNumber()).getMediaId():"");
+                                (!ObjectUtil.isEmpty(stringImageUploadResultMap.get("uboIdDocCopyFile" + x.getUboIdDocNumber()))
+                                        ? stringImageUploadResultMap.get("uboIdDocCopyFile" + x.getUboIdDocNumber()).getMediaId() : "");
                         x.setUboIdDocCopyBack
-                                (!ObjectUtil.isEmpty(stringImageUploadResultMap.get("UboIdDocCopyBackFile"+x.getUboIdDocNumber()))
-                                        ?stringImageUploadResultMap.get("UboIdDocCopyBackFile"+x.getUboIdDocNumber()).getMediaId():"");
+                                (!ObjectUtil.isEmpty(stringImageUploadResultMap.get("UboIdDocCopyBackFile" + x.getUboIdDocNumber()))
+                                        ? stringImageUploadResultMap.get("UboIdDocCopyBackFile" + x.getUboIdDocNumber()).getMediaId() : "");
                     });
         }
 
-        ApplymentsResult response =null;
+        ApplymentsResult response = null;
         try {
-            RsaCryptoUtil.encryptFields(request,this.getWeixinClient(payRequest.getAppId()).getConfig().getVerifier().getValidCertificate());
-            String result = this.getWeixinClient(payRequest.getAppId()).postV3WithWechatpaySerial(url,GSON.toJson(request));
+            RsaCryptoUtil.encryptFields(request, this.getWeixinClient(payRequest.getAppId()).getConfig().getVerifier().getValidCertificate());
+            String result = this.getWeixinClient(payRequest.getAppId()).postV3WithWechatpaySerial(url, GSON.toJson(request));
             response = GSON.fromJson(result, ApplymentsResult.class);
-            log.info("申请/创建小程序响应{}",response);
-        } catch ( WxPayException e) {
+            log.info("申请/创建小程序响应{}", response);
+        } catch (WxPayException e) {
             throw new RuntimeException(e);
         }
         /**
@@ -233,13 +233,13 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
             acountTenantApi.updateAccountTenant(accountTenantBo);
             //保存门店信息
             StoreInstanceRequest storeInstanceRequest = new StoreInstanceRequest();
-            BeanUtil.copyProperties(isvCreateBo,storeInstanceRequest);
+            BeanUtil.copyProperties(isvCreateBo, storeInstanceRequest);
             storeInstanceApi.saveStoreInstance(storeInstanceRequest);
             log.info("调用成功,响应信息:{}", JSONUtil.toJsonStr(response));
         } else {
             log.error("调用失败,响应信息:{}", JSONUtil.toJsonStr(response));
         }
-        return  response;
+        return response;
     }
 
     /**
@@ -252,7 +252,7 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
         //上传证件信息
         Map<String, ImageUploadResult> stringImageUploadResultMap = imageTyUploadV3(payRequest);
         UUID uuid = idGenerator.generateId();
-        IsvCreateTyBo isvCreateTyBo = (IsvCreateTyBo)payRequest.getBizModel();
+        IsvCreateTyBo isvCreateTyBo = (IsvCreateTyBo) payRequest.getBizModel();
         // todo 先查询该营业执照有没有申请过，如果没有就保存，如果有直接查询比对是否是相同的申请（orderNo为空 其他字段值全部相同通道+应用名）
 //        AppApplyRequest appApply = new AppApplyRequest();
 //        appApply.setAppName(isvCreateTyBo.getAppName());
@@ -270,85 +270,113 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
         //todo 调用微信接口创建商户小程序
         String url = String.format("%s/v3/applyment4sub/applyment/", this.getWeixinClient(payRequest.getAppId()).getPayBaseUrl());
         WxPayApplyment4SubCreateRequest request = new WxPayApplyment4SubCreateRequest();
-        autoMappingValue(payRequest,request);
-        if(request.getContactInfo()!=null && !request.getContactInfo().getContactType().equals("LEGAL")){
+        autoMappingValue(payRequest, request);
+        if (request.getContactInfo() != null && !request.getContactInfo().getContactType().equals("LEGAL")) {
             //超级管理员证件照正面
             request.getContactInfo().setContactIdDocCopy
                     (!ObjectUtil.isEmpty(stringImageUploadResultMap.get("contactIdDocCopyFile"))
-                            ?stringImageUploadResultMap.get("contactIdDocCopyFile").getMediaId():"");
+                            ? stringImageUploadResultMap.get("contactIdDocCopyFile").getMediaId() : "");
             //超级管理员证件照反面
             request.getContactInfo().setContactIdDocCopyBack
                     (!ObjectUtil.isEmpty(stringImageUploadResultMap.get("contactIdDocCopyBackFile"))
-                            ?stringImageUploadResultMap.get("contactIdDocCopyBackFile").getMediaId():"");
+                            ? stringImageUploadResultMap.get("contactIdDocCopyBackFile").getMediaId() : "");
             //业务办理授权函
             request.getContactInfo().setBusinessAuthorizationLetter
                     (!ObjectUtil.isEmpty(stringImageUploadResultMap.get("businessAuthorizationLetterFile"))
-                            ?stringImageUploadResultMap.get("businessAuthorizationLetterFile").getMediaId():"");
+                            ? stringImageUploadResultMap.get("businessAuthorizationLetterFile").getMediaId() : "");
             //超级管理员证件类型
             request.getContactInfo().setContactIdDocType("IDENTIFICATION_TYPE_IDCARD");
         }
         //营业执照
-        if(request.getSubjectInfo().getBusinessLicenseInfo()!=null){
+        if (request.getSubjectInfo().getBusinessLicenseInfo() != null) {
             request.getSubjectInfo().getBusinessLicenseInfo().setLicenseCopy
                     (!ObjectUtil.isEmpty(stringImageUploadResultMap.get("licenseCopyFile"))
-                            ?stringImageUploadResultMap.get("licenseCopyFile").getMediaId():"");
+                            ? stringImageUploadResultMap.get("licenseCopyFile").getMediaId() : "");
         }
-        if(request.getSubjectInfo().getIdentityInfo()!=null
-                &&(request.getSubjectInfo().getIdentityInfo().getIdCardInfo()!=null)){
+        if (request.getSubjectInfo().getIdentityInfo() != null
+                && (request.getSubjectInfo().getIdentityInfo().getIdCardInfo() != null)) {
             //经营者/法人身份证信息 正面照片
             request.getSubjectInfo().getIdentityInfo().getIdCardInfo().setIdCardCopy
                     (!ObjectUtil.isEmpty(stringImageUploadResultMap.get("idCardCopyFile"))
-                            ?stringImageUploadResultMap.get("idCardCopyFile").getMediaId():"");
+                            ? stringImageUploadResultMap.get("idCardCopyFile").getMediaId() : "");
             //经营者/法人身份证信息 反面照片
             request.getSubjectInfo().getIdentityInfo().getIdCardInfo().setIdCardNational
                     (!ObjectUtil.isEmpty(stringImageUploadResultMap.get("idCardNationalFile"))
-                            ?stringImageUploadResultMap.get("idCardNationalFile").getMediaId():"");
+                            ? stringImageUploadResultMap.get("idCardNationalFile").getMediaId() : "");
         }
-        if(request.getSubjectInfo().getUboInfoList()!=null&&(request.getSubjectInfo().getUboInfoList().size()>0)){
+        if (request.getSubjectInfo().getUboInfoList() != null && (request.getSubjectInfo().getUboInfoList().size() > 0)) {
             //受益人列表 受益人正反面照片
             request.getSubjectInfo().getUboInfoList().forEach(
-                    x->{
+                    x -> {
                         x.setUboIdDocCopy
-                                (!ObjectUtil.isEmpty(stringImageUploadResultMap.get("uboIdDocCopyFile"+x.getUboIdDocNumber()))
-                                        ?stringImageUploadResultMap.get("uboIdDocCopyFile"+x.getUboIdDocNumber()).getMediaId():"");
+                                (!ObjectUtil.isEmpty(stringImageUploadResultMap.get("uboIdDocCopyFile" + x.getUboIdDocNumber()))
+                                        ? stringImageUploadResultMap.get("uboIdDocCopyFile" + x.getUboIdDocNumber()).getMediaId() : "");
                         x.setUboIdDocCopyBack
-                                (!ObjectUtil.isEmpty(stringImageUploadResultMap.get("UboIdDocCopyBackFile"+x.getUboIdDocNumber()))
-                                        ?stringImageUploadResultMap.get("UboIdDocCopyBackFile"+x.getUboIdDocNumber()).getMediaId():"");
+                                (!ObjectUtil.isEmpty(stringImageUploadResultMap.get("UboIdDocCopyBackFile" + x.getUboIdDocNumber()))
+                                        ? stringImageUploadResultMap.get("UboIdDocCopyBackFile" + x.getUboIdDocNumber()).getMediaId() : "");
                     });
         }
-        if(request.getBusinessInfo().getSalesInfo().getMiniProgramInfo()!=null
-                &&(request.getBusinessInfo().getSalesInfo().getMiniProgramInfo().getMiniProgramPics()!=null)
-                &&(request.getBusinessInfo().getSalesInfo().getMiniProgramInfo().getMiniProgramPics().size()>0)){
+        if (request.getBusinessInfo().getSalesInfo().getMiniProgramInfo() != null
+                && (request.getBusinessInfo().getSalesInfo().getMiniProgramInfo().getMiniProgramPics() != null)
+                && (request.getBusinessInfo().getSalesInfo().getMiniProgramInfo().getMiniProgramPics().size() > 0)) {
             //小程序照片
             List<String> list = new ArrayList<>();
             request.getBusinessInfo().getSalesInfo().getMiniProgramInfo().getMiniProgramPics().forEach(
-                    x->{
-                        if(!ObjectUtil.isEmpty(stringImageUploadResultMap.get(x))){
+                    x -> {
+                        if (!ObjectUtil.isEmpty(stringImageUploadResultMap.get(x))) {
                             x = stringImageUploadResultMap.get(x).getMediaId();
                             list.add(x);
                         }
                     });
             request.getBusinessInfo().getSalesInfo().getMiniProgramInfo().setMiniProgramPics(list);
         }
-        if(request.getAdditionInfo()!=null&&request.getAdditionInfo().getBusinessAdditionPics()!=null){
+
+        if (request.getBusinessInfo().getSalesInfo().getBizStoreInfo() != null
+                && ((request.getBusinessInfo().getSalesInfo().getBizStoreInfo().getIndoorPic() != null) ||
+                (request.getBusinessInfo().getSalesInfo().getBizStoreInfo().getStoreEntrancePic() != null))
+                && ((request.getBusinessInfo().getSalesInfo().getBizStoreInfo().getIndoorPic().size() > 0)
+                || (request.getBusinessInfo().getSalesInfo().getBizStoreInfo().getStoreEntrancePic().size() > 0))
+        ) {
+            // 线下场所门头照片
+            List<String> storeEntrancePicList = new ArrayList<>();
+            request.getBusinessInfo().getSalesInfo().getBizStoreInfo().getStoreEntrancePic().forEach(
+                    x -> {
+                        if (!ObjectUtil.isEmpty(stringImageUploadResultMap.get(x))) {
+                            x = stringImageUploadResultMap.get(x).getMediaId();
+                            storeEntrancePicList.add(x);
+                        }
+                    });
+            request.getBusinessInfo().getSalesInfo().getBizStoreInfo().setStoreEntrancePic(storeEntrancePicList);
+            // 线下场所内部照片
+            List<String> indoorPicList = new ArrayList<>();
+            request.getBusinessInfo().getSalesInfo().getBizStoreInfo().getIndoorPic().forEach(
+                    x -> {
+                        if (!ObjectUtil.isEmpty(stringImageUploadResultMap.get(x))) {
+                            x = stringImageUploadResultMap.get(x).getMediaId();
+                            indoorPicList.add(x);
+                        }
+                    });
+            request.getBusinessInfo().getSalesInfo().getBizStoreInfo().setIndoorPic(indoorPicList);
+        }
+        if (request.getAdditionInfo() != null && request.getAdditionInfo().getBusinessAdditionPics() != null) {
             //补充资料
             List<String> list = new ArrayList<>();
             request.getAdditionInfo().getBusinessAdditionPics().forEach(
-                    x->{
-                        if(!ObjectUtil.isEmpty(stringImageUploadResultMap.get(x))){
+                    x -> {
+                        if (!ObjectUtil.isEmpty(stringImageUploadResultMap.get(x))) {
                             x = stringImageUploadResultMap.get(x).getMediaId();
                             list.add(x);
                         }
                     });
             request.getAdditionInfo().setBusinessAdditionPics(list);
         }
-        WxPayApplymentCreateResult response =null;
+        WxPayApplymentCreateResult response = null;
         try {
-            log.info("加密前字符串{}",request);
-            RsaCryptoUtil.encryptFields(request,this.getWeixinClient(payRequest.getAppId()).getConfig().getVerifier().getValidCertificate());
-            String result = this.getWeixinClient(payRequest.getAppId()).postV3WithWechatpaySerial(url,GSON.toJson(request));
+            log.info("加密前字符串{}", request);
+            RsaCryptoUtil.encryptFields(request, this.getWeixinClient(payRequest.getAppId()).getConfig().getVerifier().getValidCertificate());
+            String result = this.getWeixinClient(payRequest.getAppId()).postV3WithWechatpaySerial(url, GSON.toJson(request));
             response = GSON.fromJson(result, WxPayApplymentCreateResult.class);
-        } catch ( WxPayException e) {
+        } catch (WxPayException e) {
             e.printStackTrace();
             throw new PayException(e.getMessage());
         }
@@ -408,7 +436,7 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
             acountTenantApi.updateAccountTenant(accountTenantBo);
             //保存门店信息
             StoreInstanceRequest storeInstanceRequest = new StoreInstanceRequest();
-            BeanUtil.copyProperties(isvCreateTyBo,storeInstanceRequest);
+            BeanUtil.copyProperties(isvCreateTyBo, storeInstanceRequest);
             storeInstanceApi.saveStoreInstance(storeInstanceRequest);
 
             log.info("调用成功,响应信息:{}", JSONUtil.toJsonStr(response));
@@ -417,6 +445,7 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
         }
         return response;
     }
+
     /**
      * 查询该订单协助创建小程序支付能力的情况
      */
@@ -424,13 +453,13 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
     public ApplymentsStatusResult queryIsvMini(PayRequest payRequest) {
         //todo 逻辑待实现
         ApplymentsRequest request = new ApplymentsRequest();
-        autoMappingValue(payRequest,request);
+        autoMappingValue(payRequest, request);
         String url = String.format("%s/v3/applyment4sub/applyment/applyment_id/%s", this.getWeixinClient(payRequest.getAppId()).getPayBaseUrl(), request.getOutRequestNo());
         String result = null;
         try {
             result = getWeixinClient(payRequest.getAppId()).getV3(url);
         } catch (WxPayException e) {
-           log.warn("queryIsvMini fail :",e);
+            log.warn("queryIsvMini fail :", e);
             throw new BizException("查询小程序申请支付能力失败......");
         }
         //更新商户号 这段写的很坨没办法，之前封装的有问题，没有精力改后面优化
@@ -457,23 +486,24 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
         handler.onMessage(payMessage);
 
     }
+
     /**
      * 服务商代商户申请小程序
      */
     @PayMapping(method = PayMethods.ISV_APPLY)
     public WxOpenResult fastRegisterApp(PayRequest payRequest) throws PayException {
-        log.info("生成服务商代商户申请小程序参数{}",payRequest);
-        IsvCreateTyBo isvCreateBo = (IsvCreateTyBo)payRequest.getBizModel();
+        log.info("生成服务商代商户申请小程序参数{}", payRequest);
+        IsvCreateTyBo isvCreateBo = (IsvCreateTyBo) payRequest.getBizModel();
         WxOpenResult response = new WxOpenResult();
         try {
             response = this.getWxOpenClient(payRequest.getAppId()).getWxOpenComponentService().fastRegisterWeapp(
                     isvCreateBo.getCertName()
-                    ,isvCreateBo.getCertNo()
-                    ,isvCreateBo.getCertType()
-                    ,isvCreateBo.getLegalPersonalWechat()
-                    ,isvCreateBo.getLegalPersonalName()
-                    ,isvCreateBo.getContactPhone());
-            log.info("服务商代商户申请小程序响应{}",response);
+                    , isvCreateBo.getCertNo()
+                    , isvCreateBo.getCertType()
+                    , isvCreateBo.getLegalPersonalWechat()
+                    , isvCreateBo.getLegalPersonalName()
+                    , isvCreateBo.getContactPhone());
+            log.info("服务商代商户申请小程序响应{}", response);
         } catch (WxErrorException e) {
             e.printStackTrace();
             throw new PayException(e.getMessage());
@@ -484,151 +514,175 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
     /**
      * 服务商代商户申请小程序上传文件
      */
-    public Map<String,ImageUploadResult> imageUploadV3(PayRequest payRequest) {
-        Map<String,ImageUploadResult> map = new HashMap<>();
-        IsvCreateBo isvCreateBo = (IsvCreateBo)payRequest.getBizModel();
+    public Map<String, ImageUploadResult> imageUploadV3(PayRequest payRequest) {
+        Map<String, ImageUploadResult> map = new HashMap<>();
+        IsvCreateBo isvCreateBo = (IsvCreateBo) payRequest.getBizModel();
         //营业执照扫描件
-        File businessLicenseFile=new File(getFilePath(isvCreateBo.getBusinessLicenseInfo().getBusinessLicenseCopy()));
-        map.put("businessLicenseFile",upload(businessLicenseFile,payRequest));
+        File businessLicenseFile = new File(getFilePath(isvCreateBo.getBusinessLicenseInfo().getBusinessLicenseCopy()));
+        map.put("businessLicenseFile", upload(businessLicenseFile, payRequest));
         //金融机构许可证图片
-        if(!ObjectUtil.isEmpty(isvCreateBo.getFinanceInstitutionInfo())&&!StringUtil.isEmpty(isvCreateBo.getFinanceInstitutionInfo().getFinanceLicensePics())){
-            File financeLicensePicsFile=new File(getFilePath(isvCreateBo.getFinanceInstitutionInfo().getFinanceLicensePics()));
-            map.put("financeLicensePicsFile",upload(financeLicensePicsFile,payRequest));
+        if (!ObjectUtil.isEmpty(isvCreateBo.getFinanceInstitutionInfo()) && !StringUtil.isEmpty(isvCreateBo.getFinanceInstitutionInfo().getFinanceLicensePics())) {
+            File financeLicensePicsFile = new File(getFilePath(isvCreateBo.getFinanceInstitutionInfo().getFinanceLicensePics()));
+            map.put("financeLicensePicsFile", upload(financeLicensePicsFile, payRequest));
         }
         //身份证人像面照片
-        if(!ObjectUtil.isEmpty(isvCreateBo.getIdCardInfo())&&!StringUtil.isEmpty(isvCreateBo.getIdCardInfo().getIdCardCopy())){
-            File idCardCopyFile=new File(getFilePath(isvCreateBo.getIdCardInfo().getIdCardCopy()));
-            map.put("idCardCopyFile",upload(idCardCopyFile,payRequest));
+        if (!ObjectUtil.isEmpty(isvCreateBo.getIdCardInfo()) && !StringUtil.isEmpty(isvCreateBo.getIdCardInfo().getIdCardCopy())) {
+            File idCardCopyFile = new File(getFilePath(isvCreateBo.getIdCardInfo().getIdCardCopy()));
+            map.put("idCardCopyFile", upload(idCardCopyFile, payRequest));
         }
         //身份证国徽面照片
-        if(!ObjectUtil.isEmpty(isvCreateBo.getIdCardInfo())&&!StringUtil.isEmpty(isvCreateBo.getIdCardInfo().getIdCardNational())){
-            File idCardNationalFile=new File(getFilePath(isvCreateBo.getIdCardInfo().getIdCardNational()));
-            map.put("idCardNationalFile",upload(idCardNationalFile,payRequest));
+        if (!ObjectUtil.isEmpty(isvCreateBo.getIdCardInfo()) && !StringUtil.isEmpty(isvCreateBo.getIdCardInfo().getIdCardNational())) {
+            File idCardNationalFile = new File(getFilePath(isvCreateBo.getIdCardInfo().getIdCardNational()));
+            map.put("idCardNationalFile", upload(idCardNationalFile, payRequest));
         }
         //经营者/法人身份证信息 正面照片
-        if(!ObjectUtil.isEmpty(isvCreateBo.getIdDocInfo())&&!StringUtil.isEmpty(isvCreateBo.getIdDocInfo().getIdDocCopy())){
-            File idDocCopyFile=new File(getFilePath(isvCreateBo.getIdDocInfo().getIdDocCopy()));
-            map.put("idDocCopyFile",upload(idDocCopyFile,payRequest));
+        if (!ObjectUtil.isEmpty(isvCreateBo.getIdDocInfo()) && !StringUtil.isEmpty(isvCreateBo.getIdDocInfo().getIdDocCopy())) {
+            File idDocCopyFile = new File(getFilePath(isvCreateBo.getIdDocInfo().getIdDocCopy()));
+            map.put("idDocCopyFile", upload(idDocCopyFile, payRequest));
         }
         //经营者/法人身份证信息 反面照片
-        if(!ObjectUtil.isEmpty(isvCreateBo.getIdDocInfo())&&!StringUtil.isEmpty(isvCreateBo.getIdDocInfo().getIdDocCopyBack())){
-            File idDocCopyBackFile=new File(getFilePath(isvCreateBo.getIdDocInfo().getIdDocCopyBack()));
-            map.put("idDocCopyBackFile",upload(idDocCopyBackFile,payRequest));
+        if (!ObjectUtil.isEmpty(isvCreateBo.getIdDocInfo()) && !StringUtil.isEmpty(isvCreateBo.getIdDocInfo().getIdDocCopyBack())) {
+            File idDocCopyBackFile = new File(getFilePath(isvCreateBo.getIdDocInfo().getIdDocCopyBack()));
+            map.put("idDocCopyBackFile", upload(idDocCopyBackFile, payRequest));
         }
         //超级管理员身份证信息 正面照片
-        if(!ObjectUtil.isEmpty(isvCreateBo.getContactInfo())&&!StringUtil.isEmpty(isvCreateBo.getContactInfo().getContactIdDocCopy())){
-            File contactIdDocCopyFile=new File(getFilePath(isvCreateBo.getContactInfo().getContactIdDocCopy()));
-            map.put("contactIdDocCopyFile",upload(contactIdDocCopyFile,payRequest));
+        if (!ObjectUtil.isEmpty(isvCreateBo.getContactInfo()) && !StringUtil.isEmpty(isvCreateBo.getContactInfo().getContactIdDocCopy())) {
+            File contactIdDocCopyFile = new File(getFilePath(isvCreateBo.getContactInfo().getContactIdDocCopy()));
+            map.put("contactIdDocCopyFile", upload(contactIdDocCopyFile, payRequest));
         }
         //超级管理员身份证信息 反面照片
-        if(!ObjectUtil.isEmpty(isvCreateBo.getContactInfo())&&!StringUtil.isEmpty(isvCreateBo.getContactInfo().getContactIdDocCopyBack())){
-            File contactIdDocCopyBackFile=new File(getFilePath(isvCreateBo.getContactInfo().getContactIdDocCopyBack()));
-            map.put("contactIdDocCopyBackFile",upload(contactIdDocCopyBackFile,payRequest));
+        if (!ObjectUtil.isEmpty(isvCreateBo.getContactInfo()) && !StringUtil.isEmpty(isvCreateBo.getContactInfo().getContactIdDocCopyBack())) {
+            File contactIdDocCopyBackFile = new File(getFilePath(isvCreateBo.getContactInfo().getContactIdDocCopyBack()));
+            map.put("contactIdDocCopyBackFile", upload(contactIdDocCopyBackFile, payRequest));
         }
         //受益人列表 受益人正反面照片
         List<ApplymentsRequest.UboInfo> uboInfoList = isvCreateBo.getUboInfoList();
-        if(!ObjectUtil.isEmpty(uboInfoList)){
-            uboInfoList.forEach(x->{
-                if(!ObjectUtil.isEmpty(x.getUboIdDocCopy())){
-                    File uboIdDocCopyFile=new File(getFilePath(x.getUboIdDocCopy()));
-                    map.put("uboIdDocCopyFile"+x.getUboIdDocNumber(),upload(uboIdDocCopyFile,payRequest));
+        if (!ObjectUtil.isEmpty(uboInfoList)) {
+            uboInfoList.forEach(x -> {
+                if (!ObjectUtil.isEmpty(x.getUboIdDocCopy())) {
+                    File uboIdDocCopyFile = new File(getFilePath(x.getUboIdDocCopy()));
+                    map.put("uboIdDocCopyFile" + x.getUboIdDocNumber(), upload(uboIdDocCopyFile, payRequest));
                 }
-                if(!ObjectUtil.isEmpty(x.getUboIdDocCopyBack())){
-                    File UboIdDocCopyBackFile=new File(getFilePath(x.getUboIdDocCopyBack()));
-                    map.put("UboIdDocCopyBackFile"+x.getUboIdDocNumber(),upload(UboIdDocCopyBackFile,payRequest));
+                if (!ObjectUtil.isEmpty(x.getUboIdDocCopyBack())) {
+                    File UboIdDocCopyBackFile = new File(getFilePath(x.getUboIdDocCopyBack()));
+                    map.put("UboIdDocCopyBackFile" + x.getUboIdDocNumber(), upload(UboIdDocCopyBackFile, payRequest));
                 }
             });
         }
         return map;
     }
+
     /**
      * 服务商代商户申请小程序上传文件
      */
-    public Map<String,ImageUploadResult> imageTyUploadV3(PayRequest payRequest) {
-        Map<String,ImageUploadResult> map = new HashMap<>();
-        IsvCreateTyBo isvCreateTyBo = (IsvCreateTyBo)payRequest.getBizModel();
-        if(!ObjectUtil.isEmpty(isvCreateTyBo.getContactInfo())){
+    public Map<String, ImageUploadResult> imageTyUploadV3(PayRequest payRequest) {
+        Map<String, ImageUploadResult> map = new HashMap<>();
+        IsvCreateTyBo isvCreateTyBo = (IsvCreateTyBo) payRequest.getBizModel();
+        if (!ObjectUtil.isEmpty(isvCreateTyBo.getContactInfo())) {
             //超级管理员证件照正面
-            if(!StringUtil.isEmpty(isvCreateTyBo.getContactInfo().getContactIdDocCopy())){
-                File contactIdDocCopyFile=new File(getFilePath(isvCreateTyBo.getContactInfo().getContactIdDocCopy()));
-                map.put("contactIdDocCopyFile",upload(contactIdDocCopyFile,payRequest));
+            if (!StringUtil.isEmpty(isvCreateTyBo.getContactInfo().getContactIdDocCopy())) {
+                File contactIdDocCopyFile = new File(getFilePath(isvCreateTyBo.getContactInfo().getContactIdDocCopy()));
+                map.put("contactIdDocCopyFile", upload(contactIdDocCopyFile, payRequest));
             }
             //超级管理员证件照反面
-            if(!StringUtil.isEmpty(isvCreateTyBo.getContactInfo().getContactIdDocCopyBack())){
-                File contactIdDocCopyBackFile=new File(getFilePath(isvCreateTyBo.getContactInfo().getContactIdDocCopyBack()));
-                map.put("contactIdDocCopyBackFile",upload(contactIdDocCopyBackFile,payRequest));
+            if (!StringUtil.isEmpty(isvCreateTyBo.getContactInfo().getContactIdDocCopyBack())) {
+                File contactIdDocCopyBackFile = new File(getFilePath(isvCreateTyBo.getContactInfo().getContactIdDocCopyBack()));
+                map.put("contactIdDocCopyBackFile", upload(contactIdDocCopyBackFile, payRequest));
             }
             //业务办理授权函
-            if(!StringUtil.isEmpty(isvCreateTyBo.getContactInfo().getBusinessAuthorizationLetter())){
-                File businessAuthorizationLetterFile=new File(getFilePath(isvCreateTyBo.getContactInfo().getBusinessAuthorizationLetter()));
-                map.put("businessAuthorizationLetterFile",upload(businessAuthorizationLetterFile,payRequest));
+            if (!StringUtil.isEmpty(isvCreateTyBo.getContactInfo().getBusinessAuthorizationLetter())) {
+                File businessAuthorizationLetterFile = new File(getFilePath(isvCreateTyBo.getContactInfo().getBusinessAuthorizationLetter()));
+                map.put("businessAuthorizationLetterFile", upload(businessAuthorizationLetterFile, payRequest));
             }
         }
         //营业执照
-        if(!ObjectUtil.isEmpty(isvCreateTyBo.getSubjectInfo())
-                &&!ObjectUtil.isEmpty(isvCreateTyBo.getSubjectInfo().getBusinessLicenseInfo())
-                &&!StringUtil.isEmpty(isvCreateTyBo.getSubjectInfo().getBusinessLicenseInfo().getLicenseCopy())){
-            File licenseCopyFile=new File(getFilePath(isvCreateTyBo.getSubjectInfo().getBusinessLicenseInfo().getLicenseCopy()));
-            map.put("licenseCopyFile",upload(licenseCopyFile,payRequest));
+        if (!ObjectUtil.isEmpty(isvCreateTyBo.getSubjectInfo())
+                && !ObjectUtil.isEmpty(isvCreateTyBo.getSubjectInfo().getBusinessLicenseInfo())
+                && !StringUtil.isEmpty(isvCreateTyBo.getSubjectInfo().getBusinessLicenseInfo().getLicenseCopy())) {
+            File licenseCopyFile = new File(getFilePath(isvCreateTyBo.getSubjectInfo().getBusinessLicenseInfo().getLicenseCopy()));
+            map.put("licenseCopyFile", upload(licenseCopyFile, payRequest));
         }
-        if(!ObjectUtil.isEmpty(isvCreateTyBo.getSubjectInfo())
-                &&!ObjectUtil.isEmpty(isvCreateTyBo.getSubjectInfo().getIdentityInfo())
-                &&!ObjectUtil.isEmpty(isvCreateTyBo.getSubjectInfo().getIdentityInfo().getIdCardInfo())){
+        if (!ObjectUtil.isEmpty(isvCreateTyBo.getSubjectInfo())
+                && !ObjectUtil.isEmpty(isvCreateTyBo.getSubjectInfo().getIdentityInfo())
+                && !ObjectUtil.isEmpty(isvCreateTyBo.getSubjectInfo().getIdentityInfo().getIdCardInfo())) {
             //经营者/法人身份证信息 正面照片
-            if(!StringUtil.isEmpty(isvCreateTyBo.getSubjectInfo().getIdentityInfo().getIdCardInfo().getIdCardCopy())){
-                File idCardCopyFile=new File(getFilePath(isvCreateTyBo.getSubjectInfo().getIdentityInfo().getIdCardInfo().getIdCardCopy()));
-                map.put("idCardCopyFile",upload(idCardCopyFile,payRequest));
+            if (!StringUtil.isEmpty(isvCreateTyBo.getSubjectInfo().getIdentityInfo().getIdCardInfo().getIdCardCopy())) {
+                File idCardCopyFile = new File(getFilePath(isvCreateTyBo.getSubjectInfo().getIdentityInfo().getIdCardInfo().getIdCardCopy()));
+                map.put("idCardCopyFile", upload(idCardCopyFile, payRequest));
             }
             //经营者/法人身份证信息 反面照片
-            if(!StringUtil.isEmpty(isvCreateTyBo.getSubjectInfo().getIdentityInfo().getIdCardInfo().getIdCardNational())){
-                File idCardNationalFile=new File(getFilePath(isvCreateTyBo.getSubjectInfo().getIdentityInfo().getIdCardInfo().getIdCardNational()));
-                map.put("idCardNationalFile",upload(idCardNationalFile,payRequest));
+            if (!StringUtil.isEmpty(isvCreateTyBo.getSubjectInfo().getIdentityInfo().getIdCardInfo().getIdCardNational())) {
+                File idCardNationalFile = new File(getFilePath(isvCreateTyBo.getSubjectInfo().getIdentityInfo().getIdCardInfo().getIdCardNational()));
+                map.put("idCardNationalFile", upload(idCardNationalFile, payRequest));
             }
         }
+        // 线下场景图
+        if (!ObjectUtil.isEmpty(isvCreateTyBo.getBusinessInfo()) && !ObjectUtil.isEmpty(isvCreateTyBo.getBusinessInfo().getSalesInfo())
+                && !ObjectUtil.isEmpty(isvCreateTyBo.getBusinessInfo().getSalesInfo().getSalesScenesType().get(0))
+                && isvCreateTyBo.getBusinessInfo().getSalesInfo().getSalesScenesType().get(0).equals("SALES_SCENES_STORE")
+                && !ObjectUtil.isEmpty(isvCreateTyBo.getBusinessInfo().getSalesInfo().getBizStoreInfo())
+                && !ObjectUtil.isEmpty(isvCreateTyBo.getBusinessInfo().getSalesInfo().getBizStoreInfo().getIndoorPic()) ||
+                !ObjectUtil.isEmpty(isvCreateTyBo.getBusinessInfo().getSalesInfo().getBizStoreInfo().getStoreEntrancePic())
+
+        ) {
+            List<String> indoorPics = isvCreateTyBo.getBusinessInfo().getSalesInfo().getBizStoreInfo().getIndoorPic();
+            List<String> storeEntrancePics = isvCreateTyBo.getBusinessInfo().getSalesInfo().getBizStoreInfo().getStoreEntrancePic();
+            indoorPics.forEach(x -> {
+                File indoorPicsFile = new File(getFilePath(x));
+                map.put(x, upload(indoorPicsFile, payRequest));
+            });
+            storeEntrancePics.forEach(x -> {
+                File storeEntrancePicsFile = new File(getFilePath(x));
+                map.put(x, upload(storeEntrancePicsFile, payRequest));
+            });
+        }
         //小程序图片
-        if(!ObjectUtil.isEmpty(isvCreateTyBo.getBusinessInfo())
-                &&!ObjectUtil.isEmpty(isvCreateTyBo.getBusinessInfo().getSalesInfo())
-                &&!ObjectUtil.isEmpty(isvCreateTyBo.getBusinessInfo().getSalesInfo().getMiniProgramInfo())
-                &&!ObjectUtil.isEmpty(isvCreateTyBo.getBusinessInfo().getSalesInfo().getMiniProgramInfo().getMiniProgramPics())){
+        if (!ObjectUtil.isEmpty(isvCreateTyBo.getBusinessInfo())
+                && !ObjectUtil.isEmpty(isvCreateTyBo.getBusinessInfo().getSalesInfo())
+                && !ObjectUtil.isEmpty(isvCreateTyBo.getBusinessInfo().getSalesInfo().getSalesScenesType().get(0))
+                && isvCreateTyBo.getBusinessInfo().getSalesInfo().getSalesScenesType().get(0).equals("SALES_SCENES_MINI_PROGRAM")
+                && !ObjectUtil.isEmpty(isvCreateTyBo.getBusinessInfo().getSalesInfo().getMiniProgramInfo())
+                && !ObjectUtil.isEmpty(isvCreateTyBo.getBusinessInfo().getSalesInfo().getMiniProgramInfo().getMiniProgramPics())) {
             List<String> miniProgramPics = isvCreateTyBo.getBusinessInfo().getSalesInfo().getMiniProgramInfo().getMiniProgramPics();
-            miniProgramPics.forEach(x->{
-                File miniProgramPicFile=new File(getFilePath(x));
-                map.put(x,upload(miniProgramPicFile,payRequest));
+            miniProgramPics.forEach(x -> {
+                File miniProgramPicFile = new File(getFilePath(x));
+                map.put(x, upload(miniProgramPicFile, payRequest));
             });
 
         }
 
         //受益人列表 受益人正反面照片
-        if(!ObjectUtil.isEmpty(isvCreateTyBo.getSubjectInfo()) && !isvCreateTyBo.getSubjectInfo().getIdentityInfo().getOwner()){
+        if (!ObjectUtil.isEmpty(isvCreateTyBo.getSubjectInfo()) && !isvCreateTyBo.getSubjectInfo().getIdentityInfo().getOwner()) {
             List<WxPayApplyment4SubCreateRequest.SubjectInfo.UboInfo> uboInfoList
                     = isvCreateTyBo.getSubjectInfo().getUboInfoList();
-            if(!CollectionUtils.isEmpty(uboInfoList)){
-                uboInfoList.forEach(x->{
-                    if(!ObjectUtil.isEmpty(x.getUboIdDocCopy())){
-                        File uboIdDocCopyFile=new File(getFilePath(x.getUboIdDocCopy()));
-                        map.put("uboIdDocCopyFile"+x.getUboIdDocNumber(),upload(uboIdDocCopyFile,payRequest));
+            if (!CollectionUtils.isEmpty(uboInfoList)) {
+                uboInfoList.forEach(x -> {
+                    if (!ObjectUtil.isEmpty(x.getUboIdDocCopy())) {
+                        File uboIdDocCopyFile = new File(getFilePath(x.getUboIdDocCopy()));
+                        map.put("uboIdDocCopyFile" + x.getUboIdDocNumber(), upload(uboIdDocCopyFile, payRequest));
                     }
-                    if(!ObjectUtil.isEmpty(x.getUboIdDocCopyBack())){
-                        File UboIdDocCopyBackFile=new File(getFilePath(x.getUboIdDocCopyBack()));
-                        map.put("UboIdDocCopyBackFile"+x.getUboIdDocNumber(),upload(UboIdDocCopyBackFile,payRequest));
+                    if (!ObjectUtil.isEmpty(x.getUboIdDocCopyBack())) {
+                        File UboIdDocCopyBackFile = new File(getFilePath(x.getUboIdDocCopyBack()));
+                        map.put("UboIdDocCopyBackFile" + x.getUboIdDocNumber(), upload(UboIdDocCopyBackFile, payRequest));
                     }
                 });
             }
         }
         //补充资料
-        if(!ObjectUtil.isEmpty(isvCreateTyBo.getAdditionInfo())) {
+        if (!ObjectUtil.isEmpty(isvCreateTyBo.getAdditionInfo())) {
             List<String> businessAdditionPics = isvCreateTyBo.getAdditionInfo().getBusinessAdditionPics();
-            businessAdditionPics.forEach(x->{
-                File businessAdditionPicFile=new File(getFilePath(x));
-                map.put(x,upload(businessAdditionPicFile,payRequest));
+            businessAdditionPics.forEach(x -> {
+                File businessAdditionPicFile = new File(getFilePath(x));
+                map.put(x, upload(businessAdditionPicFile, payRequest));
             });
         }
         return map;
     }
-    public ImageUploadResult upload(File file,PayRequest payRequest){
+
+    public ImageUploadResult upload(File file, PayRequest payRequest) {
         String url = String.format("%s/v3/merchant/media/upload", this.getWeixinClient(payRequest.getAppId()).getPayBaseUrl());
         String result = "";
-        try{
+        try {
             FileInputStream s1 = new FileInputStream(file);
             String sha256 = DigestUtils.sha256Hex(s1);
             InputStream s2 = new FileInputStream(file);
@@ -637,7 +691,7 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
                     .build();
             result = this.getWeixinClient(payRequest.getAppId()).postV3(url, request);
 
-        }catch ( Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -658,11 +712,11 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
     /**
      * 获取文件路径
      */
-    public static String getFilePath(String path){
+    public static String getFilePath(String path) {
         String arrPath[] = path.split(DateUtil.formatDate(DateUtil.date()));
-        if (ObjectUtil.isNotEmpty(arrPath)&&arrPath.length>1){
+        if (ObjectUtil.isNotEmpty(arrPath) && arrPath.length > 1) {
             path = arrPath[1];
-            path = "/tmp"+path;
+            path = "/tmp" + path;
         }
         return path;
     }
