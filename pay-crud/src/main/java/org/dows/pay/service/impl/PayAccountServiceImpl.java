@@ -1,5 +1,6 @@
 package org.dows.pay.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.dows.framework.crud.mybatis.MybatisCrudServiceImpl;
 import org.dows.pay.mapper.PayAccountMapper;
 import org.dows.pay.entity.PayAccount;
@@ -16,5 +17,13 @@ import org.springframework.stereotype.Service;
 @Service("payAccountService")
 public class PayAccountServiceImpl extends MybatisCrudServiceImpl<PayAccountMapper, PayAccount> implements PayAccountService {
 
+    @Override
+    public PayAccount getByMerchantNo(String merchantNo) {
+        LambdaQueryWrapper<PayAccount> queryWrapper = new LambdaQueryWrapper<PayAccount>()
+                .eq(PayAccount::getMerchantNo, merchantNo)
+                .eq(PayAccount::getDeleted, false)
+                .last(" limit 1");
+        return getOne(queryWrapper);
+    }
 }
 
