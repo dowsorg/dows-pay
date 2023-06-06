@@ -54,6 +54,8 @@ public class OrderPayBiz {
         orderPayRequest.setBizModel(payTransactionBo);
         // 填充公共参数
         orderPayRequest.autoSet(payTransactionForm);
+        // 填充参数openid
+        orderPayRequest.setSubOpenid(payTransactionForm.getSubOpenid());
         // 请求分发
         Response<PayResponse> response = payDispatcher.dispatcher(orderPayRequest);
         PayResponse data = response.getData();
@@ -69,6 +71,8 @@ public class OrderPayBiz {
         orderPayRequest.setBizModel(payTransactionBo);
         // 填充公共参数
         orderPayRequest.autoSet(payTransactionForm);
+        // 填充参数openid
+        orderPayRequest.setSubOpenid(payTransactionForm.getSubOpenid());
         // 请求分发
         Response<PayResponse> response = payDispatcher.dispatcher(orderPayRequest);
         PayResponse data = response.getData();

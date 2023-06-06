@@ -45,22 +45,23 @@ public class PayApplyServiceImpl extends MybatisCrudServiceImpl<PayApplyMapper, 
     }
 
     @Override
-    public Long createPayApply(String merchantNo) {
+    public Long createPayApply(String merchantNo, String appId) {
         PayApply payApply = getOne(new LambdaQueryWrapper<PayApply>()
                 .eq(PayApply::getMerchantNo, merchantNo)
                 .eq(PayApply::getApplyType,1)
-                .eq(PayApply::getChecked, 0)
+                .eq(PayApply::getAppId, appId)
                 .eq(PayApply::getDeleted, 0)
                 .last(" limit 1"));
-       return Optional.ofNullable(payApply).map(PayApply::getId).orElseGet(()->getPayApplyId(merchantNo));
+       return Optional.ofNullable(payApply).map(PayApply::getId).orElseGet(()->getPayApplyId(merchantNo,appId));
 
     }
 
-    private Long getPayApplyId(String merchantNo) {
+    private Long getPayApplyId(String merchantNo,String appId) {
         PayApply  payApply = new PayApply();
         payApply.setMerchantNo(merchantNo);
         payApply.setChecked(false);
         payApply.setApplyType(1);
+        payApply.setAppId(appId);
         payApply.setBizName("申请微信支付能力");
         payApply.setDeleted(false);
         payApply.setDt(new Date());

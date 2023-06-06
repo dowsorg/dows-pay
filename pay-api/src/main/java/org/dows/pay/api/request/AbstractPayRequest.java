@@ -19,6 +19,9 @@ public abstract class AbstractPayRequest<T extends PayResponse> implements PayRe
     @ApiModelProperty("appId")
     @ParamName("appId")
     protected String appId;
+    @ApiModelProperty("subOpenid")
+    @ParamName("subOpenid")
+    protected String subOpenid;
     @ApiModelProperty("通道名")
     @ParamName("channel")
     protected String channel;
@@ -56,6 +59,12 @@ public abstract class AbstractPayRequest<T extends PayResponse> implements PayRe
     @Override
     public PayRequest setAppId(String appId) {
         this.appId = appId;
+        return this;
+    }
+
+    @Override
+    public PayRequest setSubOpenid(String subOpenid) {
+        this.subOpenid = subOpenid;
         return this;
     }
 
