@@ -39,8 +39,13 @@ public interface PayRequest<T extends PayResponse> {
     PayRequest setMethod(String method);
 
     String getMethod();
-
-
+    /**
+     * 获取应用ID
+     *
+     * @return
+     */
+    PayRequest setAuthorizerAccessToken(String authorizerAccessToken);
+    String getAuthorizerAccessToken();
     /**
      * 获取支付参数
      *

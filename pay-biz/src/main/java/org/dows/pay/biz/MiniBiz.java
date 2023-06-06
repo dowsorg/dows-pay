@@ -9,6 +9,7 @@ import com.alibaba.fastjson.JSONObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dows.app.entity.AppApplyItem;
+import org.dows.auth.api.weixin.WeixinTokenApi;
 import org.dows.framework.api.Response;
 import org.dows.pay.api.PayResponse;
 import org.dows.pay.api.enums.PayMethods;
@@ -19,6 +20,7 @@ import org.dows.pay.form.SetWxBaseInfoForm;
 import org.dows.pay.form.WxBaseInfoForm;
 import org.dows.pay.form.WxFastMaCategoryForm;
 import org.dows.pay.gateway.PayDispatcher;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -29,6 +31,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class MiniBiz {
     private final PayDispatcher payDispatcher;
+
+    @Autowired
+    private WeixinTokenApi weixinTokenApi;
 
     /**
      * MiniCategory 创建类目
@@ -235,7 +240,12 @@ public class MiniBiz {
      */
     public Response setWxinApplyInfo(SetWxBaseInfoForm setWxBaseInfoForm) {
         WxBaseInfoForm wxBaseInfoForm = BeanUtil.copyProperties(setWxBaseInfoForm, WxBaseInfoForm.class);
+        // todo
+        WxBaseInfoBo wxBaseInfoBo = BeanUtil.copyProperties(wxBaseInfoForm, WxBaseInfoBo.class);
         WxFastMaCategoryForm wxFastMaCategoryForm = BeanUtil.copyProperties(setWxBaseInfoForm, WxFastMaCategoryForm.class);
+        // 获取access_token使用authorizer_access_token
+        String authorizerAccessToken = weixinTokenApi.getAuthorizerAccessToken(setWxBaseInfoForm.getMerchantAppId());
+        wxBaseInfoForm.setAuthorizerAccessToken(authorizerAccessToken);
         Response response = null;
         if (setWxBaseInfoForm.getNickName() != null) {
             response = setNickName(wxBaseInfoForm);
@@ -249,7 +259,7 @@ public class MiniBiz {
             response = setSignature(wxBaseInfoForm);
             log.info("设置微信小程序简介结果：{}", JSONObject.toJSONString(response));
         }
-        response = addCategory(wxFastMaCategoryForm);
+//        response = addCategory(wxFastMaCategoryForm);
         log.info("设置微信小程序类目结果：{}", JSONObject.toJSONString(response));
         return response;
     }

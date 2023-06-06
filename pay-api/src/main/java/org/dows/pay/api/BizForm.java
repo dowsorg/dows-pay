@@ -16,4 +16,8 @@ public interface BizForm {
     default String getChannel() {
         return null;
     }
+
+    default String getAuthorizerAccessToken() {
+        return null;
+    }
 }
