@@ -186,7 +186,7 @@ public class payBiz implements PayApi {
             throw new BizException("未申请注册小程序不可申请支付能力");
         }
         // 申请支付权限并保存payAppl表
-        Long payApplyId = payApplyService.createPayApply(appApplyRequest.getMerchantNo(),appApply.getAppId());
+        Long payApplyId = payApplyService.createPayApply(appApplyRequest.getMerchantNo(), appApply.getAppId());
         PayRequest payRequest = new PayIsvRequest();
         log.info("生成appApplyRequest参数{}", appApplyRequest);
         if ("WEIXIN".equals(appApplyRequest.getApplyType())) {
@@ -277,7 +277,7 @@ public class payBiz implements PayApi {
                 checkAndSavePayAccount(payApply);
             }
             return response;
-        }).orElseGet(()->{
+        }).orElseGet(() -> {
             ApplymentsStatusResult statusResult = new ApplymentsStatusResult();
             statusResult.setApplymentState("NOT_APPLYMENT");
             statusResult.setApplymentStateDesc("未申请");
@@ -287,7 +287,7 @@ public class payBiz implements PayApi {
 
     private void checkAndSavePayAccount(PayApply payApply) {
         PayAccount payAccount = payAccountService.getByMerchantNo(payApply.getMerchantNo());
-        Optional.ofNullable(payAccount).map(p->{
+        Optional.ofNullable(payAccount).map(p -> {
             if (StrUtil.isNotEmpty(p.getChannelMerchantNo())) {
                 return p;
             }
@@ -296,7 +296,7 @@ public class payBiz implements PayApi {
             payAccountService.updateById(payAccount);
             return payAccount;
 
-        }).orElseGet(()->{
+        }).orElseGet(() -> {
             PayAccount createPayAccount = new PayAccount();
             createPayAccount.setMerchantNo(payApply.getMerchantNo());
             createPayAccount.setChannelAccount(payApply.getAppId());
@@ -371,7 +371,7 @@ public class payBiz implements PayApi {
         isvCreateBo.setMerchantShortname(appApplyRequest.getTenantShortName());
         ApplymentsRequest.UboInfo uboInfo = new ApplymentsRequest.UboInfo();
         uboInfo.setUboIdDocName(appApplyRequest.getBeneficiaryName());
-        uboInfo.setUboIdDocNumber(appApplyRequest.getBeneficiary());
+        uboInfo.setUboIdDocNumber(appApplyRequest.getBeneficiaryNo());
         uboInfo.setUboIdDocCopy(appApplyRequest.getBeneficiaryIdPictureFront());
         uboInfo.setUboIdDocCopyBack(appApplyRequest.getBeneficiaryIdPictureBack());
         uboInfo.setUboIdDocType(appApplyRequest.getBeneficiaryIdType());
@@ -397,7 +397,11 @@ public class payBiz implements PayApi {
         accountInfo.setAccountBank(appApplyRequest.getBankName());
         accountInfo.setAccountName(appApplyRequest.getBankAccountName());
         accountInfo.setAccountNumber(appApplyRequest.getBankNo());
-        accountInfo.setBankAccountType(BankAccountTypeEnum.BANK_ACCOUNT_TYPE_CORPORATE);
+        if (appApplyRequest.getProprietorAccountType().equals("BANK_ACCOUNT_TYPE_CORPORATE")) {
+            accountInfo.setBankAccountType(BankAccountTypeEnum.BANK_ACCOUNT_TYPE_CORPORATE);
+        } else if (appApplyRequest.getProprietorAccountType().equals("BANK_ACCOUNT_TYPE_PERSONAL")) {
+            accountInfo.setBankAccountType(BankAccountTypeEnum.BANK_ACCOUNT_TYPE_PERSONAL);
+        }
         accountInfo.setBankAddressCode(appApplyRequest.getBankPostalNo());
         isvCreateBo.setBankAccountInfo(accountInfo);
         // 主体资料
@@ -406,13 +410,29 @@ public class payBiz implements PayApi {
         isvCreateBo.setContactPhone(appApplyRequest.getContactPhone());
         WxPayApplyment4SubCreateRequest.SubjectInfo subjectInfo = new WxPayApplyment4SubCreateRequest.SubjectInfo();
         subjectInfo.setFinanceInstitution(false);
-        subjectInfo.setSubjectType(SubjectTypeEnum.SUBJECT_TYPE_ENTERPRISE);
+        switch (appApplyRequest.getSubjectType()) {
+            case "SUBJECT_TYPE_ENTERPRISE":
+                subjectInfo.setSubjectType(SubjectTypeEnum.SUBJECT_TYPE_ENTERPRISE);
+                break;
+            case "SUBJECT_TYPE_INDIVIDUAL":
+                subjectInfo.setSubjectType(SubjectTypeEnum.SUBJECT_TYPE_INDIVIDUAL);
+                break;
+            case "SUBJECT_TYPE_INSTITUTIONS":
+                subjectInfo.setSubjectType(SubjectTypeEnum.SUBJECT_TYPE_INSTITUTIONS);
+                break;
+            case "SUBJECT_TYPE_OTHERS":
+                subjectInfo.setSubjectType(SubjectTypeEnum.SUBJECT_TYPE_OTHERS);
+                break;
+            case "SUBJECT_TYPE_MICRO":
+                subjectInfo.setSubjectType(SubjectTypeEnum.SUBJECT_TYPE_MICRO);
+                break;
+        }
         WxPayApplyment4SubCreateRequest.SubjectInfo.BusinessLicenseInfo businessLicenseInfo
                 = new WxPayApplyment4SubCreateRequest.SubjectInfo.BusinessLicenseInfo();
         businessLicenseInfo.setLicenseCopy(appApplyRequest.getCertPicture());
         businessLicenseInfo.setLicenseAddress(appApplyRequest.getTenantAddress());
         businessLicenseInfo.setLicenseNumber(appApplyRequest.getCertNo());
-        businessLicenseInfo.setMerchantName(appApplyRequest.getTenantShortName());
+        businessLicenseInfo.setMerchantName(appApplyRequest.getTenantName());
         businessLicenseInfo.setLegalPerson(appApplyRequest.getLegalName());
         businessLicenseInfo.setPeriodBegin(appApplyRequest.getCertValidityPeriodBegin());
         businessLicenseInfo.setPeriodEnd(appApplyRequest.getCertValidityPeriodEnd());
@@ -424,7 +444,7 @@ public class payBiz implements PayApi {
         // 经营信息
         idCardInfo.setIdCardCopy(appApplyRequest.getProprietorIdPictureFront());
         idCardInfo.setIdCardNational(appApplyRequest.getProprietorIdPictureBack());
-        idCardInfo.setIdCardName(appApplyRequest.getLegalName());
+        idCardInfo.setIdCardName(appApplyRequest.getIdCardName());
         idCardInfo.setIdCardNumber(appApplyRequest.getProprietorId());
         idCardInfo.setCardPeriodBegin(appApplyRequest.getProprietorIdValidityPeriodBegin());
         idCardInfo.setCardPeriodEnd(appApplyRequest.getProprietorIdValidityPeriodEnd());
@@ -436,13 +456,58 @@ public class payBiz implements PayApi {
         } else {
             identityInfo.setOwner(false);
         }
-        identityInfo.setIdDocType(IdTypeEnum.IDENTIFICATION_TYPE_IDCARD);
+//        if (subjectInfo.getSubjectType().equals("SUBJECT_TYPE_GOVERNMENT")
+//                || subjectInfo.getSubjectType().equals("SUBJECT_TYPE_INSTITUTIONS")) {
+//            if (appApplyRequest.getIdHolderType() != null) {
+//                identityInfo.setIdHolderType(appApplyRequest.getIdHolderType());
+//            }
+//        }
+        // 1、当证件持有人类型为法人时，填写。其他情况，无需上传。
+        //2、个体户/企业/事业单位/社会组织：可选择任一证件类型，政府机关仅支持中国大陆居民-身份证类型。
+        //IDENTIFICATION_TYPE_IDCARD：中国大陆居民-身份证
+        //IDENTIFICATION_TYPE_OVERSEA_PASSPORT：其他国家或地区居民-护照
+        //IDENTIFICATION_TYPE_HONGKONG_PASSPORT：中国香港居民-来往内地通行证
+        //IDENTIFICATION_TYPE_MACAO_PASSPORT：中国澳门居民-来往内地通行证
+        //IDENTIFICATION_TYPE_TAIWAN_PASSPORT：中国台湾居民-来往大陆通行证
+        //IDENTIFICATION_TYPE_FOREIGN_RESIDENT：外国人居留证
+        //IDENTIFICATION_TYPE_HONGKONG_MACAO_RESIDENT：港澳居民证
+        //IDENTIFICATION_TYPE_TAIWAN_RESIDENT：台湾居民证
+        //示例值：IDENTIFICATION_TYPE_IDCARD
+        switch (appApplyRequest.getIdDocType()) {
+            case "IDENTIFICATION_TYPE_IDCARD":
+                identityInfo.setIdDocType(IdTypeEnum.IDENTIFICATION_TYPE_IDCARD);
+                break;
+            case "IDENTIFICATION_TYPE_OVERSEA_PASSPORT":
+                identityInfo.setIdDocType(IdTypeEnum.IDENTIFICATION_TYPE_OVERSEA_PASSPORT);
+                break;
+            case "IDENTIFICATION_TYPE_MACAO_PASSPORT":
+                identityInfo.setIdDocType(IdTypeEnum.IDENTIFICATION_TYPE_MACAO_PASSPORT);
+                break;
+            case "IDENTIFICATION_TYPE_TAIWAN_PASSPORT":
+                identityInfo.setIdDocType(IdTypeEnum.IDENTIFICATION_TYPE_TAIWAN_PASSPORT);
+                break;
+            case "IDENTIFICATION_TYPE_FOREIGN_RESIDENT":
+                identityInfo.setIdDocType(IdTypeEnum.IDENTIFICATION_TYPE_FOREIGN_RESIDENT);
+                break;
+            case "IDENTIFICATION_TYPE_HONGKONG_MACAO_RESIDENT":
+                identityInfo.setIdDocType(IdTypeEnum.IDENTIFICATION_TYPE_HONGKONG_MACAO_RESIDENT);
+                break;
+            case "IDENTIFICATION_TYPE_TAIWAN_RESIDENT":
+                identityInfo.setIdDocType(IdTypeEnum.IDENTIFICATION_TYPE_TAIWAN_RESIDENT);
+                break;
+        }
+        //法定代表人说明函1、当证件持有人类型为经办人时，必须上传。其他情况，无需上传。\n" +
+        //            "2、若因特殊情况，无法提供法定代表人证件时，请参照示例图打印法定代表人说明函，全部信息需打印，不支持手写商户信息，并加盖公章。\n" +
+        //            "3、可上传1张图片，请填写通过图片上传APIAPI预先上传图片生成好的MediaID。
+//        if(appApplyRequest.getIdHolderType().equals("SUPER")){
+//            identityInfo.setAuthorizeLetterCopy()
+//        }
         subjectInfo.setIdentityInfo(identityInfo);
         // 受益人
         if (identityInfo.getOwner()) {
             WxPayApplyment4SubCreateRequest.SubjectInfo.UboInfo uboInfo = new WxPayApplyment4SubCreateRequest.SubjectInfo.UboInfo();
             uboInfo.setUboIdDocName(appApplyRequest.getBeneficiaryName());
-            uboInfo.setUboIdDocNumber(appApplyRequest.getBeneficiary());
+            uboInfo.setUboIdDocNumber(appApplyRequest.getBeneficiaryNo());
             uboInfo.setUboIdDocCopy(appApplyRequest.getBeneficiaryIdPictureFront());
             uboInfo.setUboIdDocCopyBack(appApplyRequest.getBeneficiaryIdPictureBack());
             uboInfo.setUboIdDocType(IdTypeEnum.IDENTIFICATION_TYPE_IDCARD);
@@ -461,27 +526,71 @@ public class payBiz implements PayApi {
         isvCreateBo.setCertName(appApplyRequest.getCertName());
         WxPayApplyment4SubCreateRequest.BusinessInfo businessInfo = new WxPayApplyment4SubCreateRequest.BusinessInfo();
         WxPayApplyment4SubCreateRequest.BusinessInfo.SalesInfo salesInfo = new WxPayApplyment4SubCreateRequest.BusinessInfo.SalesInfo();
-        WxPayApplyment4SubCreateRequest.BusinessInfo.SalesInfo.MiniProgramInfo miniProgramInfo
-                = new WxPayApplyment4SubCreateRequest.BusinessInfo.SalesInfo.MiniProgramInfo();
-        List<String> miniProgramPics = new ArrayList<>();
-        miniProgramPics.add(appApplyRequest.getAppPicture());
-        miniProgramInfo.setMiniProgramPics(miniProgramPics);
-        miniProgramInfo.setMiniProgramAppid(appApplyRequest.getAppId() == null ? "wx1f2863eb6cdee6a1" :
-                appApplyRequest.getAppId());
-        salesInfo.setMiniProgramInfo(miniProgramInfo);
+
+
+        // 经营场景类型
         List<SalesScenesTypeEnum> salesScenesType = new ArrayList<>();
-        salesScenesType.add(SalesScenesTypeEnum.SALES_SCENES_MINI_PROGRAM);
+        switch (appApplyRequest.getSalesScenesType()) {
+            case "SALES_SCENES_MINI_PROGRAM":
+                salesScenesType.add(SalesScenesTypeEnum.SALES_SCENES_MINI_PROGRAM);
+                break;
+            case "SALES_SCENES_STORE":
+                salesScenesType.add(SalesScenesTypeEnum.SALES_SCENES_STORE);
+                break;
+            case "SALES_SCENES_MP":
+                salesScenesType.add(SalesScenesTypeEnum.SALES_SCENES_MP);
+                break;
+            case "SALES_SCENES_WEB":
+                salesScenesType.add(SalesScenesTypeEnum.SALES_SCENES_WEB);
+                break;
+            case "SALES_SCENES_APP":
+                salesScenesType.add(SalesScenesTypeEnum.SALES_SCENES_APP);
+                break;
+            case "SALES_SCENES_WEWORK":
+                salesScenesType.add(SalesScenesTypeEnum.SALES_SCENES_WEWORK);
+                break;
+        }
         salesInfo.setSalesScenesType(salesScenesType);
+        // 线下场景
+        if (appApplyRequest.getSalesScenesType().equals("SALES_SCENES_STORE")) {
+            WxPayApplyment4SubCreateRequest.BusinessInfo.SalesInfo.BizStoreInfo bizStoreInfo
+                    = new WxPayApplyment4SubCreateRequest.BusinessInfo.SalesInfo.BizStoreInfo();
+            bizStoreInfo.setBizStoreName(appApplyRequest.getBizStoreName());
+            bizStoreInfo.setBizAddressCode(appApplyRequest.getBizAddressCode());
+            bizStoreInfo.setBizStoreAddress(appApplyRequest.getBizStoreAddress());
+            // 线下场所门头照片
+            List<String> storeEntrancePicList = new ArrayList<>();
+            storeEntrancePicList.add(appApplyRequest.getTenantDoorPicture());
+            bizStoreInfo.setStoreEntrancePic(storeEntrancePicList);
+            // 线下场所内部照片
+            List<String> indoorPicList = new ArrayList<>();
+            indoorPicList.add(appApplyRequest.getTenantIndoorPicture());
+            bizStoreInfo.setIndoorPic(indoorPicList);
+        } else if (appApplyRequest.getSalesScenesType().equals("SALES_SCENES_MINI_PROGRAM")) {
+            // 小程序
+            WxPayApplyment4SubCreateRequest.BusinessInfo.SalesInfo.MiniProgramInfo miniProgramInfo
+                    = new WxPayApplyment4SubCreateRequest.BusinessInfo.SalesInfo.MiniProgramInfo();
+            List<String> miniProgramPics = new ArrayList<>();
+            miniProgramPics.add(appApplyRequest.getAppPicture());
+            miniProgramInfo.setMiniProgramPics(miniProgramPics);
+            miniProgramInfo.setMiniProgramAppid(appApplyRequest.getAppId() == null ? "wx1f2863eb6cdee6a1" :
+                    appApplyRequest.getAppId());
+            salesInfo.setMiniProgramInfo(miniProgramInfo);
+        }
         businessInfo.setSalesInfo(salesInfo);
         businessInfo.setMerchantShortname(appApplyRequest.getTenantShortName());
-        businessInfo.setServicePhone(appApplyRequest.getContactPhone());
+        businessInfo.setServicePhone(appApplyRequest.getServicePhone());
         isvCreateBo.setBusinessInfo(businessInfo);
 
         // 超级管理员信息
         WxPayApplyment4SubCreateRequest.ContactInfo contactInfo = new WxPayApplyment4SubCreateRequest.ContactInfo();
         contactInfo.setContactName(appApplyRequest.getSuperAdminName());
-        contactInfo.setMobilePhone(appApplyRequest.getSuperAdminPhone());
-        contactInfo.setContactEmail(appApplyRequest.getSuperAdminEmail());
+        // 用于接收微信支付的重要管理信息及日常操作验证码 为空默认管理员的手机
+        contactInfo.setMobilePhone(appApplyRequest.getContactPhone() == null ? appApplyRequest.getSuperAdminPhone()
+                : appApplyRequest.getContactPhone());
+        // 用于接收微信支付的开户邮件及日常业务通知 为空默认管理员邮箱
+        contactInfo.setContactEmail(appApplyRequest.getContactEmail() == null ? appApplyRequest.getSuperAdminEmail() :
+                appApplyRequest.getContactEmail());
 
         // 如果为1、主体为“个体工商户/企业/政府机关/事业单位/社会组织”，可选择：LEGAL：经营者/法人，SUPER：经办人
         // 。（经办人：经商户授权办理微信支付业务的人员）。
@@ -489,14 +598,16 @@ public class payBiz implements PayApi {
         contactInfo.setContactType(appApplyRequest.getContactType() == null ? null : appApplyRequest.getContactType());
         if (contactInfo.getContactType() != null && contactInfo.equals("SUPER")) {
             // 如类型为LEGAL则以下不需要传参
-            contactInfo.setContactIdDocType("IDENTIFICATION_TYPE_IDCARD");
+            contactInfo.setContactIdDocType(appApplyRequest.getContactIdDocType() == null ? "IDENTIFICATION_TYPE_IDCARD"
+                    : appApplyRequest.getContactIdDocType());
             contactInfo.setContactIdNumber(appApplyRequest.getSuperAdminId());
-            contactInfo.setContactIdDocCopy(appApplyRequest.getProprietorIdPictureFront());
-            contactInfo.setContactIdDocCopyBack(appApplyRequest.getProprietorIdPictureBack());
-            contactInfo.setContactPeriodBegin(appApplyRequest.getProprietorIdValidityPeriodBegin());
-            contactInfo.setContactPeriodEnd(appApplyRequest.getProprietorIdValidityPeriodEnd());
+            contactInfo.setContactIdDocCopy(appApplyRequest.getSuperAdminIdPictureFront());
+            contactInfo.setContactIdDocCopyBack(appApplyRequest.getSuperAdminIdPictureBack());
+            contactInfo.setContactPeriodBegin(appApplyRequest.getSuperAdminValidityPeriodBegin());
+            contactInfo.setContactPeriodEnd(appApplyRequest.getSuperAdminValidityPeriodEnd());
+            contactInfo.setBusinessAuthorizationLetter(appApplyRequest.getOtherCert());
         }
-        contactInfo.setBusinessAuthorizationLetter(appApplyRequest.getOtherCert());
+
         isvCreateBo.setContactInfo(contactInfo);
         // 结算规则
         WxPayApplyment4SubCreateRequest.SettlementInfo settlementInfo =
