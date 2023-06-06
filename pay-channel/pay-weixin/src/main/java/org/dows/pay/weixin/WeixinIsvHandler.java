@@ -643,18 +643,6 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
 
         return ImageUploadResult.fromJson(result);
     }
-    /**
-     * 获取文件路径
-     */
-    public static String getFilePath(String path){
-        String arrPath[] = path.split(DateUtil.formatDate(DateUtil.date()));
-        if (ObjectUtil.isNotEmpty(arrPath)&&arrPath.length>1){
-            path = arrPath[1];
-            path = "E:\\有星科技相关\\image\\"+path;
-        }
-        return path;
-    }
-
 //    /**
 //     * 获取文件路径
 //     */
@@ -662,9 +650,21 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
 //        String arrPath[] = path.split(DateUtil.formatDate(DateUtil.date()));
 //        if (ObjectUtil.isNotEmpty(arrPath)&&arrPath.length>1){
 //            path = arrPath[1];
-//            path = "/tmp"+path;
+//            path = "E:\\有星科技相关\\image\\"+path;
 //        }
 //        return path;
 //    }
+
+    /**
+     * 获取文件路径
+     */
+    public static String getFilePath(String path){
+        String arrPath[] = path.split(DateUtil.formatDate(DateUtil.date()));
+        if (ObjectUtil.isNotEmpty(arrPath)&&arrPath.length>1){
+            path = arrPath[1];
+            path = "/tmp"+path;
+        }
+        return path;
+    }
 
 }

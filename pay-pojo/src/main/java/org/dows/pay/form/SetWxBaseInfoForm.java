@@ -28,6 +28,9 @@ public class SetWxBaseInfoForm implements BizForm{
     @ApiModelProperty("平台应用ID")
     private String appId;
 
+    @ApiModelProperty("商家应用ID")
+    private String merchantAppId;
+
     // 通道code
     @ApiModelProperty("通道code")
     private String channel;
@@ -35,7 +38,6 @@ public class SetWxBaseInfoForm implements BizForm{
     // 账号
     @ApiModelProperty("账号")
     private String account;
-
 
     // 应用名称
     @ApiModelProperty("申请应用名称")
@@ -47,6 +49,16 @@ public class SetWxBaseInfoForm implements BizForm{
     @ApiModelProperty(name = "nick_name")
     private String nickName;
 
+    /**
+     * 申请id
+     */
+    @ApiModelProperty(name = "audit_id")
+    private String auditId;
+    /**
+     * 小程序介绍
+     */
+    @ApiModelProperty(name = "signature")
+    private String signature;
     /**
      * 身份证照片 mediaid. 个人号必填
      */
@@ -70,18 +82,6 @@ public class SetWxBaseInfoForm implements BizForm{
      */
     @ApiModelProperty(name = "naming_other_stuff_2")
     private String namingOtherStuff2;
-
-    /**
-     * 申请id
-     */
-    @ApiModelProperty(name = "audit_id")
-    private String auditId;
-    /**
-     * 小程序介绍
-     */
-    @ApiModelProperty(name = "signature")
-    private String signature;
-
     /**
      * 小程序头像
      */
@@ -123,18 +123,21 @@ public class SetWxBaseInfoForm implements BizForm{
     @ApiModelProperty("二级类目ID")
     private int second;
 
+    @ApiModelProperty("资质信息")
+    private String certicates;
+
     /**
      * 资质信息.
      */
-    @ApiModelProperty("资质信息")
-    private List<WxFastMaCategoryBo.Certificate> certicates;
-
-    @Data
-    public static class Certificate {
-        @ApiModelProperty("key")
-        private String key;
-        @ApiModelProperty( "value")
-        private String value;
-    }
+//    @ApiModelProperty("资质信息")
+//    private List<WxFastMaCategoryBo.Certificate> certicates;
+//
+//    @Data
+//    public static class Certificate {
+//        @ApiModelProperty("key")
+//        private String key;
+//        @ApiModelProperty( "value")
+//        private String value;
+//    }
 
 }

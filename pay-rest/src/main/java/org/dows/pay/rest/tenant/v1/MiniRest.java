@@ -97,9 +97,13 @@ public class MiniRest {
     @PostMapping("/mini/setWxinApplyInfo")
     @ApiOperation(value = "设置小程序相关信息")
     public Response<PayResponse> setWxinApplyInfo(@Validated @RequestBody SetWxBaseInfoForm setWxBaseInfoForm) {
-        Response response = miniBiz.setWxinApplyInfo(setWxBaseInfoForm);
-        return response;
+        try {
+            Response response = miniBiz.setWxinApplyInfo(setWxBaseInfoForm);
+            return response;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.failed(e.getMessage());
+        }
     }
-
 
 }
