@@ -32,7 +32,7 @@ public class OrderSettleRest {
     }
 
     @PostMapping("/orderpay/topayNoAcc")
-    @ApiOperation(value = "去支付")
+    @ApiOperation(value = "去支付无分账")
     public Response<PayResponse> topayNoAcc(@RequestBody PayTransactionForm payTransactionForm) {
         return orderPayBiz.toPayNoAcc(payTransactionForm);
     }

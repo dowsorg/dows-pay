@@ -14,6 +14,15 @@ public interface PayRequest<T extends PayResponse> {
 
 
     /**
+     * 获取subOpenid
+     *
+     * @return
+     */
+    PayRequest setSubOpenid(String subOpenid);
+
+    String getSubOpenid();
+
+    /**
      * 获取应用ID
      *
      * @return

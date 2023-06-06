@@ -89,7 +89,7 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
         amount.setCurrency("CNY");
         amount.setTotal(orderInstanceBo.getAgreeAmout().multiply(new BigDecimal(100)).intValue());
         PartnerTransactionsRequest.Payer payer = new PartnerTransactionsRequest.Payer();
-        payer.setSpOpenid(payRequest.getAppId());
+        payer.setSpOpenid(payRequest.getSubOpenid());
         //获取商户号
         log.info("WeixinPayHandler.toPay.orderInstanceBo的参数:{}",orderInstanceBo);
         PayAccount payAccount = payAccountService.getOne(Wrappers.lambdaQuery(PayAccount.class).eq(PayAccount::getChannelAccount, payTransactionBo.getAppId()));
@@ -177,7 +177,7 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
         return  jsapiResult;
     }
     /**
-     * 单笔支付
+     * 单笔支付无分账
      *
      * @param payRequest
      * @return
@@ -200,7 +200,7 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
         amount.setCurrency("CNY");
         amount.setTotal(orderInstanceBo.getAgreeAmout().multiply(new BigDecimal(100)).intValue());
         PartnerTransactionsRequest.Payer payer = new PartnerTransactionsRequest.Payer();
-        payer.setSpOpenid(payRequest.getAppId());
+        payer.setSpOpenid(payRequest.getSubOpenid());
         //获取商户号
         log.info("WeixinPayHandler.toPay.orderInstanceBo的参数:{}",orderInstanceBo);
         PayAccount payAccount = payAccountService.getOne(Wrappers.lambdaQuery(PayAccount.class).eq(PayAccount::getChannelAccount, payTransactionBo.getAppId()));
