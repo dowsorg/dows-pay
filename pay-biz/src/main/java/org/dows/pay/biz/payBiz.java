@@ -1,6 +1,7 @@
 package org.dows.pay.biz;
 
 import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.StrUtil;
 import com.alipay.api.response.AlipayOpenMiniIsvCreateResponse;
 import com.alipay.service.schema.util.StringUtil;
 import com.github.binarywang.wxpay.bean.applyment.WxPayApplyment4SubCreateRequest;
@@ -17,23 +18,27 @@ import me.chanjar.weixin.open.bean.result.WxOpenResult;
 import org.dows.app.api.mini.request.AppApplyRequest;
 import org.dows.app.api.mini.request.PayApplyStatusReq;
 import org.dows.app.api.mini.request.WechatMiniUploadRequest;
+import org.dows.app.entity.AppApply;
+import org.dows.app.service.AppApplyService;
 import org.dows.framework.api.Response;
 import org.dows.framework.api.exceptions.BizException;
 import org.dows.pay.alipay.AlipayIsvHandler;
 import org.dows.pay.api.PayApi;
 import org.dows.pay.api.PayRequest;
 import org.dows.pay.api.request.MiniUploadRequest;
-import org.dows.pay.api.request.MiniUploadTemplateIdBO;
 import org.dows.pay.api.request.PayIsvRequest;
 import org.dows.pay.bo.IsvCreateBo;
 import org.dows.pay.bo.IsvCreateTyBo;
 import org.dows.pay.boot.PayClientConfig;
+import org.dows.pay.entity.PayAccount;
 import org.dows.pay.entity.PayApply;
+import org.dows.pay.service.PayAccountService;
 import org.dows.pay.service.PayApplyService;
 import org.dows.pay.weixin.WeixinIsvHandler;
 import org.dows.pay.weixin.WeixinMiniHandler;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -54,6 +59,10 @@ public class payBiz implements PayApi {
     private final PayApplyService payApplyService;
     @Lazy
     private final PayClientConfig payClientConfig;
+    @Lazy
+    private final PayAccountService payAccountService;
+    @Lazy
+    private final AppApplyService appApplyService;
 
     @Override
     public Response isvApply(AppApplyRequest appApplyRequest) {
@@ -172,7 +181,11 @@ public class payBiz implements PayApi {
 
     @Override
     public Response applyForPaymentAuth(AppApplyRequest appApplyRequest) {
-        Long payApplyId = payApplyService.createPayApply(appApplyRequest.getMerchantNo());
+        AppApply appApply = appApplyService.getByMerchantNo(appApplyRequest.getMerchantNo());
+        if (appApply == null) {
+            throw new BizException("未申请注册小程序不可申请支付能力");
+        }
+        Long payApplyId = payApplyService.createPayApply(appApplyRequest.getMerchantNo(),appApply.getAppId());
         PayRequest payRequest = new PayIsvRequest();
         log.info("生成appApplyRequest参数{}", appApplyRequest);
         if ("WEIXIN".equals(appApplyRequest.getApplyType())) {
@@ -232,6 +245,7 @@ public class payBiz implements PayApi {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Response queryPayApplyStatus(PayApplyStatusReq res) {
         PayApply payApply = payApplyService.getByMerchantNoAndType(res.getMerchantNo(), res.getApplyType());
         return Optional.ofNullable(payApply).map(p -> {
@@ -241,9 +255,7 @@ public class payBiz implements PayApi {
                 statusResult.setApplymentState(payApply.getApplymentState());
                 statusResult.setApplymentStateDesc(payApply.getApplymentStateDesc());
                 statusResult.setSignUrl(payApply.getAppUrl());
-                response = new Response();
-                response.setData(statusResult);
-                return response;
+                return Response.ok(statusResult);
             }
              response = queryApplymentStatus(payApply.getApplyNo());
             ApplymentsStatusResult result = (ApplymentsStatusResult) response.getData();
@@ -258,12 +270,37 @@ public class payBiz implements PayApi {
             payApply.setUpdateTime(new Date());
             payApply.setSubMchid(result.getSubMchid());
             payApplyService.updateById(payApply);
+            if (payApply.getChecked()) {
+                // 插入支付账号通道
+                checkAndSavePayAccount(payApply);
+            }
             return response;
         }).orElseGet(()->{
             ApplymentsStatusResult statusResult = new ApplymentsStatusResult();
             statusResult.setApplymentState("NOT_APPLYMENT");
             statusResult.setApplymentStateDesc("未申请");
             return Response.ok(statusResult);
+        });
+    }
+
+    private void checkAndSavePayAccount(PayApply payApply) {
+        PayAccount payAccount = payAccountService.getByMerchantNo(payApply.getMerchantNo());
+        Optional.ofNullable(payAccount).map(p->{
+            if (StrUtil.isNotEmpty(p.getChannelMerchantNo())) {
+                return p;
+            }
+            payAccount.setChannelMerchantNo(payApply.getSubMchid());
+            payAccount.setChannelAccount(payApply.getAppId());
+            payAccountService.updateById(payAccount);
+            return payAccount;
+
+        }).orElseGet(()->{
+            PayAccount createPayAccount = new PayAccount();
+            createPayAccount.setMerchantNo(payApply.getMerchantNo());
+            createPayAccount.setChannelAccount(payApply.getAppId());
+            createPayAccount.setChannelMerchantNo(payApply.getSubMchid());
+            payAccountService.save(createPayAccount);
+            return createPayAccount;
         });
     }
 
