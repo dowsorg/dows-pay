@@ -28,10 +28,14 @@ public class OrderSettleRest {
     @PostMapping("/orderpay/topay")
     @ApiOperation(value = "去支付")
     public Response<PayResponse> toPay(@RequestBody PayTransactionForm payTransactionForm) {
-        orderPayBiz.toPay(payTransactionForm);
-        return Response.ok();
+        return orderPayBiz.toPay(payTransactionForm);
     }
 
+    @PostMapping("/orderpay/topayNoAcc")
+    @ApiOperation(value = "去支付")
+    public Response<PayResponse> topayNoAcc(@RequestBody PayTransactionForm payTransactionForm) {
+        return orderPayBiz.toPayNoAcc(payTransactionForm);
+    }
 
     @PostMapping("/orderpay/toCombinePay")
     @ApiOperation(value = "去合并支付")
