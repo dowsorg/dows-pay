@@ -272,6 +272,7 @@ public class payBiz implements PayApi {
             payApply.setSubMchid(result.getSubMchid());
             payApplyService.updateById(payApply);
             if (payApply.getChecked()) {
+                log.info("start checkAndSavePayAccount......");
                 // 插入支付账号通道
                 checkAndSavePayAccount(payApply);
             }
