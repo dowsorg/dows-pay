@@ -123,20 +123,20 @@ public class SetWxBaseInfoForm implements BizForm{
     private int second;
 
     @ApiModelProperty("资质信息")
-    private String certicates;
+    private String certicate;
 
     /**
      * 资质信息.
      */
-//    @ApiModelProperty("资质信息")
-//    private List<WxFastMaCategoryBo.Certificate> certicates;
-//
-//    @Data
-//    public static class Certificate {
-//        @ApiModelProperty("key")
-//        private String key;
-//        @ApiModelProperty( "value")
-//        private String value;
-//    }
+    @ApiModelProperty("资质信息后端用于转换")
+    private List<WxFastMaCategoryBo.Certificate> certicates;
+
+    @Data
+    public static class Certificate {
+        @ApiModelProperty("key")
+        private String key;
+        @ApiModelProperty("value")
+        private String value;
+    }
 
 }

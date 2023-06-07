@@ -5,6 +5,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.github.binarywang.wxpay.bean.ecommerce.ApplymentsRequest;
 import com.github.binarywang.wxpay.bean.media.ImageUploadResult;
 import com.github.binarywang.wxpay.v3.WechatPayUploadHttpPost;
 import com.google.gson.Gson;
@@ -54,6 +55,8 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
     private final String WX_SET_NICK_NAME = "https://api.weixin.qq.com/wxa/setnickname";
     // 设置小程序介绍
     private final String WX_SET_SIGN_ATURE = "https://api.weixin.qq.com/cgi-bin/account/modifysignature";
+    // 添加类目
+    private final String WX_SET_ADD_CATEGORY = "https://api.weixin.qq.com/cgi-bin/wxopen/addcategory";
 
 
     private static final Gson GSON = new GsonBuilder().create();
@@ -162,19 +165,32 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
      * 添加类目
      */
     @PayMapping(method = PayMethods.MINI_CATEGORY_ADD)
-    public WxOpenResult addCategory(PayRequest payRequest) {
+    public WxOpenResult addCategory(PayRequest payRequest) throws Exception {
         //todo 待实现业务逻辑
-        WxOpenResult response = null;
-        try {
-            List<WxFastMaCategory> list = new ArrayList<>();
-            WxFastMaCategory wxFastMaCategory = new WxFastMaCategory();
-            WxFastMaCategoryBo wxFastMaCategoryBo = (WxFastMaCategoryBo) payRequest.getBizModel();
-            BeanUtil.copyProperties(wxFastMaCategoryBo, wxFastMaCategory);
-            list.add(wxFastMaCategory);
-            response = this.getWxOpenMaClient(payRequest.getAppId()).getBasicService().addCategory(list);
-        } catch (WxErrorException e) {
-            e.printStackTrace();
+        WxOpenResult response;
+        List<WxFastMaCategory> list = new ArrayList<>();
+        WxFastMaCategory wxFastMaCategory = new WxFastMaCategory();
+        WxFastMaCategoryBo wxFastMaCategoryBo = (WxFastMaCategoryBo) payRequest.getBizModel();
+        //受益人列表 受益人正反面照片
+        List<WxFastMaCategoryBo.Certificate> certicates = wxFastMaCategoryBo.getCerticates();
+        if (!ObjectUtil.isEmpty(certicates)) {
+            certicates.forEach(x -> {
+                if (!ObjectUtil.isEmpty(x.getValue())) {
+                    File uboIdDocCopyFile = new File(getFilePath(x.getValue()));
+                    String mediaId = upload(uboIdDocCopyFile, payRequest).getMediaId();
+                    x.setValue(mediaId);
+                }
+            });
         }
+        BeanUtil.copyProperties(wxFastMaCategoryBo, wxFastMaCategory);
+        list.add(wxFastMaCategory);
+        Map<String, String> param = new HashMap<>();
+        param.put("categories", JSONObject.toJSONString(list));
+        HttpClientResult uploadTemplateResult = HttpClientUtils.doPost(WX_SET_ADD_CATEGORY +
+                "?access_token=" + payRequest.getAuthorizerAccessToken(), param, 1);
+        String content = uploadTemplateResult.getContent();
+        response = WxOpenGsonBuilder.create().fromJson(content, WxOpenResult.class);
+//            response = this.getWxOpenMaClient(payRequest.getAppId()).getBasicService().addCategory(list);
         return response;
     }
 
@@ -364,24 +380,24 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
         return ImageUploadResult.fromJson(result);
     }
 
-    public static String getFilePath(String path) {
-        String arrPath[] = path.split(DateUtil.formatDate(DateUtil.date()));
-        if (ObjectUtil.isNotEmpty(arrPath) && arrPath.length > 1) {
-            path = arrPath[1];
-            path = "E:\\有星科技相关\\image\\" + path;
-        }
-        return path;
-    }
-
-    /**
-     * 获取文件路径
-     */
 //    public static String getFilePath(String path) {
 //        String arrPath[] = path.split(DateUtil.formatDate(DateUtil.date()));
 //        if (ObjectUtil.isNotEmpty(arrPath) && arrPath.length > 1) {
 //            path = arrPath[1];
-//            path = "/tmp" + path;
+//            path = "E:\\有星科技相关\\image\\" + path;
 //        }
 //        return path;
 //    }
+
+    /**
+     * 获取文件路径
+     */
+    public static String getFilePath(String path) {
+        String arrPath[] = path.split(DateUtil.formatDate(DateUtil.date()));
+        if (ObjectUtil.isNotEmpty(arrPath) && arrPath.length > 1) {
+            path = arrPath[1];
+            path = "/tmp" + path;
+        }
+        return path;
+    }
 }

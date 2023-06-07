@@ -35,6 +35,8 @@ import org.dows.pay.gateway.PayDispatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -63,7 +65,8 @@ public class MiniBiz {
     public Response addCategory(WxFastMaCategoryForm wxFastMaCategoryForm) {
         PayIsvRequest payRequest = new PayIsvRequest();
         // todo
-        WxFastMaCategoryBo wxFastMaCategoryBo = BeanUtil.copyProperties(wxFastMaCategoryForm, WxFastMaCategoryBo.class);
+        WxFastMaCategoryBo wxFastMaCategoryBo = BeanUtil.copyProperties(wxFastMaCategoryForm,
+                WxFastMaCategoryBo.class);
         // 设置请求方法
         payRequest.setMethod(PayMethods.MINI_CATEGORY_ADD.getNamespace());
         // 设置业务参数对象bizModel
@@ -267,8 +270,6 @@ public class MiniBiz {
             saveOrUpdateAppBase(setWxBaseInfoForm, merchantNo);
             log.info("获取商户信息，merchantNo：{}", merchantNo);
             WxBaseInfoForm wxBaseInfoForm = BeanUtil.copyProperties(setWxBaseInfoForm, WxBaseInfoForm.class);
-            // todo
-            WxFastMaCategoryForm wxFastMaCategoryForm = BeanUtil.copyProperties(setWxBaseInfoForm, WxFastMaCategoryForm.class);
             // 获取access_token使用authorizer_access_token
             String authorizerAccessToken = weixinTokenApi.getAuthorizerAccessToken(setWxBaseInfoForm.getMerchantAppId());
             wxBaseInfoForm.setAuthorizerAccessToken(authorizerAccessToken);
@@ -276,6 +277,7 @@ public class MiniBiz {
             WxFastMaSetNickameResult wxFastMaSetNickameResult = null;
             WxOpenResult setSignatureWxOpenResult;
             WxOpenResult setHeadImageWxOpenResult;
+            WxOpenResult addCategoryWxOpenResult;
             // 设置昵称
             if (setWxBaseInfoForm.getNickName() != null) {
                 PayApplyStatusReq req = new PayApplyStatusReq();
@@ -315,7 +317,7 @@ public class MiniBiz {
                                 2, null,
                                 2, 0, "设置小程序昵称内部返回结果为空");
                         response.setCode(500);
-                        response.setDescr("设置小程序昵称内部返回结果为空");
+                        response.setDescr("设置小程序昵称返回结果为空");
                         return response;
                     }
                 } else {
@@ -365,17 +367,50 @@ public class MiniBiz {
                     }
                 } else {
                     response.setCode(500);
-                    response.setDescr("设置简介内部返回结果为空");
+                    response.setDescr("设置简介返回结果为空");
                     return response;
                 }
             }
             // 设置类目
-            if (!StringUtils.isBlank(String.valueOf(setWxBaseInfoForm.getFirst())) && setWxBaseInfoForm.getCerticates() != null) {
-                // response = addCategory(wxFastMaCategoryForm);
+            if (!StringUtils.isBlank(String.valueOf(setWxBaseInfoForm.getFirst())) && setWxBaseInfoForm.getCerticate() != null) {
+                // todo
+                WxFastMaCategoryForm wxFastMaCategoryForm = BeanUtil.copyProperties(setWxBaseInfoForm, WxFastMaCategoryForm.class);
+                List<WxFastMaCategoryBo.Certificate> certicates = new ArrayList<>();
+                WxFastMaCategoryBo.Certificate certificate = new WxFastMaCategoryBo.Certificate();
+                certificate.setKey("资质证书");
+                certificate.setValue(setWxBaseInfoForm.getCerticate());
+                certicates.add(certificate);
+                wxFastMaCategoryForm.setCerticates(certicates);
+                Response<PayResponse> addCategoryResponse = addCategory(wxFastMaCategoryForm);
+                log.info("设置微信小程序类目结果：{}", JSONObject.toJSONString(addCategoryResponse));
+                if (addCategoryResponse != null) {
+                    String body = addCategoryResponse.getData().getBody();
+                    addCategoryWxOpenResult = WxOpenGsonBuilder.create().fromJson(body, WxOpenResult.class);
+                    String errcode = addCategoryWxOpenResult.getErrcode();
+                    if (!errcode.equals("0")) {
+                        WxSetSignatureExceptionEnum messageByCode = WxSetSignatureExceptionEnum.getMessageByCode(errcode);
+                        response.setCode(Integer.valueOf(errcode));
+                        if (messageByCode != null) {
+                            response.setDescr("设置类目失败：" + messageByCode.getMessage());
+                        } else {
+                            response.setDescr("设置简介失败：" + addCategoryWxOpenResult.getErrmsg());
+                        }
+                        return response;
+                    } else {
+                        updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
+                                -1, null,
+                                3, 0, "昵称、简介、类目已提交");
+                        log.info("设置微信小程序类目结果：{}", JSONObject.toJSONString(response));
+                        response.setCode(0);
+                        response.setDescr("昵称、简介、类目已提交成功");
+                        return response;
+                    }
+                } else {
+                    response.setCode(500);
+                    response.setDescr("设置类目返回结果为空");
+                    return response;
+                }
             }
-            log.info("设置微信小程序类目结果：{}", JSONObject.toJSONString(response));
-            response.setCode(0);
-            response.setDescr("提交成功");
             return response;
         } catch (Exception e) {
             updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
@@ -428,7 +463,9 @@ public class MiniBiz {
                               String reason) {
 
         AppBase appBase = new AppBase();
-        appBase.setAppNameAuditStatus(appNameAuditStatus);
+        if (appNameAuditStatus != -1) {
+            appBase.setAppNameAuditStatus(appNameAuditStatus);
+        }
         if (appNameAuditNo != null) {
             appBase.setAppNameAuditNo(appNameAuditNo);
         }
