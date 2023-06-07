@@ -171,7 +171,7 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
         List<WxFastMaCategory> list = new ArrayList<>();
         WxFastMaCategory wxFastMaCategory = new WxFastMaCategory();
         WxFastMaCategoryBo wxFastMaCategoryBo = (WxFastMaCategoryBo) payRequest.getBizModel();
-        //受益人列表 受益人正反面照片
+        // 类目资质
         List<WxFastMaCategoryBo.Certificate> certicates = wxFastMaCategoryBo.getCerticates();
         if (!ObjectUtil.isEmpty(certicates)) {
             certicates.forEach(x -> {
@@ -398,6 +398,7 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
             path = arrPath[1];
             path = "/tmp" + path;
         }
+        log.info("==============================图片路径，{}",path);
         return path;
     }
 }
