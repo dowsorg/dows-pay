@@ -17,6 +17,7 @@ import me.chanjar.weixin.open.api.WxOpenMaBasicService;
 import me.chanjar.weixin.open.bean.ma.WxFastMaCategory;
 import me.chanjar.weixin.open.bean.message.WxOpenMaSubmitAuditMessage;
 import me.chanjar.weixin.open.bean.result.*;
+import me.chanjar.weixin.open.util.json.WxOpenGsonBuilder;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.dows.auth.api.weixin.WeixinTokenApi;
 import org.dows.auth.biz.utils.HttpClientResult;
@@ -236,9 +237,8 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
      * 小程序基础信息管理
      * 设置小程序名称
      */
-    @SneakyThrows
     @PayMapping(method = PayMethods.MINI_BASE_NICKNAME)
-    public WxFastMaSetNickameResult setNickName(PayRequest payRequest) {
+    public WxFastMaSetNickameResult setNickName(PayRequest payRequest) throws Exception {
         //todo 待实现业务逻辑
         WxFastMaSetNickameResult response = null;
         WxBaseInfoBo wxBaseInfoBo = (WxBaseInfoBo) payRequest.getBizModel();
@@ -275,13 +275,11 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
         param.put("id_card", idCardMediaId);
         param.put("naming_other_stuff_1", namingOtherStuff1MediaId);
         param.put("naming_other_stuff_2", namingOtherStuff2MediaId);
-        HttpClientResult uploadTemplateResult = HttpClientUtils.doPost(WX_SET_NICK_NAME+
+        HttpClientResult uploadTemplateResult = HttpClientUtils.doPost(WX_SET_NICK_NAME +
                 "?access_token=" + payRequest.getAuthorizerAccessToken(), param, 1);
         String content = uploadTemplateResult.getContent();
-        JSONObject jsonObject = JSONObject.parseObject(content);
-        log.info("设置名称,返回结果：{}", JSONObject.toJSONString(content));
-        response.setAuditId(Long.valueOf(jsonObject.getString("audit_id")));
-        response.setWording(jsonObject.getString("wording"));
+        response = WxOpenGsonBuilder.create().fromJson(content, WxFastMaSetNickameResult.class);
+
         return response;
     }
 
@@ -307,21 +305,18 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
      * 设置小程序介绍
      */
     @PayMapping(method = PayMethods.MINI_BASE_SIGNATURE)
-    public WxOpenResult setSignature(PayRequest payRequest) {
+    public WxOpenResult setSignature(PayRequest payRequest) throws Exception {
         //todo 待实现业务逻辑
         WxOpenResult response = null;
-        try {
-            WxBaseInfoBo wxBaseInfoBo = (WxBaseInfoBo) payRequest.getBizModel();
+        WxBaseInfoBo wxBaseInfoBo = (WxBaseInfoBo) payRequest.getBizModel();
 //            response = this.getWxOpenMaClient(payRequest.getAppId()).getBasicService().modifySignature(wxBaseInfoBo.getSignature());
-            Map<String, String> param = new HashMap<>();
-            param.put("signature", wxBaseInfoBo.getSignature());
-            HttpClientResult uploadTemplateResult = HttpClientUtils.doPost(WX_SET_SIGN_ATURE +
-                    "?access_token=" + payRequest.getAuthorizerAccessToken(), param, 1);
-            String content = uploadTemplateResult.getContent();
-            log.info("设置介绍,返回结果：{}", JSONObject.toJSONString(content));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Map<String, String> param = new HashMap<>();
+        param.put("signature", wxBaseInfoBo.getSignature());
+        HttpClientResult uploadTemplateResult = HttpClientUtils.doPost(WX_SET_SIGN_ATURE +
+                "?access_token=" + payRequest.getAuthorizerAccessToken(), param, 1);
+        String content = uploadTemplateResult.getContent();
+        response = WxOpenGsonBuilder.create().fromJson(content, WxOpenResult.class);
+        log.info("设置介绍,返回结果：{}", JSONObject.toJSONString(content));
         return response;
     }
 
@@ -369,24 +364,24 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
         return ImageUploadResult.fromJson(result);
     }
 
-//    public static String getFilePath(String path) {
-//        String arrPath[] = path.split(DateUtil.formatDate(DateUtil.date()));
-//        if (ObjectUtil.isNotEmpty(arrPath) && arrPath.length > 1) {
-//            path = arrPath[1];
-//            path = "E:\\有星科技相关\\image\\" + path;
-//        }
-//        return path;
-//    }
-
-    /**
-     * 获取文件路径
-     */
     public static String getFilePath(String path) {
         String arrPath[] = path.split(DateUtil.formatDate(DateUtil.date()));
         if (ObjectUtil.isNotEmpty(arrPath) && arrPath.length > 1) {
             path = arrPath[1];
-            path = "/tmp" + path;
+            path = "E:\\有星科技相关\\image\\" + path;
         }
         return path;
     }
+
+    /**
+     * 获取文件路径
+     */
+//    public static String getFilePath(String path) {
+//        String arrPath[] = path.split(DateUtil.formatDate(DateUtil.date()));
+//        if (ObjectUtil.isNotEmpty(arrPath) && arrPath.length > 1) {
+//            path = arrPath[1];
+//            path = "/tmp" + path;
+//        }
+//        return path;
+//    }
 }
