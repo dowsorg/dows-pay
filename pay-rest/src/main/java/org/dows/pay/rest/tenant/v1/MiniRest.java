@@ -98,6 +98,7 @@ public class MiniRest {
     @ApiOperation(value = "设置小程序相关信息")
     public Response<PayResponse> setWxinApplyInfo(@Validated @RequestBody SetWxBaseInfoForm setWxBaseInfoForm) {
         try {
+            setWxBaseInfoForm.setAppId("wxdb8634feb22a5ab9");
             Response response = miniBiz.setWxinApplyInfo(setWxBaseInfoForm);
             return response;
         } catch (Exception e) {
