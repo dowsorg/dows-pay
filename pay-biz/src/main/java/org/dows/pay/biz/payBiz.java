@@ -358,8 +358,8 @@ public class payBiz implements PayApi {
         //超级管理员信息
         ApplymentsRequest.ContactInfo contactInfo = new ApplymentsRequest.ContactInfo();
         contactInfo.setContactName(appApplyRequest.getSuperAdminName());
-        contactInfo.setMobilePhone(appApplyRequest.getSuperAdminPhone());
-        contactInfo.setContactEmail(appApplyRequest.getSuperAdminEmail());
+        contactInfo.setMobilePhone(appApplyRequest.getContactPhone());
+        contactInfo.setContactEmail(appApplyRequest.getContactEmail());
         contactInfo.setContactIdDocType("IDENTIFICATION_TYPE_IDCARD");
         contactInfo.setContactIdCardNumber(appApplyRequest.getSuperAdminId());
         contactInfo.setContactType(appApplyRequest.getContactType());
@@ -586,17 +586,15 @@ public class payBiz implements PayApi {
         WxPayApplyment4SubCreateRequest.ContactInfo contactInfo = new WxPayApplyment4SubCreateRequest.ContactInfo();
         contactInfo.setContactName(appApplyRequest.getSuperAdminName());
         // 用于接收微信支付的重要管理信息及日常操作验证码 为空默认管理员的手机
-        contactInfo.setMobilePhone(appApplyRequest.getContactPhone() == null ? appApplyRequest.getSuperAdminPhone()
-                : appApplyRequest.getContactPhone());
+        contactInfo.setMobilePhone(appApplyRequest.getContactPhone());
         // 用于接收微信支付的开户邮件及日常业务通知 为空默认管理员邮箱
-        contactInfo.setContactEmail(appApplyRequest.getContactEmail() == null ? appApplyRequest.getSuperAdminEmail() :
-                appApplyRequest.getContactEmail());
+        contactInfo.setContactEmail(appApplyRequest.getContactEmail());
 
         // 如果为1、主体为“个体工商户/企业/政府机关/事业单位/社会组织”，可选择：LEGAL：经营者/法人，SUPER：经办人
         // 。（经办人：经商户授权办理微信支付业务的人员）。
         //枚举值：LEGAL：经营者/法人、SUPER：经办人
         contactInfo.setContactType(appApplyRequest.getContactType() == null ? null : appApplyRequest.getContactType());
-        if (contactInfo.getContactType() != null && contactInfo.equals("SUPER")) {
+        if (contactInfo.getContactType() != null && contactInfo.getContactType().equals("SUPER")) {
             // 如类型为LEGAL则以下不需要传参
             contactInfo.setContactIdDocType(appApplyRequest.getContactIdDocType() == null ? "IDENTIFICATION_TYPE_IDCARD"
                     : appApplyRequest.getContactIdDocType());
