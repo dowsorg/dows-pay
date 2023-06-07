@@ -235,7 +235,7 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
             throw new RuntimeException(e);
         }
         TransactionsResult.JsapiResult jsapiResult = transactionsResult.getPayInfo
-                (TradeTypeEnum.JSAPI, payClientConfig.getClientConfigs().get(1).getAppId(),
+                (TradeTypeEnum.JSAPI,  payTransactionBo.getAppId(),
                         payClientConfig.getClientConfigs().get(1).getMchId(),
                         this.getWeixinClient(payClientConfig.getClientConfigs().get(1).getAppId()).getConfig().getPrivateKey());
         if (!StringUtil.isEmpty(transactionsResult.getPrepayId())) {
