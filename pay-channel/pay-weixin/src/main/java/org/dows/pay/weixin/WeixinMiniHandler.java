@@ -396,9 +396,8 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
         String arrPath[] = path.split(DateUtil.formatDate(DateUtil.date()));
         if (ObjectUtil.isNotEmpty(arrPath) && arrPath.length > 1) {
             path = arrPath[1];
-            path = "/tmp" + path;
         }
-        log.info("==============================图片路径，{}",path);
-        return path;
+        log.info("==============================图片路径，{}", path);
+        return ":9010/" + path;
     }
 }

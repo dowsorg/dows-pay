@@ -716,9 +716,8 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
         String arrPath[] = path.split(DateUtil.formatDate(DateUtil.date()));
         if (ObjectUtil.isNotEmpty(arrPath) && arrPath.length > 1) {
             path = arrPath[1];
-            path = "/tmp" + path;
         }
-        return path;
+        return ":9010/" + path;
     }
 
 }
