@@ -358,8 +358,8 @@ public class payBiz implements PayApi {
         //超级管理员信息
         ApplymentsRequest.ContactInfo contactInfo = new ApplymentsRequest.ContactInfo();
         contactInfo.setContactName(appApplyRequest.getSuperAdminName());
-        contactInfo.setMobilePhone(appApplyRequest.getSuperAdminPhone());
-        contactInfo.setContactEmail(appApplyRequest.getSuperAdminEmail());
+        contactInfo.setMobilePhone(appApplyRequest.getContactPhone());
+        contactInfo.setContactEmail(appApplyRequest.getContactEmail());
         contactInfo.setContactIdDocType("IDENTIFICATION_TYPE_IDCARD");
         contactInfo.setContactIdCardNumber(appApplyRequest.getSuperAdminId());
         contactInfo.setContactType(appApplyRequest.getContactType());
