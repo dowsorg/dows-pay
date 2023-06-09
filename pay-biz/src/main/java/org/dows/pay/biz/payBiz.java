@@ -517,9 +517,8 @@ public class payBiz implements PayApi {
             List<WxPayApplyment4SubCreateRequest.SubjectInfo.UboInfo> list = new ArrayList<>();
             list.add(uboInfo);
             subjectInfo.setUboInfoList(list);
-            isvCreateBo.setSubjectInfo(subjectInfo);
         }
-
+        isvCreateBo.setSubjectInfo(subjectInfo);
         // 经营资料信息
         isvCreateBo.setCertNo(appApplyRequest.getCertNo());
         isvCreateBo.setCertType(appApplyRequest.getCertType());
@@ -527,32 +526,34 @@ public class payBiz implements PayApi {
         WxPayApplyment4SubCreateRequest.BusinessInfo businessInfo = new WxPayApplyment4SubCreateRequest.BusinessInfo();
         WxPayApplyment4SubCreateRequest.BusinessInfo.SalesInfo salesInfo = new WxPayApplyment4SubCreateRequest.BusinessInfo.SalesInfo();
 
-
         // 经营场景类型
-        List<SalesScenesTypeEnum> salesScenesType = new ArrayList<>();
-        switch (appApplyRequest.getSalesScenesType()) {
-            case "SALES_SCENES_MINI_PROGRAM":
-                salesScenesType.add(SalesScenesTypeEnum.SALES_SCENES_MINI_PROGRAM);
-                break;
-            case "SALES_SCENES_STORE":
-                salesScenesType.add(SalesScenesTypeEnum.SALES_SCENES_STORE);
-                break;
-            case "SALES_SCENES_MP":
-                salesScenesType.add(SalesScenesTypeEnum.SALES_SCENES_MP);
-                break;
-            case "SALES_SCENES_WEB":
-                salesScenesType.add(SalesScenesTypeEnum.SALES_SCENES_WEB);
-                break;
-            case "SALES_SCENES_APP":
-                salesScenesType.add(SalesScenesTypeEnum.SALES_SCENES_APP);
-                break;
-            case "SALES_SCENES_WEWORK":
-                salesScenesType.add(SalesScenesTypeEnum.SALES_SCENES_WEWORK);
-                break;
+        List<SalesScenesTypeEnum> salesScenesTypeList = new ArrayList<>();
+        List<String> salesScenesTypes = Arrays.asList(appApplyRequest.getSalesScenesType().split(","));
+        for (String salesScenesType : salesScenesTypes) {
+            switch (salesScenesType) {
+                case "SALES_SCENES_MINI_PROGRAM":
+                    salesScenesTypeList.add(SalesScenesTypeEnum.SALES_SCENES_MINI_PROGRAM);
+                    break;
+                case "SALES_SCENES_STORE":
+                    salesScenesTypeList.add(SalesScenesTypeEnum.SALES_SCENES_STORE);
+                    break;
+                case "SALES_SCENES_MP":
+                    salesScenesTypeList.add(SalesScenesTypeEnum.SALES_SCENES_MP);
+                    break;
+                case "SALES_SCENES_WEB":
+                    salesScenesTypeList.add(SalesScenesTypeEnum.SALES_SCENES_WEB);
+                    break;
+                case "SALES_SCENES_APP":
+                    salesScenesTypeList.add(SalesScenesTypeEnum.SALES_SCENES_APP);
+                    break;
+                case "SALES_SCENES_WEWORK":
+                    salesScenesTypeList.add(SalesScenesTypeEnum.SALES_SCENES_WEWORK);
+                    break;
+            }
         }
-        salesInfo.setSalesScenesType(salesScenesType);
+        salesInfo.setSalesScenesType(salesScenesTypeList);
         // 线下场景
-        if (appApplyRequest.getSalesScenesType().equals("SALES_SCENES_STORE")) {
+        if (salesInfo.getSalesScenesType().contains(SalesScenesTypeEnum.SALES_SCENES_STORE)) {
             WxPayApplyment4SubCreateRequest.BusinessInfo.SalesInfo.BizStoreInfo bizStoreInfo
                     = new WxPayApplyment4SubCreateRequest.BusinessInfo.SalesInfo.BizStoreInfo();
             bizStoreInfo.setBizStoreName(appApplyRequest.getBizStoreName());
@@ -566,22 +567,29 @@ public class payBiz implements PayApi {
             List<String> indoorPicList = new ArrayList<>();
             indoorPicList.add(appApplyRequest.getTenantIndoorPicture());
             bizStoreInfo.setIndoorPic(indoorPicList);
-        } else if (appApplyRequest.getSalesScenesType().equals("SALES_SCENES_MINI_PROGRAM")) {
+            salesInfo.setBizStoreInfo(bizStoreInfo);
+        } else if (salesInfo.getSalesScenesType().contains(SalesScenesTypeEnum.SALES_SCENES_MINI_PROGRAM)) {
             // 小程序
             WxPayApplyment4SubCreateRequest.BusinessInfo.SalesInfo.MiniProgramInfo miniProgramInfo
                     = new WxPayApplyment4SubCreateRequest.BusinessInfo.SalesInfo.MiniProgramInfo();
-            List<String> miniProgramPics = new ArrayList<>();
-            miniProgramPics.add(appApplyRequest.getAppPicture());
-            miniProgramInfo.setMiniProgramPics(miniProgramPics);
-            miniProgramInfo.setMiniProgramAppid(appApplyRequest.getAppId() == null ? "wx1f2863eb6cdee6a1" :
-                    appApplyRequest.getAppId());
+            if (appApplyRequest.getMiniProgramPic() != null) {
+                List<String> miniProgramPics = new ArrayList<>();
+                miniProgramPics.add(appApplyRequest.getMiniProgramPic());
+                miniProgramInfo.setMiniProgramPics(miniProgramPics);
+            }
+            // 服务商小程序APPID 商家小程序APPID 二选一
+            if (!StringUtil.isEmpty(appApplyRequest.getMiniProgramSubAppid())) {
+                miniProgramInfo.setMiniProgramSubAppid(appApplyRequest.getMiniProgramSubAppid());
+            } else {
+                miniProgramInfo.setMiniProgramAppid(appApplyRequest.getAppId() == null ? "wx1f2863eb6cdee6a1" :
+                        appApplyRequest.getAppId());
+            }
             salesInfo.setMiniProgramInfo(miniProgramInfo);
         }
         businessInfo.setSalesInfo(salesInfo);
         businessInfo.setMerchantShortname(appApplyRequest.getTenantShortName());
         businessInfo.setServicePhone(appApplyRequest.getServicePhone());
         isvCreateBo.setBusinessInfo(businessInfo);
-
         // 超级管理员信息
         WxPayApplyment4SubCreateRequest.ContactInfo contactInfo = new WxPayApplyment4SubCreateRequest.ContactInfo();
         contactInfo.setContactName(appApplyRequest.getSuperAdminName());
@@ -612,17 +620,17 @@ public class payBiz implements PayApi {
                 new WxPayApplyment4SubCreateRequest.SettlementInfo();
         // todo 按照餐饮去送微信
         settlementInfo.setSettlementId("716");
-//        settlementInfo.setActivitiesRate("0");
         settlementInfo.setQualificationType(appApplyRequest.getBusinessScope());
         isvCreateBo.setSettlementInfo(settlementInfo);
-
         // 补充材料
-        WxPayApplyment4SubCreateRequest.AdditionInfo additionInfo =
-                new WxPayApplyment4SubCreateRequest.AdditionInfo();
-        List<String> businessAdditionPics = new ArrayList<>();
-        businessAdditionPics.add(appApplyRequest.getQualificationPicture());
-        additionInfo.setBusinessAdditionPics(businessAdditionPics);
-        isvCreateBo.setAdditionInfo(additionInfo);
+        if (appApplyRequest.getQualificationPicture() != null) {
+            WxPayApplyment4SubCreateRequest.AdditionInfo additionInfo =
+                    new WxPayApplyment4SubCreateRequest.AdditionInfo();
+            List<String> businessAdditionPics = new ArrayList<>();
+            businessAdditionPics.add(appApplyRequest.getQualificationPicture());
+            additionInfo.setBusinessAdditionPics(businessAdditionPics);
+            isvCreateBo.setAdditionInfo(additionInfo);
+        }
         log.info("结束转换参数appApplyRequest{}", isvCreateBo);
         return isvCreateBo;
     }
