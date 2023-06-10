@@ -295,9 +295,16 @@ public class MiniBiz {
                                 WxOpenGsonBuilder.create().fromJson(body, WxFastMaSetNickameResult.class);
                         log.info("设置微信小程序名称返回结果：{}", JSONObject.toJSONString(wxFastMaSetNickameResult));
                         if (wxFastMaSetNickameResult.getErrcode().equals("0")) {
-                            updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
-                                    1, String.valueOf(wxFastMaSetNickameResult.getAuditId()),
-                                    0, 0, wxFastMaSetNickameResult.getErrmsg());
+                            // 有审核id需要审核 无审核id直接通过
+                            if (wxFastMaSetNickameResult.getAuditId() != null) {
+                                updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
+                                        1, String.valueOf(wxFastMaSetNickameResult.getAuditId()),
+                                        0, 0, wxFastMaSetNickameResult.getErrmsg());
+                            } else {
+                                updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
+                                        3, String.valueOf(wxFastMaSetNickameResult.getAuditId()),
+                                        0, 0, wxFastMaSetNickameResult.getErrmsg());
+                            }
                         } else {
                             response.setCode(Integer.valueOf(wxFastMaSetNickameResult.getErrcode()));
                             WxSetNickNameExceptionEnum messageByCode =
