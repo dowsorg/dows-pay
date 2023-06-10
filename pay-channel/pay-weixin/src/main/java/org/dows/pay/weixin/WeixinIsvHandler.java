@@ -8,6 +8,7 @@ import com.alibaba.fastjson.JSON;
 import com.alipay.service.schema.util.StringUtil;
 import com.github.binarywang.wxpay.bean.applyment.WxPayApplyment4SubCreateRequest;
 import com.github.binarywang.wxpay.bean.applyment.WxPayApplymentCreateResult;
+import com.github.binarywang.wxpay.bean.applyment.enums.SalesScenesTypeEnum;
 import com.github.binarywang.wxpay.bean.ecommerce.ApplymentsRequest;
 import com.github.binarywang.wxpay.bean.ecommerce.ApplymentsResult;
 import com.github.binarywang.wxpay.bean.ecommerce.ApplymentsStatusResult;
@@ -293,6 +294,7 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
                     (!ObjectUtil.isEmpty(stringImageUploadResultMap.get("licenseCopyFile"))
                             ? stringImageUploadResultMap.get("licenseCopyFile").getMediaId() : "");
         }
+
         if (request.getSubjectInfo().getIdentityInfo() != null
                 && (request.getSubjectInfo().getIdentityInfo().getIdCardInfo() != null)) {
             //经营者/法人身份证信息 正面照片
@@ -304,6 +306,7 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
                     (!ObjectUtil.isEmpty(stringImageUploadResultMap.get("idCardNationalFile"))
                             ? stringImageUploadResultMap.get("idCardNationalFile").getMediaId() : "");
         }
+
         if (request.getSubjectInfo().getUboInfoList() != null && (request.getSubjectInfo().getUboInfoList().size() > 0)) {
             //受益人列表 受益人正反面照片
             request.getSubjectInfo().getUboInfoList().forEach(
@@ -316,6 +319,7 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
                                         ? stringImageUploadResultMap.get("UboIdDocCopyBackFile" + x.getUboIdDocNumber()).getMediaId() : "");
                     });
         }
+
         if (request.getBusinessInfo().getSalesInfo().getMiniProgramInfo() != null
                 && (request.getBusinessInfo().getSalesInfo().getMiniProgramInfo().getMiniProgramPics() != null)
                 && (request.getBusinessInfo().getSalesInfo().getMiniProgramInfo().getMiniProgramPics().size() > 0)) {
@@ -358,6 +362,7 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
                     });
             request.getBusinessInfo().getSalesInfo().getBizStoreInfo().setIndoorPic(indoorPicList);
         }
+
         if (request.getAdditionInfo() != null && request.getAdditionInfo().getBusinessAdditionPics() != null) {
             //补充资料
             List<String> list = new ArrayList<>();
@@ -377,6 +382,7 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
             String result = this.getWeixinClient(payRequest.getAppId()).postV3WithWechatpaySerial(url, GSON.toJson(request));
             response = GSON.fromJson(result, WxPayApplymentCreateResult.class);
         } catch (WxPayException e) {
+
             e.printStackTrace();
             throw new PayException(e.getMessage());
         }
@@ -617,40 +623,44 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
             }
         }
         // 线下场景图
-        if (!ObjectUtil.isEmpty(isvCreateTyBo.getBusinessInfo()) && !ObjectUtil.isEmpty(isvCreateTyBo.getBusinessInfo().getSalesInfo())
-                && !ObjectUtil.isEmpty(isvCreateTyBo.getBusinessInfo().getSalesInfo().getSalesScenesType().get(0))
-                && isvCreateTyBo.getBusinessInfo().getSalesInfo().getSalesScenesType().get(0).equals("SALES_SCENES_STORE")
-                && !ObjectUtil.isEmpty(isvCreateTyBo.getBusinessInfo().getSalesInfo().getBizStoreInfo())
-                && !ObjectUtil.isEmpty(isvCreateTyBo.getBusinessInfo().getSalesInfo().getBizStoreInfo().getIndoorPic()) ||
-                !ObjectUtil.isEmpty(isvCreateTyBo.getBusinessInfo().getSalesInfo().getBizStoreInfo().getStoreEntrancePic())
-
-        ) {
-            List<String> indoorPics = isvCreateTyBo.getBusinessInfo().getSalesInfo().getBizStoreInfo().getIndoorPic();
-            List<String> storeEntrancePics = isvCreateTyBo.getBusinessInfo().getSalesInfo().getBizStoreInfo().getStoreEntrancePic();
-            indoorPics.forEach(x -> {
-                File indoorPicsFile = new File(getFilePath(x));
-                map.put(x, upload(indoorPicsFile, payRequest));
-            });
-            storeEntrancePics.forEach(x -> {
-                File storeEntrancePicsFile = new File(getFilePath(x));
-                map.put(x, upload(storeEntrancePicsFile, payRequest));
-            });
-        }
-        //小程序图片
         if (!ObjectUtil.isEmpty(isvCreateTyBo.getBusinessInfo())
                 && !ObjectUtil.isEmpty(isvCreateTyBo.getBusinessInfo().getSalesInfo())
-                && !ObjectUtil.isEmpty(isvCreateTyBo.getBusinessInfo().getSalesInfo().getSalesScenesType().get(0))
-                && isvCreateTyBo.getBusinessInfo().getSalesInfo().getSalesScenesType().get(0).equals("SALES_SCENES_MINI_PROGRAM")
-                && !ObjectUtil.isEmpty(isvCreateTyBo.getBusinessInfo().getSalesInfo().getMiniProgramInfo())
-                && !ObjectUtil.isEmpty(isvCreateTyBo.getBusinessInfo().getSalesInfo().getMiniProgramInfo().getMiniProgramPics())) {
-            List<String> miniProgramPics = isvCreateTyBo.getBusinessInfo().getSalesInfo().getMiniProgramInfo().getMiniProgramPics();
-            miniProgramPics.forEach(x -> {
-                File miniProgramPicFile = new File(getFilePath(x));
-                map.put(x, upload(miniProgramPicFile, payRequest));
-            });
-
+                && !ObjectUtil.isEmpty(isvCreateTyBo.getBusinessInfo().getSalesInfo().getSalesScenesType())
+        ) {
+            List<SalesScenesTypeEnum> salesScenesType = isvCreateTyBo.getBusinessInfo().getSalesInfo().getSalesScenesType();
+            // 包含线下
+            if (salesScenesType.contains(SalesScenesTypeEnum.SALES_SCENES_STORE)
+                    && isvCreateTyBo.getBusinessInfo().getSalesInfo().getBizStoreInfo() != null
+            ) {
+                WxPayApplyment4SubCreateRequest.BusinessInfo.SalesInfo.BizStoreInfo bizStoreInfo =
+                        isvCreateTyBo.getBusinessInfo().getSalesInfo().getBizStoreInfo();
+                List<String> storeEntrancePics = bizStoreInfo.getStoreEntrancePic();
+                List<String> indoorPics = bizStoreInfo.getIndoorPic();
+                if (!CollectionUtils.isEmpty(storeEntrancePics)) {
+                    storeEntrancePics.forEach(x -> {
+                        File storeEntrancePicsFile = new File(getFilePath(x));
+                        map.put(x, upload(storeEntrancePicsFile, payRequest));
+                    });
+                }
+                if (!CollectionUtils.isEmpty(indoorPics)) {
+                    indoorPics.forEach(x -> {
+                        File indoorPicsFile = new File(getFilePath(x));
+                        map.put(x, upload(indoorPicsFile, payRequest));
+                    });
+                }
+            }
+            // 包含小程序
+            if (salesScenesType.contains(SalesScenesTypeEnum.SALES_SCENES_MINI_PROGRAM)
+                    && isvCreateTyBo.getBusinessInfo().getSalesInfo().getMiniProgramInfo() != null) {
+                List<String> miniProgramPics = isvCreateTyBo.getBusinessInfo().getSalesInfo().getMiniProgramInfo().getMiniProgramPics();
+                if (!CollectionUtils.isEmpty(miniProgramPics)) {
+                    miniProgramPics.forEach(x -> {
+                        File miniProgramPicFile = new File(getFilePath(x));
+                        map.put(x, upload(miniProgramPicFile, payRequest));
+                    });
+                }
+            }
         }
-
         //受益人列表 受益人正反面照片
         if (!ObjectUtil.isEmpty(isvCreateTyBo.getSubjectInfo()) && !isvCreateTyBo.getSubjectInfo().getIdentityInfo().getOwner()) {
             List<WxPayApplyment4SubCreateRequest.SubjectInfo.UboInfo> uboInfoList
@@ -669,12 +679,15 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
             }
         }
         //补充资料
-        if (!ObjectUtil.isEmpty(isvCreateTyBo.getAdditionInfo())) {
+        if (!ObjectUtil.isEmpty(isvCreateTyBo.getAdditionInfo()) &&
+                !ObjectUtil.isEmpty(isvCreateTyBo.getAdditionInfo().getBusinessAdditionPics())) {
             List<String> businessAdditionPics = isvCreateTyBo.getAdditionInfo().getBusinessAdditionPics();
-            businessAdditionPics.forEach(x -> {
-                File businessAdditionPicFile = new File(getFilePath(x));
-                map.put(x, upload(businessAdditionPicFile, payRequest));
-            });
+            if (!CollectionUtils.isEmpty(businessAdditionPics)) {
+                businessAdditionPics.forEach(x -> {
+                    File businessAdditionPicFile = new File(getFilePath(x));
+                    map.put(x, upload(businessAdditionPicFile, payRequest));
+                });
+            }
         }
         return map;
     }
@@ -697,17 +710,6 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
 
         return ImageUploadResult.fromJson(result);
     }
-//    /**
-//     * 获取文件路径
-//     */
-//    public static String getFilePath(String path){
-//        String arrPath[] = path.split(DateUtil.formatDate(DateUtil.date()));
-//        if (ObjectUtil.isNotEmpty(arrPath)&&arrPath.length>1){
-//            path = arrPath[1];
-//            path = "E:\\有星科技相关\\image\\"+path;
-//        }
-//        return path;
-//    }
 
     /**
      * 获取文件路径
@@ -716,8 +718,20 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
         String arrPath[] = path.split(DateUtil.formatDate(DateUtil.date()));
         if (ObjectUtil.isNotEmpty(arrPath) && arrPath.length > 1) {
             path = arrPath[1];
+            path = "E:\\有星科技相关\\image\\" + path;
         }
-        return ":9010/" + path;
+        return path;
     }
+
+    /**
+     * 获取文件路径
+     */
+//    public static String getFilePath(String path) {
+//        String arrPath[] = path.split(DateUtil.formatDate(DateUtil.date()));
+//        if (ObjectUtil.isNotEmpty(arrPath) && arrPath.length > 1) {
+//            path = arrPath[1];
+//        }
+//        return ":9010/" + path;
+//    }
 
 }
