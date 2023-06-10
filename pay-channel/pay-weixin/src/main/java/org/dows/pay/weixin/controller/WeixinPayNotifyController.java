@@ -10,6 +10,7 @@
 package org.dows.pay.weixin.controller;
 
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alipay.api.kms.aliyun.utils.StringUtils;
 import com.github.binarywang.wxpay.bean.ecommerce.*;
@@ -40,6 +41,7 @@ import org.dows.order.bo.OrderUpdatePaymentStatusBo;
 import org.dows.order.enums.OrderPayTypeEnum;
 import org.dows.pay.api.util.HttpRequestUtils;
 import org.dows.pay.boot.PayClientFactory;
+import org.dows.pay.service.PayTransactionService;
 import org.dows.store.api.StoreInstanceApi;
 import org.dows.store.api.request.StoreInstanceRequest;
 import org.dows.user.api.api.UserCompanyApi;
@@ -91,6 +93,8 @@ public class WeixinPayNotifyController {
 
     private final StoreInstanceApi storeInstanceApi;
 
+    private final PayTransactionService payTransactionService;
+
 
     static {
         BUILDER_LOCAL = ThreadLocal.withInitial(() -> {
@@ -131,13 +135,18 @@ public class WeixinPayNotifyController {
             try {
                 String result = AesUtils.decryptToString(associatedData, nonce, cipherText, apiV3Key);
                 PartnerTransactionsResult transactionsResult = (PartnerTransactionsResult) GSON.fromJson(result, PartnerTransactionsResult.class);
+                log.info("wx pay notify result is {}", JSON.toJSONString(result));
                 PartnerTransactionsNotifyResult notifyResult = new PartnerTransactionsNotifyResult();
-                notifyResult.setRawData(notifyResponse);
-                notifyResult.setResult(transactionsResult);
-                OrderUpdatePaymentStatusBo instanceBo = new OrderUpdatePaymentStatusBo();
-                instanceBo.setPayTime(new Date());
-                instanceBo.setPayState(OrderPayTypeEnum.pay_finish.getCode());
-                orderInstanceBizApiService.updateOrderInstance(instanceBo);
+                if (Objects.equals(transactionsResult.getTradeState(),"SUCCESS")) {
+                    notifyResult.setRawData(notifyResponse);
+                    notifyResult.setResult(transactionsResult);
+                    OrderUpdatePaymentStatusBo instanceBo = new OrderUpdatePaymentStatusBo();
+                    instanceBo.setPayTime(new Date());
+                    instanceBo.setPayState(OrderPayTypeEnum.pay_finish.getCode());
+                    instanceBo.setOrderId(transactionsResult.getOutTradeNo());
+                    orderInstanceBizApiService.updateOrderInstance(instanceBo);
+                    payTransactionService.updateStatusByOrderId(transactionsResult.getOutTradeNo(),OrderPayTypeEnum.pay_finish.getCode());
+                }
                 return notifyResult;
             } catch (IOException | GeneralSecurityException var12) {
                 throw new WxPayException("解析报文异常！", var12);

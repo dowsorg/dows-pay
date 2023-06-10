@@ -61,4 +61,12 @@ public interface PayApi {
      * @return -
      */
     Response uploadWeChatMini(WechatMiniUploadRequest request);
+
+    /**
+     * 查询小程序名称审核状态
+     * @param res
+     * @return
+     */
+    Response getNickNameStatus(PayApplyStatusReq res);
+
 }

@@ -20,6 +20,7 @@ import org.dows.app.api.mini.request.PayApplyStatusReq;
 import org.dows.app.api.mini.request.WechatMiniUploadRequest;
 import org.dows.app.entity.AppApply;
 import org.dows.app.service.AppApplyService;
+import org.dows.auth.api.weixin.WeixinTokenApi;
 import org.dows.framework.api.Response;
 import org.dows.framework.api.exceptions.BizException;
 import org.dows.pay.alipay.AlipayIsvHandler;
@@ -32,6 +33,7 @@ import org.dows.pay.bo.IsvCreateTyBo;
 import org.dows.pay.boot.PayClientConfig;
 import org.dows.pay.entity.PayAccount;
 import org.dows.pay.entity.PayApply;
+import org.dows.pay.form.WxBaseInfoForm;
 import org.dows.pay.service.PayAccountService;
 import org.dows.pay.service.PayApplyService;
 import org.dows.pay.weixin.WeixinIsvHandler;
@@ -63,6 +65,10 @@ public class payBiz implements PayApi {
     private final PayAccountService payAccountService;
     @Lazy
     private final AppApplyService appApplyService;
+    @Lazy
+    private final MiniBiz miniBiz;
+
+    private final WeixinTokenApi weixinTokenApi;
 
     @Override
     public Response isvApply(AppApplyRequest appApplyRequest) {
@@ -224,6 +230,17 @@ public class payBiz implements PayApi {
             log.warn("uploadWeChatMini fail:", e);
             return Response.fail(e.getMessage());
         }
+    }
+
+    @Override
+    public Response getNickNameStatus(PayApplyStatusReq res) {
+        String authorizerAccessToken = weixinTokenApi.getAuthorizerAccessToken(res.getAppId());
+        WxBaseInfoForm wxBaseInfoForm = new WxBaseInfoForm();
+        wxBaseInfoForm.setAppId("wxdb8634feb22a5ab9");
+        wxBaseInfoForm.setAuditId(res.getAuditId());
+        wxBaseInfoForm.setAuthorizerAccessToken(authorizerAccessToken);
+        Response nickNameStatus = miniBiz.getNickNameStatus(wxBaseInfoForm);
+        return nickNameStatus;
     }
 
     private MiniUploadRequest convertUploadReq(WechatMiniUploadRequest request) {

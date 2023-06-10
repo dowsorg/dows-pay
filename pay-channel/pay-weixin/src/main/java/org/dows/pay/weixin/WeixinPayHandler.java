@@ -2,6 +2,7 @@ package org.dows.pay.weixin;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.alipay.service.schema.util.StringUtil;
+import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.binarywang.wxpay.bean.ecommerce.*;
 import com.github.binarywang.wxpay.bean.ecommerce.enums.TradeTypeEnum;
@@ -11,9 +12,15 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.bouncycastle.util.IPAddress;
+import org.dows.auth.biz.cache.CacheFactory;
+import org.dows.auth.biz.cache.LocalCache;
 import org.dows.auth.biz.context.SecurityUtils;
+import org.dows.framework.api.exceptions.BizException;
 import org.dows.order.api.OrderInstanceBizApiService;
 import org.dows.order.bo.OrderInstanceBo;
+import org.dows.order.enums.OrderPayTypeEnum;
 import org.dows.pay.api.PayRequest;
 import org.dows.pay.api.annotation.PayMapping;
 import org.dows.pay.api.enums.PayMethods;
@@ -33,6 +40,9 @@ import org.springframework.util.IdGenerator;
 import org.springframework.util.SimpleIdGenerator;
 
 import java.math.BigDecimal;
+import java.security.PrivateKey;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -63,6 +73,8 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
 
     private final PayLedgersService payLedgersService;
 
+    private static LocalCache<String, String> ORDER_PAY_CACHE = CacheFactory.build(5L, TimeUnit.SECONDS);
+
     /**
      * 单笔支付
      *
@@ -71,16 +83,27 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
      */
     @PayMapping(method = PayMethods.TRADE_ORDER_PAY)
     public TransactionsResult.JsapiResult toPay(PayRequest payRequest) {
-        //先创建交易订单
-        UUID uuid = idGenerator.generateId();
         PayTransactionBo payTransactionBo = (PayTransactionBo)payRequest.getBizModel();
-        PayTransaction payTransaction = BeanUtil.copyProperties(payTransactionBo, PayTransaction.class);
-        payTransaction.setPayChannel(payRequest.getChannel());
-        payTransaction.setTransactionNo(uuid.toString());
-        payTransaction.setAppId(payRequest.getAppId());
-        payTransaction.setMerchantNo(SecurityUtils.getMerchantNo());
-        log.info("WeixinPayHandler.toPay.payTransaction的参数:{}",payTransaction);
-        payTransactionService.save(payTransaction);
+
+        checkRepeatSubmit(payRequest.getAppId(),payTransactionBo.getOrderId());
+
+        PayTransaction payTransaction = getPayTransaction(SecurityUtils.getMerchantNo(),payTransactionBo.getOrderId());
+        if (payTransaction!=null && Objects.equals(payTransaction.getStatus(), OrderPayTypeEnum.pay_finish.getCode())) {
+            throw new BizException(String.format("该笔订单id:%s 已支付", payTransactionBo.getOrderId()));
+        }
+
+        if (payTransaction == null) {
+            //先创建交易订单
+            UUID uuid = idGenerator.generateId();
+            payTransaction = BeanUtil.copyProperties(payTransactionBo, PayTransaction.class);
+            payTransaction.setPayChannel(payRequest.getChannel());
+            payTransaction.setTransactionNo(uuid.toString());
+            payTransaction.setAppId(payRequest.getAppId());
+            payTransaction.setMerchantNo(SecurityUtils.getMerchantNo());
+            log.info("WeixinPayHandler.toPay.payTransaction的参数:{}",payTransaction);
+            payTransactionService.save(payTransaction);
+        }
+
         //组装订单逻辑
         OrderInstanceBo orderInstanceBo = orderInstanceBizApiService.getOne(payTransactionBo.getOrderId());
         PartnerTransactionsRequest.Amount amount =  new PartnerTransactionsRequest.Amount();
@@ -180,6 +203,18 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
                 return  "发起分账失败,原因："+e;
             }
     }
+
+    private PayTransaction getPayTransaction(String merchantNo, String orderId) {
+       return payTransactionService.getByOrderIdAndMerchantNo(merchantNo,orderId);
+    }
+
+    private void checkRepeatSubmit(String appId, String orderId) {
+        String payValue = ORDER_PAY_CACHE.get(String.join(StringPool.UNDERSCORE, appId, orderId));
+        if (payValue!=null) {
+            throw new BizException(String.format("该订单id:%s 请求支付较频繁",orderId));
+        }
+    }
+
     /**
      * 单笔支付无分账
      *
@@ -188,16 +223,26 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
      */
     @PayMapping(method = PayMethods.TRADE_ORDER_PAY_NoAcc)
     public TransactionsResult.JsapiResult toPayNoAcc(PayRequest payRequest) {
-        //先创建交易订单
-        UUID uuid = idGenerator.generateId();
         PayTransactionBo payTransactionBo = (PayTransactionBo)payRequest.getBizModel();
-        PayTransaction payTransaction = BeanUtil.copyProperties(payTransactionBo, PayTransaction.class);
-        payTransaction.setPayChannel(payRequest.getChannel());
-        payTransaction.setTransactionNo(uuid.toString());
-        payTransaction.setAppId(payRequest.getAppId());
-        payTransaction.setMerchantNo(SecurityUtils.getMerchantNo());
-        log.info("WeixinPayHandler.toPay.payTransaction的参数:{}",payTransaction);
-        payTransactionService.save(payTransaction);
+
+        checkRepeatSubmit(payRequest.getAppId(),payTransactionBo.getOrderId());
+
+        PayTransaction payTransaction = getPayTransaction(SecurityUtils.getMerchantNo(),payTransactionBo.getOrderId());
+        if (payTransaction!=null && Objects.equals(payTransaction.getStatus(), OrderPayTypeEnum.pay_finish.getCode())) {
+            throw new BizException(String.format("该笔订单id:%s 已支付", payTransactionBo.getOrderId()));
+        }
+
+        if (payTransaction == null) {
+            //先创建交易订单
+            UUID uuid = idGenerator.generateId();
+            payTransaction = BeanUtil.copyProperties(payTransactionBo, PayTransaction.class);
+            payTransaction.setPayChannel(payRequest.getChannel());
+            payTransaction.setTransactionNo(uuid.toString());
+            payTransaction.setAppId(payRequest.getAppId());
+            payTransaction.setMerchantNo(SecurityUtils.getMerchantNo());
+            log.info("WeixinPayHandler.toPay.payTransaction的参数:{}",payTransaction);
+            payTransactionService.save(payTransaction);
+        }
         //组装订单逻辑
         OrderInstanceBo orderInstanceBo = orderInstanceBizApiService.getOne(payTransactionBo.getOrderId());
         PartnerTransactionsRequest.Amount amount =  new PartnerTransactionsRequest.Amount();
