@@ -310,13 +310,12 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
         //todo 待实现业务逻辑
         WxFastMaQueryNicknameStatusResult response = null;
         try {
-            String authorizerAccessToken = weixinTokenApi.getAuthorizerAccessToken(payRequest.getAppId());
             WxBaseInfoBo wxBaseInfoBo = (WxBaseInfoBo) payRequest.getBizModel();
 //            response = this.getWxOpenMaClient(payRequest.getAppId()).getBasicService().querySetNicknameStatus(wxBaseInfoBo.getAuditId());
             Map<String, String> param = new HashMap<>();
             param.put("audit_id", wxBaseInfoBo.getAuditId());
             HttpClientResult uploadTemplateResult = HttpClientUtils.doPost(WX_GET_NICK_NAME_STATUS +
-                    "?access_token=" + authorizerAccessToken, param, 1);
+                    "?access_token=" + payRequest.getAuthorizerAccessToken(), param, 1);
             String content = uploadTemplateResult.getContent();
             response = WxOpenGsonBuilder.create()
                     .fromJson(content, WxFastMaQueryNicknameStatusResult.class);

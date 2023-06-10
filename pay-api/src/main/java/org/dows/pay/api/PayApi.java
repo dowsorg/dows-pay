@@ -64,9 +64,9 @@ public interface PayApi {
 
     /**
      * 查询小程序名称审核状态
-     * @param auditId
+     * @param res
      * @return
      */
-    Response getNickNameStatus(String auditId);
+    Response getNickNameStatus(PayApplyStatusReq res);
 
 }
