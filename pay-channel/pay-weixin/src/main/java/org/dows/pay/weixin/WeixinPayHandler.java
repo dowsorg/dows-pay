@@ -1,8 +1,6 @@
 package org.dows.pay.weixin;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.net.Ipv4Util;
-import cn.hutool.http.HttpUtil;
 import com.alipay.service.schema.util.StringUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.binarywang.wxpay.bean.ecommerce.*;
@@ -13,13 +11,14 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.bouncycastle.util.IPAddress;
 import org.dows.auth.biz.context.SecurityUtils;
 import org.dows.order.api.OrderInstanceBizApiService;
 import org.dows.order.bo.OrderInstanceBo;
 import org.dows.pay.api.PayRequest;
 import org.dows.pay.api.annotation.PayMapping;
 import org.dows.pay.api.enums.PayMethods;
+import org.dows.pay.api.request.AccountsRequest;
+import org.dows.pay.api.request.AccountsSharingRequest;
 import org.dows.pay.bo.PayTransactionBo;
 import org.dows.pay.boot.PayClientConfig;
 import org.dows.pay.boot.PayClientFactory;
@@ -34,7 +33,6 @@ import org.springframework.util.IdGenerator;
 import org.springframework.util.SimpleIdGenerator;
 
 import java.math.BigDecimal;
-import java.security.PrivateKey;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -137,34 +135,6 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
                     .build();
             log.info("WeixinPayHandler.toPay.updatePayTransaction的参数:{}", updatePayTransaction);
             payTransactionService.updateById(updatePayTransaction);
-            //调用分账申请
-            PayLedgers payLedger = payLedgersService.getOne(Wrappers.lambdaQuery(PayLedgers.class).eq(PayLedgers::getAppId, orderInstanceBo.getAppId()));
-            log.info("WeixinPayHandler.toPay.payLedger的参数:{}",payLedger);
-            List<ProfitSharingRequest.Receiver> receivers = new ArrayList<>();
-            ProfitSharingRequest.Receiver  receiver = new ProfitSharingRequest.Receiver();
-            receiver.setType("MERCHANT_ID");
-            receiver.setAmount(payLedger.getAllocationProfit().multiply(orderInstanceBo.getAgreeAmout().multiply(new BigDecimal(100))).intValue());
-            receiver.setReceiverAccount(payLedger.getChannelAccountNo());
-            receiver.setDescription("店小智");
-            receivers.add(receiver);
-            ProfitSharingRequest profitSharingRequest = new ProfitSharingRequest();
-            profitSharingRequest.setOutOrderNo(orderInstanceBo.getOrderId());
-            profitSharingRequest.setSubMchid(payAccount.getChannelMerchantNo());
-            profitSharingRequest.setTransactionId(orderInstanceBo.getOrderId());
-            profitSharingRequest.setAppid(payRequest.getAppId());
-            profitSharingRequest.setFinish(false);
-            profitSharingRequest.setReceivers(receivers);
-            String url = String.format("%s/v3/ecommerce/profitsharing/orders", this.getWeixinClient(payClientConfig.getClientConfigs().get(1).getAppId()).getPayBaseUrl());
-            try {
-                log.info("WeixinPayHandler.toPay.profitSharingRequest的参数:{}",profitSharingRequest);
-                RsaCryptoUtil.encryptFields(profitSharingRequest, this.getWeixinClient(payClientConfig.getClientConfigs().get(1).getAppId()).getConfig().getVerifier().getValidCertificate());
-                String response = this.getWeixinClient(payClientConfig.getClientConfigs().get(1).getAppId()).postV3WithWechatpaySerial(url, GSON.toJson(profitSharingRequest));
-                ProfitSharingResult profitSharingResult = GSON.fromJson(response, ProfitSharingResult.class);
-                log.info("WeixinPayHandler.toPay.profitSharingResult的参数:{}",profitSharingResult);
-            } catch (WxPayException e) {
-                throw new RuntimeException(e);
-            }
-            result =  transactionsResult.getCodeUrl();
         } else {
             //todo 失败逻辑
             PayTransaction updatePayTransaction = PayTransaction.builder()
@@ -175,6 +145,40 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
             throw new RuntimeException("调用失败");
         }
         return  jsapiResult;
+    }
+    @PayMapping(method = PayMethods.TRADE_ORDER_PAY)
+    public String toAccounts(AccountsRequest accountsRequest) {
+            //调用分账申请
+            OrderInstanceBo orderInstanceBo = orderInstanceBizApiService.getOne(accountsRequest.getOrderId());
+            PayAccount payAccount = payAccountService.getOne(Wrappers.lambdaQuery(PayAccount.class).eq(PayAccount::getChannelAccount, accountsRequest.getAppId()));
+            PayLedgers payLedger = payLedgersService.getOne(Wrappers.lambdaQuery(PayLedgers.class).eq(PayLedgers::getAppId, accountsRequest.getAppId()));
+            log.info("WeixinPayHandler.toPay.payLedger的参数:{}",payLedger);
+            List<AccountsSharingRequest.Receiver> receivers = new ArrayList<>();
+            AccountsSharingRequest.Receiver  receiver = new AccountsSharingRequest.Receiver();
+            receiver.setType("MERCHANT_ID");
+            receiver.setAmount(payLedger.getAllocationProfit().multiply(orderInstanceBo.getAgreeAmout().multiply(new BigDecimal(100))).intValue());
+            receiver.setAccount(payLedger.getChannelAccountNo());
+            receiver.setDescription("店小智");
+            receivers.add(receiver);
+            AccountsSharingRequest profitSharingRequest = new AccountsSharingRequest();
+            profitSharingRequest.setOutOrderNo(orderInstanceBo.getOrderId());
+            profitSharingRequest.setSubMchid(payAccount.getChannelMerchantNo());
+            profitSharingRequest.setTransactionId(orderInstanceBo.getOrderId());
+            profitSharingRequest.setAppid(accountsRequest.getAppId());
+            profitSharingRequest.setFinish(false);
+            profitSharingRequest.setUnfreezeUnsplit(false);
+            profitSharingRequest.setReceivers(receivers);
+            String url = String.format("%s/v3/ecommerce/profitsharing/orders", this.getWeixinClient(payClientConfig.getClientConfigs().get(1).getAppId()).getPayBaseUrl());
+            try {
+                log.info("WeixinPayHandler.toPay.profitSharingRequest的参数:{}",profitSharingRequest);
+                RsaCryptoUtil.encryptFields(profitSharingRequest, this.getWeixinClient(payClientConfig.getClientConfigs().get(1).getAppId()).getConfig().getVerifier().getValidCertificate());
+                String response = this.getWeixinClient(payClientConfig.getClientConfigs().get(1).getAppId()).postV3WithWechatpaySerial(url, GSON.toJson(profitSharingRequest));
+                ProfitSharingResult profitSharingResult = GSON.fromJson(response, ProfitSharingResult.class);
+                log.info("WeixinPayHandler.toPay.profitSharingResult的参数:{}",profitSharingResult);
+                return  "发起分账成功";
+            } catch (WxPayException e) {
+                return  "发起分账失败,原因："+e;
+            }
     }
     /**
      * 单笔支付无分账

@@ -6,14 +6,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dows.framework.api.Response;
 import org.dows.pay.api.PayResponse;
+import org.dows.pay.api.request.AccountsRequest;
 import org.dows.pay.biz.IsvBiz;
 import org.dows.pay.biz.OrderPayBiz;
 import org.dows.pay.form.*;
+import org.dows.pay.weixin.WeixinPayHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.dows.pay.api.PayRequest;
 /**
  * 统一收单
  */
@@ -25,12 +27,19 @@ import org.springframework.web.bind.annotation.RestController;
 public class OrderSettleRest {
     private final OrderPayBiz orderPayBiz;
 
+    private final WeixinPayHandler weixinPayHandler;
     @PostMapping("/orderpay/topay")
     @ApiOperation(value = "去支付")
     public Response<PayResponse> toPay(@RequestBody PayTransactionForm payTransactionForm) {
         return orderPayBiz.toPay(payTransactionForm);
     }
 
+    @PostMapping("/orderpay/toAccounts")
+    @ApiOperation(value = "去分账")
+    public Response<String> toAccounts(@RequestBody AccountsRequest accountsRequest) {
+        String result = weixinPayHandler.toAccounts(accountsRequest);
+        return Response.ok(result);
+    }
     @PostMapping("/orderpay/topayNoAcc")
     @ApiOperation(value = "去支付无分账")
     public Response<PayResponse> topayNoAcc(@RequestBody PayTransactionForm payTransactionForm) {
