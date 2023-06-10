@@ -32,6 +32,7 @@ import org.dows.pay.bo.IsvCreateTyBo;
 import org.dows.pay.boot.PayClientConfig;
 import org.dows.pay.entity.PayAccount;
 import org.dows.pay.entity.PayApply;
+import org.dows.pay.form.WxBaseInfoForm;
 import org.dows.pay.service.PayAccountService;
 import org.dows.pay.service.PayApplyService;
 import org.dows.pay.weixin.WeixinIsvHandler;
@@ -63,6 +64,8 @@ public class payBiz implements PayApi {
     private final PayAccountService payAccountService;
     @Lazy
     private final AppApplyService appApplyService;
+    @Lazy
+    private final MiniBiz miniBiz;
 
     @Override
     public Response isvApply(AppApplyRequest appApplyRequest) {
@@ -224,6 +227,15 @@ public class payBiz implements PayApi {
             log.warn("uploadWeChatMini fail:", e);
             return Response.fail(e.getMessage());
         }
+    }
+
+    @Override
+    public Response getNickNameStatus(String auditId) {
+        WxBaseInfoForm wxBaseInfoForm = new WxBaseInfoForm();
+        wxBaseInfoForm.setAppId("wxdb8634feb22a5ab9");
+        wxBaseInfoForm.setAuditId(auditId);
+        Response nickNameStatus = miniBiz.getNickNameStatus(wxBaseInfoForm);
+        return nickNameStatus;
     }
 
     private MiniUploadRequest convertUploadReq(WechatMiniUploadRequest request) {

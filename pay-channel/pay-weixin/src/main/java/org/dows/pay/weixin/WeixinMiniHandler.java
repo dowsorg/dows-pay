@@ -53,6 +53,8 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
     private final String WX_API_UPLOAD_TEMPLATE_URL = "https://api.weixin.qq.com/wxa/commit";
     // 设置小程序名称
     private final String WX_SET_NICK_NAME = "https://api.weixin.qq.com/wxa/setnickname";
+    // 查询小程序名称审核状态
+    private final String WX_GET_NICK_NAME_STATUS = "https://api.weixin.qq.com/wxa/api_wxa_querynickname";
     // 设置小程序介绍
     private final String WX_SET_SIGN_ATURE = "https://api.weixin.qq.com/cgi-bin/account/modifysignature";
     // 添加类目
@@ -304,12 +306,20 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
      * 查询小程序名称审核状态
      */
     @PayMapping(method = PayMethods.MINI_BASE_STATUS)
-    public WxFastMaQueryNicknameStatusResult getNickNameStatus(PayRequest payRequest) {
+    public WxFastMaQueryNicknameStatusResult getNickNameStatus(PayRequest payRequest) throws Exception {
         //todo 待实现业务逻辑
         WxFastMaQueryNicknameStatusResult response = null;
         try {
+            String authorizerAccessToken = weixinTokenApi.getAuthorizerAccessToken(payRequest.getAppId());
             WxBaseInfoBo wxBaseInfoBo = (WxBaseInfoBo) payRequest.getBizModel();
-            response = this.getWxOpenMaClient(payRequest.getAppId()).getBasicService().querySetNicknameStatus(wxBaseInfoBo.getAuditId());
+//            response = this.getWxOpenMaClient(payRequest.getAppId()).getBasicService().querySetNicknameStatus(wxBaseInfoBo.getAuditId());
+            Map<String, String> param = new HashMap<>();
+            param.put("audit_id", wxBaseInfoBo.getAuditId());
+            HttpClientResult uploadTemplateResult = HttpClientUtils.doPost(WX_GET_NICK_NAME_STATUS +
+                    "?access_token=" + authorizerAccessToken, param, 1);
+            String content = uploadTemplateResult.getContent();
+            response = WxOpenGsonBuilder.create()
+                    .fromJson(content, WxFastMaQueryNicknameStatusResult.class);
         } catch (WxErrorException e) {
             e.printStackTrace();
         }

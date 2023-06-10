@@ -299,31 +299,31 @@ public class MiniBiz {
                                     1, String.valueOf(wxFastMaSetNickameResult.getAuditId()),
                                     0, 0, wxFastMaSetNickameResult.getErrmsg());
                         } else {
-                            updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
-                                    2, null,
-                                    0, 0, wxFastMaSetNickameResult.getErrmsg());
                             response.setCode(Integer.valueOf(wxFastMaSetNickameResult.getErrcode()));
                             WxSetNickNameExceptionEnum messageByCode =
                                     WxSetNickNameExceptionEnum.getMessageByCode(wxFastMaSetNickameResult.getErrcode());
                             if (messageByCode != null) {
-                                response.setDescr("设置小程序昵称失败：" + messageByCode.getMessage());
+                                response.setDescr("设置小程序名称失败：" + messageByCode.getMessage());
                             } else {
-                                response.setDescr("设置小程序昵称失败：" + wxFastMaSetNickameResult.getErrmsg());
+                                response.setDescr("设置小程序名称失败：" + wxFastMaSetNickameResult.getErrmsg());
                             }
+                            updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
+                                    2, null,
+                                    0, 2, response.getDescr());
                             return response;
                         }
                     } else {
                         updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
                                 2, null,
-                                2, 0, "设置小程序昵称内部返回结果为空");
+                                2, 2, "设置小程序名称失败：返回结果为空");
                         response.setCode(500);
                         response.setDescr("设置小程序昵称返回结果为空");
                         return response;
                     }
                 } else {
                     updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
-                            2, null,
-                            2, 0, "设置昵称，内部未查询到小程序相关信息");
+                            0, null,
+                            2, 2, "设置小程序名称失败：内部未查询到小程序相关信息");
                     return Response.failed("未查询到小程序相关信息");
                 }
             }
@@ -338,10 +338,13 @@ public class MiniBiz {
                         WxSetSignatureExceptionEnum messageByCode = WxSetSignatureExceptionEnum.getMessageByCode(errcode);
                         response.setCode(Integer.valueOf(errcode));
                         if (messageByCode != null) {
-                            response.setDescr("设置头像失败：" + messageByCode.getMessage());
+                            response.setDescr("设置小程序头像失败：" + messageByCode.getMessage());
                         } else {
-                            response.setDescr("设置头像失败：" + setHeadImageWxOpenResult.getErrmsg());
+                            response.setDescr("设置小程序头像失败：" + setHeadImageWxOpenResult.getErrmsg());
                         }
+                        updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
+                                -1, null,
+                                0, 2, response.getDescr());
                         return response;
                     }
                 }
@@ -363,11 +366,17 @@ public class MiniBiz {
                         } else {
                             response.setDescr("设置简介失败：" + setSignatureWxOpenResult.getErrmsg());
                         }
+                        updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
+                                -1, null,
+                                0, 2, response.getDescr());
                         return response;
                     }
                 } else {
                     response.setCode(500);
-                    response.setDescr("设置简介返回结果为空");
+                    response.setDescr("设置简介失败：返回结果为空");
+                    updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
+                            -1, null,
+                            0, 2, response.getDescr());
                     return response;
                 }
             }
@@ -393,21 +402,29 @@ public class MiniBiz {
                         if (messageByCode != null) {
                             response.setDescr("设置类目失败：" + messageByCode.getMessage());
                         } else {
-                            response.setDescr("设置简介失败：" + addCategoryWxOpenResult.getErrmsg());
+                            response.setDescr("设置类目失败：" + addCategoryWxOpenResult.getErrmsg());
                         }
-                        return response;
-                    } else {
                         updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
                                 -1, null,
-                                3, 0, "昵称、简介、类目已提交");
-                        log.info("设置微信小程序类目结果：{}", JSONObject.toJSONString(response));
+                                2, 2, response.getDescr());
+                        return response;
+                    } else {
                         response.setCode(0);
-                        response.setDescr("昵称、简介、类目已提交成功");
+                        response.setDescr("设置微信小程序昵称、简介、类目相关信息已提交成功");
+                        // 提交成功
+                        updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
+                                -1, null,
+                                1, 0, "昵称、简介、类目已提交审核");
+                        log.info("设置微信小程序类目结果：{}", JSONObject.toJSONString(response));
                         return response;
                     }
                 } else {
                     response.setCode(500);
                     response.setDescr("设置类目返回结果为空");
+                    // 提交成功
+                    updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
+                            -1, null,
+                            0, 2, response.getDescr());
                     return response;
                 }
             }
@@ -415,7 +432,7 @@ public class MiniBiz {
         } catch (Exception e) {
             updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
                     2, null,
-                    0, 0, "内部错误：" + e.getMessage());
+                    0, 2, "内部错误：" + e.getMessage());
             return Response.failed(e.getMessage());
         }
     }
@@ -436,6 +453,7 @@ public class MiniBiz {
         appBase.setBrief(setWxBaseInfoForm.getSignature());
         appBase.setFirstId(setWxBaseInfoForm.getFirst());
         appBase.setHasFinish(0);
+        appBase.setCerticate(setWxBaseInfoForm.getCerticate());
         AppBase checkAppBase = appBaseService.getOne(queryWrapper);
         if (!Objects.isNull(checkAppBase)) {
             // todo 更新AppApply以及Item
