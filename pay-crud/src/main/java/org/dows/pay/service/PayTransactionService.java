@@ -12,5 +12,8 @@ import org.dows.framework.crud.mybatis.MybatisCrudService;
  */
 public interface PayTransactionService extends MybatisCrudService<PayTransaction> {
 
+    PayTransaction getByOrderIdAndMerchantNo(String merchantNo, String orderId);
+
+    void updateStatusByOrderId(String outTradeNo, Integer code);
 }
 
