@@ -53,6 +53,12 @@ public class WxFastMaCategoryForm implements BizForm {
     @ApiModelProperty("资质信息")
     private List<WxFastMaCategoryBo.Certificate> certicates;
 
+    /**
+     * 二级类目ID.
+     */
+    @ApiModelProperty("接口调用凭证，该参数为 URL 参数，非 Body 参数。使用authorizer_access_token")
+    private String authorizerAccessToken;
+
     @Data
     public static class Certificate {
         @ApiModelProperty("key")

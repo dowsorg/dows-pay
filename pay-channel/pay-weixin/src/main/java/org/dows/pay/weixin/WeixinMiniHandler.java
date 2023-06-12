@@ -30,6 +30,7 @@ import org.dows.pay.api.enums.PayMethods;
 import org.dows.pay.api.request.MiniUploadRequest;
 import org.dows.pay.bo.WxBaseInfoBo;
 import org.dows.pay.bo.WxFastMaCategoryBo;
+import org.dows.pay.form.WxFastMaCategoryForm;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -188,6 +189,8 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
         list.add(wxFastMaCategory);
         Map<String, String> param = new HashMap<>();
         param.put("categories", JSONObject.toJSONString(list));
+        String s = JSONObject.toJSONString(param);
+        System.out.println(s);
         HttpClientResult uploadTemplateResult = HttpClientUtils.doPost(WX_SET_ADD_CATEGORY +
                 "?access_token=" + payRequest.getAuthorizerAccessToken(), param, 1);
         String content = uploadTemplateResult.getContent();
