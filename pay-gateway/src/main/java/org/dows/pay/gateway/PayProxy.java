@@ -3,6 +3,7 @@ package org.dows.pay.gateway;
 import cn.hutool.json.JSONUtil;
 import lombok.Builder;
 import lombok.Data;
+import org.dows.framework.api.exceptions.BizException;
 import org.dows.pay.api.DefaultPayResponse;
 import org.dows.pay.api.PayHandler;
 import org.dows.pay.api.PayRequest;
@@ -42,10 +43,14 @@ public class PayProxy {
             DefaultPayResponse defaultPayResponse = new DefaultPayResponse();
             defaultPayResponse.setBody(JSONUtil.toJsonStr(obj));
             return defaultPayResponse;
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
         } catch (InvocationTargetException e) {
-            throw new RuntimeException(e);
+            Throwable targetException = e.getTargetException();
+            if (targetException!=null) {
+                throw new BizException(targetException.getMessage());
+            }
+            throw new BizException("方法内部报错");
+        } catch (Exception e) {
+            throw new BizException("方法内部报错");
         }
     }
 }

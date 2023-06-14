@@ -74,7 +74,12 @@ public class OrderPayBiz {
         // 填充参数openid
         orderPayRequest.setSubOpenid(payTransactionForm.getSubOpenid());
         // 请求分发
-        Response<PayResponse> response = payDispatcher.dispatcher(orderPayRequest);
+        Response<PayResponse> response = null;
+        try {
+            response = payDispatcher.dispatcher(orderPayRequest);
+        } catch (Exception e) {
+            return Response.fail(e.getMessage());
+        }
         PayResponse data = response.getData();
         log.info("返回结果:{}", data);
         return response;

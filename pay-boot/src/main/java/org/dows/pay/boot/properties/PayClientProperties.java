@@ -57,7 +57,7 @@ public class PayClientProperties {
     /**
      * 微信支付异步回掉地址，通知url必须为直接可访问的url，不能携带参数.
      */
-    private String notifyUrl = "http://81.69.171.79:9010/nztest/payNotify";
+    private String notifyUrl = "https://www.dxzsaas.com/user/nztest/payNotify";
     /**
      * 生产ip配置
      */
