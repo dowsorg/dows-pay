@@ -131,7 +131,7 @@ public class WeixinPayNotifyController {
             String cipherText = resource.getCiphertext();
             String associatedData = resource.getAssociatedData();
             String nonce = resource.getNonce();
-            String apiV3Key = this.payClientFactory.getWeixinClient(notifyResponse.getId()).getConfig().getApiV3Key();
+            String apiV3Key = this.payClientFactory.getWeixinClient("wxdb8634feb22a5ab9").getConfig().getApiV3Key();
 
             try {
                 String result = AesUtils.decryptToString(associatedData, nonce, cipherText, apiV3Key);
