@@ -152,8 +152,6 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
                         payClientConfig.getClientConfigs().get(1).getMchId(),
                         this.getWeixinClient(payClientConfig.getClientConfigs().get(1).getAppId()).getConfig().getPrivateKey());
         if (!StringUtil.isEmpty(transactionsResult.getPrepayId())) {
-            System.out.println("调用成功");
-            // todo 记录 pay_transaction表，可能有多次（失败），但只有一次是成功的
             //下单成功
             PayTransaction updatePayTransaction = PayTransaction.builder()
                     .id(payTransaction.getId())
@@ -291,7 +289,7 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
                         this.getWeixinClient(payClientConfig.getClientConfigs().get(1).getAppId()).getConfig().getPrivateKey());
         if (!StringUtil.isEmpty(transactionsResult.getPrepayId())) {
             ORDER_PAY_CACHE.set(String.join(StringPool.UNDERSCORE, payRequest.getAppId(), payTransactionBo.getOrderId()),"success");
-            System.out.println("调用成功");
+            log.info("调用成功");
         } else {
             //todo 失败逻辑
             PayTransaction updatePayTransaction = PayTransaction.builder()
