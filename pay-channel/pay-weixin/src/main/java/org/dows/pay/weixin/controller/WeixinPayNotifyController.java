@@ -119,6 +119,7 @@ public class WeixinPayNotifyController {
 
     @PostMapping("/payNotify")
     public PartnerTransactionsNotifyResult wxPayNotify(HttpServletRequest request, HttpServletResponse response) throws WxPayException {
+        log.info("wxPayNotify start......");
         String notifyData = HttpRequestUtils.getRequestParam(request).toString();
         String requestHeader = request.getHeader("WECHAT_PAY_SIGNATURE");
         SignatureHeader header = JSONObject.parseObject(requestHeader, SignatureHeader.class);
