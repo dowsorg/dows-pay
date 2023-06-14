@@ -2,6 +2,7 @@ package org.dows.pay.weixin;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.io.resource.InputStreamResource;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
@@ -10,6 +11,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.binarywang.wxpay.bean.ecommerce.ApplymentsRequest;
 import com.github.binarywang.wxpay.bean.media.ImageUploadResult;
+import com.github.binarywang.wxpay.service.WxPayService;
 import com.github.binarywang.wxpay.v3.WechatPayUploadHttpPost;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -32,13 +34,25 @@ import org.dows.pay.api.annotation.PayMapping;
 import org.dows.pay.api.enums.PayMethods;
 import org.dows.pay.api.request.MiniUploadRequest;
 import org.dows.pay.bo.Categories;
+import org.dows.pay.bo.UploadBo;
 import org.dows.pay.bo.WxBaseInfoBo;
 import org.dows.pay.bo.WxFastMaCategoryBo;
 import org.dows.pay.form.WxFastMaCategoryForm;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.*;
@@ -64,6 +78,8 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
     private final String WX_SET_SIGN_ATURE = "https://api.weixin.qq.com/cgi-bin/account/modifysignature";
     // 添加类目
     private final String WX_SET_ADD_CATEGORY = "https://api.weixin.qq.com/cgi-bin/wxopen/addcategory";
+    // 添加类目
+    private final String WX_SET_FILED_URL = "https://api.weixin.qq.com/cgi-bin/media/upload";
 
 
     private static final Gson GSON = new GsonBuilder().create();
@@ -183,9 +199,14 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
         if (!ObjectUtil.isEmpty(certicates)) {
             certicates.forEach(x -> {
                 if (!ObjectUtil.isEmpty(x.getValue())) {
-                    File uboIdDocCopyFile = new File(getFilePath(x.getValue()));
-                    String mediaId = upload(uboIdDocCopyFile, payRequest).getMediaId();
-                    x.setValue(mediaId);
+//                    File uboIdDocCopyFile = new File(getFilePath(x.getValue()));
+                    String uploadimg = uploadimg(getFilePath(x.getValue()));
+                    if (null != uploadimg) {
+                        UploadBo uploadBo = JSONObject.parseObject(uploadimg, UploadBo.class);
+                        x.setValue(uploadBo.getMedia_id());
+                    } else {
+                        throw new BizException("文件上传失败");
+                    }
                 }
             });
         }
@@ -195,17 +216,17 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
         Categories categories = new Categories();
         categories.setCategories(list);
         String categoriesJson = JSONObject.toJSONString(categories);
-//        Map param = JSONObject.parseObject(categoriesJson, Map.class);
+        String post = HttpUtil.post(WX_SET_ADD_CATEGORY +
+                "?access_token=" + payRequest.getAuthorizerAccessToken(), categoriesJson);
+        System.out.println(post);
+        response = (WxOpenResult) WxOpenGsonBuilder.create().fromJson(post, WxOpenResult.class);
+        //        Map param = JSONObject.parseObject(categoriesJson, Map.class);
 //        String content = uploadTemplateResult.getContent();
 //        HttpResponse execute = HttpRequest.post(WX_SET_ADD_CATEGORY +
 //                "?access_token=" + payRequest.getAuthorizerAccessToken()).body(categoriesJson).execute();
 //        response = WxOpenGsonBuilder.create().fromJson(content, WxOpenResult.class);
 //response = this.getWxOpenMaClient(payRequest.getAppId()).getBasicService().addCategory
 //       (list);
-        String post = HttpUtil.post(WX_SET_ADD_CATEGORY +
-                "?access_token=" + payRequest.getAuthorizerAccessToken(), categoriesJson);
-        System.out.println(post);
-        response = (WxOpenResult) WxOpenGsonBuilder.create().fromJson(post, WxOpenResult.class);
         return response;
     }
 
@@ -400,6 +421,28 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
             e.printStackTrace();
         }
         return ImageUploadResult.fromJson(result);
+    }
+
+    /**
+     * 小程序上传文件接口
+     */
+    public String uploadimg(String path) {
+        String componentAccessToken = weixinTokenApi.getComponentAccessToken();
+        RestTemplate restTemplate = new RestTemplate();
+        URI uri = UriComponentsBuilder.fromHttpUrl("https://api.weixin.qq.com/cgi-bin/media/upload")
+                .queryParam("access_token", componentAccessToken)
+                .queryParam("type", "image")
+                .build().toUri();
+        FileSystemResource fileSystemResource = new FileSystemResource(path);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        /*Content-Disposition: form-data; name="media";filename="wework.txt"; filelength=6*/
+        ContentDisposition build = ContentDisposition.builder("form-data").filename(fileSystemResource.getFilename()).build();
+        headers.setContentDisposition(build);
+        MultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
+        params.add("media", fileSystemResource);
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(params, headers);
+        return restTemplate.postForObject(uri, requestEntity, String.class);
     }
 
 //    public static String getFilePath(String path) {
