@@ -1,5 +1,6 @@
 package org.dows.pay.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import org.dows.framework.crud.mybatis.MybatisCrudServiceImpl;
 import org.dows.pay.mapper.PayTransactionMapper;
 import org.dows.pay.entity.PayTransaction;
@@ -26,7 +27,7 @@ public class PayTransactionServiceImpl extends MybatisCrudServiceImpl<PayTransac
     @Override
     public PayTransaction getByOrderIdAndMerchantNo(String merchantNo, String orderId) {
         return this.lambdaQuery()
-                .eq(PayTransaction::getMerchantNo,merchantNo)
+                .eq(StrUtil.isNotEmpty(merchantNo),PayTransaction::getMerchantNo,merchantNo)
                 .eq(PayTransaction::getOrderId,orderId)
                 .last(" limit 1").one();
     }
