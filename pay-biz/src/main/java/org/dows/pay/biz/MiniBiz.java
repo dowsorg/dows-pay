@@ -264,7 +264,7 @@ public class MiniBiz {
     public Response setWxinApplyInfo(SetWxBaseInfoForm setWxBaseInfoForm) {
         String merchantNo = SecurityUtils.getMerchantNo();
         if (StringUtils.isBlank(merchantNo)) {
-            merchantNo = "xhr0001";
+            merchantNo = "xhr0002";
         }
         try {
             saveOrUpdateAppBase(setWxBaseInfoForm, merchantNo);
@@ -398,6 +398,11 @@ public class MiniBiz {
                 // todo
                 WxFastMaCategoryForm wxFastMaCategoryForm = BeanUtil.copyProperties(setWxBaseInfoForm, WxFastMaCategoryForm.class);
                 wxFastMaCategoryForm.setAuthorizerAccessToken(authorizerAccessToken);
+                if (setWxBaseInfoForm.getSecond() == null) {
+                    wxFastMaCategoryForm.setSecond(670);
+                } else {
+                    wxFastMaCategoryForm.setSecond(setWxBaseInfoForm.getSecond());
+                }
                 List<WxFastMaCategoryBo.Certificate> certicates = new ArrayList<>();
                 WxFastMaCategoryBo.Certificate certificate = new WxFastMaCategoryBo.Certificate();
                 certificate.setKey("资质证书");
@@ -428,7 +433,7 @@ public class MiniBiz {
                         // 提交成功
                         updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
                                 -1, null,
-                                1, 0, "昵称、简介、类目已提交审核");
+                                3, 0, "昵称、简介、类目已提交审核");
                         log.info("设置微信小程序类目结果：{}", JSONObject.toJSONString(response));
                         return response;
                     }
@@ -467,6 +472,11 @@ public class MiniBiz {
         appBase.setAppName(setWxBaseInfoForm.getNickName());
         appBase.setBrief(setWxBaseInfoForm.getSignature());
         appBase.setFirstId(setWxBaseInfoForm.getFirst());
+        if (setWxBaseInfoForm.getSecond() != null) {
+            appBase.setSecondId(setWxBaseInfoForm.getSecond());
+        } else {
+            appBase.setSecondId(225);
+        }
         appBase.setHasFinish(0);
         appBase.setCerticate(setWxBaseInfoForm.getCerticate());
         AppBase checkAppBase = appBaseService.getOne(queryWrapper);
@@ -480,7 +490,6 @@ public class MiniBiz {
         } else {
             appBase.setMerchantNo(merchantNo);
             appBase.setAppId(setWxBaseInfoForm.getMerchantAppId());
-            appBase.setSecondId(25);
             appBase.setAppType(1);
             appBaseService.save(appBase);
             log.info("保存AppBase");
