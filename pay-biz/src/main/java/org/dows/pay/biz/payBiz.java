@@ -578,11 +578,15 @@ public class payBiz implements PayApi {
             bizStoreInfo.setBizStoreAddress(appApplyRequest.getBizStoreAddress());
             // 线下场所门头照片
             List<String> storeEntrancePicList = new ArrayList<>();
-            storeEntrancePicList.add(appApplyRequest.getTenantDoorPicture());
+            if (appApplyRequest.getTenantDoorPicture() != null) {
+                storeEntrancePicList.add(appApplyRequest.getTenantDoorPicture());
+            }
             bizStoreInfo.setStoreEntrancePic(storeEntrancePicList);
             // 线下场所内部照片
             List<String> indoorPicList = new ArrayList<>();
-            indoorPicList.add(appApplyRequest.getTenantIndoorPicture());
+            if (appApplyRequest.getTenantIndoorPicture() != null) {
+                indoorPicList.add(appApplyRequest.getTenantIndoorPicture());
+            }
             bizStoreInfo.setIndoorPic(indoorPicList);
             salesInfo.setBizStoreInfo(bizStoreInfo);
         } else if (salesInfo.getSalesScenesType().contains(SalesScenesTypeEnum.SALES_SCENES_MINI_PROGRAM)) {

@@ -278,6 +278,7 @@ public class MiniBiz {
             WxOpenResult setSignatureWxOpenResult;
             WxOpenResult setHeadImageWxOpenResult;
             WxOpenResult addCategoryWxOpenResult;
+
             // 设置昵称
             if (setWxBaseInfoForm.getNickName() != null) {
                 if (StringUtils.isEmpty(setWxBaseInfoForm.getCerticate())) {
@@ -415,7 +416,8 @@ public class MiniBiz {
                     String body = addCategoryResponse.getData().getBody();
                     addCategoryWxOpenResult = WxOpenGsonBuilder.create().fromJson(body, WxOpenResult.class);
                     String errcode = addCategoryWxOpenResult.getErrcode();
-                    if (!errcode.equals("0")) {
+                    // 53304已存在
+                    if (!errcode.equals("0") && !errcode.equals("53304")) {
                         WxSetSignatureExceptionEnum messageByCode = WxSetSignatureExceptionEnum.getMessageByCode(errcode);
                         response.setCode(Integer.valueOf(errcode));
                         if (messageByCode != null) {
@@ -475,7 +477,7 @@ public class MiniBiz {
         if (setWxBaseInfoForm.getSecond() != null) {
             appBase.setSecondId(setWxBaseInfoForm.getSecond());
         } else {
-            appBase.setSecondId(225);
+            appBase.setSecondId(632);
         }
         appBase.setHasFinish(0);
         appBase.setCerticate(setWxBaseInfoForm.getCerticate());
