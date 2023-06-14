@@ -263,9 +263,9 @@ public class MiniBiz {
      */
     public Response setWxinApplyInfo(SetWxBaseInfoForm setWxBaseInfoForm) {
         String merchantNo = SecurityUtils.getMerchantNo();
-//        if (StringUtils.isBlank(merchantNo)) {
-//            merchantNo = "xhr0001";
-//        }
+        if (StringUtils.isBlank(merchantNo)) {
+            merchantNo = "xhr0001";
+        }
         try {
             saveOrUpdateAppBase(setWxBaseInfoForm, merchantNo);
             log.info("获取商户信息，merchantNo：{}", merchantNo);
@@ -280,58 +280,64 @@ public class MiniBiz {
             WxOpenResult addCategoryWxOpenResult;
             // 设置昵称
             if (setWxBaseInfoForm.getNickName() != null) {
-                PayApplyStatusReq req = new PayApplyStatusReq();
-                req.setMerchantNo(merchantNo);
-                req.setAppId(setWxBaseInfoForm.getMerchantAppId());
-                req.setApplyType(1);
-                Response<AppApplyAndItemResponse> applyInfoByMerchantNo = appApplyApi.getApplyInfoByMerchantNo(req);
-                if (applyInfoByMerchantNo != null) {
-                    String certPicture = applyInfoByMerchantNo.getData().getCertPicture();
-                    wxBaseInfoForm.setLicense(certPicture);
-                    Response<PayResponse> setNickNameResponse = setNickName(wxBaseInfoForm);
-                    if (setNickNameResponse != null) {
-                        String body = setNickNameResponse.getData().getBody();
-                        wxFastMaSetNickameResult =
-                                WxOpenGsonBuilder.create().fromJson(body, WxFastMaSetNickameResult.class);
-                        log.info("设置微信小程序名称返回结果：{}", JSONObject.toJSONString(wxFastMaSetNickameResult));
-                        if (wxFastMaSetNickameResult.getErrcode().equals("0")) {
-                            // 有审核id需要审核 无审核id直接通过
-                            if (wxFastMaSetNickameResult.getAuditId() != null) {
-                                updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
-                                        1, String.valueOf(wxFastMaSetNickameResult.getAuditId()),
-                                        0, 0, wxFastMaSetNickameResult.getErrmsg());
-                            } else {
-                                updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
-                                        3, String.valueOf(wxFastMaSetNickameResult.getAuditId()),
-                                        0, 0, wxFastMaSetNickameResult.getErrmsg());
-                            }
-                        } else {
-                            response.setCode(Integer.valueOf(wxFastMaSetNickameResult.getErrcode()));
-                            WxSetNickNameExceptionEnum messageByCode =
-                                    WxSetNickNameExceptionEnum.getMessageByCode(wxFastMaSetNickameResult.getErrcode());
-                            if (messageByCode != null) {
-                                response.setDescr("设置小程序名称失败：" + messageByCode.getMessage());
-                            } else {
-                                response.setDescr("设置小程序名称失败：" + wxFastMaSetNickameResult.getErrmsg());
-                            }
-                            updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
-                                    2, null,
-                                    0, 2, response.getDescr());
-                            return response;
-                        }
+                if (StringUtils.isEmpty(setWxBaseInfoForm.getCerticate())) {
+                    PayApplyStatusReq req = new PayApplyStatusReq();
+                    req.setMerchantNo(merchantNo);
+                    req.setAppId(setWxBaseInfoForm.getMerchantAppId());
+                    req.setApplyType(1);
+                    Response<AppApplyAndItemResponse> applyInfoByMerchantNo = appApplyApi.getApplyInfoByMerchantNo(req);
+                    if (!Objects.isNull(applyInfoByMerchantNo) && !Objects.isNull(applyInfoByMerchantNo.getData().getCertPicture())) {
+                        String certPicture = applyInfoByMerchantNo.getData().getCertPicture();
+                        wxBaseInfoForm.setLicense(certPicture);
                     } else {
                         updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
                                 2, null,
-                                2, 2, "设置小程序名称失败：返回结果为空");
+                                2, 2, "设置小程序名称失败：营业执照未找到历史记录，请上传营业执照");
                         response.setCode(500);
-                        response.setDescr("设置小程序昵称返回结果为空");
+                        response.setDescr("设置小程序名称失败：营业执照未找到历史记录，请上传营业执照");
+                        return response;
+                    }
+                } else {
+                    wxBaseInfoForm.setLicense(setWxBaseInfoForm.getCerticate());
+                }
+                Response<PayResponse> setNickNameResponse = setNickName(wxBaseInfoForm);
+                if (setNickNameResponse != null) {
+                    String body = setNickNameResponse.getData().getBody();
+                    wxFastMaSetNickameResult =
+                            WxOpenGsonBuilder.create().fromJson(body, WxFastMaSetNickameResult.class);
+                    log.info("设置微信小程序名称返回结果：{}", JSONObject.toJSONString(wxFastMaSetNickameResult));
+                    if (wxFastMaSetNickameResult.getErrcode().equals("0")) {
+                        // 有审核id需要审核 无审核id直接通过
+                        if (wxFastMaSetNickameResult.getAuditId() != null) {
+                            updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
+                                    1, String.valueOf(wxFastMaSetNickameResult.getAuditId()),
+                                    0, 0, wxFastMaSetNickameResult.getErrmsg());
+                        } else {
+                            updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
+                                    3, String.valueOf(wxFastMaSetNickameResult.getAuditId()),
+                                    0, 0, wxFastMaSetNickameResult.getErrmsg());
+                        }
+                    } else {
+                        response.setCode(Integer.valueOf(wxFastMaSetNickameResult.getErrcode()));
+                        WxSetNickNameExceptionEnum messageByCode =
+                                WxSetNickNameExceptionEnum.getMessageByCode(wxFastMaSetNickameResult.getErrcode());
+                        if (messageByCode != null) {
+                            response.setDescr("设置小程序名称失败：" + messageByCode.getMessage());
+                        } else {
+                            response.setDescr("设置小程序名称失败：" + wxFastMaSetNickameResult.getErrmsg());
+                        }
+                        updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
+                                2, null,
+                                0, 2, response.getDescr());
                         return response;
                     }
                 } else {
                     updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
-                            0, null,
-                            2, 2, "设置小程序名称失败：内部未查询到小程序相关信息");
-                    return Response.failed("未查询到小程序相关信息");
+                            2, null,
+                            2, 2, "设置小程序名称失败：返回结果为空");
+                    response.setCode(500);
+                    response.setDescr("设置小程序昵称返回结果为空");
+                    return response;
                 }
             }
             // 设置头像
@@ -391,6 +397,7 @@ public class MiniBiz {
             if (!StringUtils.isBlank(String.valueOf(setWxBaseInfoForm.getFirst())) && setWxBaseInfoForm.getCerticate() != null) {
                 // todo
                 WxFastMaCategoryForm wxFastMaCategoryForm = BeanUtil.copyProperties(setWxBaseInfoForm, WxFastMaCategoryForm.class);
+                wxFastMaCategoryForm.setAuthorizerAccessToken(authorizerAccessToken);
                 List<WxFastMaCategoryBo.Certificate> certicates = new ArrayList<>();
                 WxFastMaCategoryBo.Certificate certificate = new WxFastMaCategoryBo.Certificate();
                 certificate.setKey("资质证书");
@@ -435,6 +442,7 @@ public class MiniBiz {
                     return response;
                 }
             }
+
             return response;
         } catch (Exception e) {
             updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
