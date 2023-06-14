@@ -115,12 +115,12 @@ public class SetWxBaseInfoForm implements BizForm{
      * 一级类目ID.
      */
     @ApiModelProperty("一级类目ID")
-    private int first;
+    private Integer first;
     /**
      * 二级类目ID.
      */
     @ApiModelProperty("二级类目ID")
-    private int second;
+    private Integer second;
 
     @ApiModelProperty("资质信息")
     private String certicate;

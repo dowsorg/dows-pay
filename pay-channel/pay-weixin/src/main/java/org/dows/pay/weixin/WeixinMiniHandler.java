@@ -3,6 +3,9 @@ package org.dows.pay.weixin;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpResponse;
+import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.binarywang.wxpay.bean.ecommerce.ApplymentsRequest;
@@ -28,6 +31,7 @@ import org.dows.pay.api.PayRequest;
 import org.dows.pay.api.annotation.PayMapping;
 import org.dows.pay.api.enums.PayMethods;
 import org.dows.pay.api.request.MiniUploadRequest;
+import org.dows.pay.bo.Categories;
 import org.dows.pay.bo.WxBaseInfoBo;
 import org.dows.pay.bo.WxFastMaCategoryBo;
 import org.dows.pay.form.WxFastMaCategoryForm;
@@ -170,7 +174,7 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
     @PayMapping(method = PayMethods.MINI_CATEGORY_ADD)
     public WxOpenResult addCategory(PayRequest payRequest) throws Exception {
         //todo 待实现业务逻辑
-        WxOpenResult response;
+        WxOpenResult response = null;
         List<WxFastMaCategory> list = new ArrayList<>();
         WxFastMaCategory wxFastMaCategory = new WxFastMaCategory();
         WxFastMaCategoryBo wxFastMaCategoryBo = (WxFastMaCategoryBo) payRequest.getBizModel();
@@ -187,15 +191,21 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
         }
         BeanUtil.copyProperties(wxFastMaCategoryBo, wxFastMaCategory);
         list.add(wxFastMaCategory);
-        Map<String, String> param = new HashMap<>();
-        param.put("categories", JSONObject.toJSONString(list));
-        String s = JSONObject.toJSONString(param);
-        System.out.println(s);
-        HttpClientResult uploadTemplateResult = HttpClientUtils.doPost(WX_SET_ADD_CATEGORY +
-                "?access_token=" + payRequest.getAuthorizerAccessToken(), param, 1);
-        String content = uploadTemplateResult.getContent();
-        response = WxOpenGsonBuilder.create().fromJson(content, WxOpenResult.class);
-//            response = this.getWxOpenMaClient(payRequest.getAppId()).getBasicService().addCategory(list);
+
+        Categories categories = new Categories();
+        categories.setCategories(list);
+        String categoriesJson = JSONObject.toJSONString(categories);
+//        Map param = JSONObject.parseObject(categoriesJson, Map.class);
+//        String content = uploadTemplateResult.getContent();
+//        HttpResponse execute = HttpRequest.post(WX_SET_ADD_CATEGORY +
+//                "?access_token=" + payRequest.getAuthorizerAccessToken()).body(categoriesJson).execute();
+//        response = WxOpenGsonBuilder.create().fromJson(content, WxOpenResult.class);
+//response = this.getWxOpenMaClient(payRequest.getAppId()).getBasicService().addCategory
+//       (list);
+        String post = HttpUtil.post(WX_SET_ADD_CATEGORY +
+                "?access_token=" + payRequest.getAuthorizerAccessToken(), categoriesJson);
+        System.out.println(post);
+        response = (WxOpenResult) WxOpenGsonBuilder.create().fromJson(post, WxOpenResult.class);
         return response;
     }
 
