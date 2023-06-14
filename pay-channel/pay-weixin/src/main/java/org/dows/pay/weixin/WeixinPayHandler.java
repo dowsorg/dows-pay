@@ -39,6 +39,7 @@ import org.dows.pay.service.PayAccountService;
 import org.dows.pay.service.PayLedgersService;
 import org.dows.pay.service.PayTransactionService;
 import org.springframework.stereotype.Service;
+import org.springframework.util.DigestUtils;
 import org.springframework.util.IdGenerator;
 import org.springframework.util.SimpleIdGenerator;
 
@@ -99,7 +100,7 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
             //先创建交易订单
             payTransaction = BeanUtil.copyProperties(payTransactionBo, PayTransaction.class);
             payTransaction.setPayChannel(payRequest.getChannel());
-            payTransaction.setTransactionNo(IdUtil.fastSimpleUUID());
+            payTransaction.setTransactionNo(DigestUtils.md5DigestAsHex(payTransactionBo.getOrderId().getBytes()));
             payTransaction.setAppId(payRequest.getAppId());
             payTransaction.setMerchantNo(SecurityUtils.getMerchantNo());
             payTransaction.setDt(new Date());
