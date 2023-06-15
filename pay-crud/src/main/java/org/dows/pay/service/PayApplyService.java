@@ -12,7 +12,7 @@ import org.dows.framework.crud.mybatis.MybatisCrudService;
  */
 public interface PayApplyService extends MybatisCrudService<PayApply> {
 
-    Long createPayApply(String merchantNo, String appId);
+    Long createPayApply(String merchantNo, String appId, String applyId);
 
     void updateApplyNoById(Long payApplyId, String applyId);
 
