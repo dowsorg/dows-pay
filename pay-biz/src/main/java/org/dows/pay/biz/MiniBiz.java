@@ -474,10 +474,20 @@ public class MiniBiz {
         appBase.setAppName(setWxBaseInfoForm.getNickName());
         appBase.setBrief(setWxBaseInfoForm.getSignature());
         appBase.setFirstId(setWxBaseInfoForm.getFirst());
+        if (setWxBaseInfoForm.getFirstName() != null) {
+            appBase.setFirstName(setWxBaseInfoForm.getFirstName());
+        } else {
+            appBase.setFirstName("餐饮服务");
+        }
         if (setWxBaseInfoForm.getSecond() != null) {
             appBase.setSecondId(setWxBaseInfoForm.getSecond());
         } else {
             appBase.setSecondId(632);
+        }
+        if (setWxBaseInfoForm.getSecondName() != null) {
+            appBase.setSecondName(setWxBaseInfoForm.getSecondName());
+        } else {
+            appBase.setSecondName("餐饮服务场所/餐饮服务管理企业");
         }
         appBase.setHasFinish(0);
         appBase.setCerticate(setWxBaseInfoForm.getCerticate());

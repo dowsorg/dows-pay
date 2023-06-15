@@ -1,5 +1,6 @@
 package org.dows.pay.form;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -116,11 +117,15 @@ public class SetWxBaseInfoForm implements BizForm{
      */
     @ApiModelProperty("一级类目ID")
     private Integer first;
+    @ApiModelProperty("一级类目名称")
+    private String firstName;
     /**
      * 二级类目ID.
      */
     @ApiModelProperty("二级类目ID")
     private Integer second;
+    @ApiModelProperty("二级类目名称")
+    private String secondName;
 
     @ApiModelProperty("资质信息")
     private String certicate;
