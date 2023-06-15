@@ -144,8 +144,9 @@ public class WeixinPayNotifyController {
                     notifyResult.setRawData(notifyResponse);
                     notifyResult.setResult(transactionsResult);
                     OrderUpdatePaymentStatusBo instanceBo = new OrderUpdatePaymentStatusBo();
-                    instanceBo.setPayTime(new Date());
-                    instanceBo.setPayState(OrderPayTypeEnum.pay_finish.getCode());
+                    instanceBo.setTradeStatus(3);
+                    instanceBo.setPayChannel(1);
+                    instanceBo.setTradeType(1);
                     instanceBo.setOrderId(transactionsResult.getOutTradeNo());
                     orderInstanceBizApiService.updateOrderInstance(instanceBo);
                     payTransactionService.updateStatusByOrderId(transactionsResult.getOutTradeNo(),OrderPayTypeEnum.pay_finish.getCode());
@@ -423,17 +424,4 @@ public class WeixinPayNotifyController {
         return "success";
     }
 
-
-    @PostMapping("/queryOrderStatus")
-    public void queryOrderStatus() {
-
-        WxPayOrderQueryV3Request wxPayOrderQueryV3Request = new WxPayOrderQueryV3Request();
-        wxPayOrderQueryV3Request.setMchid("1604404392");
-        wxPayOrderQueryV3Request.setOutTradeNo("a922064767a64788b1df06bea7241da1");
-        try {
-            WxPayOrderQueryV3Result v3Result = this.payClientFactory.getWeixinClient("wxdb8634feb22a5ab9").queryOrderV3(wxPayOrderQueryV3Request);
-        } catch (WxPayException e) {
-            log.warn("queryOrderStatus fail :",e);
-        }
-    }
 }
