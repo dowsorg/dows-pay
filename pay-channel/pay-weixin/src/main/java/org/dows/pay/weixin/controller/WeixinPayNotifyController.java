@@ -16,6 +16,8 @@ import com.alipay.api.kms.aliyun.utils.StringUtils;
 import com.github.binarywang.wxpay.bean.ecommerce.*;
 import com.github.binarywang.wxpay.bean.notify.CombineNotifyResult;
 import com.github.binarywang.wxpay.bean.profitsharingV3.ProfitSharingNotifyData;
+import com.github.binarywang.wxpay.bean.request.WxPayOrderQueryV3Request;
+import com.github.binarywang.wxpay.bean.result.WxPayOrderQueryV3Result;
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.github.binarywang.wxpay.v3.util.AesUtils;
 import com.google.gson.Gson;
@@ -419,5 +421,19 @@ public class WeixinPayNotifyController {
             log.error("接收票据事件异常" + e.getMessage(), e);
         }
         return "success";
+    }
+
+
+    @PostMapping("/queryOrderStatus")
+    public void queryOrderStatus() {
+
+        WxPayOrderQueryV3Request wxPayOrderQueryV3Request = new WxPayOrderQueryV3Request();
+        wxPayOrderQueryV3Request.setMchid("1604404392");
+        wxPayOrderQueryV3Request.setOutTradeNo("a922064767a64788b1df06bea7241da1");
+        try {
+            WxPayOrderQueryV3Result v3Result = this.payClientFactory.getWeixinClient("wxdb8634feb22a5ab9").queryOrderV3(wxPayOrderQueryV3Request);
+        } catch (WxPayException e) {
+            log.warn("queryOrderStatus fail :",e);
+        }
     }
 }

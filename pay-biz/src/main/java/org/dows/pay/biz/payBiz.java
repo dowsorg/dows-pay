@@ -191,8 +191,6 @@ public class payBiz implements PayApi {
         if (appApply == null) {
             throw new BizException("未申请注册小程序不可申请支付能力");
         }
-        // 申请支付权限并保存payAppl表
-        Long payApplyId = payApplyService.createPayApply(appApplyRequest.getMerchantNo(), appApply.getAppId());
         PayRequest payRequest = new PayIsvRequest();
         log.info("生成appApplyRequest参数{}", appApplyRequest);
         if ("WEIXIN".equals(appApplyRequest.getApplyType())) {
@@ -205,9 +203,16 @@ public class payBiz implements PayApi {
                 // 小程序申请支付权限
                 WxPayApplymentCreateResult isvMini = weixinIsvHandler.createIsvTyMini(payRequest);
                 log.info("生成WxPayApplymentCreateResult参数{}", isvMini);
-                // 回填申请单号
-                payApplyService.updateApplyNoById(payApplyId, isvMini.getApplymentId());
                 if (!StringUtil.isEmpty(isvMini.getApplymentId())) {
+                    // 申请支付权限并保存payAppl表
+                    PayApply byMerchantNoAndType = payApplyService.getByMerchantNoAndType(appApplyRequest.getMerchantNo(), 1);
+                    if (byMerchantNoAndType!=null) {
+                        byMerchantNoAndType.setApplyNo(isvMini.getApplymentId());
+                        byMerchantNoAndType.setUpdateTime(new Date());
+                        payApplyService.updateById(byMerchantNoAndType);
+                    }else {
+                        payApplyService.createPayApply(appApplyRequest.getMerchantNo(), appApply.getAppId(),isvMini.getApplymentId());
+                    }
                     // todo 申请成功的操作
                     return Response.ok(true, "申请微信小程序支付权限成功");
                 }
