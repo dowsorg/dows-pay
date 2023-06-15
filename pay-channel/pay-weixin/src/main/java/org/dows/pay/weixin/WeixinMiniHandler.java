@@ -427,6 +427,7 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
      * 小程序上传文件接口
      */
     public String uploadimg(String path) {
+        log.info("==============================图片完整路径，{}", path);
         String componentAccessToken = weixinTokenApi.getComponentAccessToken();
         RestTemplate restTemplate = new RestTemplate();
         URI uri = UriComponentsBuilder.fromHttpUrl("https://api.weixin.qq.com/cgi-bin/media/upload")
