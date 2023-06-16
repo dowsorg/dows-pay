@@ -99,6 +99,9 @@ public class MiniRest {
     public Response<PayResponse> setWxinApplyInfo(@Validated @RequestBody SetWxBaseInfoForm setWxBaseInfoForm) {
         try {
             setWxBaseInfoForm.setAppId("wxdb8634feb22a5ab9");
+            if (setWxBaseInfoForm.getMerchantAppId() == null) {
+                return Response.failed("缺少商户appId");
+            }
             Response response = miniBiz.setWxinApplyInfo(setWxBaseInfoForm);
             return response;
         } catch (Exception e) {
