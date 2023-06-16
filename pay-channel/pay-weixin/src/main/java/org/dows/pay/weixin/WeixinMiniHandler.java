@@ -194,7 +194,7 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
         List<WxFastMaCategory> list = new ArrayList<>();
         WxFastMaCategory wxFastMaCategory = new WxFastMaCategory();
         WxFastMaCategoryBo wxFastMaCategoryBo = (WxFastMaCategoryBo) payRequest.getBizModel();
-        log.info("设置小程序类目入参：{}",JSON.toJSONString(wxFastMaCategoryBo));
+        log.info("设置小程序类目入参");
         // 类目资质
         List<WxFastMaCategoryBo.Certificate> certicates = wxFastMaCategoryBo.getCerticates();
         if (!ObjectUtil.isEmpty(certicates)) {
@@ -217,7 +217,7 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
 
         Categories categories = new Categories();
         categories.setCategories(list);
-        String categoriesJson = JSON.toJSONString(categories);
+        String categoriesJson = JSONObject.toJSONString(categories);
         log.info("请求入参：{}", categoriesJson);
         String post = HttpUtil.post(WX_SET_ADD_CATEGORY +
                 "?access_token=" + payRequest.getAuthorizerAccessToken(), categoriesJson);
@@ -297,7 +297,7 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
         //todo 待实现业务逻辑
         WxFastMaSetNickameResult response = null;
         WxBaseInfoBo wxBaseInfoBo = (WxBaseInfoBo) payRequest.getBizModel();
-        log.info("设置小程序名称入参：{}",JSON.toJSONString(wxBaseInfoBo));
+        log.info("设置小程序名称入参");
         String licenseMediaId = null;
         String idCardMediaId = null;
         String namingOtherStuff1MediaId = null;
@@ -372,7 +372,7 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
         //todo 待实现业务逻辑
         WxOpenResult response = null;
         WxBaseInfoBo wxBaseInfoBo = (WxBaseInfoBo) payRequest.getBizModel();
-        log.info("设置小程序简介入参：{}",JSON.toJSONString(wxBaseInfoBo));
+        log.info("设置小程序简介入参：");
 //            response = this.getWxOpenMaClient(payRequest.getAppId()).getBasicService().modifySignature(wxBaseInfoBo.getSignature());
         Map<String, String> param = new HashMap<>();
         param.put("signature", wxBaseInfoBo.getSignature());
@@ -380,7 +380,7 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
                 "?access_token=" + payRequest.getAuthorizerAccessToken(), param, 1);
         String content = uploadTemplateResult.getContent();
         response = WxOpenGsonBuilder.create().fromJson(content, WxOpenResult.class);
-        log.info("设置介绍,返回结果：{}", JSON.toJSONString(content));
+        log.info("设置介绍,返回结果");
         return response;
     }
 
