@@ -5,8 +5,6 @@ package org.dows.pay.biz;
  */
 
 import cn.hutool.core.bean.BeanUtil;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -280,7 +278,6 @@ public class MiniBiz {
             WxOpenResult setSignatureWxOpenResult;
             WxOpenResult setHeadImageWxOpenResult;
             WxOpenResult addCategoryWxOpenResult;
-
             // 设置昵称
             if (setWxBaseInfoForm.getNickName() != null) {
                 if (StringUtils.isEmpty(setWxBaseInfoForm.getLicense())
@@ -313,7 +310,6 @@ public class MiniBiz {
                     String body = setNickNameResponse.getData().getBody();
                     wxFastMaSetNickameResult =
                             WxOpenGsonBuilder.create().fromJson(body, WxFastMaSetNickameResult.class);
-                    log.info("设置微信小程序名称返回结果：{}", JSON.toJSONString(wxFastMaSetNickameResult));
                     if (wxFastMaSetNickameResult.getErrcode().equals("0")) {
                         // 有审核id需要审核 无审核id直接通过
                         if (wxFastMaSetNickameResult.getAuditId() != null) {
@@ -369,12 +365,10 @@ public class MiniBiz {
                         return response;
                     }
                 }
-                log.info("设置微信小程序头像返回结果：{}", JSON.toJSONString(response));
             }
             // 设置简介
             if (setWxBaseInfoForm.getSignature() != null) {
                 Response<PayResponse> setSignatureResponse = setSignature(wxBaseInfoForm);
-                log.info("设置微信小程序简介返回结果：{}", JSON.toJSONString(response));
                 if (setSignatureResponse != null) {
                     String body = setSignatureResponse.getData().getBody();
                     setSignatureWxOpenResult = WxOpenGsonBuilder.create().fromJson(body, WxOpenResult.class);
@@ -418,7 +412,6 @@ public class MiniBiz {
                 certicates.add(certificate);
                 wxFastMaCategoryForm.setCerticates(certicates);
                 Response<PayResponse> addCategoryResponse = addCategory(wxFastMaCategoryForm);
-                log.info("设置微信小程序类目结果：{}", JSON.toJSONString(addCategoryResponse));
                 if (addCategoryResponse != null) {
                     String body = addCategoryResponse.getData().getBody();
                     addCategoryWxOpenResult = WxOpenGsonBuilder.create().fromJson(body, WxOpenResult.class);
@@ -443,7 +436,6 @@ public class MiniBiz {
                         updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
                                 -1, null,
                                 3, 0, "昵称、简介、类目已提交审核");
-                        log.info("设置微信小程序类目结果：{}", JSON.toJSONString(response));
                         return response;
                     }
                 } else {
@@ -456,7 +448,6 @@ public class MiniBiz {
                     return response;
                 }
             }
-
             return response;
         } catch (Exception e) {
             updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
