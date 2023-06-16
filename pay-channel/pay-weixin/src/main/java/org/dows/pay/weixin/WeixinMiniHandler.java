@@ -305,6 +305,7 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
         if (wxBaseInfoBo.getLicense() != null) {
             File financeLicensePicsFile = new File(getFilePath(wxBaseInfoBo.getLicense()));
             licenseMediaId = upload(financeLicensePicsFile, payRequest).getMediaId();
+            log.info("设置名称===licenseMediaId：{}",licenseMediaId);
         }
         if (wxBaseInfoBo.getIdCard() != null) {
             File financeLicensePicsFile = new File(getFilePath(wxBaseInfoBo.getIdCard()));
@@ -425,8 +426,10 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return ImageUploadResult.fromJson(result);
     }
+
 
     /**
      * 小程序上传文件接口
