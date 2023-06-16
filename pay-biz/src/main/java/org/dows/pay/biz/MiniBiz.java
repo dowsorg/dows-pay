@@ -272,6 +272,7 @@ public class MiniBiz {
             WxBaseInfoForm wxBaseInfoForm = BeanUtil.copyProperties(setWxBaseInfoForm, WxBaseInfoForm.class);
             // 获取access_token使用authorizer_access_token
             String authorizerAccessToken = weixinTokenApi.getAuthorizerAccessToken(setWxBaseInfoForm.getMerchantAppId());
+            log.info("获取authorizerAccessToken ：{}", authorizerAccessToken);
             wxBaseInfoForm.setAuthorizerAccessToken(authorizerAccessToken);
             Response response = new Response();
             WxFastMaSetNickameResult wxFastMaSetNickameResult = null;
@@ -281,7 +282,8 @@ public class MiniBiz {
 
             // 设置昵称
             if (setWxBaseInfoForm.getNickName() != null) {
-                if (StringUtils.isEmpty(setWxBaseInfoForm.getCerticate())) {
+                if (StringUtils.isEmpty(setWxBaseInfoForm.getLicense())
+                        && StringUtils.isEmpty(setWxBaseInfoForm.getCerticate())) {
                     PayApplyStatusReq req = new PayApplyStatusReq();
                     req.setMerchantNo(merchantNo);
                     req.setAppId(setWxBaseInfoForm.getMerchantAppId());
@@ -299,7 +301,11 @@ public class MiniBiz {
                         return response;
                     }
                 } else {
-                    wxBaseInfoForm.setLicense(setWxBaseInfoForm.getCerticate());
+                    if (!StringUtils.isEmpty(setWxBaseInfoForm.getLicense())) {
+                        wxBaseInfoForm.setLicense(setWxBaseInfoForm.getLicense());
+                    } else {
+                        wxBaseInfoForm.setLicense(setWxBaseInfoForm.getCerticate());
+                    }
                 }
                 Response<PayResponse> setNickNameResponse = setNickName(wxBaseInfoForm);
                 if (setNickNameResponse != null) {

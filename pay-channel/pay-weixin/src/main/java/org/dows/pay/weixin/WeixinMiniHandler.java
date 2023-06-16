@@ -194,16 +194,18 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
         List<WxFastMaCategory> list = new ArrayList<>();
         WxFastMaCategory wxFastMaCategory = new WxFastMaCategory();
         WxFastMaCategoryBo wxFastMaCategoryBo = (WxFastMaCategoryBo) payRequest.getBizModel();
+        log.info("设置小程序类目入参：{}",JSONObject.toJSONString(wxFastMaCategoryBo));
         // 类目资质
         List<WxFastMaCategoryBo.Certificate> certicates = wxFastMaCategoryBo.getCerticates();
         if (!ObjectUtil.isEmpty(certicates)) {
             certicates.forEach(x -> {
                 if (!ObjectUtil.isEmpty(x.getValue())) {
-//                    File uboIdDocCopyFile = new File(getFilePath(x.getValue()));
-                    String uploadimg = uploadimg(getFilePath(x.getValue()));
-                    if (null != uploadimg) {
-                        UploadBo uploadBo = JSONObject.parseObject(uploadimg, UploadBo.class);
-                        x.setValue(uploadBo.getMedia_id());
+                    File uboIdDocCopyFile = new File(getFilePath(x.getValue()));
+                    String idCardMediaId = upload(uboIdDocCopyFile, payRequest).getMediaId();
+                    log.info("新增类目MediaId：{}", idCardMediaId);
+                    if (null != idCardMediaId) {
+//                        UploadBo uploadBo = JSONObject.parseObject(uploadimg, UploadBo.class);
+                        x.setValue(idCardMediaId);
                     } else {
                         throw new BizException("文件上传失败");
                     }
@@ -216,6 +218,7 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
         Categories categories = new Categories();
         categories.setCategories(list);
         String categoriesJson = JSONObject.toJSONString(categories);
+        log.info("请求入参：{}", categoriesJson);
         String post = HttpUtil.post(WX_SET_ADD_CATEGORY +
                 "?access_token=" + payRequest.getAuthorizerAccessToken(), categoriesJson);
         System.out.println(post);
@@ -294,6 +297,7 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
         //todo 待实现业务逻辑
         WxFastMaSetNickameResult response = null;
         WxBaseInfoBo wxBaseInfoBo = (WxBaseInfoBo) payRequest.getBizModel();
+        log.info("设置小程序名称入参：{}",JSONObject.toJSONString(wxBaseInfoBo));
         String licenseMediaId = null;
         String idCardMediaId = null;
         String namingOtherStuff1MediaId = null;
@@ -368,6 +372,7 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
         //todo 待实现业务逻辑
         WxOpenResult response = null;
         WxBaseInfoBo wxBaseInfoBo = (WxBaseInfoBo) payRequest.getBizModel();
+        log.info("设置小程序简介入参：{}",JSONObject.toJSONString(wxBaseInfoBo));
 //            response = this.getWxOpenMaClient(payRequest.getAppId()).getBasicService().modifySignature(wxBaseInfoBo.getSignature());
         Map<String, String> param = new HashMap<>();
         param.put("signature", wxBaseInfoBo.getSignature());
@@ -425,19 +430,23 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
 
     /**
      * 小程序上传文件接口
+     *
+     * @param fileSystemResource
      */
-    public String uploadimg(String path) {
+    public String uploadimg(File fileSystemResource) {
+//        log.info("==============================图片完整路径，{}", path);
         String componentAccessToken = weixinTokenApi.getComponentAccessToken();
         RestTemplate restTemplate = new RestTemplate();
         URI uri = UriComponentsBuilder.fromHttpUrl("https://api.weixin.qq.com/cgi-bin/media/upload")
                 .queryParam("access_token", componentAccessToken)
                 .queryParam("type", "image")
                 .build().toUri();
-        FileSystemResource fileSystemResource = new FileSystemResource(path);
+//        FileSystemResource fileSystemResource = new FileSystemResource(path);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         /*Content-Disposition: form-data; name="media";filename="wework.txt"; filelength=6*/
-        ContentDisposition build = ContentDisposition.builder("form-data").filename(fileSystemResource.getFilename()).build();
+        ContentDisposition build = ContentDisposition.builder("form-data")
+                .filename(Objects.requireNonNull(fileSystemResource.getName())).build();
         headers.setContentDisposition(build);
         MultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
         params.add("media", fileSystemResource);
@@ -462,7 +471,8 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
         if (ObjectUtil.isNotEmpty(arrPath) && arrPath.length > 1) {
             path = arrPath[1];
         }
-        log.info("==============================图片路径，{}", path);
-        return ":9010/" + path;
+        String jPath = ":9010/" + path;
+        log.info("图片绝对路径：{}", jPath);
+        return jPath;
     }
 }
