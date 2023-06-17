@@ -303,7 +303,11 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
         String namingOtherStuff1MediaId = null;
         String namingOtherStuff2MediaId = null;
         if (wxBaseInfoBo.getLicense() != null) {
-            File financeLicensePicsFile = new File(getFilePath(wxBaseInfoBo.getLicense()));
+            String filePath = getFilePath(wxBaseInfoBo.getLicense());
+            File financeLicensePicsFile = new File(filePath);
+            if (!financeLicensePicsFile.exists()) {
+                System.out.println("financeLicensePicsFile不存在");
+            }
             licenseMediaId = upload(financeLicensePicsFile, payRequest).getMediaId();
             log.info("设置名称===licenseMediaId：{}", licenseMediaId);
         }
@@ -471,11 +475,11 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
      * 获取文件路径
      */
     public static String getFilePath(String path) {
-        String arrPath[] = path.split(DateUtil.formatDate(DateUtil.date()));
-        if (ObjectUtil.isNotEmpty(arrPath) && arrPath.length > 1) {
-            path = arrPath[1];
-        }
-        String jPath = ":9010/" + path;
+//        String arrPath[] = path.split(DateUtil.formatDate(DateUtil.date()));
+//        if (ObjectUtil.isNotEmpty(arrPath) && arrPath.length > 1) {
+//            path = arrPath[1];
+//        }
+        String jPath = "/opt/dows/tenant/" + path;
         log.info("图片绝对路径：{}", jPath);
         return jPath;
     }
