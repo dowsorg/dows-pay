@@ -154,4 +154,8 @@ public class IsvCreateTyBo implements ChannelBizModel {
     private String contacts;
     /***************新增门店参数封装END*****************/
 
+    // 证件类型
+    @WeixinApiField(name = "authorization_code")
+    private String authorizationCode;
+
 }

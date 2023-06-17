@@ -18,10 +18,14 @@ import com.github.binarywang.wxpay.v3.WechatPayUploadHttpPost;
 import com.github.binarywang.wxpay.v3.util.RsaCryptoUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.error.WxErrorException;
+import me.chanjar.weixin.open.bean.auth.WxOpenAuthorizationInfo;
+import me.chanjar.weixin.open.bean.result.WxOpenQueryAuthResult;
 import me.chanjar.weixin.open.bean.result.WxOpenResult;
+import me.chanjar.weixin.open.util.json.WxOpenGsonBuilder;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.dows.account.api.AccountTenantApi;
 import org.dows.account.api.AccountUserApi;
@@ -476,6 +480,20 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
         applymentsStatusResult.setApplymentStateDesc(applyStateMsg);
         return applymentsStatusResult;
 
+    }
+
+    public WxOpenQueryAuthResult getQueryAuth(PayRequest payRequest) {
+        IsvCreateTyBo isvCreateBo = (IsvCreateTyBo) payRequest.getBizModel();
+        String authorizationCode = isvCreateBo.getAuthorizationCode();
+        WxOpenQueryAuthResult queryAuth;
+        try {
+            queryAuth = this.getWxOpenClient(payRequest.getAppId()).getWxOpenComponentService()
+                    .getQueryAuth(authorizationCode);
+            return queryAuth;
+        } catch (WxErrorException e) {
+            log.warn("queryIsvMini fail :", e);
+            throw new BizException(e.getMessage());
+        }
     }
 
     /**

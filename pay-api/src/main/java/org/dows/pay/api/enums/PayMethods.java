@@ -7,6 +7,7 @@ public enum PayMethods {
     ISV_CREATE("dows.pay.isv.create", "", "isv服务商代商户创建小程序"),
     ISV_TY_CREATE("dows.pay.isv.ty.create", "", "isv服务商代特约商户创建小程序"),
     ISV_QUERY("dows.pay.isv.query", "", "isv查询代商家创建小程序记录"),
+
     ON_ISV_MERCHANT_CONFIRMED("dows.pay.merchant.confirmed", "", "商户确认服务商代创建小程序结果通知"),
     ISV_APPLY("dows.pay.isv.apply", "", "isv服务商进件"),
     ISV_UPLOAD("dows.pay.isv.upload", "", "isv服务商进件上传图片"),
