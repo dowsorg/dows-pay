@@ -201,8 +201,9 @@ public class payBiz implements PayApi {
             payRequest.setAppId("wxdb8634feb22a5ab9");
             try {
                 // 小程序申请支付权限
+                log.info("生成WxPayApplymentCreateResult参数payRequest：{}", payRequest);
                 WxPayApplymentCreateResult isvMini = weixinIsvHandler.createIsvTyMini(payRequest);
-                log.info("生成WxPayApplymentCreateResult参数{}", isvMini);
+                log.info("生成WxPayApplymentCreateResult返回结果：{}", isvMini);
                 if (!StringUtil.isEmpty(isvMini.getApplymentId())) {
                     // 申请支付权限并保存payAppl表
                     PayApply byMerchantNoAndType = payApplyService.getByMerchantNoAndType(appApplyRequest.getMerchantNo(), 1);
