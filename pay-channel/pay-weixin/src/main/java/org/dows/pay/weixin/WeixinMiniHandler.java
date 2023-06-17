@@ -194,7 +194,7 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
         List<WxFastMaCategory> list = new ArrayList<>();
         WxFastMaCategory wxFastMaCategory = new WxFastMaCategory();
         WxFastMaCategoryBo wxFastMaCategoryBo = (WxFastMaCategoryBo) payRequest.getBizModel();
-        log.info("设置小程序类目入参");
+        log.info("设置小程序类目入参，：{}", wxFastMaCategoryBo);
         // 类目资质
         List<WxFastMaCategoryBo.Certificate> certicates = wxFastMaCategoryBo.getCerticates();
         if (!ObjectUtil.isEmpty(certicates)) {
@@ -297,7 +297,7 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
         //todo 待实现业务逻辑
         WxFastMaSetNickameResult response = null;
         WxBaseInfoBo wxBaseInfoBo = (WxBaseInfoBo) payRequest.getBizModel();
-        log.info("设置小程序名称入参");
+        log.info("设置小程序名称入：{}", wxBaseInfoBo);
         String licenseMediaId = null;
         String idCardMediaId = null;
         String namingOtherStuff1MediaId = null;
@@ -305,7 +305,7 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
         if (wxBaseInfoBo.getLicense() != null) {
             File financeLicensePicsFile = new File(getFilePath(wxBaseInfoBo.getLicense()));
             licenseMediaId = upload(financeLicensePicsFile, payRequest).getMediaId();
-            log.info("设置名称===licenseMediaId：{}",licenseMediaId);
+            log.info("设置名称===licenseMediaId：{}", licenseMediaId);
         }
         if (wxBaseInfoBo.getIdCard() != null) {
             File financeLicensePicsFile = new File(getFilePath(wxBaseInfoBo.getIdCard()));
@@ -373,7 +373,7 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
         //todo 待实现业务逻辑
         WxOpenResult response = null;
         WxBaseInfoBo wxBaseInfoBo = (WxBaseInfoBo) payRequest.getBizModel();
-        log.info("设置小程序简介入参：");
+        log.info("设置小程序简介入参：{}", wxBaseInfoBo);
 //            response = this.getWxOpenMaClient(payRequest.getAppId()).getBasicService().modifySignature(wxBaseInfoBo.getSignature());
         Map<String, String> param = new HashMap<>();
         param.put("signature", wxBaseInfoBo.getSignature());
@@ -421,8 +421,9 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
             WechatPayUploadHttpPost request = new WechatPayUploadHttpPost.Builder(URI.create(url))
                     .withImage(file.getName(), sha256, s2)
                     .build();
+            log.info("上传文件================：入参{}", request);
             result = this.getWeixinClient(payRequest.getAppId()).postV3(url, request);
-
+            log.info("上传文件================：返回结果{}", result);
         } catch (Exception e) {
             e.printStackTrace();
         }

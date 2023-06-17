@@ -252,8 +252,10 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
     public WxPayApplymentCreateResult createIsvTyMini(PayRequest payRequest) throws PayException {
         //上传证件信息
         Map<String, ImageUploadResult> stringImageUploadResultMap = imageTyUploadV3(payRequest);
+        log.info("createIsvTyMini stringImageUploadResultMap：{}", stringImageUploadResultMap);
         UUID uuid = idGenerator.generateId();
         IsvCreateTyBo isvCreateTyBo = (IsvCreateTyBo) payRequest.getBizModel();
+        log.info("createIsvTyMini isvCreateTyBo：{}", isvCreateTyBo);
         // todo 先查询该营业执照有没有申请过，如果没有就保存，如果有直接查询比对是否是相同的申请（orderNo为空 其他字段值全部相同通道+应用名）
 //        AppApplyRequest appApply = new AppApplyRequest();
 //        appApply.setAppName(isvCreateTyBo.getAppName());
@@ -377,7 +379,7 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
         }
         WxPayApplymentCreateResult response = null;
         try {
-            log.info("加密前字符串{}", request);
+            log.info("createIsvTyMini  加密前字符串{}", request);
             RsaCryptoUtil.encryptFields(request, this.getWeixinClient(payRequest.getAppId()).getConfig().getVerifier().getValidCertificate());
             String result = this.getWeixinClient(payRequest.getAppId()).postV3WithWechatpaySerial(url, GSON.toJson(request));
             response = GSON.fromJson(result, WxPayApplymentCreateResult.class);
@@ -702,8 +704,9 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
             WechatPayUploadHttpPost request = new WechatPayUploadHttpPost.Builder(URI.create(url))
                     .withImage(file.getName(), sha256, s2)
                     .build();
+            log.info("上传文件================：入参{}", request);
             result = this.getWeixinClient(payRequest.getAppId()).postV3(url, request);
-
+            log.info("上传文件================：返回结果{}", result);
         } catch (Exception e) {
             e.printStackTrace();
         }

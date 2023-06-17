@@ -310,6 +310,7 @@ public class MiniBiz {
                     String body = setNickNameResponse.getData().getBody();
                     wxFastMaSetNickameResult =
                             WxOpenGsonBuilder.create().fromJson(body, WxFastMaSetNickameResult.class);
+                    log.info("设置昵称返回结果 ：{}", wxFastMaSetNickameResult);
                     if (wxFastMaSetNickameResult.getErrcode().equals("0")) {
                         // 有审核id需要审核 无审核id直接通过
                         if (wxFastMaSetNickameResult.getAuditId() != null) {
@@ -350,6 +351,7 @@ public class MiniBiz {
                 if (setHeadImageResponse != null) {
                     String body = setHeadImageResponse.getData().getBody();
                     setHeadImageWxOpenResult = WxOpenGsonBuilder.create().fromJson(body, WxOpenResult.class);
+                    log.info("设置头像返回结果 ：{}", setHeadImageWxOpenResult);
                     String errcode = setHeadImageWxOpenResult.getErrcode();
                     if (!errcode.equals("0")) {
                         WxSetSignatureExceptionEnum messageByCode = WxSetSignatureExceptionEnum.getMessageByCode(errcode);
@@ -372,6 +374,7 @@ public class MiniBiz {
                 if (setSignatureResponse != null) {
                     String body = setSignatureResponse.getData().getBody();
                     setSignatureWxOpenResult = WxOpenGsonBuilder.create().fromJson(body, WxOpenResult.class);
+                    log.info("设置简介返回结果 ：{}", setSignatureWxOpenResult);
                     String errcode = setSignatureWxOpenResult.getErrcode();
                     if (!errcode.equals("0")) {
                         WxSetSignatureExceptionEnum messageByCode = WxSetSignatureExceptionEnum.getMessageByCode(errcode);
@@ -412,6 +415,7 @@ public class MiniBiz {
                 certicates.add(certificate);
                 wxFastMaCategoryForm.setCerticates(certicates);
                 Response<PayResponse> addCategoryResponse = addCategory(wxFastMaCategoryForm);
+                log.info("设置类目返回结果 ：{}", addCategoryResponse);
                 if (addCategoryResponse != null) {
                     String body = addCategoryResponse.getData().getBody();
                     addCategoryWxOpenResult = WxOpenGsonBuilder.create().fromJson(body, WxOpenResult.class);
