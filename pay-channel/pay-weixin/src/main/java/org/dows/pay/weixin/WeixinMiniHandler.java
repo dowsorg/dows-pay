@@ -479,7 +479,7 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
 //        if (ObjectUtil.isNotEmpty(arrPath) && arrPath.length > 1) {
 //            path = arrPath[1];
 //        }
-        String jPath = "/opt/dows/tenant/" + path;
+        String jPath = "/opt/dows/tenant" + path;
         log.info("图片绝对路径：{}", jPath);
         return jPath;
     }
