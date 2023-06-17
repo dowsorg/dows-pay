@@ -14,6 +14,7 @@ import com.github.binarywang.wxpay.bean.ecommerce.ApplymentsRequest;
 import com.github.binarywang.wxpay.bean.ecommerce.ApplymentsStatusResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import me.chanjar.weixin.open.bean.result.WxOpenQueryAuthResult;
 import me.chanjar.weixin.open.bean.result.WxOpenResult;
 import org.dows.app.api.mini.request.AppApplyRequest;
 import org.dows.app.api.mini.request.PayApplyStatusReq;
@@ -207,12 +208,12 @@ public class payBiz implements PayApi {
                 if (!StringUtil.isEmpty(isvMini.getApplymentId())) {
                     // 申请支付权限并保存payAppl表
                     PayApply byMerchantNoAndType = payApplyService.getByMerchantNoAndType(appApplyRequest.getMerchantNo(), 1);
-                    if (byMerchantNoAndType!=null) {
+                    if (byMerchantNoAndType != null) {
                         byMerchantNoAndType.setApplyNo(isvMini.getApplymentId());
                         byMerchantNoAndType.setUpdateTime(new Date());
                         payApplyService.updateById(byMerchantNoAndType);
-                    }else {
-                        payApplyService.createPayApply(appApplyRequest.getMerchantNo(), appApply.getAppId(),isvMini.getApplymentId());
+                    } else {
+                        payApplyService.createPayApply(appApplyRequest.getMerchantNo(), appApply.getAppId(), isvMini.getApplymentId());
                     }
                     // todo 申请成功的操作
                     return Response.ok(true, "申请微信小程序支付权限成功");
@@ -247,6 +248,18 @@ public class payBiz implements PayApi {
         wxBaseInfoForm.setAuthorizerAccessToken(authorizerAccessToken);
         Response nickNameStatus = miniBiz.getNickNameStatus(wxBaseInfoForm);
         return nickNameStatus;
+    }
+
+    @Override
+    public WxOpenQueryAuthResult apiQueryAuth(String authorizationCode) {
+        PayRequest payRequest = new PayIsvRequest();
+        payRequest.setChannel("weixin");
+        payRequest.setAppId("wxdb8634feb22a5ab9");
+        IsvCreateTyBo isvCreateTyBo = new IsvCreateTyBo();
+        isvCreateTyBo.setAuthorizationCode(authorizationCode);
+        payRequest.setBizModel(isvCreateTyBo);
+        WxOpenQueryAuthResult queryAuth = weixinIsvHandler.getQueryAuth(payRequest);
+        return queryAuth;
     }
 
     private MiniUploadRequest convertUploadReq(WechatMiniUploadRequest request) {

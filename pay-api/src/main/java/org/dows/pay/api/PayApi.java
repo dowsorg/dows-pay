@@ -1,5 +1,6 @@
 package org.dows.pay.api;
 
+import me.chanjar.weixin.open.bean.result.WxOpenQueryAuthResult;
 import org.dows.app.api.mini.request.AppApplyRequest;
 import org.dows.app.api.mini.request.PayApplyStatusReq;
 import org.dows.app.api.mini.request.WechatMiniUploadRequest;
@@ -68,5 +69,12 @@ public interface PayApi {
      * @return
      */
     Response getNickNameStatus(PayApplyStatusReq res);
+
+    /**
+     * 使用授权码获取授权信息
+     * @param authorizationCode
+     * @return
+     */
+    WxOpenQueryAuthResult apiQueryAuth(String authorizationCode);
 
 }
