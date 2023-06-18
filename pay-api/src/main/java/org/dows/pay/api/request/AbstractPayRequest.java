@@ -42,6 +42,9 @@ public abstract class AbstractPayRequest<T extends PayResponse> implements PayRe
     @ApiModelProperty("接口调用凭证，该参数为 URL 参数，非 Body 参数。使用authorizer_access_token")
     @ParamName("authorizerAccessToken")
     private String authorizerAccessToken;
+    @ApiModelProperty("商家应用ID")
+    @ParamName("merchantAppId")
+    private String merchantAppId;
     /**
      * 业务通用字段填充
      *
@@ -52,6 +55,7 @@ public abstract class AbstractPayRequest<T extends PayResponse> implements PayRe
         this.appId = bizForm.getAppId();
         this.channel = bizForm.getChannel();
         this.authorizerAccessToken = bizForm.getAuthorizerAccessToken();
+        this.merchantAppId = bizForm.getMerchantAppId();
     }
 
     @Override
@@ -71,6 +75,13 @@ public abstract class AbstractPayRequest<T extends PayResponse> implements PayRe
         this.authorizerAccessToken = authorizerAccessToken;
         return this;
     }
+
+    @Override
+    public PayRequest setMerchantAppId(String merchantAppId) {
+        this.merchantAppId = merchantAppId;
+        return this;
+    }
+
 
     @Override
     public PayRequest setSubOpenid(String subOpenid) {

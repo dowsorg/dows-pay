@@ -209,7 +209,7 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
 //                    } else {
 //                        throw new BizException("文件上传失败");
 //                    }
-                    String uploadimg = uploadimg(uboIdDocCopyFile);
+                    String uploadimg = uploadimg(uboIdDocCopyFile, payRequest.getAuthorizerAccessToken());
                     log.info("新增类目MediaId：{}", uploadimg);
                     if (null != uploadimg) {
                         UploadBo uploadBo = JSONObject.parseObject(uploadimg, UploadBo.class);
@@ -448,12 +448,13 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
      *
      * @param fileSystemResource
      */
-    public String uploadimg(File fileSystemResource) {
+    public String uploadimg(File fileSystemResource, String authorizerAccessToken) {
+
 //        log.info("==============================图片完整路径，{}", path);
         String componentAccessToken = weixinTokenApi.getComponentAccessToken();
         RestTemplate restTemplate = new RestTemplate();
         URI uri = UriComponentsBuilder.fromHttpUrl("https://api.weixin.qq.com/cgi-bin/media/upload")
-                .queryParam("access_token", componentAccessToken)
+                .queryParam("access_token", authorizerAccessToken)
                 .queryParam("type", "image")
                 .build().toUri();
 //        FileSystemResource fileSystemResource = new FileSystemResource(path);
@@ -461,7 +462,8 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         /*Content-Disposition: form-data; name="media";filename="wework.txt"; filelength=6*/
         ContentDisposition build = ContentDisposition.builder("form-data")
-                .filename(Objects.requireNonNull(fileSystemResource.getName())).build();
+                .filename(Objects.requireNonNull(fileSystemResource.getName()))
+                .build();
         headers.setContentDisposition(build);
         MultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
         params.add("media", fileSystemResource);
@@ -469,25 +471,25 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
         return restTemplate.postForObject(uri, requestEntity, String.class);
     }
 
-//    public static String getFilePath(String path) {
-//        String arrPath[] = path.split(DateUtil.formatDate(DateUtil.date()));
-//        if (ObjectUtil.isNotEmpty(arrPath) && arrPath.length > 1) {
-//            path = arrPath[1];
-//            path = "E:\\有星科技相关\\image\\" + path;
-//        }
-//        return path;
-//    }
+    public static String getFilePath(String path) {
+        String arrPath[] = path.split(DateUtil.formatDate(DateUtil.date()));
+        if (ObjectUtil.isNotEmpty(arrPath) && arrPath.length > 1) {
+            path = arrPath[1];
+            path = "E:\\有星科技相关\\image\\" + path;
+        }
+        return path;
+    }
 
     /**
      * 获取文件路径
      */
-    public static String getFilePath(String path) {
-//        String arrPath[] = path.split(DateUtil.formatDate(DateUtil.date()));
-//        if (ObjectUtil.isNotEmpty(arrPath) && arrPath.length > 1) {
-//            path = arrPath[1];
-//        }
-        String jPath = "/opt/dows/tenant" + path;
-        log.info("图片绝对路径：{}", jPath);
-        return jPath;
-    }
+//    public static String getFilePath(String path) {
+////        String arrPath[] = path.split(DateUtil.formatDate(DateUtil.date()));
+////        if (ObjectUtil.isNotEmpty(arrPath) && arrPath.length > 1) {
+////            path = arrPath[1];
+////        }
+//        String jPath = "/opt/dows/tenant" + path;
+//        log.info("图片绝对路径：{}", jPath);
+//        return jPath;
+//    }
 }
