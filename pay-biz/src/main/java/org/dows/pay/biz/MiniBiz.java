@@ -541,7 +541,7 @@ public class MiniBiz {
             appBase.setAppNameAuditNo(appNameAuditNo);
         }
         // 简介状态
-        if (appNameAuditStatus != -1) {
+        if (briefAuditStatus != -1) {
             appBase.setBriefAuditStatus(briefAuditStatus);
         }
         // 类目状态
