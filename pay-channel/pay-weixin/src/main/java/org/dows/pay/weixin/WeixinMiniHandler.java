@@ -462,7 +462,9 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         /*Content-Disposition: form-data; name="media";filename="wework.txt"; filelength=6*/
         ContentDisposition build = ContentDisposition.builder("form-data")
+                .name("media")
                 .filename(Objects.requireNonNull(fileSystemResource.getName()))
+                .size(fileSystemResource.length())
                 .build();
         headers.setContentDisposition(build);
         MultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
