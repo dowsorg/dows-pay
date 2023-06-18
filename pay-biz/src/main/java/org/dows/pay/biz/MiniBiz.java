@@ -265,9 +265,10 @@ public class MiniBiz {
         if (StringUtils.isBlank(merchantNo)) {
             merchantNo = "xhr0002";
         }
+        log.info("获取商户信息，merchantNo：{}", merchantNo);
         try {
-            saveOrUpdateAppBase(setWxBaseInfoForm, merchantNo);
-            log.info("获取商户信息，merchantNo：{}", merchantNo);
+            AppBase appBase = saveOrUpdateAppBase(setWxBaseInfoForm, merchantNo);
+            log.info("setWxinApplyInfo，appBase信息：{}", appBase);
             WxBaseInfoForm wxBaseInfoForm = BeanUtil.copyProperties(setWxBaseInfoForm, WxBaseInfoForm.class);
             // 获取access_token使用authorizer_access_token
             String authorizerAccessToken = weixinTokenApi.getAuthorizerAccessToken(setWxBaseInfoForm.getMerchantAppId());
@@ -279,7 +280,8 @@ public class MiniBiz {
             WxOpenResult setHeadImageWxOpenResult;
             WxOpenResult addCategoryWxOpenResult;
             // 设置昵称
-            if (setWxBaseInfoForm.getNickName() != null) {
+            if ((setWxBaseInfoForm.getNickName() != null && appBase == null)
+                    || (appBase != null & Objects.requireNonNull(appBase).getAppNameAuditStatus() != 3)) {
                 if (StringUtils.isEmpty(setWxBaseInfoForm.getLicense())
                         && StringUtils.isEmpty(setWxBaseInfoForm.getCerticate())) {
                     PayApplyStatusReq req = new PayApplyStatusReq();
@@ -292,7 +294,7 @@ public class MiniBiz {
                         wxBaseInfoForm.setLicense(certPicture);
                     } else {
                         updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
-                                2, null,
+                                2, null, -1,
                                 2, 2, "设置小程序名称失败：营业执照未找到历史记录，请上传营业执照");
                         response.setCode(500);
                         response.setDescr("设置小程序名称失败：营业执照未找到历史记录，请上传营业执照");
@@ -316,10 +318,12 @@ public class MiniBiz {
                         if (wxFastMaSetNickameResult.getAuditId() != null) {
                             updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
                                     1, String.valueOf(wxFastMaSetNickameResult.getAuditId()),
+                                    -1,
                                     0, 0, wxFastMaSetNickameResult.getErrmsg());
                         } else {
                             updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
                                     3, String.valueOf(wxFastMaSetNickameResult.getAuditId()),
+                                    -1,
                                     0, 0, wxFastMaSetNickameResult.getErrmsg());
                         }
                     } else {
@@ -332,13 +336,13 @@ public class MiniBiz {
                             response.setDescr("设置小程序名称失败：" + wxFastMaSetNickameResult.getErrmsg());
                         }
                         updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
-                                2, null,
+                                2, null, -1,
                                 0, 2, response.getDescr());
                         return response;
                     }
                 } else {
                     updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
-                            2, null,
+                            2, null, -1,
                             2, 2, "设置小程序名称失败：返回结果为空");
                     response.setCode(500);
                     response.setDescr("设置小程序昵称返回结果为空");
@@ -346,7 +350,7 @@ public class MiniBiz {
                 }
             }
             // 设置头像
-            if (setWxBaseInfoForm.getHeadImgMediaId() != null) {
+            if (setWxBaseInfoForm.getHeadImgMediaId() != null && appBase == null) {
                 Response<PayResponse> setHeadImageResponse = setHeadImage(wxBaseInfoForm);
                 if (setHeadImageResponse != null) {
                     String body = setHeadImageResponse.getData().getBody();
@@ -362,14 +366,16 @@ public class MiniBiz {
                             response.setDescr("设置小程序头像失败：" + setHeadImageWxOpenResult.getErrmsg());
                         }
                         updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
-                                -1, null,
+                                -1, null, -1,
                                 0, 2, response.getDescr());
                         return response;
                     }
                 }
             }
             // 设置简介
-            if (setWxBaseInfoForm.getSignature() != null) {
+            if ((setWxBaseInfoForm.getSignature() != null && appBase == null)
+                    || (appBase != null & Objects.requireNonNull(appBase).getBriefAuditStatus() != 3)
+            ) {
                 Response<PayResponse> setSignatureResponse = setSignature(wxBaseInfoForm);
                 if (setSignatureResponse != null) {
                     String body = setSignatureResponse.getData().getBody();
@@ -385,21 +391,26 @@ public class MiniBiz {
                             response.setDescr("设置简介失败：" + setSignatureWxOpenResult.getErrmsg());
                         }
                         updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
-                                -1, null,
+                                -1, null, 2,
                                 0, 2, response.getDescr());
                         return response;
+                    } else {
+                        updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
+                                -1, null, 3,
+                                0, 2, response.getDescr());
                     }
                 } else {
                     response.setCode(500);
                     response.setDescr("设置简介失败：返回结果为空");
                     updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
-                            -1, null,
+                            -1, null, 2,
                             0, 2, response.getDescr());
                     return response;
                 }
             }
             // 设置类目
-            if (!StringUtils.isBlank(String.valueOf(setWxBaseInfoForm.getFirst())) && setWxBaseInfoForm.getCerticate() != null) {
+            if (!StringUtils.isBlank(String.valueOf(setWxBaseInfoForm.getFirst()))
+                    && setWxBaseInfoForm.getCerticate() != null) {
                 // todo
                 WxFastMaCategoryForm wxFastMaCategoryForm = BeanUtil.copyProperties(setWxBaseInfoForm, WxFastMaCategoryForm.class);
                 wxFastMaCategoryForm.setAuthorizerAccessToken(authorizerAccessToken);
@@ -430,7 +441,7 @@ public class MiniBiz {
                             response.setDescr("设置类目失败：" + addCategoryWxOpenResult.getErrmsg());
                         }
                         updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
-                                -1, null,
+                                -1, null, -1,
                                 2, 2, response.getDescr());
                         return response;
                     } else {
@@ -438,7 +449,7 @@ public class MiniBiz {
                         response.setDescr("设置微信小程序昵称、简介、类目相关信息已提交成功");
                         // 提交成功
                         updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
-                                -1, null,
+                                -1, null, -1,
                                 3, 0, "昵称、简介、类目已提交审核");
                         return response;
                     }
@@ -447,7 +458,7 @@ public class MiniBiz {
                     response.setDescr("设置类目返回结果为空");
                     // 提交成功
                     updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
-                            -1, null,
+                            -1, null, -1,
                             0, 2, response.getDescr());
                     return response;
                 }
@@ -455,14 +466,14 @@ public class MiniBiz {
             return response;
         } catch (Exception e) {
             updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
-                    2, null,
+                    2, null, 2,
                     0, 2, "内部错误：" + e.getMessage());
             return Response.failed(e.getMessage());
         }
     }
 
 
-    private void saveOrUpdateAppBase(SetWxBaseInfoForm setWxBaseInfoForm, String merchantNo) {
+    private AppBase saveOrUpdateAppBase(SetWxBaseInfoForm setWxBaseInfoForm, String merchantNo) {
         // 根据tenantId和ALIPAY查询是已有记录
         LambdaQueryWrapper<AppBase> queryWrapper = new LambdaQueryWrapper<AppBase>();
         if (StringUtils.isNotEmpty(setWxBaseInfoForm.getMerchantAppId())) {
@@ -508,23 +519,31 @@ public class MiniBiz {
             appBaseService.save(appBase);
             log.info("保存AppBase");
         }
+        return checkAppBase;
     }
 
     private void updateStatus(String merchantAppId,
                               String merchantNo,
                               int appNameAuditStatus,
                               String appNameAuditNo,
+                              int briefAuditStatus,
                               int categoryAuditStatus,
                               int hasFinish,
                               String reason) {
 
         AppBase appBase = new AppBase();
+        // 小程序名称状态
         if (appNameAuditStatus != -1) {
             appBase.setAppNameAuditStatus(appNameAuditStatus);
         }
         if (appNameAuditNo != null) {
             appBase.setAppNameAuditNo(appNameAuditNo);
         }
+        // 简介状态
+        if (appNameAuditStatus != -1) {
+            appBase.setBriefAuditStatus(briefAuditStatus);
+        }
+        // 类目状态
         appBase.setCategoryAuditStatus(categoryAuditStatus);
         if (reason != null) {
             appBase.setReason(reason);
