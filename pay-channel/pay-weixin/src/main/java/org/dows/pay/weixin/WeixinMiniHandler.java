@@ -201,13 +201,20 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
             certicates.forEach(x -> {
                 if (!ObjectUtil.isEmpty(x.getValue())) {
                     File uboIdDocCopyFile = new File(getFilePath(x.getValue()));
-                    String idCardMediaId = upload(uboIdDocCopyFile, payRequest).getMediaId();
-                    log.info("新增类目MediaId：{}", idCardMediaId);
-                    if (null != idCardMediaId) {
-//                        UploadBo uploadBo = JSONObject.parseObject(uploadimg, UploadBo.class);
-                        x.setValue(idCardMediaId);
-                    } else {
-                        throw new BizException("文件上传失败");
+//                    String idCardMediaId = upload(uboIdDocCopyFile, payRequest).getMediaId();
+//                    log.info("新增类目MediaId：{}", idCardMediaId);
+//                    if (null != idCardMediaId) {
+////                        UploadBo uploadBo = JSONObject.parseObject(uploadimg, UploadBo.class);
+//                        x.setValue(idCardMediaId);
+//                    } else {
+//                        throw new BizException("文件上传失败");
+//                    }
+                    String uploadimg = uploadimg(uboIdDocCopyFile);
+                    log.info("新增类目MediaId：{}", uploadimg);
+                    if (null != uploadimg) {
+                        UploadBo uploadBo = JSONObject.parseObject(uploadimg, UploadBo.class);
+                        log.info("=========转换文件上传，{}", uploadBo);
+                        x.setValue(uploadBo.getMedia_id());
                     }
                 }
             });
