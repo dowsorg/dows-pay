@@ -274,6 +274,7 @@ public class MiniBiz {
             String authorizerAccessToken = weixinTokenApi.getAuthorizerAccessToken(setWxBaseInfoForm.getMerchantAppId());
             log.info("获取authorizerAccessToken ：{}", authorizerAccessToken);
             wxBaseInfoForm.setAuthorizerAccessToken(authorizerAccessToken);
+            wxBaseInfoForm.setMerchantAppId(setWxBaseInfoForm.getMerchantAppId());
             Response response = new Response();
             WxFastMaSetNickameResult wxFastMaSetNickameResult = null;
             WxOpenResult setSignatureWxOpenResult;

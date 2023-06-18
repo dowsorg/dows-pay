@@ -55,6 +55,10 @@ public interface PayRequest<T extends PayResponse> {
      */
     PayRequest setAuthorizerAccessToken(String authorizerAccessToken);
     String getAuthorizerAccessToken();
+
+    PayRequest setMerchantAppId(String merchantAppId);
+    String getMerchantAppId();
+
     /**
      * 获取支付参数
      *

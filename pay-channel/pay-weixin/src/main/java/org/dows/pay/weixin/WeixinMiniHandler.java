@@ -201,13 +201,20 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
             certicates.forEach(x -> {
                 if (!ObjectUtil.isEmpty(x.getValue())) {
                     File uboIdDocCopyFile = new File(getFilePath(x.getValue()));
-                    String idCardMediaId = upload(uboIdDocCopyFile, payRequest).getMediaId();
-                    log.info("新增类目MediaId：{}", idCardMediaId);
-                    if (null != idCardMediaId) {
-//                        UploadBo uploadBo = JSONObject.parseObject(uploadimg, UploadBo.class);
-                        x.setValue(idCardMediaId);
-                    } else {
-                        throw new BizException("文件上传失败");
+//                    String idCardMediaId = upload(uboIdDocCopyFile, payRequest).getMediaId();
+//                    log.info("新增类目MediaId：{}", idCardMediaId);
+//                    if (null != idCardMediaId) {
+////                        UploadBo uploadBo = JSONObject.parseObject(uploadimg, UploadBo.class);
+//                        x.setValue(idCardMediaId);
+//                    } else {
+//                        throw new BizException("文件上传失败");
+//                    }
+                    String uploadimg = uploadimg(uboIdDocCopyFile, payRequest.getAuthorizerAccessToken());
+                    log.info("新增类目MediaId：{}", uploadimg);
+                    if (null != uploadimg) {
+                        UploadBo uploadBo = JSONObject.parseObject(uploadimg, UploadBo.class);
+                        log.info("=========转换文件上传，{}", uploadBo);
+                        x.setValue(uploadBo.getMedia_id());
                     }
                 }
             });
@@ -441,12 +448,13 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
      *
      * @param fileSystemResource
      */
-    public String uploadimg(File fileSystemResource) {
+    public String uploadimg(File fileSystemResource, String authorizerAccessToken) {
+
 //        log.info("==============================图片完整路径，{}", path);
         String componentAccessToken = weixinTokenApi.getComponentAccessToken();
         RestTemplate restTemplate = new RestTemplate();
         URI uri = UriComponentsBuilder.fromHttpUrl("https://api.weixin.qq.com/cgi-bin/media/upload")
-                .queryParam("access_token", componentAccessToken)
+                .queryParam("access_token", authorizerAccessToken)
                 .queryParam("type", "image")
                 .build().toUri();
 //        FileSystemResource fileSystemResource = new FileSystemResource(path);
@@ -454,7 +462,8 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         /*Content-Disposition: form-data; name="media";filename="wework.txt"; filelength=6*/
         ContentDisposition build = ContentDisposition.builder("form-data")
-                .filename(Objects.requireNonNull(fileSystemResource.getName())).build();
+                .filename(Objects.requireNonNull(fileSystemResource.getName()))
+                .build();
         headers.setContentDisposition(build);
         MultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
         params.add("media", fileSystemResource);

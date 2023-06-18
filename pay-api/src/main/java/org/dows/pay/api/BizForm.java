@@ -20,4 +20,8 @@ public interface BizForm {
     default String getAuthorizerAccessToken() {
         return null;
     }
+
+    default String getMerchantAppId() {
+        return null;
+    }
 }
