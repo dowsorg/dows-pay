@@ -404,7 +404,7 @@ public class MiniBiz {
                 WxFastMaCategoryForm wxFastMaCategoryForm = BeanUtil.copyProperties(setWxBaseInfoForm, WxFastMaCategoryForm.class);
                 wxFastMaCategoryForm.setAuthorizerAccessToken(authorizerAccessToken);
                 if (setWxBaseInfoForm.getSecond() == null) {
-                    wxFastMaCategoryForm.setSecond(670);
+                    wxFastMaCategoryForm.setSecond(632);
                 } else {
                     wxFastMaCategoryForm.setSecond(setWxBaseInfoForm.getSecond());
                 }
