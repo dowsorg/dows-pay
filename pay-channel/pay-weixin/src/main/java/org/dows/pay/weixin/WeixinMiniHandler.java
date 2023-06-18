@@ -471,25 +471,25 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
         return restTemplate.postForObject(uri, requestEntity, String.class);
     }
 
-    public static String getFilePath(String path) {
-        String arrPath[] = path.split(DateUtil.formatDate(DateUtil.date()));
-        if (ObjectUtil.isNotEmpty(arrPath) && arrPath.length > 1) {
-            path = arrPath[1];
-            path = "E:\\有星科技相关\\image\\" + path;
-        }
-        return path;
-    }
+//    public static String getFilePath(String path) {
+//        String arrPath[] = path.split(DateUtil.formatDate(DateUtil.date()));
+//        if (ObjectUtil.isNotEmpty(arrPath) && arrPath.length > 1) {
+//            path = arrPath[1];
+//            path = "E:\\有星科技相关\\image\\" + path;
+//        }
+//        return path;
+//    }
 
     /**
      * 获取文件路径
      */
-//    public static String getFilePath(String path) {
-////        String arrPath[] = path.split(DateUtil.formatDate(DateUtil.date()));
-////        if (ObjectUtil.isNotEmpty(arrPath) && arrPath.length > 1) {
-////            path = arrPath[1];
-////        }
-//        String jPath = "/opt/dows/tenant" + path;
-//        log.info("图片绝对路径：{}", jPath);
-//        return jPath;
-//    }
+    public static String getFilePath(String path) {
+//        String arrPath[] = path.split(DateUtil.formatDate(DateUtil.date()));
+//        if (ObjectUtil.isNotEmpty(arrPath) && arrPath.length > 1) {
+//            path = arrPath[1];
+//        }
+        String jPath = "/opt/dows/tenant" + path;
+        log.info("图片绝对路径：{}", jPath);
+        return jPath;
+    }
 }
