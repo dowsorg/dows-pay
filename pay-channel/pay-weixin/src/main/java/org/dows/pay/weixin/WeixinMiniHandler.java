@@ -486,7 +486,7 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
 //            path = arrPath[1];
 //        }
         String jPath = "/opt/dows/tenant" + path;
-        log.info("图片绝对路径：{}", jPath);
+        log.info("图片绝对路径 ：{}", jPath);
         return jPath;
     }
 }
