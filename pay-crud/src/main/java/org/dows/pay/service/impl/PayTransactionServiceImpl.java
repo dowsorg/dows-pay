@@ -20,7 +20,7 @@ public class PayTransactionServiceImpl extends MybatisCrudServiceImpl<PayTransac
     @Override
     public void updateStatusByOrderId(String outTradeNo, Integer code) {
         this.lambdaUpdate()
-                .eq(PayTransaction::getOrderId,outTradeNo)
+                .eq(PayTransaction::getTransactionNo,outTradeNo)
                 .set(PayTransaction::getStatus,code);
     }
 

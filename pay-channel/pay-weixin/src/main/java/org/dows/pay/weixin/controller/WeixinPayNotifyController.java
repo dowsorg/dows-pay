@@ -141,15 +141,19 @@ public class WeixinPayNotifyController {
                 log.info("wx pay notify result is {}", JSON.toJSONString(result));
                 PartnerTransactionsNotifyResult notifyResult = new PartnerTransactionsNotifyResult();
                 if (Objects.equals(transactionsResult.getTradeState(),"SUCCESS")) {
-                    notifyResult.setRawData(notifyResponse);
-                    notifyResult.setResult(transactionsResult);
-                    OrderUpdatePaymentStatusBo instanceBo = new OrderUpdatePaymentStatusBo();
-                    instanceBo.setTradeStatus(3);
-                    instanceBo.setPayChannel(1);
-                    instanceBo.setTradeType(1);
-                    instanceBo.setOrderId(transactionsResult.getOutTradeNo());
-                    orderInstanceBizApiService.updateOrderInstance(instanceBo);
-                    payTransactionService.updateStatusByOrderId(transactionsResult.getOutTradeNo(),OrderPayTypeEnum.pay_finish.getCode());
+                    try {
+                        notifyResult.setRawData(notifyResponse);
+                        notifyResult.setResult(transactionsResult);
+                        OrderUpdatePaymentStatusBo instanceBo = new OrderUpdatePaymentStatusBo();
+                        instanceBo.setTradeStatus(3);
+                        instanceBo.setPayChannel(1);
+                        instanceBo.setTradeType(1);
+                        instanceBo.setOrderId(transactionsResult.getOutTradeNo());
+                        orderInstanceBizApiService.updateOrderInstance(instanceBo);
+                        payTransactionService.updateStatusByOrderId(transactionsResult.getOutTradeNo(),OrderPayTypeEnum.pay_finish.getCode());
+                    } catch (Exception e) {
+                        log.info("更新状态失败：",e);
+                    }
                 }
                 return notifyResult;
             } catch (IOException | GeneralSecurityException var12) {
