@@ -200,13 +200,15 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
         if (!ObjectUtil.isEmpty(certicates)) {
             certicates.forEach(x -> {
                 if (!ObjectUtil.isEmpty(x.getValue())) {
-                    File uboIdDocCopyFile = new File(getFilePath(x.getValue()));
+                    String filePath = getFilePath(x.getValue());
+                    File uboIdDocCopyFile = new File(filePath);
 //                    String idCardMediaId = upload(uboIdDocCopyFile, payRequest).getMediaId();
 //                    log.info("新增类目MediaId：{}", idCardMediaId);
 //                    if (null != idCardMediaId) {
 ////                        UploadBo uploadBo = JSONObject.parseObject(uploadimg, UploadBo.class);
 //                        x.setValue(idCardMediaId);
 //                    } else {
+//                        log.info("文件上传失败，idCardMediaId为空");
 //                        throw new BizException("文件上传失败");
 //                    }
                     String uploadimg = uploadimg(uboIdDocCopyFile, payRequest.getAuthorizerAccessToken());
@@ -449,26 +451,20 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
      * @param fileSystemResource
      */
     public String uploadimg(File fileSystemResource, String authorizerAccessToken) {
-
-//        log.info("==============================图片完整路径，{}", path);
         String componentAccessToken = weixinTokenApi.getComponentAccessToken();
         RestTemplate restTemplate = new RestTemplate();
         URI uri = UriComponentsBuilder.fromHttpUrl("https://api.weixin.qq.com/cgi-bin/media/upload")
-                .queryParam("access_token", authorizerAccessToken)
+                .queryParam("access_token", componentAccessToken)
                 .queryParam("type", "image")
                 .build().toUri();
-//        FileSystemResource fileSystemResource = new FileSystemResource(path);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-        /*Content-Disposition: form-data; name="media";filename="wework.txt"; filelength=6*/
         ContentDisposition build = ContentDisposition.builder("form-data")
-                .name("media")
                 .filename(Objects.requireNonNull(fileSystemResource.getName()))
-                .size(fileSystemResource.length())
                 .build();
         headers.setContentDisposition(build);
         MultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
-        params.add("media", fileSystemResource);
+        params.add("media", new FileSystemResource(fileSystemResource));
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(params, headers);
         return restTemplate.postForObject(uri, requestEntity, String.class);
     }

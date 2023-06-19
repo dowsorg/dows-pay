@@ -70,7 +70,7 @@ public class SetWxBaseInfoForm implements BizForm{
      * 组织机构代码证或营业执照 mediaid，组织号必填.
      */
     @ApiModelProperty(name = "license")
-    private String license;
+    private String certPicture;
 
     /**
      * 其他证明材料 mediaid.

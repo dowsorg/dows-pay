@@ -283,31 +283,7 @@ public class MiniBiz {
             // 设置昵称
             if ((setWxBaseInfoForm.getNickName() != null && appBase == null)
                     || (appBase != null & Objects.requireNonNull(appBase).getAppNameAuditStatus() != 3)) {
-                if (StringUtils.isEmpty(setWxBaseInfoForm.getLicense())
-                        && StringUtils.isEmpty(setWxBaseInfoForm.getCerticate())) {
-                    PayApplyStatusReq req = new PayApplyStatusReq();
-                    req.setMerchantNo(merchantNo);
-                    req.setAppId(setWxBaseInfoForm.getMerchantAppId());
-                    req.setApplyType(1);
-                    Response<AppApplyAndItemResponse> applyInfoByMerchantNo = appApplyApi.getApplyInfoByMerchantNo(req);
-                    if (!Objects.isNull(applyInfoByMerchantNo) && !Objects.isNull(applyInfoByMerchantNo.getData().getCertPicture())) {
-                        String certPicture = applyInfoByMerchantNo.getData().getCertPicture();
-                        wxBaseInfoForm.setLicense(certPicture);
-                    } else {
-                        updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
-                                2, null, -1,
-                                2, 2, "设置小程序名称失败：营业执照未找到历史记录，请上传营业执照");
-                        response.setCode(500);
-                        response.setDescr("设置小程序名称失败：营业执照未找到历史记录，请上传营业执照");
-                        return response;
-                    }
-                } else {
-                    if (!StringUtils.isEmpty(setWxBaseInfoForm.getLicense())) {
-                        wxBaseInfoForm.setLicense(setWxBaseInfoForm.getLicense());
-                    } else {
-                        wxBaseInfoForm.setLicense(setWxBaseInfoForm.getCerticate());
-                    }
-                }
+                wxBaseInfoForm.setLicense(setWxBaseInfoForm.getCertPicture());
                 Response<PayResponse> setNickNameResponse = setNickName(wxBaseInfoForm);
                 if (setNickNameResponse != null) {
                     String body = setNickNameResponse.getData().getBody();
@@ -420,11 +396,18 @@ public class MiniBiz {
                 } else {
                     wxFastMaCategoryForm.setSecond(setWxBaseInfoForm.getSecond());
                 }
+
                 List<WxFastMaCategoryBo.Certificate> certicates = new ArrayList<>();
-                WxFastMaCategoryBo.Certificate certificate = new WxFastMaCategoryBo.Certificate();
-                certificate.setKey("资质证书");
-                certificate.setValue(setWxBaseInfoForm.getCerticate());
-                certicates.add(certificate);
+                String[] certicateList = setWxBaseInfoForm.getCerticate() != null
+                        ? setWxBaseInfoForm.getCerticate().split(",") : null;
+                if (certicateList != null) {
+                    for (String certicate : certicateList) {
+                        WxFastMaCategoryBo.Certificate certificate = new WxFastMaCategoryBo.Certificate();
+                        certificate.setKey("《食品经营许可证》");
+                        certificate.setValue(certicate);
+                        certicates.add(certificate);
+                    }
+                }
                 wxFastMaCategoryForm.setCerticates(certicates);
                 Response<PayResponse> addCategoryResponse = addCategory(wxFastMaCategoryForm);
                 log.info("设置类目返回结果 ：{}", addCategoryResponse);
@@ -451,7 +434,7 @@ public class MiniBiz {
                         // 提交成功
                         updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
                                 -1, null, -1,
-                                3, 0, "昵称、简介、类目已提交审核");
+                                1, 0, "昵称、简介、类目已提交审核");
                         return response;
                     }
                 } else {
@@ -467,8 +450,8 @@ public class MiniBiz {
             return response;
         } catch (Exception e) {
             updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
-                    2, null, 2,
-                    0, 2, "内部错误：" + e.getMessage());
+                    -1, null, -1,
+                    -1, 2, "内部错误：" + e.getMessage());
             return Response.failed(e.getMessage());
         }
     }
