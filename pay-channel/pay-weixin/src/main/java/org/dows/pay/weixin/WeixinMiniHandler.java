@@ -451,10 +451,9 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
      * @param fileSystemResource
      */
     public String uploadimg(File fileSystemResource, String authorizerAccessToken) {
-        String componentAccessToken = weixinTokenApi.getComponentAccessToken();
         RestTemplate restTemplate = new RestTemplate();
         URI uri = UriComponentsBuilder.fromHttpUrl("https://api.weixin.qq.com/cgi-bin/media/upload")
-                .queryParam("access_token", componentAccessToken)
+                .queryParam("access_token", authorizerAccessToken)
                 .queryParam("type", "image")
                 .build().toUri();
         HttpHeaders headers = new HttpHeaders();
