@@ -607,8 +607,12 @@ public class payBiz implements PayApi {
                 indoorPicList.add(appApplyRequest.getTenantIndoorPicture());
             }
             bizStoreInfo.setIndoorPic(indoorPicList);
+            if (appApplyRequest.getMiniProgramSubAppid() != null) {
+                bizStoreInfo.setBizSubAppid(appApplyRequest.getMiniProgramSubAppid());
+            }
             salesInfo.setBizStoreInfo(bizStoreInfo);
-        } else if (salesInfo.getSalesScenesType().contains(SalesScenesTypeEnum.SALES_SCENES_MINI_PROGRAM)) {
+        }
+        if (salesInfo.getSalesScenesType().contains(SalesScenesTypeEnum.SALES_SCENES_MINI_PROGRAM)) {
             // 小程序
             WxPayApplyment4SubCreateRequest.BusinessInfo.SalesInfo.MiniProgramInfo miniProgramInfo
                     = new WxPayApplyment4SubCreateRequest.BusinessInfo.SalesInfo.MiniProgramInfo();
@@ -621,8 +625,9 @@ public class payBiz implements PayApi {
             if (!StringUtil.isEmpty(appApplyRequest.getMiniProgramSubAppid())) {
                 miniProgramInfo.setMiniProgramSubAppid(appApplyRequest.getMiniProgramSubAppid());
             } else {
-                miniProgramInfo.setMiniProgramAppid(appApplyRequest.getAppId() == null ? "wx1f2863eb6cdee6a1" :
-                        appApplyRequest.getAppId());
+                miniProgramInfo.setMiniProgramAppid(appApplyRequest.getMerchantAppid() == null ?
+                        "wx1f2863eb6cdee6a1" :
+                        appApplyRequest.getMerchantAppid());
             }
             salesInfo.setMiniProgramInfo(miniProgramInfo);
         }
