@@ -18,10 +18,19 @@ import org.springframework.stereotype.Service;
 public class PayTransactionServiceImpl extends MybatisCrudServiceImpl<PayTransactionMapper, PayTransaction> implements PayTransactionService {
 
     @Override
-    public void updateStatusByOrderId(String outTradeNo, Integer code) {
+    public void updateStatusByOrderId(String transactionId,String outTradeNo, Integer code) {
         this.lambdaUpdate()
+                .eq(PayTransaction::getTransactionNo, outTradeNo)
+                .set(PayTransaction::getStatus, code)
+                .set(PayTransaction::getDealTo, transactionId);
+    }
+
+    @Override
+    public PayTransaction getByTransactionNo(String outTradeNo) {
+        return this.lambdaQuery()
                 .eq(PayTransaction::getTransactionNo,outTradeNo)
-                .set(PayTransaction::getStatus,code);
+                .last(" limit 1")
+                .one();
     }
 
     @Override
