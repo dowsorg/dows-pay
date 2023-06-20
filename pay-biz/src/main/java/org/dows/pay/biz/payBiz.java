@@ -540,7 +540,7 @@ public class payBiz implements PayApi {
 //        }
         subjectInfo.setIdentityInfo(identityInfo);
         // 受益人
-        if (identityInfo.getOwner()) {
+        if (!identityInfo.getOwner()) {
             WxPayApplyment4SubCreateRequest.SubjectInfo.UboInfo uboInfo = new WxPayApplyment4SubCreateRequest.SubjectInfo.UboInfo();
             uboInfo.setUboIdDocName(appApplyRequest.getBeneficiaryName());
             uboInfo.setUboIdDocNumber(appApplyRequest.getBeneficiaryNo());
