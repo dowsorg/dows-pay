@@ -43,6 +43,7 @@ import org.dows.order.bo.OrderUpdatePaymentStatusBo;
 import org.dows.order.enums.OrderPayTypeEnum;
 import org.dows.pay.api.util.HttpRequestUtils;
 import org.dows.pay.boot.PayClientFactory;
+import org.dows.pay.entity.PayTransaction;
 import org.dows.pay.service.PayTransactionService;
 import org.dows.store.api.StoreInstanceApi;
 import org.dows.store.api.request.StoreInstanceRequest;
@@ -148,9 +149,10 @@ public class WeixinPayNotifyController {
                         instanceBo.setTradeStatus(3);
                         instanceBo.setPayChannel(1);
                         instanceBo.setTradeType(1);
-                        instanceBo.setOrderId(transactionsResult.getOutTradeNo());
+                        PayTransaction payTransaction = payTransactionService.getByTransactionNo(transactionsResult.getOutTradeNo());
+                        payTransactionService.updateStatusByOrderId(transactionsResult.getTransactionId(),transactionsResult.getOutTradeNo(),OrderPayTypeEnum.pay_finish.getCode());
+                        instanceBo.setOrderId(payTransaction.getOrderId());
                         orderInstanceBizApiService.updateOrderInstance(instanceBo);
-                        payTransactionService.updateStatusByOrderId(transactionsResult.getOutTradeNo(),OrderPayTypeEnum.pay_finish.getCode());
                     } catch (Exception e) {
                         log.info("更新状态失败：",e);
                     }
