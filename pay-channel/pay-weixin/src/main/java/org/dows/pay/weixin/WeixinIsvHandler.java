@@ -282,15 +282,15 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
             //超级管理员证件照正面
             request.getContactInfo().setContactIdDocCopy
                     (!ObjectUtil.isEmpty(stringImageUploadResultMap.get("contactIdDocCopyFile"))
-                            ? stringImageUploadResultMap.get("contactIdDocCopyFile").getMediaId() : "");
+                            ? stringImageUploadResultMap.get("contactIdDocCopyFile").getMediaId() : null);
             //超级管理员证件照反面
             request.getContactInfo().setContactIdDocCopyBack
                     (!ObjectUtil.isEmpty(stringImageUploadResultMap.get("contactIdDocCopyBackFile"))
-                            ? stringImageUploadResultMap.get("contactIdDocCopyBackFile").getMediaId() : "");
+                            ? stringImageUploadResultMap.get("contactIdDocCopyBackFile").getMediaId() : null);
             //业务办理授权函
             request.getContactInfo().setBusinessAuthorizationLetter
                     (!ObjectUtil.isEmpty(stringImageUploadResultMap.get("businessAuthorizationLetterFile"))
-                            ? stringImageUploadResultMap.get("businessAuthorizationLetterFile").getMediaId() : "");
+                            ? stringImageUploadResultMap.get("businessAuthorizationLetterFile").getMediaId() : null);
             //超级管理员证件类型
             request.getContactInfo().setContactIdDocType("IDENTIFICATION_TYPE_IDCARD");
         }
