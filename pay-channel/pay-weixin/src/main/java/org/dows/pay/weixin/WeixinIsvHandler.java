@@ -208,42 +208,42 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
          * todo 提前保存该对象 UserContactRequest到用户联系人实体字典域UserContact表，留后期场景使用
          * todo 保存用户联系人信息到用户实体字典域
          */
-        UserContactDTO userContactRequest = UserContactDTO.builder()
-                .contactNo(isvCreateBo.getContactPhone())
-                .contactName(isvCreateBo.getContactName())
-                .userId(uuid.toString())
-                .deleted(false)
-                .build();
-        userContactApi.insertUserContact(userContactRequest);
-        if (!StringUtil.isEmpty(response.getApplymentId())) {
-            // todo 保存订单号 及对应申请的营业执照 和联系人 信息，返回申请小程序记录表ID 后续通过ID查询
-            String orderNo = response.getApplymentId();
-            log.info("创建微信小程序成功，返回订单号为:{}", orderNo);
-            /**
-             * todo 建立关联关系（小程序申请对象） [小程序与营业执照的关系],通过营业执照来关联 小程序名 及对应的orderNo
-             */
-            AppApplyRequest appApplyUpdateRequest = new AppApplyRequest();
-            appApplyUpdateRequest.setApplyOrderNo(appApply.getApplyOrderNo());
-            appApplyUpdateRequest.setPlatformOrderNo(orderNo);
-            appApplyApi.updateApplyPlatformOrderNo(appApplyUpdateRequest);
-            //建立账户与商户关联关系
-            AccountUserBo accountUserBo = new AccountUserBo();
-            accountUserBo.setAccountId(isvCreateBo.getAccount());
-            accountUserBo.setUserId(userCompanyRequest.getUserId());
-            acountUserApi.updateAccountUser(accountUserBo);
-            //建立租户与账户关联关系
-            AccountTenantBo accountTenantBo = new AccountTenantBo();
-            accountTenantBo.setAccountId(isvCreateBo.getAccount());
-            accountTenantBo.setUserId(userCompanyRequest.getUserId());
-            acountTenantApi.updateAccountTenant(accountTenantBo);
-            //保存门店信息
-            StoreInstanceRequest storeInstanceRequest = new StoreInstanceRequest();
-            BeanUtil.copyProperties(isvCreateBo, storeInstanceRequest);
-            storeInstanceApi.saveStoreInstance(storeInstanceRequest);
-            log.info("调用成功,响应信息:{}", JSONUtil.toJsonStr(response));
-        } else {
-            log.error("调用失败,响应信息:{}", JSONUtil.toJsonStr(response));
-        }
+//        UserContactDTO userContactRequest = UserContactDTO.builder()
+//                .contactNo(isvCreateBo.getContactPhone())
+//                .contactName(isvCreateBo.getContactName())
+//                .userId(uuid.toString())
+//                .deleted(false)
+//                .build();
+//        userContactApi.insertUserContact(userContactRequest);
+//        if (!StringUtil.isEmpty(response.getApplymentId())) {
+//            // todo 保存订单号 及对应申请的营业执照 和联系人 信息，返回申请小程序记录表ID 后续通过ID查询
+//            String orderNo = response.getApplymentId();
+//            log.info("创建微信小程序成功，返回订单号为:{}", orderNo);
+//            /**
+//             * todo 建立关联关系（小程序申请对象） [小程序与营业执照的关系],通过营业执照来关联 小程序名 及对应的orderNo
+//             */
+//            AppApplyRequest appApplyUpdateRequest = new AppApplyRequest();
+//            appApplyUpdateRequest.setApplyOrderNo(appApply.getApplyOrderNo());
+//            appApplyUpdateRequest.setPlatformOrderNo(orderNo);
+//            appApplyApi.updateApplyPlatformOrderNo(appApplyUpdateRequest);
+//            //建立账户与商户关联关系
+//            AccountUserBo accountUserBo = new AccountUserBo();
+//            accountUserBo.setAccountId(isvCreateBo.getAccount());
+//            accountUserBo.setUserId(userCompanyRequest.getUserId());
+//            acountUserApi.updateAccountUser(accountUserBo);
+//            //建立租户与账户关联关系
+//            AccountTenantBo accountTenantBo = new AccountTenantBo();
+//            accountTenantBo.setAccountId(isvCreateBo.getAccount());
+//            accountTenantBo.setUserId(userCompanyRequest.getUserId());
+//            acountTenantApi.updateAccountTenant(accountTenantBo);
+//            //保存门店信息
+//            StoreInstanceRequest storeInstanceRequest = new StoreInstanceRequest();
+//            BeanUtil.copyProperties(isvCreateBo, storeInstanceRequest);
+//            storeInstanceApi.saveStoreInstance(storeInstanceRequest);
+//            log.info("调用成功,响应信息:{}", JSONUtil.toJsonStr(response));
+//        } else {
+//            log.error("调用失败,响应信息:{}", JSONUtil.toJsonStr(response));
+//        }
         return response;
     }
 
