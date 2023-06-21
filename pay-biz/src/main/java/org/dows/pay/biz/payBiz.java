@@ -294,6 +294,12 @@ public class payBiz implements PayApi {
                 statusResult.setSignUrl(payApply.getAppUrl());
                 return Response.ok(statusResult);
             }
+            if (StrUtil.isEmpty(payApply.getApplyNo())) {
+                ApplymentsStatusResult statusResult = new ApplymentsStatusResult();
+                statusResult.setApplymentState("NOT_APPLYMENT");
+                statusResult.setApplymentStateDesc("未申请");
+                return Response.ok(statusResult);
+            }
             response = queryApplymentStatus(payApply.getApplyNo());
             ApplymentsStatusResult result = (ApplymentsStatusResult) response.getData();
             if (!Objects.nonNull(payApply.getAppUrl())) {
