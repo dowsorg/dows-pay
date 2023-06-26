@@ -59,6 +59,9 @@ public interface PayRequest<T extends PayResponse> {
     PayRequest setMerchantAppId(String merchantAppId);
     String getMerchantAppId();
 
+    PayRequest setApplyOrderNo(String applyOrderNo);
+    String getApplyOrderNo();
+
     /**
      * 获取支付参数
      *
@@ -67,7 +70,6 @@ public interface PayRequest<T extends PayResponse> {
     PayRequest setBizModel(ChannelBizModel channelBizModel);
 
     ChannelBizModel getBizModel();
-
 
     Class<T> getResponseClass();
 

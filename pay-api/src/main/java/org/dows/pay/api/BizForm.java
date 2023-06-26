@@ -24,4 +24,8 @@ public interface BizForm {
     default String getMerchantAppId() {
         return null;
     }
+
+    default String getApplyOrderNo() {
+        return null;
+    }
 }

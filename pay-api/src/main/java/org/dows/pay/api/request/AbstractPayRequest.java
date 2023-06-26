@@ -45,6 +45,8 @@ public abstract class AbstractPayRequest<T extends PayResponse> implements PayRe
     @ApiModelProperty("商家应用ID")
     @ParamName("merchantAppId")
     private String merchantAppId;
+    @ApiModelProperty("应用或小程序申请订单编号(全局唯一)")
+    private String applyOrderNo;
     /**
      * 业务通用字段填充
      *
@@ -56,6 +58,7 @@ public abstract class AbstractPayRequest<T extends PayResponse> implements PayRe
         this.channel = bizForm.getChannel();
         this.authorizerAccessToken = bizForm.getAuthorizerAccessToken();
         this.merchantAppId = bizForm.getMerchantAppId();
+        this.applyOrderNo = bizForm.getApplyOrderNo();
     }
 
     @Override
@@ -82,6 +85,12 @@ public abstract class AbstractPayRequest<T extends PayResponse> implements PayRe
         return this;
     }
 
+
+    @Override
+    public PayRequest setApplyOrderNo(String applyOrderNo) {
+        this.applyOrderNo = applyOrderNo;
+        return this;
+    }
 
     @Override
     public PayRequest setSubOpenid(String subOpenid) {

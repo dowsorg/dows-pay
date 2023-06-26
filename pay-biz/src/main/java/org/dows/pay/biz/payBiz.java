@@ -95,7 +95,8 @@ public class payBiz implements PayApi {
                 //创建小程序
                 return Response.fail(e.getMessage());
             }
-        } else if ("ALIPAY".equals(appApplyRequest.getApplyType())) {
+        }
+        else if ("ALIPAY".equals(appApplyRequest.getApplyType())) {
             IsvCreateBo isvCreateBo = convert(appApplyRequest);
             log.info("生成payRequest.setBizModel参数{}", isvCreateBo);
             payRequest.setBizModel(isvCreateBo);
@@ -113,7 +114,8 @@ public class payBiz implements PayApi {
                 //创建小程序
                 return Response.fail(e.getMessage());
             }
-        } else {
+        }
+        else {
             IsvCreateTyBo isvCreateTyBo = convertTy(appApplyRequest);
             log.info("全部申请微信生成payRequest.setBizModel参数{}", isvCreateTyBo);
             payRequest.setBizModel(isvCreateTyBo);
