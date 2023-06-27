@@ -19,6 +19,7 @@ import me.chanjar.weixin.open.bean.result.WxOpenResult;
 import org.dows.app.api.mini.request.AppApplyRequest;
 import org.dows.app.api.mini.request.PayApplyStatusReq;
 import org.dows.app.api.mini.request.WechatMiniUploadRequest;
+import org.dows.app.api.mini.request.uboInfoListRequest;
 import org.dows.app.entity.AppApply;
 import org.dows.app.service.AppApplyService;
 import org.dows.auth.api.weixin.WeixinTokenApi;
@@ -42,6 +43,7 @@ import org.dows.pay.weixin.WeixinMiniHandler;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 
@@ -95,8 +97,7 @@ public class payBiz implements PayApi {
                 //创建小程序
                 return Response.fail(e.getMessage());
             }
-        }
-        else if ("ALIPAY".equals(appApplyRequest.getApplyType())) {
+        } else if ("ALIPAY".equals(appApplyRequest.getApplyType())) {
             IsvCreateBo isvCreateBo = convert(appApplyRequest);
             log.info("生成payRequest.setBizModel参数{}", isvCreateBo);
             payRequest.setBizModel(isvCreateBo);
@@ -114,8 +115,7 @@ public class payBiz implements PayApi {
                 //创建小程序
                 return Response.fail(e.getMessage());
             }
-        }
-        else {
+        } else {
             IsvCreateTyBo isvCreateTyBo = convertTy(appApplyRequest);
             log.info("全部申请微信生成payRequest.setBizModel参数{}", isvCreateTyBo);
             payRequest.setBizModel(isvCreateTyBo);
@@ -411,20 +411,28 @@ public class payBiz implements PayApi {
         contactInfo.setContactIdDocCopyBack(appApplyRequest.getProprietorIdPictureBack());
         isvCreateBo.setContactInfo(contactInfo);
         //受益人
-        isvCreateBo.setOwner(false);
+        isvCreateBo.setOwner(!StringUtil.isEmpty(appApplyRequest.getOwner())
+                && appApplyRequest.getOwner().equals("true"));
+        if (!isvCreateBo.getOwner()) {
+            List<ApplymentsRequest.UboInfo> list = new ArrayList<>();
+            List<uboInfoListRequest> uboInfoList = appApplyRequest.getUboInfoList();
+            if (!CollectionUtils.isEmpty(uboInfoList)) {
+                for (uboInfoListRequest uboInfoListRequest : uboInfoList) {
+                    ApplymentsRequest.UboInfo uboInfo = new ApplymentsRequest.UboInfo();
+                    uboInfo.setUboIdDocName(uboInfoListRequest.getBeneficiaryName());
+                    uboInfo.setUboIdDocNumber(uboInfoListRequest.getBeneficiaryNo());
+                    uboInfo.setUboIdDocCopy(uboInfoListRequest.getBeneficiaryIdPictureFront());
+                    uboInfo.setUboIdDocCopyBack(uboInfoListRequest.getBeneficiaryIdPictureBack());
+                    uboInfo.setUboIdDocType(uboInfoListRequest.getBeneficiaryIdType());
+                    uboInfo.setUboIdDocPeriodBegin(uboInfoListRequest.getBeneficiaryIdValidityPeriodBegin());
+                    uboInfo.setUboIdDocPeriodEnd(uboInfoListRequest.getBeneficiaryIdValidityPeriodEnd());
+                    uboInfo.setUboIdDocAddress(uboInfoListRequest.getBeneficiaryAddress());
+                    list.add(uboInfo);
+                }
+            }
+            isvCreateBo.setUboInfoList(list);
+        }
         isvCreateBo.setMerchantShortname(appApplyRequest.getTenantShortName());
-        ApplymentsRequest.UboInfo uboInfo = new ApplymentsRequest.UboInfo();
-        uboInfo.setUboIdDocName(appApplyRequest.getBeneficiaryName());
-        uboInfo.setUboIdDocNumber(appApplyRequest.getBeneficiaryNo());
-        uboInfo.setUboIdDocCopy(appApplyRequest.getBeneficiaryIdPictureFront());
-        uboInfo.setUboIdDocCopyBack(appApplyRequest.getBeneficiaryIdPictureBack());
-        uboInfo.setUboIdDocType(appApplyRequest.getBeneficiaryIdType());
-        uboInfo.setUboIdDocPeriodBegin(appApplyRequest.getBeneficiaryIdValidityPeriodBegin());
-        uboInfo.setUboIdDocPeriodEnd(appApplyRequest.getProprietorIdValidityPeriodEnd());
-        uboInfo.setUboIdDocAddress(appApplyRequest.getProprietorIdAddress());
-        List<ApplymentsRequest.UboInfo> list = new ArrayList<>();
-        list.add(uboInfo);
-        isvCreateBo.setUboInfoList(list);
         //资质证明
         isvCreateBo.setQualifications(appApplyRequest.getQualificationPicture());
         log.info("结束转换参数appApplyRequest{}", isvCreateBo);
@@ -494,12 +502,8 @@ public class payBiz implements PayApi {
         idCardInfo.setCardPeriodEnd(appApplyRequest.getProprietorIdValidityPeriodEnd());
         idCardInfo.setIdCardAddress(appApplyRequest.getProprietorIdAddress());
         identityInfo.setIdCardInfo(idCardInfo);
-        if (!StringUtil.isEmpty(appApplyRequest.getOwner())
-                && appApplyRequest.getOwner().equals("true")) {
-            identityInfo.setOwner(true);
-        } else {
-            identityInfo.setOwner(false);
-        }
+        identityInfo.setOwner(!StringUtil.isEmpty(appApplyRequest.getOwner())
+                && appApplyRequest.getOwner().equals("true"));
 //        if (subjectInfo.getSubjectType().equals("SUBJECT_TYPE_GOVERNMENT")
 //                || subjectInfo.getSubjectType().equals("SUBJECT_TYPE_INSTITUTIONS")) {
 //            if (appApplyRequest.getIdHolderType() != null) {
@@ -549,17 +553,23 @@ public class payBiz implements PayApi {
         subjectInfo.setIdentityInfo(identityInfo);
         // 受益人
         if (!identityInfo.getOwner()) {
-            WxPayApplyment4SubCreateRequest.SubjectInfo.UboInfo uboInfo = new WxPayApplyment4SubCreateRequest.SubjectInfo.UboInfo();
-            uboInfo.setUboIdDocName(appApplyRequest.getBeneficiaryName());
-            uboInfo.setUboIdDocNumber(appApplyRequest.getBeneficiaryNo());
-            uboInfo.setUboIdDocCopy(appApplyRequest.getBeneficiaryIdPictureFront());
-            uboInfo.setUboIdDocCopyBack(appApplyRequest.getBeneficiaryIdPictureBack());
-            uboInfo.setUboIdDocType(IdTypeEnum.IDENTIFICATION_TYPE_IDCARD);
-            uboInfo.setUboPeriodBegin(appApplyRequest.getBeneficiaryIdValidityPeriodBegin());
-            uboInfo.setUboPeriodEnd(appApplyRequest.getBeneficiaryIdValidityPeriodEnd());
-            uboInfo.setUboIdDocAddress(appApplyRequest.getBeneficiaryAddress());
             List<WxPayApplyment4SubCreateRequest.SubjectInfo.UboInfo> list = new ArrayList<>();
-            list.add(uboInfo);
+            List<uboInfoListRequest> uboInfoList = appApplyRequest.getUboInfoList();
+            if (!CollectionUtils.isEmpty(uboInfoList)) {
+                for (uboInfoListRequest uboInfoListRequest : uboInfoList) {
+                    WxPayApplyment4SubCreateRequest.SubjectInfo.UboInfo uboInfo = new WxPayApplyment4SubCreateRequest.SubjectInfo.UboInfo();
+                    uboInfo.setUboIdDocName(uboInfoListRequest.getBeneficiaryName());
+                    uboInfo.setUboIdDocNumber(uboInfoListRequest.getBeneficiaryNo());
+                    uboInfo.setUboIdDocCopy(uboInfoListRequest.getBeneficiaryIdPictureFront());
+                    uboInfo.setUboIdDocCopyBack(uboInfoListRequest.getBeneficiaryIdPictureBack());
+                    // 默认身份证
+                    uboInfo.setUboIdDocType(IdTypeEnum.IDENTIFICATION_TYPE_IDCARD);
+                    uboInfo.setUboPeriodBegin(uboInfoListRequest.getBeneficiaryIdValidityPeriodBegin());
+                    uboInfo.setUboPeriodEnd(uboInfoListRequest.getBeneficiaryIdValidityPeriodEnd());
+                    uboInfo.setUboIdDocAddress(uboInfoListRequest.getBeneficiaryAddress());
+                    list.add(uboInfo);
+                }
+            }
             subjectInfo.setUboInfoList(list);
         }
         isvCreateBo.setSubjectInfo(subjectInfo);
