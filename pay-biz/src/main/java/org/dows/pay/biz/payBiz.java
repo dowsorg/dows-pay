@@ -2,6 +2,7 @@ package org.dows.pay.biz;
 
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSON;
 import com.alipay.api.response.AlipayOpenMiniIsvCreateResponse;
 import com.alipay.service.schema.util.StringUtil;
 import com.github.binarywang.wxpay.bean.applyment.WxPayApplyment4SubCreateRequest;
@@ -76,6 +77,7 @@ public class payBiz implements PayApi {
     @Override
     public Response isvApply(AppApplyRequest appApplyRequest) {
         PayRequest payRequest = new PayIsvRequest();
+        payRequest.setApplyOrderNo(appApplyRequest.getApplyOrderNo());
         log.info("生成appApplyRequest参数{}", appApplyRequest);
         if ("WEIXIN".equals(appApplyRequest.getApplyType())) {
             IsvCreateTyBo isvCreateTyBo = convertTy(appApplyRequest);
@@ -108,7 +110,9 @@ public class payBiz implements PayApi {
                 AlipayOpenMiniIsvCreateResponse alipayResponse = alipayIsvHandler.createIsvMini(payRequest);
                 log.info("生成AlipayOpenMiniIsvCreateResponse参数{}", alipayResponse);
                 if (alipayResponse.isSuccess()) {
-                    return Response.ok(true, "申请支付宝小程序成功");
+                    return Response.ok(true, JSON.toJSONString(alipayResponse));
+                }else{
+                    return Response.fail(alipayResponse.getSubMsg());
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -165,6 +169,7 @@ public class payBiz implements PayApi {
     @Override
     public Response fastRegisterApp(AppApplyRequest appApplyRequest) {
         PayRequest payRequest = new PayIsvRequest();
+        payRequest.setApplyOrderNo(appApplyRequest.getApplyOrderNo());
         log.info("生成appApplyRequest参数{}", appApplyRequest);
         if ("WEIXIN".equals(appApplyRequest.getApplyType())) {
             IsvCreateTyBo isvCreateTyBo = convertTy(appApplyRequest);
@@ -195,6 +200,7 @@ public class payBiz implements PayApi {
             throw new BizException("未申请注册小程序不可申请支付能力");
         }
         PayRequest payRequest = new PayIsvRequest();
+        payRequest.setApplyOrderNo(appApplyRequest.getApplyOrderNo());
         log.info("生成appApplyRequest参数{}", appApplyRequest);
         if ("WEIXIN".equals(appApplyRequest.getApplyType())) {
             IsvCreateTyBo isvCreateTyBo = convertTy(appApplyRequest);
@@ -365,6 +371,7 @@ public class payBiz implements PayApi {
     public IsvCreateBo convert(AppApplyRequest appApplyRequest) {
         log.info("开始转换参数appApplyRequest{}", appApplyRequest);
         IsvCreateBo isvCreateBo = new IsvCreateBo();
+        isvCreateBo.setAppName(appApplyRequest.getAppName());
         isvCreateBo.setAccount(appApplyRequest.getPlatformAccount());
         //账户信息
         ApplymentsRequest.AccountInfo accountInfo = new ApplymentsRequest.AccountInfo();
@@ -401,6 +408,8 @@ public class payBiz implements PayApi {
         isvCreateBo.setIdCardInfo(idCardInfo);
         //超级管理员信息
         ApplymentsRequest.ContactInfo contactInfo = new ApplymentsRequest.ContactInfo();
+        // 外层
+        isvCreateBo.setContactName(appApplyRequest.getSuperAdminName());
         contactInfo.setContactName(appApplyRequest.getSuperAdminName());
         contactInfo.setMobilePhone(appApplyRequest.getContactPhone());
         contactInfo.setContactEmail(appApplyRequest.getContactEmail());
@@ -444,6 +453,7 @@ public class payBiz implements PayApi {
         IsvCreateTyBo isvCreateBo = new IsvCreateTyBo();
         isvCreateBo.setOutOrderNo(IdUtil.fastUUID().replace("-", ""));
         isvCreateBo.setAccount(appApplyRequest.getPlatformAccount());
+        isvCreateBo.setAppName(appApplyRequest.getAppName());
         // 账户信息
         WxPayApplyment4SubCreateRequest.BankAccountInfo accountInfo = new WxPayApplyment4SubCreateRequest.BankAccountInfo();
         accountInfo.setAccountBank(appApplyRequest.getBankName());

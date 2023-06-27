@@ -51,7 +51,6 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
     private final UserCompanyBiz userCompanyBiz;
 
 
-
     private final IdGenerator idGenerator = new SimpleIdGenerator();
 
     public static void main(String[] args) {
@@ -85,16 +84,18 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
 //        }
 
         CreateMiniRequest createMiniRequest = new CreateMiniRequest();
-        createMiniRequest.setOutOrderNo(payRequest.getApplyOrderNo());
         // 自动
         autoMappingValue(payRequest, createMiniRequest);
+        createMiniRequest.setOutOrderNo(payRequest.getApplyOrderNo());
         AlipayOpenMiniIsvCreateRequest request = new AlipayOpenMiniIsvCreateRequest();
         AlipayOpenMiniIsvCreateModel model = new AlipayOpenMiniIsvCreateModel();
         model.setCreateMiniRequest(createMiniRequest);
         request.setBizModel(model);
         AlipayOpenMiniIsvCreateResponse response = null;
         try {
+            log.info("请求入参：{}", request);
             response = getAlipayClient(payRequest.getAppId()).certificateExecute(request);
+            log.info("请求返回结果：{}", response);
         } catch (AlipayApiException e) {
             throw new RuntimeException(e);
         }
@@ -125,6 +126,8 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
             AppApplyRequest appApplyUpdateRequest = new AppApplyRequest();
             appApplyUpdateRequest.setApplyOrderNo(payRequest.getApplyOrderNo());
             appApplyUpdateRequest.setPlatformOrderNo(orderNo);
+            // 申请状态 0未申请 1-申请中 2-已申请 3.申请失败
+            appApplyUpdateRequest.setAppStatus(String.valueOf(1));
             appApplyBiz.updateApplyPlatformOrderNo(appApplyUpdateRequest);
             log.info("调用成功,响应信息:{}", JSONUtil.toJsonStr(response));
         } else {
