@@ -45,8 +45,10 @@ import org.dows.pay.api.util.HttpRequestUtils;
 import org.dows.pay.boot.PayClientFactory;
 import org.dows.pay.entity.PayTransaction;
 import org.dows.pay.service.PayTransactionService;
+import org.dows.store.api.StoreCouponApi;
 import org.dows.store.api.StoreInstanceApi;
 import org.dows.store.api.request.StoreInstanceRequest;
+import org.dows.store.form.StoreCouponForm;
 import org.dows.user.api.api.UserCompanyApi;
 import org.dows.user.api.dto.UserCompanyDTO;
 import org.dows.user.api.vo.UserCompanyVo;
@@ -97,6 +99,8 @@ public class WeixinPayNotifyController {
     private final StoreInstanceApi storeInstanceApi;
 
     private final PayTransactionService payTransactionService;
+
+    private final StoreCouponApi storeCouponapi;
 
 
     static {
@@ -153,6 +157,15 @@ public class WeixinPayNotifyController {
                         payTransactionService.updateStatusByOrderId(transactionsResult.getTransactionId(),transactionsResult.getOutTradeNo(),OrderPayTypeEnum.pay_finish.getCode());
                         instanceBo.setOrderId(payTransaction.getOrderId());
                         orderInstanceBizApiService.updateOrderInstance(instanceBo);
+
+                        //注销优惠卷
+                        OrderInstanceBo orderInstanceBo = orderInstanceBizApiService.getOne(payTransaction.getOrderId());
+                        String coupon_id = orderInstanceBo.getCouponId();
+                        StoreCouponForm storeCouponForm = storeCouponapi.getFormByCouponId(coupon_id);
+                        storeCouponForm.setStatus("1");
+                        storeCouponapi.updateCouponForm(storeCouponForm);
+
+
                     } catch (Exception e) {
                         log.info("更新状态失败：",e);
                     }
