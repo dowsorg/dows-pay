@@ -182,6 +182,7 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
     @EventListener(value = {PayEvent.class})
     public void onIsvMerchantConfirmed(PayEvent<AlipayMessage> payEvent) {
         AlipayMessage payMessage = payEvent.getPayMessage();
+        tempRedisApi.setKey("ALIPAY" + payMessage.getMsgApi(), String.valueOf(payMessage));
         log.info("处理 alipay.open.mini.merchant.confirmed 事件消息:{}", payMessage);
         // todo 业务处理
         String appId = payMessage.getAppId();
