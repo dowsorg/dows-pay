@@ -5,14 +5,9 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.serializer.ValueFilter;
 import com.alipay.api.AlipayApiException;
-import com.alipay.api.domain.AlipayOpenMiniIsvCreateModel;
-import com.alipay.api.domain.AlipayOpenMiniIsvQueryModel;
-import com.alipay.api.domain.AlipayOpenMiniVersionOnlineModel;
-import com.alipay.api.domain.CreateMiniRequest;
-import com.alipay.api.request.AlipayOpenMiniIsvCreateRequest;
-import com.alipay.api.request.AlipayOpenMiniIsvQueryRequest;
-import com.alipay.api.response.AlipayOpenMiniIsvCreateResponse;
-import com.alipay.api.response.AlipayOpenMiniIsvQueryResponse;
+import com.alipay.api.domain.*;
+import com.alipay.api.request.*;
+import com.alipay.api.response.*;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.RequiredArgsConstructor;
@@ -151,6 +146,103 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
     }
 
     /**
+     * 申请当面付
+     * 服务商调用 alipay.open.agent.create(开启代商户签约、创建应用事务)
+     */
+    @PayMapping(method = PayMethods.AGENT_CREATE)
+    public String createIsvtyAgent(PayRequest payRequest) {
+        AlipayOpenAgentCreateModel alipayOpenAgentCreateModel = new AlipayOpenAgentCreateModel();
+        // 自动映射
+        autoMappingValue(payRequest, alipayOpenAgentCreateModel);
+        AlipayOpenAgentCreateRequest request = new AlipayOpenAgentCreateRequest ();
+        request.setBizModel(alipayOpenAgentCreateModel);
+        AlipayOpenAgentCreateResponse response = null;
+        try {
+            response = getAlipayClient(payRequest.getAppId()).execute(request);
+        } catch (AlipayApiException e) {
+            throw new RuntimeException(e);
+        }
+        if (response.isSuccess()) {
+            return response.getBatchNo();
+        } else {
+            //todo 失败逻辑
+            throw new RuntimeException("调用失败");
+        }
+    }
+
+    /**
+     * 申请当面付
+     * 服务商调用 alipay.open.agent.commonsign.confirm(代商户签约，提交信息确认接口)
+     */
+    @PayMapping(method = PayMethods.AGENT_CONFIRM)
+    public AlipayOpenAgentCommonsignConfirmResponse confirmIsvtyAgent(PayRequest payRequest, String batchNo) {
+        AlipayOpenAgentCommonsignConfirmModel  alipayOpenAgentCommonsignConfirmModel = new AlipayOpenAgentCommonsignConfirmModel();
+
+        alipayOpenAgentCommonsignConfirmModel.setBatchNo(batchNo);
+        AlipayOpenAgentCommonsignConfirmRequest request = new AlipayOpenAgentCommonsignConfirmRequest  ();
+        request.setBizModel(alipayOpenAgentCommonsignConfirmModel);
+        AlipayOpenAgentCommonsignConfirmResponse response = null;
+        try {
+            response = getAlipayClient(payRequest.getAppId()).execute(request);
+        } catch (AlipayApiException e) {
+            throw new RuntimeException(e);
+        }
+        if (response.isSuccess()) {
+            return response;
+        } else {
+            //todo 失败逻辑
+            throw new RuntimeException("调用失败");
+        }
+    }
+
+    /**
+     * 申请当面付
+     * 服务商调用 alipay.open.agent.facetoface.sign(代签约当面付产品)
+     */
+    @PayMapping(method = PayMethods.AGENT_FACETOFACE)
+    public String facetofaceIsvtyAgent(PayRequest payRequest) {
+        AlipayOpenAgentFacetofaceSignRequest request = new AlipayOpenAgentFacetofaceSignRequest();
+        //待开发
+        request.setBizModel(null);
+        AlipayOpenAgentFacetofaceSignResponse response = null;
+        try {
+            response = getAlipayClient(payRequest.getAppId()).execute(request);
+        } catch (AlipayApiException e) {
+            throw new RuntimeException(e);
+        }
+        if (response.isSuccess()) {
+            return response.getSubMsg();
+        } else {
+            //todo 失败逻辑
+            throw new RuntimeException("调用失败");
+        }
+    }
+
+    /**
+     * 申请当面付
+     * 服务商调用 alipay.open.agent.order.query(查询申请单状态)
+     */
+    @PayMapping(method = PayMethods.AGENT_QUERY)
+    public AlipayOpenAgentOrderQueryResponse queryIsvtyAgent(PayRequest payRequest,String batchNo) {
+        AlipayOpenAgentOrderQueryModel alipayOpenAgentOrderQueryModel = new AlipayOpenAgentOrderQueryModel();
+        alipayOpenAgentOrderQueryModel.setBatchNo(batchNo);
+        AlipayOpenAgentOrderQueryRequest   request = new AlipayOpenAgentOrderQueryRequest ();
+        request.setBizModel(alipayOpenAgentOrderQueryModel);
+        AlipayOpenAgentOrderQueryResponse  response = null;
+        try {
+            response = getAlipayClient(payRequest.getAppId()).execute(request);
+        } catch (AlipayApiException e) {
+            throw new RuntimeException(e);
+        }
+        if (response.isSuccess()) {
+            return response;
+        } else {
+            //todo 失败逻辑
+            throw new RuntimeException("调用失败");
+        }
+    }
+
+    /**
      * 查询该订单协助创建小程序的情况
      * 服务商调用 alipay.open.mini.isv.query 接口，传入 order_no（订单编号）参数，
      */
@@ -227,4 +319,5 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
         queryWrapperAppApply.eq(AppApply::getPlatformOrderNo, appApply.getPlatformOrderNo());
         appApplyService.update(appApply, queryWrapperAppApply);
     }
+
 }
