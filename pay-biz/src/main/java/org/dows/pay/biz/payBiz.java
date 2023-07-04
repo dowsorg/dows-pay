@@ -99,7 +99,8 @@ public class payBiz implements PayApi {
                 //创建小程序
                 return Response.fail(e.getMessage());
             }
-        } else if ("ALIPAY".equals(appApplyRequest.getApplyType())) {
+        }
+        else if ("ALIPAY".equals(appApplyRequest.getApplyType())) {
             IsvCreateBo isvCreateBo = convert(appApplyRequest);
             log.info("生成payRequest.setBizModel参数{}", isvCreateBo);
             payRequest.setBizModel(isvCreateBo);

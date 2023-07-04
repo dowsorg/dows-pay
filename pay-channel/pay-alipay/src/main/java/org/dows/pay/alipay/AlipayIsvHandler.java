@@ -2,19 +2,28 @@ package org.dows.pay.alipay;
 
 import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.serializer.ValueFilter;
 import com.alipay.api.AlipayApiException;
-import com.alipay.api.AlipayObject;
-import com.alipay.api.domain.*;
-import com.alipay.api.request.*;
-import com.alipay.api.response.*;
+import com.alipay.api.domain.AlipayOpenMiniIsvCreateModel;
+import com.alipay.api.domain.AlipayOpenMiniIsvQueryModel;
+import com.alipay.api.domain.AlipayOpenMiniVersionOnlineModel;
+import com.alipay.api.domain.CreateMiniRequest;
+import com.alipay.api.request.AlipayOpenMiniIsvCreateRequest;
+import com.alipay.api.request.AlipayOpenMiniIsvQueryRequest;
+import com.alipay.api.response.AlipayOpenMiniIsvCreateResponse;
+import com.alipay.api.response.AlipayOpenMiniIsvQueryResponse;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.dows.app.api.mini.AppApplyApi;
 import org.dows.app.api.mini.request.AppApplyRequest;
 import org.dows.app.biz.AppApplyBiz;
 import org.dows.app.entity.AppApply;
+import org.dows.app.service.AppApplyService;
+import org.dows.auth.api.TempRedisApi;
 import org.dows.framework.api.Response;
 import org.dows.pay.api.PayEvent;
 import org.dows.pay.api.PayHandler;
@@ -24,10 +33,13 @@ import org.dows.pay.api.annotation.PayMapping;
 import org.dows.pay.api.enums.PayChannels;
 import org.dows.pay.api.enums.PayMethods;
 import org.dows.pay.api.message.AlipayMessage;
+import org.dows.pay.api.message.alipay.MiniConfirmed;
+import org.dows.pay.api.util.JsonUtils;
 import org.dows.pay.bo.IsvCreateBo;
 import org.dows.user.biz.UserCompanyBiz;
 import org.dows.user.biz.UserCompanyRequest;
 import org.dows.user.entity.UserCompany;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.util.IdGenerator;
@@ -46,7 +58,11 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
     private final AppApplyBiz appApplyBiz;
 
     private final UserCompanyBiz userCompanyBiz;
+    @Autowired
+    private TempRedisApi tempRedisApi;
 
+    @Autowired
+    private AppApplyService appApplyService;
 
     private final IdGenerator idGenerator = new SimpleIdGenerator();
 
@@ -135,103 +151,6 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
     }
 
     /**
-     * 申请当面付
-     * 服务商调用 alipay.open.agent.create(开启代商户签约、创建应用事务)
-     */
-    @PayMapping(method = PayMethods.AGENT_CREATE)
-    public String createIsvtyAgent(PayRequest payRequest) {
-        AlipayOpenAgentCreateModel alipayOpenAgentCreateModel = new AlipayOpenAgentCreateModel();
-        // 自动映射
-        autoMappingValue(payRequest, alipayOpenAgentCreateModel);
-        AlipayOpenAgentCreateRequest request = new AlipayOpenAgentCreateRequest ();
-        request.setBizModel(alipayOpenAgentCreateModel);
-        AlipayOpenAgentCreateResponse response = null;
-        try {
-            response = getAlipayClient(payRequest.getAppId()).execute(request);
-        } catch (AlipayApiException e) {
-            throw new RuntimeException(e);
-        }
-        if (response.isSuccess()) {
-            return response.getBatchNo();
-        } else {
-            //todo 失败逻辑
-            throw new RuntimeException("调用失败");
-        }
-    }
-
-    /**
-     * 申请当面付
-     * 服务商调用 alipay.open.agent.commonsign.confirm(代商户签约，提交信息确认接口)
-     */
-    @PayMapping(method = PayMethods.AGENT_CONFIRM)
-    public AlipayOpenAgentCommonsignConfirmResponse confirmIsvtyAgent(PayRequest payRequest,String batchNo) {
-        AlipayOpenAgentCommonsignConfirmModel  alipayOpenAgentCommonsignConfirmModel = new AlipayOpenAgentCommonsignConfirmModel();
-
-        alipayOpenAgentCommonsignConfirmModel.setBatchNo(batchNo);
-        AlipayOpenAgentCommonsignConfirmRequest request = new AlipayOpenAgentCommonsignConfirmRequest  ();
-        request.setBizModel(alipayOpenAgentCommonsignConfirmModel);
-        AlipayOpenAgentCommonsignConfirmResponse response = null;
-        try {
-            response = getAlipayClient(payRequest.getAppId()).execute(request);
-        } catch (AlipayApiException e) {
-            throw new RuntimeException(e);
-        }
-        if (response.isSuccess()) {
-            return response;
-        } else {
-            //todo 失败逻辑
-            throw new RuntimeException("调用失败");
-        }
-    }
-
-    /**
-     * 申请当面付
-     * 服务商调用 alipay.open.agent.facetoface.sign(代签约当面付产品)
-     */
-    @PayMapping(method = PayMethods.AGENT_FACETOFACE)
-    public String facetofaceIsvtyAgent(PayRequest payRequest) {
-        AlipayOpenAgentFacetofaceSignRequest  request = new AlipayOpenAgentFacetofaceSignRequest();
-        //待开发
-        request.setBizModel(null);
-        AlipayOpenAgentFacetofaceSignResponse response = null;
-        try {
-            response = getAlipayClient(payRequest.getAppId()).execute(request);
-        } catch (AlipayApiException e) {
-            throw new RuntimeException(e);
-        }
-        if (response.isSuccess()) {
-            return response.getSubMsg();
-        } else {
-            //todo 失败逻辑
-            throw new RuntimeException("调用失败");
-        }
-    }
-
-    /**
-     * 申请当面付
-     * 服务商调用 alipay.open.agent.order.query(查询申请单状态)
-     */
-    @PayMapping(method = PayMethods.AGENT_QUERY)
-    public AlipayOpenAgentOrderQueryResponse queryIsvtyAgent(PayRequest payRequest,String batchNo) {
-        AlipayOpenAgentOrderQueryModel alipayOpenAgentOrderQueryModel = new AlipayOpenAgentOrderQueryModel();
-        alipayOpenAgentOrderQueryModel.setBatchNo(batchNo);
-        AlipayOpenAgentOrderQueryRequest   request = new AlipayOpenAgentOrderQueryRequest ();
-        request.setBizModel(alipayOpenAgentOrderQueryModel);
-        AlipayOpenAgentOrderQueryResponse  response = null;
-        try {
-            response = getAlipayClient(payRequest.getAppId()).execute(request);
-        } catch (AlipayApiException e) {
-            throw new RuntimeException(e);
-        }
-        if (response.isSuccess()) {
-            return response;
-        } else {
-            //todo 失败逻辑
-            throw new RuntimeException("调用失败");
-        }
-    }
-
-    /**
      * 查询该订单协助创建小程序的情况
      * 服务商调用 alipay.open.mini.isv.query 接口，传入 order_no（订单编号）参数，
      */
@@ -263,6 +182,7 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
     @EventListener(value = {PayEvent.class})
     public void onIsvMerchantConfirmed(PayEvent<AlipayMessage> payEvent) {
         AlipayMessage payMessage = payEvent.getPayMessage();
+        tempRedisApi.setKey("ALIPAY" + payMessage.getMsgApi(), String.valueOf(payMessage));
         log.info("处理 alipay.open.mini.merchant.confirmed 事件消息:{}", payMessage);
         // todo 业务处理
         String appId = payMessage.getAppId();
@@ -270,8 +190,6 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
         String msgId = payMessage.getMsgId();
         PayHandler handler = applicationContext.getBean(payEvent.getHandlerClass());
         handler.onMessage(payMessage);
-
-
     }
 
     @Override
@@ -279,5 +197,34 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
         //AlipayMessage alipayMessage = (AlipayMessage)payMessage;
         String bizContent = payMessage.getBizContent();
         log.info("业务响应:bizContent = {}", bizContent);
+        MiniConfirmed miniConfirmed = JsonUtils
+                .parseObject(bizContent, new TypeReference<MiniConfirmed>() {
+                });
+        log.info(String.valueOf(miniConfirmed));
+        AppApply appApply = new AppApply();
+        appApply.setPlatform("ALIPAY");
+        appApply.setPlatformOrderNo(miniConfirmed.getOrder_no());
+        appApply.setApplyOrderNo(miniConfirmed.getOut_order_no());
+        if (miniConfirmed.getStatus().equals("AGREED")) {
+            // 成功
+            appApply.setAppStatus(String.valueOf(2));
+            appApply.setRejectionReason("注册小程序申请成功");
+        } else if (miniConfirmed.getStatus().equals("REJECTED")) {
+            // 拒绝
+            appApply.setAppStatus(String.valueOf(3));
+            appApply.setRejectionReason("注册小程序申请失败：");
+        } else if (miniConfirmed.getStatus().equals("TIMEOUT")) {
+            // 超时
+            // 拒绝
+            appApply.setAppStatus(String.valueOf(3));
+            appApply.setRejectionReason("注册小程序申请失败（超时）");
+        }
+        // 修改完成信息
+        // 更新AppApply
+        LambdaQueryWrapper<AppApply> queryWrapperAppApply = new LambdaQueryWrapper();
+        queryWrapperAppApply.eq(AppApply::getPlatform, appApply.getPlatform());
+        queryWrapperAppApply.eq(AppApply::getApplyOrderNo, appApply.getApplyOrderNo());
+        queryWrapperAppApply.eq(AppApply::getPlatformOrderNo, appApply.getPlatformOrderNo());
+        appApplyService.update(appApply, queryWrapperAppApply);
     }
 }
