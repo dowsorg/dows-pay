@@ -13,11 +13,17 @@ import com.alipay.api.request.AlipayOpenMiniIsvCreateRequest;
 import com.alipay.api.request.AlipayOpenMiniIsvQueryRequest;
 import com.alipay.api.response.AlipayOpenMiniIsvCreateResponse;
 import com.alipay.api.response.AlipayOpenMiniIsvQueryResponse;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.dows.app.api.mini.AppApplyApi;
 import org.dows.app.api.mini.request.AppApplyRequest;
 import org.dows.app.biz.AppApplyBiz;
 import org.dows.app.entity.AppApply;
+import org.dows.app.service.AppApplyService;
+import org.dows.auth.api.TempRedisApi;
 import org.dows.framework.api.Response;
 import org.dows.pay.api.PayEvent;
 import org.dows.pay.api.PayHandler;
@@ -27,10 +33,13 @@ import org.dows.pay.api.annotation.PayMapping;
 import org.dows.pay.api.enums.PayChannels;
 import org.dows.pay.api.enums.PayMethods;
 import org.dows.pay.api.message.AlipayMessage;
+import org.dows.pay.api.message.alipay.MiniConfirmed;
+import org.dows.pay.api.util.JsonUtils;
 import org.dows.pay.bo.IsvCreateBo;
 import org.dows.user.biz.UserCompanyBiz;
 import org.dows.user.biz.UserCompanyRequest;
 import org.dows.user.entity.UserCompany;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.util.IdGenerator;
@@ -49,7 +58,11 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
     private final AppApplyBiz appApplyBiz;
 
     private final UserCompanyBiz userCompanyBiz;
+    @Autowired
+    private TempRedisApi tempRedisApi;
 
+    @Autowired
+    private AppApplyService appApplyService;
 
     private final IdGenerator idGenerator = new SimpleIdGenerator();
 
@@ -176,8 +189,6 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
         String msgId = payMessage.getMsgId();
         PayHandler handler = applicationContext.getBean(payEvent.getHandlerClass());
         handler.onMessage(payMessage);
-
-
     }
 
     @Override
@@ -185,5 +196,34 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
         //AlipayMessage alipayMessage = (AlipayMessage)payMessage;
         String bizContent = payMessage.getBizContent();
         log.info("业务响应:bizContent = {}", bizContent);
+        MiniConfirmed miniConfirmed = JsonUtils
+                .parseObject(bizContent, new TypeReference<MiniConfirmed>() {
+                });
+        log.info(String.valueOf(miniConfirmed));
+        AppApply appApply = new AppApply();
+        appApply.setPlatform("ALIPAY");
+        appApply.setPlatformOrderNo(miniConfirmed.getOrder_no());
+        appApply.setApplyOrderNo(miniConfirmed.getOut_order_no());
+        if (miniConfirmed.getStatus().equals("AGREED")) {
+            // 成功
+            appApply.setAppStatus(String.valueOf(2));
+            appApply.setRejectionReason("注册小程序申请成功");
+        } else if (miniConfirmed.getStatus().equals("REJECTED")) {
+            // 拒绝
+            appApply.setAppStatus(String.valueOf(3));
+            appApply.setRejectionReason("注册小程序申请失败：");
+        } else if (miniConfirmed.getStatus().equals("TIMEOUT")) {
+            // 超时
+            // 拒绝
+            appApply.setAppStatus(String.valueOf(3));
+            appApply.setRejectionReason("注册小程序申请失败（超时）");
+        }
+        // 修改完成信息
+        // 更新AppApply
+        LambdaQueryWrapper<AppApply> queryWrapperAppApply = new LambdaQueryWrapper();
+        queryWrapperAppApply.eq(AppApply::getPlatform, appApply.getPlatform());
+        queryWrapperAppApply.eq(AppApply::getApplyOrderNo, appApply.getApplyOrderNo());
+        queryWrapperAppApply.eq(AppApply::getPlatformOrderNo, appApply.getPlatformOrderNo());
+        appApplyService.update(appApply, queryWrapperAppApply);
     }
 }
