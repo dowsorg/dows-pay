@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.serializer.ValueFilter;
 import com.alipay.api.AlipayApiException;
+import com.alipay.api.FileItem;
 import com.alipay.api.domain.*;
 import com.alipay.api.request.*;
 import com.alipay.api.response.*;
@@ -200,10 +201,16 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
      * 服务商调用 alipay.open.agent.facetoface.sign(代签约当面付产品)
      */
     @PayMapping(method = PayMethods.AGENT_FACETOFACE)
-    public String facetofaceIsvtyAgent(PayRequest payRequest) {
+    public AlipayOpenAgentFacetofaceSignResponse facetofaceIsvtyAgent(PayRequest payRequest, String batchNo) {
+        IsvCreateBo isvCreateBo = (IsvCreateBo) payRequest.getBizModel();
         AlipayOpenAgentFacetofaceSignRequest request = new AlipayOpenAgentFacetofaceSignRequest();
-        //待开发
-        request.setBizModel(null);
+        request.setBatchNo(batchNo);
+        request.setMccCode("A0001_B0006");
+        request.setRate("0.38");
+        request.setSignAndAuth(true);
+        request.setBusinessLicenseNo(isvCreateBo.getBusinessAdditionDesc());
+        request.setBusinessLicensePic(new FileItem(isvCreateBo.getBusinessAdditionPics()));
+
         AlipayOpenAgentFacetofaceSignResponse response = null;
         try {
             response = getAlipayClient(payRequest.getAppId()).execute(request);
@@ -211,7 +218,7 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
             throw new RuntimeException(e);
         }
         if (response.isSuccess()) {
-            return response.getSubMsg();
+            return response;
         } else {
             //todo 失败逻辑
             throw new RuntimeException("调用失败");

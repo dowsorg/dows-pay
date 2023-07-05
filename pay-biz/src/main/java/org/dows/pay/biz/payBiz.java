@@ -3,6 +3,8 @@ package org.dows.pay.biz;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
+import com.alipay.api.response.AlipayOpenAgentCommonsignConfirmResponse;
+import com.alipay.api.response.AlipayOpenAgentFacetofaceSignResponse;
 import com.alipay.api.response.AlipayOpenMiniIsvCreateResponse;
 import com.alipay.api.response.AlipayOpenMiniIsvQueryResponse;
 import com.alipay.service.schema.util.StringUtil;
@@ -233,6 +235,40 @@ public class payBiz implements PayApi {
             }
         }
         return null;
+    }
+
+    @Override
+    public Response applyForPaymentlsv(AppApplyRequest appApplyRequest) {
+        AppApply appApply = appApplyService.getByMerchantNo(appApplyRequest.getMerchantNo());
+        if (appApply == null) {
+            throw new BizException("未申请注册小程序不可申请支付能力");
+        }
+        IsvCreateTyBo isvCreateTyBo = convertTy(appApplyRequest);
+        PayRequest payRequest = new PayIsvRequest();
+        payRequest.setBizModel(isvCreateTyBo);
+        log.info("生成appApplyRequest参数{}", appApplyRequest);
+            try {
+                // 小程序申请支付权限
+                log.info("生成WxPayApplymentCreateResult参数payRequest：{}", payRequest);
+                String batchNo = alipayIsvHandler.createIsvtyAgent(payRequest);
+                if (!StringUtil.isEmpty(batchNo)) {
+                    AlipayOpenAgentCommonsignConfirmResponse confirmIsv = alipayIsvHandler.confirmIsvtyAgent(payRequest, batchNo);
+                    if (confirmIsv.getMsg().equals("Success")) {
+                        AlipayOpenAgentFacetofaceSignResponse facetofaceIsv = alipayIsvHandler.facetofaceIsvtyAgent(payRequest, batchNo);
+                        if(facetofaceIsv.getMsg().equals("Success")){
+                            return Response.fail("申请成功");
+                        }else{
+                            return Response.fail("申请失败");
+                        }
+                    } else {
+                        return Response.fail("申请失败");
+                    }
+                }
+            } catch (Exception e) {
+                log.warn("applyForPaymentAuth fail :", e);
+                return Response.fail(e.getMessage());
+            }
+        return Response.fail("申请失败");
     }
 
     @Override
