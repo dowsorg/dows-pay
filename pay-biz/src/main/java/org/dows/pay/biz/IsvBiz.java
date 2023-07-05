@@ -44,6 +44,7 @@ public class IsvBiz {
         PayResponse data = response.getData();
         log.info("返回结果:{}", data);
     }
+
     /**
      * isv 创建
      *
@@ -64,6 +65,7 @@ public class IsvBiz {
         PayResponse data = response.getData();
         log.info("返回结果:{}", data);
     }
+
     /**
      * isvTy 创建
      *
@@ -84,12 +86,13 @@ public class IsvBiz {
         PayResponse data = response.getData();
         log.info("返回结果:{}", data);
     }
+
     /**
      * isv查询
      *
      * @param isvQueryForm
      */
-    public void isvQuery(IsvQueryForm isvQueryForm) {
+    public Response isvQuery(IsvQueryForm isvQueryForm) {
         PayIsvRequest payRequest = new PayIsvRequest();
         IsvCreateBo isvCreateBo = BeanUtil.copyProperties(isvQueryForm, IsvCreateBo.class);
         payRequest.setMethod(PayMethods.ISV_QUERY.getNamespace());
@@ -101,6 +104,7 @@ public class IsvBiz {
         Response<PayResponse> response = payDispatcher.dispatcher(payRequest);
         PayResponse data = response.getData();
         log.info("返回结果:{}", data);
+        return response;
     }
 
 

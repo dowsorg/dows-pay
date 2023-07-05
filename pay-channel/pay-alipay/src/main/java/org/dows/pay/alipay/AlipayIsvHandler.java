@@ -263,7 +263,8 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
             alipayOpenMiniIsvQueryModel.setOrderNo(isvCreateBo.getOutOrderNo());
             AlipayOpenMiniIsvQueryRequest request = new AlipayOpenMiniIsvQueryRequest();
             request.setBizModel(alipayOpenMiniIsvQueryModel);
-            return getAlipayClient(payRequest.getAppId()).execute(request);
+            AlipayOpenMiniIsvQueryResponse alipayOpenMiniIsvQueryResponse = getAlipayClient(payRequest.getAppId()).certificateExecute(request);
+            return alipayOpenMiniIsvQueryResponse;
         } catch (AlipayApiException e) {
             throw new RuntimeException(e);
         }
