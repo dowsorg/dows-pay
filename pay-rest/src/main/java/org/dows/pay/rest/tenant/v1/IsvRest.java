@@ -4,7 +4,9 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.dows.app.api.mini.request.AppApplyRequest;
 import org.dows.framework.api.Response;
+import org.dows.pay.api.PayApi;
 import org.dows.pay.api.PayResponse;
 import org.dows.pay.biz.IsvBiz;
 import org.dows.pay.form.IsvCreateForm;
@@ -23,6 +25,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class IsvRest {
 
+    private final PayApi payApi;
+
     private final IsvBiz isvBiz;
 
     @PostMapping("/isv/create")
@@ -31,12 +35,14 @@ public class IsvRest {
         isvBiz.isvCreate(isvCreateForm);
         return Response.ok();
     }
+
     @PostMapping("/isv/apply")
     @ApiOperation(value = "代商户创建小程序")
     public Response<PayResponse> apply(@Validated @RequestBody IsvCreateForm isvCreateForm) {
         isvBiz.isvApply(isvCreateForm);
         return Response.ok();
     }
+
     @PostMapping("/isv/ty/create")
     @ApiOperation(value = "代商户创建特约商户小程序")
     public Response<PayResponse> create(@Validated @RequestBody IsvCreateTyForm isvCreateTyForm) {
@@ -51,5 +57,12 @@ public class IsvRest {
         return Response.ok();
     }
 
+    @PostMapping("/isv/queryIsvMiniStatus")
+    @ApiOperation(value = "查询支付宝小程序状态")
+    public Response<PayResponse> queryIsvMiniStatus(@RequestBody AppApplyRequest appApplyRequest) {
+        payApi.queryIsvMiniStatus(appApplyRequest);
+        return Response.ok();
+    }
 
+//asdasd
 }

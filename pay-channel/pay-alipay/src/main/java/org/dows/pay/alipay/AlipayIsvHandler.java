@@ -249,9 +249,11 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
     @PayMapping(method = PayMethods.ISV_QUERY)
     public AlipayOpenMiniIsvQueryResponse queryIsvMini(PayRequest payRequest) {
         try {
+            IsvCreateBo isvCreateBo = (IsvCreateBo) payRequest.getBizModel();
             AlipayOpenMiniIsvQueryModel alipayOpenMiniIsvQueryModel = new AlipayOpenMiniIsvQueryModel();
             // 自动映射
             autoMappingValue(payRequest, alipayOpenMiniIsvQueryModel);
+            alipayOpenMiniIsvQueryModel.setOrderNo(isvCreateBo.getOutOrderNo());
             AlipayOpenMiniIsvQueryRequest request = new AlipayOpenMiniIsvQueryRequest();
             request.setBizModel(alipayOpenMiniIsvQueryModel);
             return getAlipayClient(payRequest.getAppId()).execute(request);
