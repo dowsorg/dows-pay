@@ -435,7 +435,7 @@ public class payBiz implements PayApi {
         //超级管理员信息
         ApplymentsRequest.ContactInfo contactInfo = new ApplymentsRequest.ContactInfo();
         // 外层
-        isvCreateBo.setContactName(appApplyRequest.getSuperAdminName());
+        isvCreateBo.setContactName(appApplyRequest.getContactName());
         contactInfo.setContactName(appApplyRequest.getSuperAdminName());
         contactInfo.setMobilePhone(appApplyRequest.getContactPhone());
         contactInfo.setContactEmail(appApplyRequest.getContactEmail());
