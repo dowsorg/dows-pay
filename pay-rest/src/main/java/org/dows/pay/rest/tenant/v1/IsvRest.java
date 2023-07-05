@@ -4,7 +4,9 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.dows.app.api.mini.request.AppApplyRequest;
 import org.dows.framework.api.Response;
+import org.dows.pay.api.PayApi;
 import org.dows.pay.api.PayResponse;
 import org.dows.pay.biz.IsvBiz;
 import org.dows.pay.form.IsvCreateForm;
@@ -24,6 +26,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class IsvRest {
 
     private final IsvBiz isvBiz;
+
+    private final PayApi payApi;
 
     @PostMapping("/isv/create")
     @ApiOperation(value = "代商户创建支付小程序")
@@ -48,6 +52,13 @@ public class IsvRest {
     @ApiOperation(value = "代商户查询小程序")
     public Response<PayResponse> query(@RequestBody IsvQueryForm isvQueryForm) {
         isvBiz.isvQuery(isvQueryForm);
+        return Response.ok();
+    }
+
+    @PostMapping("/isv/createPay")
+    @ApiOperation(value = "支付宝申请支付")
+    public Response<PayResponse> createpay(@Validated @RequestBody AppApplyRequest appApplyRequest) {
+        payApi.applyForPaymentlsv(appApplyRequest);
         return Response.ok();
     }
 

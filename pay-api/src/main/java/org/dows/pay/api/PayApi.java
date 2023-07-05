@@ -42,6 +42,14 @@ public interface PayApi {
     Response applyForPaymentAuth(AppApplyRequest appApplyRequest);
 
     /**
+     * 支付宝申请支付权限 单独
+     *
+     * @param appApplyRequest
+     * @return
+     */
+    Response applyForPaymentlsv(AppApplyRequest appApplyRequest);
+
+    /**
      * 查询小程序申请支付权限结果
      *
      * @param applymentId
