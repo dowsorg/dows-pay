@@ -52,9 +52,8 @@ public class IsvRest {
 
     @PostMapping("/isv/query")
     @ApiOperation(value = "代商户查询小程序")
-    public Response<PayResponse> query(@RequestBody IsvQueryForm isvQueryForm) {
-        isvBiz.isvQuery(isvQueryForm);
-        return Response.ok();
+    public Response query(@RequestBody IsvQueryForm isvQueryForm) {
+        return isvBiz.isvQuery(isvQueryForm);
     }
 
     @PostMapping("/isv/queryIsvMiniStatus")
