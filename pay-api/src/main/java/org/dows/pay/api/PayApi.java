@@ -42,6 +42,14 @@ public interface PayApi {
     Response applyForPaymentAuth(AppApplyRequest appApplyRequest);
 
     /**
+     * 查询小程序申请状态(支付宝)
+     *
+     * @param appApplyRequest
+     * @return
+     */
+    Response queryIsvMiniStatus(AppApplyRequest appApplyRequest);
+
+    /**
      * 支付宝申请支付权限 单独
      *
      * @param appApplyRequest

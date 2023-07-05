@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSON;
 import com.alipay.api.response.AlipayOpenAgentCommonsignConfirmResponse;
 import com.alipay.api.response.AlipayOpenAgentFacetofaceSignResponse;
 import com.alipay.api.response.AlipayOpenMiniIsvCreateResponse;
+import com.alipay.api.response.AlipayOpenMiniIsvQueryResponse;
 import com.alipay.service.schema.util.StringUtil;
 import com.github.binarywang.wxpay.bean.applyment.WxPayApplyment4SubCreateRequest;
 import com.github.binarywang.wxpay.bean.applyment.WxPayApplymentCreateResult;
@@ -101,8 +102,7 @@ public class payBiz implements PayApi {
                 //创建小程序
                 return Response.fail(e.getMessage());
             }
-        }
-        else if ("ALIPAY".equals(appApplyRequest.getApplyType())) {
+        } else if ("ALIPAY".equals(appApplyRequest.getApplyType())) {
             IsvCreateBo isvCreateBo = convert(appApplyRequest);
             log.info("生成payRequest.setBizModel参数{}", isvCreateBo);
             payRequest.setBizModel(isvCreateBo);
@@ -114,7 +114,7 @@ public class payBiz implements PayApi {
                 log.info("生成AlipayOpenMiniIsvCreateResponse参数{}", alipayResponse);
                 if (alipayResponse.isSuccess()) {
                     return Response.ok(true, JSON.toJSONString(alipayResponse));
-                }else{
+                } else {
                     return Response.fail(alipayResponse.getSubMsg());
                 }
             } catch (Exception e) {
@@ -269,6 +269,31 @@ public class payBiz implements PayApi {
                 return Response.fail(e.getMessage());
             }
         return Response.fail("申请失败");
+    }
+
+    @Override
+    public Response queryIsvMiniStatus(AppApplyRequest appApplyRequest) {
+        PayRequest payRequest = new PayIsvRequest();
+        IsvCreateBo isvCreateBo = convert(appApplyRequest);
+        log.info("生成payRequest.setBizModel参数{}", isvCreateBo);
+        payRequest.setBizModel(isvCreateBo);
+        payRequest.setChannel("alipay");
+        payRequest.setAppId("2021003129694075");
+        try {
+            //查询申请小程序状态
+            AlipayOpenMiniIsvQueryResponse response = alipayIsvHandler.queryIsvMini(payRequest);
+            if (response.isSuccess()) {
+                System.out.println("调用成功");
+                return Response.ok(response);
+            } else {
+                //todo 失败逻辑
+                throw new RuntimeException("调用失败");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            //创建小程序状态
+            return Response.fail(e.getMessage());
+        }
     }
 
     @Override
@@ -446,7 +471,7 @@ public class payBiz implements PayApi {
         //超级管理员信息
         ApplymentsRequest.ContactInfo contactInfo = new ApplymentsRequest.ContactInfo();
         // 外层
-        isvCreateBo.setContactName(appApplyRequest.getSuperAdminName());
+        isvCreateBo.setContactName(appApplyRequest.getContactName());
         contactInfo.setContactName(appApplyRequest.getSuperAdminName());
         contactInfo.setMobilePhone(appApplyRequest.getContactPhone());
         contactInfo.setContactEmail(appApplyRequest.getContactEmail());
