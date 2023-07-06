@@ -239,9 +239,15 @@ public class payBiz implements PayApi {
 
     @Override
     public Response applyForPaymentlsv(AppApplyRequest appApplyRequest) {
-        AppApply appApply = appApplyService.getByMerchantNo(appApplyRequest.getMerchantNo());
-        if (appApply == null) {
-            throw new BizException("未申请注册小程序不可申请支付能力");
+//        AppApply appApply = appApplyService.getByMerchantNo(appApplyRequest.getMerchantNo());
+//        if (appApply == null) {
+//            throw new BizException("未申请注册小程序不可申请支付能力");
+//        }
+        if(StringUtil.isEmpty(appApplyRequest.getIdDocType())) {
+            appApplyRequest.setIdDocType("IDENTIFICATION_TYPE_MACAO_PASSPORT");
+        }
+        if(StringUtil.isEmpty(appApplyRequest.getSalesScenesType())) {
+            appApplyRequest.setSalesScenesType("SALES_SCENES_STORE");
         }
         IsvCreateTyBo isvCreateTyBo = convertTy(appApplyRequest);
         PayRequest payRequest = new PayIsvRequest();
@@ -256,7 +262,7 @@ public class payBiz implements PayApi {
                     if (facetofaceIsv.getMsg().equals("Success")) {
                         AlipayOpenAgentConfirmResponse confirmIsv = alipayAgentHandler.confirmAgent(payRequest, batchNo);
                         if(confirmIsv.getMsg().equals("Success")){
-                            return Response.fail("申请成功");
+                            return Response.ok("申请成功");
                         }else{
                             return Response.fail("申请失败");
                         }
@@ -265,8 +271,8 @@ public class payBiz implements PayApi {
                     }
                 }
             } catch (Exception e) {
-                log.warn("applyForPaymentAuth fail :", e);
-                return Response.fail(e.getMessage());
+
+                return Response.fail("申请失败");
             }
         return Response.fail("申请失败");
     }
