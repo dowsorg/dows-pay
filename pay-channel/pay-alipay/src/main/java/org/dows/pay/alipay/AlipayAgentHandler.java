@@ -1,6 +1,7 @@
 package org.dows.pay.alipay;
 
 import com.alipay.api.AlipayApiException;
+import com.alipay.api.FileItem;
 import com.alipay.api.domain.AlipayOpenAgentConfirmModel;
 import com.alipay.api.domain.AlipayOpenAgentCreateModel;
 import com.alipay.api.domain.AlipayOpenAgentOrderQueryModel;
@@ -11,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.dows.pay.api.PayRequest;
 import org.dows.pay.api.annotation.PayMapping;
 import org.dows.pay.api.enums.PayMethods;
+import org.dows.pay.bo.IsvCreateBo;
 import org.springframework.stereotype.Service;
 
 /**
@@ -50,16 +52,17 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
     @PayMapping(method = PayMethods.AGENT_CREATE)
     public String createAgent(PayRequest payRequest) {
         AlipayOpenAgentCreateModel alipayOpenAgentCreateModel = new AlipayOpenAgentCreateModel();
+        // 自动映射
+        autoMappingValue(payRequest, alipayOpenAgentCreateModel);
         AlipayOpenAgentCreateRequest request = new AlipayOpenAgentCreateRequest();
         request.setBizModel(alipayOpenAgentCreateModel);
-        AlipayOpenAgentCreateResponse response;
+        AlipayOpenAgentCreateResponse response = null;
         try {
-            response = getAlipayClient(payRequest.getAppId()).execute(request);
+            response = getAlipayClient(payRequest.getAppId()).certificateExecute(request);
         } catch (AlipayApiException e) {
             throw new RuntimeException(e);
         }
         if (response.isSuccess()) {
-            System.out.println("调用成功");
             return response.getBatchNo();
         } else {
             throw new RuntimeException("调用失败");
@@ -74,16 +77,23 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
      * 回调获取app auth token
      */
     @PayMapping(method = PayMethods.AGENT_FACETOFACE)
-    public void facetofaceAgent(PayRequest payRequest) {
+    public AlipayOpenAgentFacetofaceSignResponse facetofaceAgent(PayRequest payRequest, String batchNo) {
+        IsvCreateBo isvCreateBo = (IsvCreateBo) payRequest.getBizModel();
         AlipayOpenAgentFacetofaceSignRequest request = new AlipayOpenAgentFacetofaceSignRequest();
-        AlipayOpenAgentFacetofaceSignResponse response;
+        request.setBatchNo(batchNo);
+        request.setMccCode("A0001_B0006");
+        request.setRate("0.38");
+        request.setSignAndAuth(true);
+        request.setBusinessLicenseNo(isvCreateBo.getBusinessAdditionDesc());
+        request.setBusinessLicensePic(new FileItem(isvCreateBo.getBusinessAdditionPics()));
+        AlipayOpenAgentFacetofaceSignResponse response = null;
         try {
-            response = getAlipayClient(payRequest.getAppId()).execute(request);
+            response = getAlipayClient(payRequest.getAppId()).certificateExecute(request);
         } catch (AlipayApiException e) {
             throw new RuntimeException(e);
         }
         if (response.isSuccess()) {
-            System.out.println("调用成功");
+            return response;
         } else {
             //todo 失败逻辑
             throw new RuntimeException("调用失败");
@@ -101,7 +111,7 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
         AlipayOpenAgentCommonSignRequest request = new AlipayOpenAgentCommonSignRequest();
         AlipayOpenAgentCommonSignResponse response;
         try {
-            response = getAlipayClient(payRequest.getAppId()).execute(request);
+            response = getAlipayClient(payRequest.getAppId()).certificateExecute(request);
         } catch (AlipayApiException e) {
             throw new RuntimeException(e);
         }
@@ -118,20 +128,22 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
      * 开启代商户签约、创建应用事务
      * https://opendocs.alipay.com/isv/02s1f9
      * 通过 alipay.open.agent.create（开启代商户签约、创建应用事务）接口创建应用事务，返回生成 batch_no。
+     * @return
      */
     @PayMapping(method = PayMethods.AGENT_CONFIRM)
-    public void confirmAgent(PayRequest payRequest) {
+    public AlipayOpenAgentConfirmResponse confirmAgent(PayRequest payRequest, String batchNo) {
         AlipayOpenAgentConfirmModel alipayOpenAgentConfirmModel = new AlipayOpenAgentConfirmModel();
+        alipayOpenAgentConfirmModel.setBatchNo(batchNo);
         AlipayOpenAgentConfirmRequest request = new AlipayOpenAgentConfirmRequest();
         request.setBizModel(alipayOpenAgentConfirmModel);
         AlipayOpenAgentConfirmResponse response;
         try {
-            response = getAlipayClient(payRequest.getAppId()).execute(request);
+            response = getAlipayClient(payRequest.getAppId()).certificateExecute(request);
         } catch (AlipayApiException e) {
             throw new RuntimeException(e);
         }
         if (response.isSuccess()) {
-            System.out.println("调用成功");
+            return response;
         } else {
             //todo 失败逻辑
             throw new RuntimeException("调用失败");
@@ -145,13 +157,14 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
      * 通过 alipay.open.agent.create（开启代商户签约、创建应用事务）接口创建应用事务，返回生成 batch_no。
      */
     @PayMapping(method = PayMethods.AGENT_QUERY)
-    public AlipayOpenAgentOrderQueryResponse queryAgent(PayRequest payRequest) {
+    public AlipayOpenAgentOrderQueryResponse queryAgent(PayRequest payRequest,String batchNo) {
         AlipayOpenAgentOrderQueryModel alipayOpenAgentOrderQueryModel = new AlipayOpenAgentOrderQueryModel();
+        alipayOpenAgentOrderQueryModel.setBatchNo(batchNo);
         AlipayOpenAgentOrderQueryRequest request = new AlipayOpenAgentOrderQueryRequest();
         request.setBizModel(alipayOpenAgentOrderQueryModel);
-        AlipayOpenAgentOrderQueryResponse response;
+        AlipayOpenAgentOrderQueryResponse response = null;
         try {
-            response = getAlipayClient(payRequest.getAppId()).execute(request);
+            response = getAlipayClient(payRequest.getAppId()).certificateExecute(request);
         } catch (AlipayApiException e) {
             throw new RuntimeException(e);
         }

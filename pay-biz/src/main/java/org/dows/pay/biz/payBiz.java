@@ -3,10 +3,7 @@ package org.dows.pay.biz;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
-import com.alipay.api.response.AlipayOpenAgentCommonsignConfirmResponse;
-import com.alipay.api.response.AlipayOpenAgentFacetofaceSignResponse;
-import com.alipay.api.response.AlipayOpenMiniIsvCreateResponse;
-import com.alipay.api.response.AlipayOpenMiniIsvQueryResponse;
+import com.alipay.api.response.*;
 import com.alipay.service.schema.util.StringUtil;
 import com.github.binarywang.wxpay.bean.applyment.WxPayApplyment4SubCreateRequest;
 import com.github.binarywang.wxpay.bean.applyment.WxPayApplymentCreateResult;
@@ -29,6 +26,7 @@ import org.dows.app.service.AppApplyService;
 import org.dows.auth.api.weixin.WeixinTokenApi;
 import org.dows.framework.api.Response;
 import org.dows.framework.api.exceptions.BizException;
+import org.dows.pay.alipay.AlipayAgentHandler;
 import org.dows.pay.alipay.AlipayIsvHandler;
 import org.dows.pay.api.PayApi;
 import org.dows.pay.api.PayRequest;
@@ -62,6 +60,8 @@ public class payBiz implements PayApi {
     private final WeixinIsvHandler weixinIsvHandler;
     @Lazy
     private final AlipayIsvHandler alipayIsvHandler;
+    @Lazy
+    private final AlipayAgentHandler alipayAgentHandler;
     @Lazy
     private final WeixinMiniHandler weixinMiniHandler;
     @Lazy
@@ -250,12 +250,12 @@ public class payBiz implements PayApi {
             try {
                 // 小程序申请支付权限
                 log.info("生成WxPayApplymentCreateResult参数payRequest：{}", payRequest);
-                String batchNo = alipayIsvHandler.createIsvtyAgent(payRequest);
+                String batchNo = alipayAgentHandler.createAgent(payRequest);
                 if (!StringUtil.isEmpty(batchNo)) {
-                    AlipayOpenAgentCommonsignConfirmResponse confirmIsv = alipayIsvHandler.confirmIsvtyAgent(payRequest, batchNo);
-                    if (confirmIsv.getMsg().equals("Success")) {
-                        AlipayOpenAgentFacetofaceSignResponse facetofaceIsv = alipayIsvHandler.facetofaceIsvtyAgent(payRequest, batchNo);
-                        if(facetofaceIsv.getMsg().equals("Success")){
+                    AlipayOpenAgentFacetofaceSignResponse facetofaceIsv = alipayAgentHandler.facetofaceAgent(payRequest, batchNo);
+                    if (facetofaceIsv.getMsg().equals("Success")) {
+                        AlipayOpenAgentConfirmResponse confirmIsv = alipayAgentHandler.confirmAgent(payRequest, batchNo);
+                        if(confirmIsv.getMsg().equals("Success")){
                             return Response.fail("申请成功");
                         }else{
                             return Response.fail("申请失败");
