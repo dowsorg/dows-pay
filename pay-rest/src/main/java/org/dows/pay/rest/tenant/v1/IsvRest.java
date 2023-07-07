@@ -8,6 +8,7 @@ import org.dows.app.api.mini.request.AppApplyRequest;
 import org.dows.framework.api.Response;
 import org.dows.pay.api.PayApi;
 import org.dows.pay.api.PayResponse;
+import org.dows.pay.api.request.PayCreateIsvRequest;
 import org.dows.pay.biz.IsvBiz;
 import org.dows.pay.form.IsvCreateForm;
 import org.dows.pay.form.IsvCreateTyForm;
@@ -58,7 +59,7 @@ public class IsvRest {
 
     @PostMapping("/isv/createPay")
     @ApiOperation(value = "支付宝申请支付")
-    public Response<PayResponse> createpay(@Validated @RequestBody AppApplyRequest appApplyRequest) {
+    public Response<PayResponse> createpay(@Validated @RequestBody PayCreateIsvRequest appApplyRequest) {
         payApi.applyForPaymentlsv(appApplyRequest);
         return Response.ok();
     }

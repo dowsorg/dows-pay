@@ -5,6 +5,7 @@ import com.alipay.api.FileItem;
 import com.alipay.api.domain.AlipayOpenAgentConfirmModel;
 import com.alipay.api.domain.AlipayOpenAgentCreateModel;
 import com.alipay.api.domain.AlipayOpenAgentOrderQueryModel;
+import com.alipay.api.domain.ContactModel;
 import com.alipay.api.request.*;
 import com.alipay.api.response.*;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.dows.pay.api.PayRequest;
 import org.dows.pay.api.annotation.PayMapping;
 import org.dows.pay.api.enums.PayMethods;
+import org.dows.pay.api.request.PayCreateIsvRequest;
 import org.dows.pay.bo.IsvCreateBo;
 import org.springframework.stereotype.Service;
 
@@ -50,15 +52,20 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
      * 通过 alipay.open.agent.create（开启代商户签约、创建应用事务）接口创建应用事务，返回生成 batch_no。
      */
     @PayMapping(method = PayMethods.AGENT_CREATE)
-    public String createAgent(PayRequest payRequest) {
+    public String createAgent(PayCreateIsvRequest payCreateIsvRequest) {
         AlipayOpenAgentCreateModel alipayOpenAgentCreateModel = new AlipayOpenAgentCreateModel();
+        ContactModel contactModel = new ContactModel();
+        contactModel.setContactName(payCreateIsvRequest.getContact_name());
+        contactModel.setContactMobile(payCreateIsvRequest.getContact_mobile());
+        alipayOpenAgentCreateModel.setContactInfo(contactModel);
+        alipayOpenAgentCreateModel.setAccount(payCreateIsvRequest.getAccount());
         // 自动映射
-        autoMappingValue(payRequest, alipayOpenAgentCreateModel);
+//        autoMappingValue(payRequest, alipayOpenAgentCreateModel);
         AlipayOpenAgentCreateRequest request = new AlipayOpenAgentCreateRequest();
         request.setBizModel(alipayOpenAgentCreateModel);
         AlipayOpenAgentCreateResponse response = null;
         try {
-            response = getAlipayClient(payRequest.getAppId()).certificateExecute(request);
+            response = getAlipayClient("2021003129694075").certificateExecute(request);
         } catch (AlipayApiException e) {
             throw new RuntimeException(e);
         }
@@ -77,18 +84,16 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
      * 回调获取app auth token
      */
     @PayMapping(method = PayMethods.AGENT_FACETOFACE)
-    public AlipayOpenAgentFacetofaceSignResponse facetofaceAgent(PayRequest payRequest, String batchNo) {
-        IsvCreateBo isvCreateBo = (IsvCreateBo) payRequest.getBizModel();
+    public AlipayOpenAgentFacetofaceSignResponse facetofaceAgent(PayCreateIsvRequest payCreateIsvRequest, String batchNo) {
+//        IsvCreateBo isvCreateBo = (IsvCreateBo) payRequest.getBizModel();
         AlipayOpenAgentFacetofaceSignRequest request = new AlipayOpenAgentFacetofaceSignRequest();
         request.setBatchNo(batchNo);
-        request.setMccCode("A0001_B0006");
+        request.setMccCode(payCreateIsvRequest.getMcc_code());
         request.setRate("0.38");
         request.setSignAndAuth(true);
-        request.setBusinessLicenseNo(isvCreateBo.getBusinessAdditionDesc());
-        request.setBusinessLicensePic(new FileItem(isvCreateBo.getBusinessAdditionPics()));
         AlipayOpenAgentFacetofaceSignResponse response = null;
         try {
-            response = getAlipayClient(payRequest.getAppId()).certificateExecute(request);
+            response = getAlipayClient("2021003129694075").certificateExecute(request);
         } catch (AlipayApiException e) {
             throw new RuntimeException(e);
         }
@@ -131,14 +136,14 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
      * @return
      */
     @PayMapping(method = PayMethods.AGENT_CONFIRM)
-    public AlipayOpenAgentConfirmResponse confirmAgent(PayRequest payRequest, String batchNo) {
+    public AlipayOpenAgentConfirmResponse confirmAgent(PayCreateIsvRequest payCreateIsvRequest, String batchNo) {
         AlipayOpenAgentConfirmModel alipayOpenAgentConfirmModel = new AlipayOpenAgentConfirmModel();
         alipayOpenAgentConfirmModel.setBatchNo(batchNo);
         AlipayOpenAgentConfirmRequest request = new AlipayOpenAgentConfirmRequest();
         request.setBizModel(alipayOpenAgentConfirmModel);
         AlipayOpenAgentConfirmResponse response;
         try {
-            response = getAlipayClient(payRequest.getAppId()).certificateExecute(request);
+            response = getAlipayClient("2021003129694075").certificateExecute(request);
         } catch (AlipayApiException e) {
             throw new RuntimeException(e);
         }

@@ -6,6 +6,7 @@ import org.dows.app.api.mini.request.PayApplyStatusReq;
 import org.dows.app.api.mini.request.WechatMiniUploadRequest;
 import org.dows.app.api.mini.response.PayApplyStatusRes;
 import org.dows.framework.api.Response;
+import org.dows.pay.api.request.PayCreateIsvRequest;
 
 public interface PayApi {
 
@@ -55,7 +56,7 @@ public interface PayApi {
      * @param appApplyRequest
      * @return
      */
-    Response applyForPaymentlsv(AppApplyRequest appApplyRequest);
+    Response applyForPaymentlsv(PayCreateIsvRequest appApplyRequest);
 
     /**
      * 查询小程序申请支付权限结果

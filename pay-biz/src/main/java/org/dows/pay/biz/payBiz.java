@@ -31,6 +31,7 @@ import org.dows.pay.alipay.AlipayIsvHandler;
 import org.dows.pay.api.PayApi;
 import org.dows.pay.api.PayRequest;
 import org.dows.pay.api.request.MiniUploadRequest;
+import org.dows.pay.api.request.PayCreateIsvRequest;
 import org.dows.pay.api.request.PayIsvRequest;
 import org.dows.pay.bo.IsvCreateBo;
 import org.dows.pay.bo.IsvCreateTyBo;
@@ -238,29 +239,29 @@ public class payBiz implements PayApi {
     }
 
     @Override
-    public Response applyForPaymentlsv(AppApplyRequest appApplyRequest) {
+    public Response applyForPaymentlsv(PayCreateIsvRequest payCreateIsvRequest) {
 //        AppApply appApply = appApplyService.getByMerchantNo(appApplyRequest.getMerchantNo());
 //        if (appApply == null) {
 //            throw new BizException("未申请注册小程序不可申请支付能力");
 //        }
-        if(StringUtil.isEmpty(appApplyRequest.getIdDocType())) {
-            appApplyRequest.setIdDocType("IDENTIFICATION_TYPE_MACAO_PASSPORT");
-        }
-        if(StringUtil.isEmpty(appApplyRequest.getSalesScenesType())) {
-            appApplyRequest.setSalesScenesType("SALES_SCENES_STORE");
-        }
-        IsvCreateTyBo isvCreateTyBo = convertTy(appApplyRequest);
-        PayRequest payRequest = new PayIsvRequest();
-        payRequest.setBizModel(isvCreateTyBo);
-        log.info("生成appApplyRequest参数{}", appApplyRequest);
+//        if(StringUtil.isEmpty(appApplyRequest.getIdDocType())) {
+//            appApplyRequest.setIdDocType("IDENTIFICATION_TYPE_MACAO_PASSPORT");
+//        }
+//        if(StringUtil.isEmpty(appApplyRequest.getSalesScenesType())) {
+//            appApplyRequest.setSalesScenesType("SALES_SCENES_STORE");
+//        }
+//        IsvCreateTyBo isvCreateTyBo = convertTy(appApplyRequest);
+//        PayRequest payRequest = new PayIsvRequest();
+//        payRequest.setBizModel(isvCreateTyBo);
+//        log.info("生成appApplyRequest参数{}", appApplyRequest);
             try {
                 // 小程序申请支付权限
-                log.info("生成WxPayApplymentCreateResult参数payRequest：{}", payRequest);
-                String batchNo = alipayAgentHandler.createAgent(payRequest);
+//                log.info("生成WxPayApplymentCreateResult参数payRequest：{}", payRequest);
+                String batchNo = alipayAgentHandler.createAgent(payCreateIsvRequest);
                 if (!StringUtil.isEmpty(batchNo)) {
-                    AlipayOpenAgentFacetofaceSignResponse facetofaceIsv = alipayAgentHandler.facetofaceAgent(payRequest, batchNo);
+                    AlipayOpenAgentFacetofaceSignResponse facetofaceIsv = alipayAgentHandler.facetofaceAgent(payCreateIsvRequest, batchNo);
                     if (facetofaceIsv.getMsg().equals("Success")) {
-                        AlipayOpenAgentConfirmResponse confirmIsv = alipayAgentHandler.confirmAgent(payRequest, batchNo);
+                        AlipayOpenAgentConfirmResponse confirmIsv = alipayAgentHandler.confirmAgent(payCreateIsvRequest, batchNo);
                         if(confirmIsv.getMsg().equals("Success")){
                             return Response.ok("申请成功");
                         }else{
