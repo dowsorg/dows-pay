@@ -45,6 +45,7 @@ import org.dows.pay.api.util.HttpRequestUtils;
 import org.dows.pay.boot.PayClientFactory;
 import org.dows.pay.entity.PayTransaction;
 import org.dows.pay.service.PayTransactionService;
+import org.dows.pay.weixin.WeixinRoyaltyRelationHandler;
 import org.dows.store.api.StoreInstanceApi;
 import org.dows.store.api.request.StoreInstanceRequest;
 import org.dows.user.api.api.UserCompanyApi;
@@ -98,6 +99,8 @@ public class WeixinPayNotifyController {
 
     private final PayTransactionService payTransactionService;
 
+    private final WeixinRoyaltyRelationHandler weixinRoyaltyRelationHandler;
+
 
     static {
         BUILDER_LOCAL = ThreadLocal.withInitial(() -> {
@@ -143,6 +146,7 @@ public class WeixinPayNotifyController {
                 PartnerTransactionsNotifyResult notifyResult = new PartnerTransactionsNotifyResult();
                 if (Objects.equals(transactionsResult.getTradeState(),"SUCCESS")) {
                     try {
+
                         notifyResult.setRawData(notifyResponse);
                         notifyResult.setResult(transactionsResult);
                         OrderUpdatePaymentStatusBo instanceBo = new OrderUpdatePaymentStatusBo();
@@ -150,6 +154,7 @@ public class WeixinPayNotifyController {
                         instanceBo.setPayChannel(1);
                         instanceBo.setTradeType(1);
                         PayTransaction payTransaction = payTransactionService.getByTransactionNo(transactionsResult.getOutTradeNo());
+                        weixinRoyaltyRelationHandler.claimProfit(transactionsResult.getAmount().getTotal(),transactionsResult.getTransactionId(),payTransaction.getTransactionNo(),payTransaction.getAppId());
                         payTransactionService.updateStatusByOrderId(transactionsResult.getTransactionId(),transactionsResult.getOutTradeNo(),OrderPayTypeEnum.pay_finish.getCode());
                         instanceBo.setOrderId(payTransaction.getOrderId());
                         orderInstanceBizApiService.updateOrderInstance(instanceBo);
