@@ -22,7 +22,8 @@ public class PayTransactionServiceImpl extends MybatisCrudServiceImpl<PayTransac
         this.lambdaUpdate()
                 .eq(PayTransaction::getTransactionNo, outTradeNo)
                 .set(PayTransaction::getStatus, code)
-                .set(PayTransaction::getDealTo, transactionId);
+                .set(PayTransaction::getDealTo, transactionId)
+                .update();
     }
 
     @Override

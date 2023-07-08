@@ -251,7 +251,7 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
         PayAccount payAccount = payAccountService.getOne(Wrappers.lambdaQuery(PayAccount.class).eq(PayAccount::getChannelAccount, payTransactionBo.getAppId()));
         log.info("WeixinPayHandler.toPay.payAccount的参数:{}",payAccount);
         PartnerTransactionsRequest.SettleInfo settleInfo = new PartnerTransactionsRequest.SettleInfo();
-        settleInfo.setProfitSharing(false);
+        settleInfo.setProfitSharing(true);
         PartnerTransactionsRequest.SceneInfo sceneInfo = new PartnerTransactionsRequest.SceneInfo();
         sceneInfo.setPayerClientIp(payClientConfig.getClientConfigs().get(1).getIp());
         PartnerTransactionsRequest partnerTransactionsRequest = PartnerTransactionsRequest.builder()
