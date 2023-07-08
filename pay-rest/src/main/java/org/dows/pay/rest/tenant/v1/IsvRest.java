@@ -60,8 +60,7 @@ public class IsvRest {
     @PostMapping("/isv/createPay")
     @ApiOperation(value = "支付宝申请支付")
     public Response<PayResponse> createpay(@Validated @RequestBody PayCreateIsvRequest appApplyRequest) {
-        payApi.applyForPaymentlsv(appApplyRequest);
-        return Response.ok();
+        return payApi.applyForPaymentlsv(appApplyRequest);
     }
 
     @PostMapping("/isv/queryIsvMiniStatus")
