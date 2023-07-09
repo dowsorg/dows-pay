@@ -217,12 +217,12 @@ public class WeixinRoyaltyRelationHandler extends AbstractWeixinHandler {
                 .eq(PayLedgers::getChannelAppId, appId)
                 .orderByDesc(PayLedgers::getId).one();
         Optional.ofNullable(payLedgers).orElseGet(()->{
-            ProfitReceiverAddReq req = ProfitReceiverAddReq.builder()
-                    .appid("wx1f2863eb6cdee6a1")
-                    .sub_mchid(payAccount.getChannelMerchantNo())
-                    .name("上海有星科技有限公司")
-                    .account("1604404392")
-                    .relation_type("SERVICE_PROVIDER").build();
+            ProfitReceiverAddReq req = new ProfitReceiverAddReq()
+                    .setAppid("wx1f2863eb6cdee6a1")
+                    .setSub_mchid(payAccount.getChannelMerchantNo())
+                    .setName("上海有星科技有限公司")
+                    .setAccount("1604404392")
+                    .setRelation_type("SERVICE_PROVIDER");
             if (addProfitReceiver(req)) {
                 PayLedgers adPayLedgers = new PayLedgers();
                 adPayLedgers.setMerchantNo(payAccount.getMerchantNo());
@@ -252,7 +252,6 @@ public class WeixinRoyaltyRelationHandler extends AbstractWeixinHandler {
                 .divide(new BigDecimal("100"),2, RoundingMode.UNNECESSARY).intValue();
         SeparateAccountReq.Receivers  receiver = SeparateAccountReq.Receivers.builder()
                 .type("MERCHANT_ID")
-//                .account(payAccount.getChannelMerchantNo())
                 .account("1604404392")// 应该分给服务商
                 .amount(profitAmount) // 需要计算
                 .description("分给服务商")
@@ -285,6 +284,7 @@ public class WeixinRoyaltyRelationHandler extends AbstractWeixinHandler {
             HttpEntity entity = response.getEntity();
             String res = EntityUtils.toString(entity, StandardCharsets.UTF_8);
             System.out.println("profitSharing result is:"+res);
+            // 后面加日志记录
         } catch (IOException e) {
            log.error("profitSharing error:",e);
         }
