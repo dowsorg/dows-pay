@@ -13,6 +13,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.math3.dfp.DfpField;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -36,6 +37,8 @@ import org.dows.pay.entity.PayLedgers;
 import org.dows.pay.service.PayAccountService;
 import org.dows.pay.service.PayAllocationService;
 import org.dows.pay.service.PayLedgersService;
+import org.dows.store.api.StoreInstanceApi;
+import org.dows.store.api.response.StoreResponse;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -45,6 +48,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -72,6 +76,8 @@ public class WeixinRoyaltyRelationHandler extends AbstractWeixinHandler {
     private final PayAccountService payAccountService;
 
     private final PayClientConfig payClientConfig;
+
+    private final StoreInstanceApi storeInstanceApi;
 
 
     private final OrderInstanceBizApiService orderInstanceBizApiService;
@@ -194,13 +200,13 @@ public class WeixinRoyaltyRelationHandler extends AbstractWeixinHandler {
                 .orderByDesc(PayAccount::getId)
                 .last(" limit 1").one();
         if (payAccount == null) {
-            log.warn("通过appId={} 查询支付账号信息为空,无法进行分账",appId);
+            log.error("通过appId={} 查询支付账号信息为空,无法进行分账",appId);
             return;
         }
 
         OrderInstanceBo orderInstanceBo = orderInstanceBizApiService.getOne(orderId);
         if (orderInstanceBo == null) {
-            log.warn("通过orderId={} 查询订单信息为空,无法进行分账",orderId);
+            log.error("通过orderId={} 查询订单信息为空,无法进行分账",orderId);
             return;
         }
 
@@ -232,13 +238,21 @@ public class WeixinRoyaltyRelationHandler extends AbstractWeixinHandler {
             return null;
         });
 
+        StoreResponse storeById = storeInstanceApi.getStoreById(orderInstanceBo.getStoreId());
+        if (storeById == null) {
+            log.error("根据storeId={} 查询门店信息为空,无法进行分账",orderInstanceBo.getStoreId());
+            return;
+        }
+
         ThreadUtil.sleep(70, TimeUnit.SECONDS);
         List<SeparateAccountReq.Receivers> receivers = new ArrayList<>();
+        int profitAmount = new BigDecimal(amount).multiply(BigDecimal.valueOf(storeById.getCommissionRatio()))
+                .divide(new BigDecimal("100"),2, RoundingMode.UNNECESSARY).intValue();
         SeparateAccountReq.Receivers  receiver = SeparateAccountReq.Receivers.builder()
                 .type("MERCHANT_ID")
 //                .account(payAccount.getChannelMerchantNo())
                 .account("1604404392")// 应该分给服务商
-                .amount(amount) // 需要计算
+                .amount(profitAmount) // 需要计算
                 .description("分给服务商")
                 .build();
         receivers.add(receiver);
@@ -253,6 +267,7 @@ public class WeixinRoyaltyRelationHandler extends AbstractWeixinHandler {
                 .build();
 
         try {
+           log.info("订单id={} 发起分账:{}",orderId,JSON.toJSONString(profitSharingRequest));
             HttpPost httpPost = new HttpPost("https://api.mch.weixin.qq.com/v3/profitsharing/orders");
             StringEntity stringEntity = new StringEntity(JSON.toJSONString(profitSharingRequest), ContentType.create("application/json", "utf-8"));
             httpPost.setEntity(stringEntity);
