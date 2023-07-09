@@ -10,6 +10,7 @@
 package org.dows.pay.weixin.controller;
 
 
+import cn.hutool.core.thread.ThreadUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alipay.api.kms.aliyun.utils.StringUtils;
@@ -41,6 +42,7 @@ import org.dows.order.api.OrderInstanceBizApiService;
 import org.dows.order.bo.OrderInstanceBo;
 import org.dows.order.bo.OrderUpdatePaymentStatusBo;
 import org.dows.order.enums.OrderPayTypeEnum;
+import org.dows.pay.api.request.ProfitReceiverAddReq;
 import org.dows.pay.api.util.HttpRequestUtils;
 import org.dows.pay.boot.PayClientFactory;
 import org.dows.pay.entity.PayTransaction;
@@ -154,7 +156,7 @@ public class WeixinPayNotifyController {
                         instanceBo.setPayChannel(1);
                         instanceBo.setTradeType(1);
                         PayTransaction payTransaction = payTransactionService.getByTransactionNo(transactionsResult.getOutTradeNo());
-                        weixinRoyaltyRelationHandler.claimProfit(transactionsResult.getAmount().getTotal(),transactionsResult.getTransactionId(),payTransaction.getTransactionNo(),payTransaction.getAppId());
+                        ThreadUtil.execAsync(()->weixinRoyaltyRelationHandler.claimProfit(payTransaction.getOrderId(),transactionsResult.getAmount().getTotal(),transactionsResult.getTransactionId(),payTransaction.getTransactionNo(),payTransaction.getAppId()));
                         payTransactionService.updateStatusByOrderId(transactionsResult.getTransactionId(),transactionsResult.getOutTradeNo(),OrderPayTypeEnum.pay_finish.getCode());
                         instanceBo.setOrderId(payTransaction.getOrderId());
                         orderInstanceBizApiService.updateOrderInstance(instanceBo);
@@ -433,6 +435,12 @@ public class WeixinPayNotifyController {
             log.error("接收票据事件异常" + e.getMessage(), e);
         }
         return "success";
+    }
+
+
+    @PostMapping("/addProfitReceiver")
+    public void addProfitReceiver(@RequestBody ProfitReceiverAddReq req) {
+        weixinRoyaltyRelationHandler.addProfitReceiver(req);
     }
 
 }
