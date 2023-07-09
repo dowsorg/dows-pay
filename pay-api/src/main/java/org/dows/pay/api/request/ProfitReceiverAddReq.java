@@ -1,12 +1,12 @@
 package org.dows.pay.api.request;
 
-import lombok.Builder;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 
 @Data
-@Builder
+@Accessors(chain = true)
 public class ProfitReceiverAddReq implements Serializable {
 
     private String sub_mchid;
