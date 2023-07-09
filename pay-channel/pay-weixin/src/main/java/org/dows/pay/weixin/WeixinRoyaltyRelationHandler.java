@@ -1,6 +1,9 @@
 package org.dows.pay.weixin;
 
+import cn.hutool.core.thread.ThreadUtil;
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.github.binarywang.wxpay.bean.ecommerce.*;
 import com.github.binarywang.wxpay.exception.WxPayException;
@@ -22,6 +25,7 @@ import org.dows.order.bo.OrderInstanceBo;
 import org.dows.pay.api.PayRequest;
 import org.dows.pay.api.annotation.PayMapping;
 import org.dows.pay.api.enums.PayMethods;
+import org.dows.pay.api.request.ProfitReceiverAddReq;
 import org.dows.pay.api.request.SeparateAccountReq;
 import org.dows.pay.bo.PayTransactionBo;
 import org.dows.pay.bo.RelationBingBo;
@@ -35,11 +39,21 @@ import org.dows.pay.service.PayLedgersService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 微信分账关系维护
@@ -58,6 +72,9 @@ public class WeixinRoyaltyRelationHandler extends AbstractWeixinHandler {
     private final PayAccountService payAccountService;
 
     private final PayClientConfig payClientConfig;
+
+
+    private final OrderInstanceBizApiService orderInstanceBizApiService;
 
     /**
      * 分账完成
@@ -168,23 +185,61 @@ public class WeixinRoyaltyRelationHandler extends AbstractWeixinHandler {
         }
     }
 
-    public void claimProfit(Integer amount,String transactionId,String transactionNo,String appId) {
-
+    public void claimProfit(String orderId,Integer amount,String transactionId,String transactionNo,String appId) {
+       log.info("orderId={},amount={},transactionId={},transactionNo={},appId={} ask claimProfit",
+               orderId,amount,transactionId,transactionNo, appId);
         PayAccount payAccount = payAccountService.lambdaQuery()
                 .eq(PayAccount::getChannelAccount,appId)
                 .eq(PayAccount::getDeleted,0)
                 .orderByDesc(PayAccount::getId)
                 .last(" limit 1").one();
         if (payAccount == null) {
-            log.warn("根据appId={} 查询支付账号信息为空,无法进行分账",appId);
+            log.warn("通过appId={} 查询支付账号信息为空,无法进行分账",appId);
             return;
         }
+
+        OrderInstanceBo orderInstanceBo = orderInstanceBizApiService.getOne(orderId);
+        if (orderInstanceBo == null) {
+            log.warn("通过orderId={} 查询订单信息为空,无法进行分账",orderId);
+            return;
+        }
+
+        PayLedgers payLedgers = payLedgersService.lambdaQuery()
+                .eq(PayLedgers::getAppId, "wx1f2863eb6cdee6a1")
+                .eq(PayLedgers::getChannelAppId, appId)
+                .orderByDesc(PayLedgers::getId).one();
+        Optional.ofNullable(payLedgers).orElseGet(()->{
+            ProfitReceiverAddReq req = ProfitReceiverAddReq.builder()
+                    .appid("wx1f2863eb6cdee6a1")
+                    .sub_mchid(payAccount.getChannelMerchantNo())
+                    .name("上海有星科技有限公司")
+                    .account("1604404392")
+                    .relation_type("SERVICE_PROVIDER").build();
+            if (addProfitReceiver(req)) {
+                PayLedgers adPayLedgers = new PayLedgers();
+                adPayLedgers.setMerchantNo(payAccount.getMerchantNo());
+                adPayLedgers.setAppId("wx1f2863eb6cdee6a1");
+                adPayLedgers.setAccountId("1604404392");
+                adPayLedgers.setAccountName("上海有星科技有限公司");
+                adPayLedgers.setChannelCode("weixin");
+                adPayLedgers.setChannelAppId(appId);
+                adPayLedgers.setChannelAccountNo(payAccount.getChannelMerchantNo());
+                adPayLedgers.setChannelAccountType(true);
+                adPayLedgers.setState(true);
+                adPayLedgers.setDeleted(false);
+                payLedgersService.save(adPayLedgers);
+            }
+            return null;
+        });
+
+        ThreadUtil.sleep(70, TimeUnit.SECONDS);
         List<SeparateAccountReq.Receivers> receivers = new ArrayList<>();
         SeparateAccountReq.Receivers  receiver = SeparateAccountReq.Receivers.builder()
                 .type("MERCHANT_ID")
-                .account(payAccount.getChannelMerchantNo())
-                .amount(amount)
-                .description("分给商户")
+//                .account(payAccount.getChannelMerchantNo())
+                .account("1604404392")// 应该分给服务商
+                .amount(amount) // 需要计算
+                .description("分给服务商")
                 .build();
         receivers.add(receiver);
         SeparateAccountReq profitSharingRequest =  SeparateAccountReq.builder()
@@ -193,7 +248,7 @@ public class WeixinRoyaltyRelationHandler extends AbstractWeixinHandler {
                 .transaction_id(transactionId)
                 .appid("wx1f2863eb6cdee6a1")
                 .sub_mchid(payAccount.getChannelMerchantNo())
-                .unfreeze_unsplit(false)
+                .unfreeze_unsplit(true)
                 .finish(true)
                 .build();
 
@@ -218,5 +273,52 @@ public class WeixinRoyaltyRelationHandler extends AbstractWeixinHandler {
         }
     }
 
+    public Boolean addProfitReceiver(ProfitReceiverAddReq req) {
+        try {
+            req.setName(rsaEncryptOAEP(req.getName(),this.getWeixinClient(payClientConfig.getClientConfigs().get(1).getAppId()).getConfig().getVerifier().getValidCertificate()));
+            HttpPost httpPost = new HttpPost("https://api.mch.weixin.qq.com/v3/profitsharing/receivers/add");
+            StringEntity stringEntity = new StringEntity(JSON.toJSONString(req), ContentType.create("application/json", "utf-8"));
+            httpPost.setEntity(stringEntity);
+            CloseableHttpClient httpClient = this.getWeixinClient(payClientConfig.getClientConfigs().get(1)
+                    .getAppId()).getConfig().getApiV3HttpClient();
+            String apiV3Key = this.getWeixinClient(payClientConfig.getClientConfigs().get(1).getAppId()).getConfig()
+                    .getVerifier().getValidCertificate().getSerialNumber().toString(16).toUpperCase();
+
+            httpPost.addHeader("Accept", "application/json");
+            httpPost.addHeader("Content-Type", "application/json");
+            httpPost.addHeader("Wechatpay-Serial", apiV3Key);
+            CloseableHttpResponse response = httpClient.execute(httpPost);
+            HttpEntity entity = response.getEntity();
+            String res = EntityUtils.toString(entity, StandardCharsets.UTF_8);
+            System.out.println("profitSharing result is:"+res);
+            JSONObject jsonObject = JSONObject.parseObject(res);
+            String type = jsonObject.getString("type");
+            if (StrUtil.isNotEmpty(type)) {
+                return Boolean.TRUE;
+            }
+        } catch (Exception e) {
+            log.error("添加分账接收方报错:",e);
+        }
+        return Boolean.FALSE;
+    }
+
+
+    public static String rsaEncryptOAEP(String message, X509Certificate certificate)
+            throws IllegalBlockSizeException {
+        try {
+            Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-1AndMGF1Padding");
+            cipher.init(Cipher.ENCRYPT_MODE, certificate.getPublicKey());
+
+            byte[] data = message.getBytes(StandardCharsets.UTF_8);
+            byte[] cipherdata = cipher.doFinal(data);
+            return Base64.getEncoder().encodeToString(cipherdata);
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
+            throw new RuntimeException("当前Java环境不支持RSA v1.5/OAEP", e);
+        } catch (InvalidKeyException e) {
+            throw new IllegalArgumentException("无效的证书", e);
+        } catch (IllegalBlockSizeException | BadPaddingException e) {
+            throw new IllegalBlockSizeException("加密原串的长度不能超过214字节");
+        }
+    }
 
 }
