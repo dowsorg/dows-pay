@@ -23,5 +23,7 @@ public class PayCreateIsvRequest extends AbstractPayRequest<PayIsvResponse> {
     private String contact_mobile;
     @ApiModelProperty("类目，A0001_B0199")
     private String mcc_code;
+    @ApiModelProperty("应用ID")
+    private String appid;
 
 }
