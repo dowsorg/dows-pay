@@ -247,9 +247,9 @@ public class payBiz implements PayApi {
 //        if(StringUtil.isEmpty(appApplyRequest.getIdDocType())) {
 //            appApplyRequest.setIdDocType("IDENTIFICATION_TYPE_MACAO_PASSPORT");
 //        }
-//        if(StringUtil.isEmpty(appApplyRequest.getSalesScenesType())) {
-//            appApplyRequest.setSalesScenesType("SALES_SCENES_STORE");
-//        }
+        if(StringUtil.isEmpty(payCreateIsvRequest.getAppid())) {
+            payCreateIsvRequest.setAppid("2021003129694075");
+        }
 //        IsvCreateTyBo isvCreateTyBo = convertTy(appApplyRequest);
 //        PayRequest payRequest = new PayIsvRequest();
 //        payRequest.setBizModel(isvCreateTyBo);
