@@ -23,6 +23,11 @@ public class WeixinMessage implements PayMessage {
     }
 
     @Override
+    public String getNotifyType() {
+        return null;
+    }
+
+    @Override
     public String getBizContent() {
         return null;
     }

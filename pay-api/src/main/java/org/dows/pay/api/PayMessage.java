@@ -7,5 +7,7 @@ public interface PayMessage {
 
     String getMsgId();
 
+    String getNotifyType();
+
     String getBizContent();
 }
