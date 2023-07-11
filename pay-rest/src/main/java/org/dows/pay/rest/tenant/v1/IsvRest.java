@@ -1,14 +1,17 @@
 package org.dows.pay.rest.tenant.v1;
 
+import com.alipay.api.response.AlipayOpenAgentOrderQueryResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dows.app.api.mini.request.AppApplyRequest;
 import org.dows.framework.api.Response;
+import org.dows.pay.alipay.AlipayAgentHandler;
 import org.dows.pay.api.PayApi;
 import org.dows.pay.api.PayResponse;
 import org.dows.pay.api.request.PayCreateIsvRequest;
+import org.dows.pay.api.request.PayQueryIsvRequest;
 import org.dows.pay.biz.IsvBiz;
 import org.dows.pay.form.IsvCreateForm;
 import org.dows.pay.form.IsvCreateTyForm;
@@ -29,6 +32,8 @@ public class IsvRest {
     private final PayApi payApi;
 
     private final IsvBiz isvBiz;
+
+    private final AlipayAgentHandler alipayAgentHandler;
 
     @PostMapping("/isv/create")
     @ApiOperation(value = "代商户创建支付小程序")
@@ -61,6 +66,12 @@ public class IsvRest {
     @ApiOperation(value = "支付宝申请支付")
     public Response<PayResponse> createpay(@Validated @RequestBody PayCreateIsvRequest appApplyRequest) {
         return payApi.applyForPaymentlsv(appApplyRequest);
+    }
+
+    @PostMapping("/isv/queryPay")
+    @ApiOperation(value = "支付宝申请支付")
+    public AlipayOpenAgentOrderQueryResponse querypay(@Validated @RequestBody PayQueryIsvRequest payQueryIsvRequest) {
+        return alipayAgentHandler.queryAgent(payQueryIsvRequest);
     }
 
     @PostMapping("/isv/queryIsvMiniStatus")

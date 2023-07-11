@@ -240,20 +240,9 @@ public class payBiz implements PayApi {
 
     @Override
     public Response applyForPaymentlsv(PayCreateIsvRequest payCreateIsvRequest) {
-//        AppApply appApply = appApplyService.getByMerchantNo(appApplyRequest.getMerchantNo());
-//        if (appApply == null) {
-//            throw new BizException("未申请注册小程序不可申请支付能力");
-//        }
-//        if(StringUtil.isEmpty(appApplyRequest.getIdDocType())) {
-//            appApplyRequest.setIdDocType("IDENTIFICATION_TYPE_MACAO_PASSPORT");
-//        }
         if(StringUtil.isEmpty(payCreateIsvRequest.getAppid())) {
             payCreateIsvRequest.setAppid("2021003129694075");
         }
-//        IsvCreateTyBo isvCreateTyBo = convertTy(appApplyRequest);
-//        PayRequest payRequest = new PayIsvRequest();
-//        payRequest.setBizModel(isvCreateTyBo);
-//        log.info("生成appApplyRequest参数{}", appApplyRequest);
             try {
                 // 小程序申请支付权限
 //                log.info("生成WxPayApplymentCreateResult参数payRequest：{}", payRequest);

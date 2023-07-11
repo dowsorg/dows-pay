@@ -14,6 +14,7 @@ import org.dows.pay.api.PayRequest;
 import org.dows.pay.api.annotation.PayMapping;
 import org.dows.pay.api.enums.PayMethods;
 import org.dows.pay.api.request.PayCreateIsvRequest;
+import org.dows.pay.api.request.PayQueryIsvRequest;
 import org.dows.pay.bo.IsvCreateBo;
 import org.springframework.stereotype.Service;
 
@@ -65,7 +66,7 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
         request.setBizModel(alipayOpenAgentCreateModel);
         AlipayOpenAgentCreateResponse response = null;
         try {
-            response = getAlipayClient(payCreateIsvRequest.getAppId()).certificateExecute(request);
+            response = getAlipayClient(payCreateIsvRequest.getAppid()).certificateExecute(request);
         } catch (AlipayApiException e) {
             throw new RuntimeException(e);
         }
@@ -91,9 +92,13 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
         request.setMccCode(payCreateIsvRequest.getMcc_code());
         request.setRate("0.38");
         request.setSignAndAuth(true);
+        FileItem BusinessShopPic = new FileItem(payCreateIsvRequest.getShop_scene_pic());
+        request.setShopScenePic(BusinessShopPic);
+        FileItem BusinessShopSignPic = new FileItem(payCreateIsvRequest.getShop_sign_board_pic());
+        request.setShopSignBoardPic(BusinessShopSignPic);
         AlipayOpenAgentFacetofaceSignResponse response = null;
         try {
-            response = getAlipayClient(payCreateIsvRequest.getAppId()).certificateExecute(request);
+            response = getAlipayClient(payCreateIsvRequest.getAppid()).certificateExecute(request);
         } catch (AlipayApiException e) {
             throw new RuntimeException(e);
         }
@@ -143,7 +148,7 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
         request.setBizModel(alipayOpenAgentConfirmModel);
         AlipayOpenAgentConfirmResponse response;
         try {
-            response = getAlipayClient(payCreateIsvRequest.getAppId()).certificateExecute(request);
+            response = getAlipayClient(payCreateIsvRequest.getAppid()).certificateExecute(request);
         } catch (AlipayApiException e) {
             throw new RuntimeException(e);
         }
@@ -162,14 +167,14 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
      * 通过 alipay.open.agent.create（开启代商户签约、创建应用事务）接口创建应用事务，返回生成 batch_no。
      */
     @PayMapping(method = PayMethods.AGENT_QUERY)
-    public AlipayOpenAgentOrderQueryResponse queryAgent(PayRequest payRequest,String batchNo) {
+    public AlipayOpenAgentOrderQueryResponse queryAgent(PayQueryIsvRequest payQueryIsvRequest) {
         AlipayOpenAgentOrderQueryModel alipayOpenAgentOrderQueryModel = new AlipayOpenAgentOrderQueryModel();
-        alipayOpenAgentOrderQueryModel.setBatchNo(batchNo);
+        alipayOpenAgentOrderQueryModel.setBatchNo(payQueryIsvRequest.getBatch_no());
         AlipayOpenAgentOrderQueryRequest request = new AlipayOpenAgentOrderQueryRequest();
         request.setBizModel(alipayOpenAgentOrderQueryModel);
         AlipayOpenAgentOrderQueryResponse response = null;
         try {
-            response = getAlipayClient(payRequest.getAppId()).certificateExecute(request);
+            response = getAlipayClient(payQueryIsvRequest.getAppid()).certificateExecute(request);
         } catch (AlipayApiException e) {
             throw new RuntimeException(e);
         }
@@ -178,7 +183,7 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
             return response;
         } else {
             //todo 失败逻辑
-            throw new RuntimeException("调用失败");
+            return response;
         }
 
     }

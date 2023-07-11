@@ -25,5 +25,9 @@ public class PayCreateIsvRequest extends AbstractPayRequest<PayIsvResponse> {
     private String mcc_code;
     @ApiModelProperty("应用ID")
     private String appid;
+    @ApiModelProperty("店铺内景图片")
+    private String shop_scene_pic;
+    @ApiModelProperty("店铺门头照图片")
+    private String shop_sign_board_pic;
 
 }
