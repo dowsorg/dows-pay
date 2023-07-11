@@ -90,8 +90,8 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
         AlipayOpenAgentFacetofaceSignRequest request = new AlipayOpenAgentFacetofaceSignRequest();
         request.setBatchNo(batchNo);
         request.setMccCode(payCreateIsvRequest.getMcc_code());
-        request.setRate("0.38");
-        request.setSignAndAuth(true);
+//        request.setRate("0.38");
+//        request.setSignAndAuth(true);
         FileItem BusinessShopPic = new FileItem(payCreateIsvRequest.getShop_scene_pic());
         request.setShopScenePic(BusinessShopPic);
         FileItem BusinessShopSignPic = new FileItem(payCreateIsvRequest.getShop_sign_board_pic());
