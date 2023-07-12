@@ -29,5 +29,7 @@ public class PayCreateIsvRequest extends AbstractPayRequest<PayIsvResponse> {
     private String shop_scene_pic;
     @ApiModelProperty("店铺门头照图片")
     private String shop_sign_board_pic;
+    @ApiModelProperty("店铺名称")
+    private String shop_name;
 
 }
