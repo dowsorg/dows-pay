@@ -498,6 +498,7 @@ public class MiniBiz {
             merchantNo = "xhr0002";
         }
         log.info("获取商户信息，merchantNo：{}", merchantNo);
+        Response response = new Response();
         try {
             AppBase appBase = saveOrUpdateAppBase(setWxBaseInfoForm, merchantNo);
             AlipayBaseInfoForm alipayBaseInfoForm = BeanUtil.copyProperties(setWxBaseInfoForm,
@@ -505,27 +506,37 @@ public class MiniBiz {
             // 简介
             alipayBaseInfoForm.setAppDesc(setWxBaseInfoForm.getSignature());
             log.info("setWxinApplyInfo，appBase信息：{}", appBase);
-            Response<PayResponse> response = alipayBaseInfoModify(alipayBaseInfoForm);
-            log.info("设置支付宝小程序基础信息返回结果 ：{}", response);
+            Response<PayResponse> alipayBaseInfoModifyResponse = alipayBaseInfoModify(alipayBaseInfoForm);
+            log.info("设置支付宝小程序基础信息返回结果 ：{}", alipayBaseInfoModifyResponse);
             AlipayOpenMiniBaseinfoModifyResponse alipayOpenMiniBaseinfoModifyResponse;
-            if (response != null) {
-                String body = response.getData().getBody();
+            if (alipayBaseInfoModifyResponse != null) {
+                String body = alipayBaseInfoModifyResponse.getData().getBody();
                 alipayOpenMiniBaseinfoModifyResponse = WxOpenGsonBuilder.create().fromJson(body,
                         AlipayOpenMiniBaseinfoModifyResponse.class);
                 log.info("设置支付宝小程序基础信息返回结果转换，alipayOpenMiniBaseinfoModifyResponse：{}", alipayOpenMiniBaseinfoModifyResponse);
                 String errcode = alipayOpenMiniBaseinfoModifyResponse.getCode();
+                response.setCode(Integer.valueOf(errcode));
+                response.setDescr(alipayOpenMiniBaseinfoModifyResponse.getMsg());
                 if (alipayOpenMiniBaseinfoModifyResponse.isSuccess() && errcode.equals("0")) {
                     // 提交成功
                     updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
                             1, null, 1,
                             1, 1, "昵称、简介、类目已提交审核");
-                    return Response.ok(alipayOpenMiniBaseinfoModifyResponse);
+                    return response;
                 } else {
                     updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
                             2, null, 2,
                             2, 2, alipayOpenMiniBaseinfoModifyResponse.getMsg());
-                    return Response.failed(alipayOpenMiniBaseinfoModifyResponse.getMsg());
+                    return response;
                 }
+            }else{
+                response.setCode(500);
+                response.setDescr("设置类目返回结果为空");
+                // 提交成功
+                updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
+                        2, null, 2,
+                        2, 2, "设置类目返回结果为空");
+                return response;
             }
         } catch (Exception e) {
             updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
@@ -533,7 +544,6 @@ public class MiniBiz {
                     -1, 2, "内部错误：" + e.getMessage());
             return Response.failed(e.getMessage());
         }
-        return null;
     }
 
 
