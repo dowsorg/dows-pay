@@ -507,19 +507,33 @@ public class MiniBiz {
             log.info("setWxinApplyInfo，appBase信息：{}", appBase);
             Response<PayResponse> response = alipayBaseInfoModify(alipayBaseInfoForm);
             log.info("设置支付宝小程序基础信息返回结果 ：{}", response);
+            AlipayOpenMiniBaseinfoModifyResponse alipayOpenMiniBaseinfoModifyResponse;
             if (response != null) {
                 String body = response.getData().getBody();
-                AlipayOpenMiniBaseinfoModifyResponse alipayOpenMiniBaseinfoModifyResponse = WxOpenGsonBuilder.create().fromJson(body,
+                alipayOpenMiniBaseinfoModifyResponse = WxOpenGsonBuilder.create().fromJson(body,
                         AlipayOpenMiniBaseinfoModifyResponse.class);
-                System.out.println(alipayOpenMiniBaseinfoModifyResponse);
+                log.info("设置支付宝小程序基础信息返回结果转换，alipayOpenMiniBaseinfoModifyResponse：{}", alipayOpenMiniBaseinfoModifyResponse);
+                String errcode = alipayOpenMiniBaseinfoModifyResponse.getCode();
+                if (alipayOpenMiniBaseinfoModifyResponse.isSuccess() && errcode.equals("0")) {
+                    // 提交成功
+                    updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
+                            1, null, 1,
+                            1, 1, "昵称、简介、类目已提交审核");
+                    return Response.ok(alipayOpenMiniBaseinfoModifyResponse);
+                } else {
+                    updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
+                            2, null, 2,
+                            2, 2, alipayOpenMiniBaseinfoModifyResponse.getMsg());
+                    return Response.failed(alipayOpenMiniBaseinfoModifyResponse.getMsg());
+                }
             }
-            return response;
         } catch (Exception e) {
             updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
                     -1, null, -1,
                     -1, 2, "内部错误：" + e.getMessage());
             return Response.failed(e.getMessage());
         }
+        return null;
     }
 
 
