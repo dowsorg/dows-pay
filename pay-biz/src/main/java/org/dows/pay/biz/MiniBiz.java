@@ -5,6 +5,7 @@ package org.dows.pay.biz;
  */
 
 import cn.hutool.core.bean.BeanUtil;
+import com.alipay.api.response.AlipayOpenMiniBaseinfoModifyResponse;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -504,8 +505,14 @@ public class MiniBiz {
             // 简介
             alipayBaseInfoForm.setAppDesc(setWxBaseInfoForm.getSignature());
             log.info("setWxinApplyInfo，appBase信息：{}", appBase);
-            Response response = new Response();
-            alipayBaseInfoModify(alipayBaseInfoForm);
+            Response<PayResponse> response = alipayBaseInfoModify(alipayBaseInfoForm);
+            log.info("设置支付宝小程序基础信息返回结果 ：{}", response);
+            if (response != null) {
+                String body = response.getData().getBody();
+                AlipayOpenMiniBaseinfoModifyResponse alipayOpenMiniBaseinfoModifyResponse = WxOpenGsonBuilder.create().fromJson(body,
+                        AlipayOpenMiniBaseinfoModifyResponse.class);
+                System.out.println(alipayOpenMiniBaseinfoModifyResponse);
+            }
             return response;
         } catch (Exception e) {
             updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,

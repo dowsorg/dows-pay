@@ -1,6 +1,7 @@
 package org.dows.pay.form;
 
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.dows.pay.api.BizForm;
@@ -66,4 +67,13 @@ public class AlipayBaseInfoForm implements BizForm {
     @AlipayApiField(name = "mini_category_ids")
     private String miniCategoryIds;
 
+    // 通道code
+    @ApiModelProperty("通道code")
+    private String channel;
+
+    @ApiModelProperty("平台应用ID")
+    private String appId;
+
+    @ApiModelProperty("商家应用ID")
+    private String merchantAppId;
 }
