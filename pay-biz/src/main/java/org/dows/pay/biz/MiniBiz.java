@@ -523,12 +523,12 @@ public class MiniBiz {
                     // 提交成功
                     updateStatus(channel, setWxBaseInfoForm.getMerchantAppId(), merchantNo,
                             1, null, 1,
-                            1, 1, "昵称、简介、类目已提交审核");
+                            1, 1, "昵称、简介、类目已提交");
                     return response;
                 } else {
                     updateStatus(channel, setWxBaseInfoForm.getMerchantAppId(), merchantNo,
                             2, null, 2,
-                            2, 2, alipayOpenMiniBaseinfoModifyResponse.getMsg());
+                            2, 2,alipayOpenMiniBaseinfoModifyResponse.getSubMsg());
                     return response;
                 }
             } else {
