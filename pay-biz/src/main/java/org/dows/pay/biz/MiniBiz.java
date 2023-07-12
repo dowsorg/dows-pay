@@ -534,7 +534,7 @@ public class MiniBiz {
             } else {
                 response.setCode(500);
                 response.setDescr("设置类目返回结果为空");
-                // 提交成功
+                // 失败
                 updateStatus(channel, setWxBaseInfoForm.getMerchantAppId(), merchantNo,
                         2, null, 2,
                         2, 2, "设置类目返回结果为空");
