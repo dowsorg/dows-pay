@@ -95,14 +95,20 @@ public class MiniRest {
     }
 
     @PostMapping("/mini/setWxinApplyInfo")
-    @ApiOperation(value = "设置小程序相关信息")
+    @ApiOperation(value = "设置小程序相关信息(微信or支付宝)")
     public Response<PayResponse> setWxinApplyInfo(@Validated @RequestBody SetWxBaseInfoForm setWxBaseInfoForm) {
         try {
-            setWxBaseInfoForm.setAppId("wxdb8634feb22a5ab9");
             if (setWxBaseInfoForm.getMerchantAppId() == null) {
                 return Response.failed("缺少商户appId");
             }
-            Response response = miniBiz.setWxinApplyInfo(setWxBaseInfoForm);
+            Response response = null;
+            if(setWxBaseInfoForm.getChannel().equals("weixin")){
+                // 微信
+                response = miniBiz.setWxinApplyInfo(setWxBaseInfoForm);
+            }else{
+                // 支付宝
+                response = miniBiz.setAlipayApplyInfo(setWxBaseInfoForm);
+            }
             return response;
         } catch (Exception e) {
             e.printStackTrace();

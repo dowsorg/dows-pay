@@ -37,7 +37,7 @@ public enum PayMethods {
     MINI_BASE_SIGNATURE("dows.pay.mini.base.signature", "", "设置小程序介绍"),
     MINI_BASE_HEADIMAGE("dows.pay.mini.base.headimage", "", "修改头像"),
 
-
+    MINI_BASE_INFO_MODIFY("alipay.open.mini.baseinfo.modify", "", "小程序修改基础信息"),
 
     ON_MINI_AUDITED("dows.pay.mini.audited", "", "小程序审核通过通知"),
     ON_MINI_REJECTED("dows.pay.mini.rejected", "", "小程序审核驳回通知"),

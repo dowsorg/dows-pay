@@ -261,6 +261,7 @@ public class MiniBiz {
      * @param setWxBaseInfoForm
      */
     public Response setWxinApplyInfo(SetWxBaseInfoForm setWxBaseInfoForm) {
+        setWxBaseInfoForm.setAppId("wxdb8634feb22a5ab9");
         String merchantNo = SecurityUtils.getMerchantNo();
         if (StringUtils.isBlank(merchantNo)) {
             merchantNo = "xhr0002";
@@ -457,35 +458,71 @@ public class MiniBiz {
     }
 
 
+    /**
+     * MiniBaseInfo 设置支付宝小程序 名称 、介绍、类目。log等信息
+     *
+     * @param setWxBaseInfoForm
+     */
+    public Response setAlipayApplyInfo(SetWxBaseInfoForm setWxBaseInfoForm) {
+        setWxBaseInfoForm.setAppId("2021003129694075");
+        String merchantNo = SecurityUtils.getMerchantNo();
+        if (StringUtils.isBlank(merchantNo)) {
+            merchantNo = "xhr0002";
+        }
+        log.info("获取商户信息，merchantNo：{}", merchantNo);
+        try {
+            AppBase appBase = saveOrUpdateAppBase(setWxBaseInfoForm, merchantNo);
+            log.info("setWxinApplyInfo，appBase信息：{}", appBase);
+            Response response = new Response();
+            return response;
+        } catch (Exception e) {
+            updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
+                    -1, null, -1,
+                    -1, 2, "内部错误：" + e.getMessage());
+            return Response.failed(e.getMessage());
+        }
+    }
+
+
+    //todo 后续优化
     private AppBase saveOrUpdateAppBase(SetWxBaseInfoForm setWxBaseInfoForm, String merchantNo) {
         // 根据tenantId和ALIPAY查询是已有记录
         LambdaQueryWrapper<AppBase> queryWrapper = new LambdaQueryWrapper<AppBase>();
         if (StringUtils.isNotEmpty(setWxBaseInfoForm.getMerchantAppId())) {
             queryWrapper.eq(AppBase::getAppId, setWxBaseInfoForm.getMerchantAppId());
         }
-        queryWrapper.eq(AppBase::getAppType, 1);
+        AppBase appBase = new AppBase();
+        if (StringUtils.isNotEmpty(setWxBaseInfoForm.getChannel())) {
+            // 微信
+            if (setWxBaseInfoForm.getChannel().equals("weixin")) {
+                queryWrapper.eq(AppBase::getAppType, 1);
+                appBase.setAppType(1);
+                if (setWxBaseInfoForm.getFirstName() != null) {
+                    appBase.setFirstName(setWxBaseInfoForm.getFirstName());
+                } else {
+                    appBase.setFirstName("餐饮服务");
+                }
+                if (setWxBaseInfoForm.getSecond() != null) {
+                    appBase.setSecondId(setWxBaseInfoForm.getSecond());
+                } else {
+                    appBase.setSecondId(632);
+                }
+                if (setWxBaseInfoForm.getSecondName() != null) {
+                    appBase.setSecondName(setWxBaseInfoForm.getSecondName());
+                } else {
+                    appBase.setSecondName("餐饮服务场所/餐饮服务管理企业");
+                }
+            } else {
+                appBase.setAppType(2);
+                queryWrapper.eq(AppBase::getAppType, 2);
+            }
+        }
         if (StringUtils.isNotEmpty(merchantNo)) {
             queryWrapper.eq(AppBase::getMerchantNo, merchantNo);
         }
-        AppBase appBase = new AppBase();
         appBase.setAppName(setWxBaseInfoForm.getNickName());
         appBase.setBrief(setWxBaseInfoForm.getSignature());
         appBase.setFirstId(setWxBaseInfoForm.getFirst());
-        if (setWxBaseInfoForm.getFirstName() != null) {
-            appBase.setFirstName(setWxBaseInfoForm.getFirstName());
-        } else {
-            appBase.setFirstName("餐饮服务");
-        }
-        if (setWxBaseInfoForm.getSecond() != null) {
-            appBase.setSecondId(setWxBaseInfoForm.getSecond());
-        } else {
-            appBase.setSecondId(632);
-        }
-        if (setWxBaseInfoForm.getSecondName() != null) {
-            appBase.setSecondName(setWxBaseInfoForm.getSecondName());
-        } else {
-            appBase.setSecondName("餐饮服务场所/餐饮服务管理企业");
-        }
         appBase.setHasFinish(0);
         appBase.setCerticate(setWxBaseInfoForm.getCerticate());
         AppBase checkAppBase = appBaseService.getOne(queryWrapper);
@@ -499,7 +536,6 @@ public class MiniBiz {
         } else {
             appBase.setMerchantNo(merchantNo);
             appBase.setAppId(setWxBaseInfoForm.getMerchantAppId());
-            appBase.setAppType(1);
             appBaseService.save(appBase);
             log.info("保存AppBase");
         }
