@@ -5,6 +5,7 @@ package org.dows.pay.biz;
  */
 
 import cn.hutool.core.bean.BeanUtil;
+import com.alipay.api.response.AlipayOpenMiniBaseinfoModifyResponse;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,7 @@ import org.dows.app.service.AppBaseService;
 import org.dows.auth.api.weixin.WeixinTokenApi;
 import org.dows.auth.biz.context.SecurityUtils;
 import org.dows.framework.api.Response;
+import org.dows.pay.bo.AlipayBaseInfoBo;
 import org.dows.pay.enums.WxSetNickNameExceptionEnum;
 import org.dows.pay.api.PayResponse;
 import org.dows.pay.api.enums.PayMethods;
@@ -27,6 +29,7 @@ import org.dows.pay.api.request.PayIsvRequest;
 import org.dows.pay.bo.WxBaseInfoBo;
 import org.dows.pay.bo.WxFastMaCategoryBo;
 import org.dows.pay.enums.WxSetSignatureExceptionEnum;
+import org.dows.pay.form.AlipayBaseInfoForm;
 import org.dows.pay.form.SetWxBaseInfoForm;
 import org.dows.pay.form.WxBaseInfoForm;
 import org.dows.pay.form.WxFastMaCategoryForm;
@@ -255,12 +258,38 @@ public class MiniBiz {
         return response;
     }
 
+
+    /**
+     * MiniCategory 设置支付宝小程序基础信息
+     * alipay.open.mini.baseinfo.modify
+     *
+     * @param alipayBaseInfoForm
+     */
+    public Response alipayBaseInfoModify(AlipayBaseInfoForm alipayBaseInfoForm) {
+        PayIsvRequest payRequest = new PayIsvRequest();
+        // todo
+        AlipayBaseInfoBo alipayBaseInfoBo = BeanUtil.copyProperties(alipayBaseInfoForm,
+                AlipayBaseInfoBo.class);
+        // 设置请求方法
+        payRequest.setMethod(PayMethods.MINI_BASE_INFO_MODIFY.getNamespace());
+        // 设置业务参数对象bizModel
+        payRequest.setBizModel(alipayBaseInfoBo);
+        // 填充公共参数
+        payRequest.autoSet(alipayBaseInfoForm);
+        // 请求分发
+        Response<PayResponse> response = payDispatcher.dispatcher(payRequest);
+        PayResponse data = response.getData();
+        log.info("返回结果:{}", data);
+        return response;
+    }
+
     /**
      * MiniBaseInfo 设置微信小程序 名称 、介绍、类目。头像等信息
      *
      * @param setWxBaseInfoForm
      */
     public Response setWxinApplyInfo(SetWxBaseInfoForm setWxBaseInfoForm) {
+        setWxBaseInfoForm.setAppId("wxdb8634feb22a5ab9");
         String merchantNo = SecurityUtils.getMerchantNo();
         if (StringUtils.isBlank(merchantNo)) {
             merchantNo = "xhr0002";
@@ -457,35 +486,106 @@ public class MiniBiz {
     }
 
 
+    /**
+     * MiniBaseInfo 设置支付宝小程序 名称 、介绍、类目。log等信息
+     *
+     * @param setWxBaseInfoForm
+     */
+    public Response setAlipayApplyInfo(SetWxBaseInfoForm setWxBaseInfoForm) {
+        setWxBaseInfoForm.setAppId("2021003129694075");
+        String merchantNo = SecurityUtils.getMerchantNo();
+        if (StringUtils.isBlank(merchantNo)) {
+            merchantNo = "xhr0002";
+        }
+        log.info("获取商户信息，merchantNo：{}", merchantNo);
+        Response response = new Response();
+        try {
+            AppBase appBase = saveOrUpdateAppBase(setWxBaseInfoForm, merchantNo);
+            AlipayBaseInfoForm alipayBaseInfoForm = BeanUtil.copyProperties(setWxBaseInfoForm,
+                    AlipayBaseInfoForm.class);
+            // 简介
+            alipayBaseInfoForm.setAppDesc(setWxBaseInfoForm.getSignature());
+            log.info("setWxinApplyInfo，appBase信息：{}", appBase);
+            Response<PayResponse> alipayBaseInfoModifyResponse = alipayBaseInfoModify(alipayBaseInfoForm);
+            log.info("设置支付宝小程序基础信息返回结果 ：{}", alipayBaseInfoModifyResponse);
+            AlipayOpenMiniBaseinfoModifyResponse alipayOpenMiniBaseinfoModifyResponse;
+            if (alipayBaseInfoModifyResponse != null) {
+                String body = alipayBaseInfoModifyResponse.getData().getBody();
+                alipayOpenMiniBaseinfoModifyResponse = WxOpenGsonBuilder.create().fromJson(body,
+                        AlipayOpenMiniBaseinfoModifyResponse.class);
+                log.info("设置支付宝小程序基础信息返回结果转换，alipayOpenMiniBaseinfoModifyResponse：{}", alipayOpenMiniBaseinfoModifyResponse);
+                String errcode = alipayOpenMiniBaseinfoModifyResponse.getCode();
+                response.setCode(Integer.valueOf(errcode));
+                response.setDescr(alipayOpenMiniBaseinfoModifyResponse.getMsg());
+                if (alipayOpenMiniBaseinfoModifyResponse.isSuccess() && errcode.equals("0")) {
+                    // 提交成功
+                    updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
+                            1, null, 1,
+                            1, 1, "昵称、简介、类目已提交审核");
+                    return response;
+                } else {
+                    updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
+                            2, null, 2,
+                            2, 2, alipayOpenMiniBaseinfoModifyResponse.getMsg());
+                    return response;
+                }
+            }else{
+                response.setCode(500);
+                response.setDescr("设置类目返回结果为空");
+                // 提交成功
+                updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
+                        2, null, 2,
+                        2, 2, "设置类目返回结果为空");
+                return response;
+            }
+        } catch (Exception e) {
+            updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,
+                    -1, null, -1,
+                    -1, 2, "内部错误：" + e.getMessage());
+            return Response.failed(e.getMessage());
+        }
+    }
+
+
+    //todo 后续优化
     private AppBase saveOrUpdateAppBase(SetWxBaseInfoForm setWxBaseInfoForm, String merchantNo) {
         // 根据tenantId和ALIPAY查询是已有记录
         LambdaQueryWrapper<AppBase> queryWrapper = new LambdaQueryWrapper<AppBase>();
         if (StringUtils.isNotEmpty(setWxBaseInfoForm.getMerchantAppId())) {
             queryWrapper.eq(AppBase::getAppId, setWxBaseInfoForm.getMerchantAppId());
         }
-        queryWrapper.eq(AppBase::getAppType, 1);
+        AppBase appBase = new AppBase();
+        if (StringUtils.isNotEmpty(setWxBaseInfoForm.getChannel())) {
+            // 微信
+            if (setWxBaseInfoForm.getChannel().equals("weixin")) {
+                queryWrapper.eq(AppBase::getAppType, 1);
+                appBase.setAppType(1);
+                if (setWxBaseInfoForm.getFirstName() != null) {
+                    appBase.setFirstName(setWxBaseInfoForm.getFirstName());
+                } else {
+                    appBase.setFirstName("餐饮服务");
+                }
+                if (setWxBaseInfoForm.getSecond() != null) {
+                    appBase.setSecondId(setWxBaseInfoForm.getSecond());
+                } else {
+                    appBase.setSecondId(632);
+                }
+                if (setWxBaseInfoForm.getSecondName() != null) {
+                    appBase.setSecondName(setWxBaseInfoForm.getSecondName());
+                } else {
+                    appBase.setSecondName("餐饮服务场所/餐饮服务管理企业");
+                }
+            } else {
+                appBase.setAppType(2);
+                queryWrapper.eq(AppBase::getAppType, 2);
+            }
+        }
         if (StringUtils.isNotEmpty(merchantNo)) {
             queryWrapper.eq(AppBase::getMerchantNo, merchantNo);
         }
-        AppBase appBase = new AppBase();
         appBase.setAppName(setWxBaseInfoForm.getNickName());
         appBase.setBrief(setWxBaseInfoForm.getSignature());
         appBase.setFirstId(setWxBaseInfoForm.getFirst());
-        if (setWxBaseInfoForm.getFirstName() != null) {
-            appBase.setFirstName(setWxBaseInfoForm.getFirstName());
-        } else {
-            appBase.setFirstName("餐饮服务");
-        }
-        if (setWxBaseInfoForm.getSecond() != null) {
-            appBase.setSecondId(setWxBaseInfoForm.getSecond());
-        } else {
-            appBase.setSecondId(632);
-        }
-        if (setWxBaseInfoForm.getSecondName() != null) {
-            appBase.setSecondName(setWxBaseInfoForm.getSecondName());
-        } else {
-            appBase.setSecondName("餐饮服务场所/餐饮服务管理企业");
-        }
         appBase.setHasFinish(0);
         appBase.setCerticate(setWxBaseInfoForm.getCerticate());
         AppBase checkAppBase = appBaseService.getOne(queryWrapper);
@@ -499,7 +599,6 @@ public class MiniBiz {
         } else {
             appBase.setMerchantNo(merchantNo);
             appBase.setAppId(setWxBaseInfoForm.getMerchantAppId());
-            appBase.setAppType(1);
             appBaseService.save(appBase);
             log.info("保存AppBase");
         }

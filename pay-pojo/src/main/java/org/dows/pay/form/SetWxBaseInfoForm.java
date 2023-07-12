@@ -44,6 +44,10 @@ public class SetWxBaseInfoForm implements BizForm{
     @ApiModelProperty("申请应用名称")
     private String appName;
 
+    // 小程序应用英文名称
+    @ApiModelProperty("小程序应用英文名称")
+    private String appEnglishName;
+
     /**
      * 昵称.
      */
@@ -58,8 +62,26 @@ public class SetWxBaseInfoForm implements BizForm{
     /**
      * 小程序介绍
      */
-    @ApiModelProperty(name = "signature")
+    @ApiModelProperty(name = "小程序介绍")
     private String signature;
+
+    /**
+     * 小程序logo图标
+     */
+    @ApiModelProperty(name = "小程序logo图标")
+    private String appLogo;
+    /**
+     * 小程序客服电话，
+     */
+    @ApiModelProperty(name = "小程序客服电话，")
+    private String servicePhone;
+
+    /**
+     * 小程序客服电话，
+     */
+    @ApiModelProperty(name = "小程序客服邮箱，")
+    private String serviceEmail;
+
     /**
      * 身份证照片 mediaid. 个人号必填
      */
