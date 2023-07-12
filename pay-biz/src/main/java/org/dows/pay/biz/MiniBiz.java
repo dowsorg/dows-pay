@@ -20,6 +20,7 @@ import org.dows.app.service.AppBaseService;
 import org.dows.auth.api.weixin.WeixinTokenApi;
 import org.dows.auth.biz.context.SecurityUtils;
 import org.dows.framework.api.Response;
+import org.dows.pay.bo.AlipayBaseInfoBo;
 import org.dows.pay.enums.WxSetNickNameExceptionEnum;
 import org.dows.pay.api.PayResponse;
 import org.dows.pay.api.enums.PayMethods;
@@ -27,6 +28,7 @@ import org.dows.pay.api.request.PayIsvRequest;
 import org.dows.pay.bo.WxBaseInfoBo;
 import org.dows.pay.bo.WxFastMaCategoryBo;
 import org.dows.pay.enums.WxSetSignatureExceptionEnum;
+import org.dows.pay.form.AlipayBaseInfoForm;
 import org.dows.pay.form.SetWxBaseInfoForm;
 import org.dows.pay.form.WxBaseInfoForm;
 import org.dows.pay.form.WxFastMaCategoryForm;
@@ -255,6 +257,31 @@ public class MiniBiz {
         return response;
     }
 
+
+    /**
+     * MiniCategory 设置支付宝小程序基础信息
+     * alipay.open.mini.baseinfo.modify
+     *
+     * @param alipayBaseInfoForm
+     */
+    public Response alipayBaseInfoModify(AlipayBaseInfoForm alipayBaseInfoForm) {
+        PayIsvRequest payRequest = new PayIsvRequest();
+        // todo
+        AlipayBaseInfoBo alipayBaseInfoBo = BeanUtil.copyProperties(alipayBaseInfoForm,
+                AlipayBaseInfoBo.class);
+        // 设置请求方法
+        payRequest.setMethod(PayMethods.MINI_BASE_INFO_MODIFY.getNamespace());
+        // 设置业务参数对象bizModel
+        payRequest.setBizModel(alipayBaseInfoBo);
+        // 填充公共参数
+        payRequest.autoSet(alipayBaseInfoForm);
+        // 请求分发
+        Response<PayResponse> response = payDispatcher.dispatcher(payRequest);
+        PayResponse data = response.getData();
+        log.info("返回结果:{}", data);
+        return response;
+    }
+
     /**
      * MiniBaseInfo 设置微信小程序 名称 、介绍、类目。头像等信息
      *
@@ -472,8 +499,13 @@ public class MiniBiz {
         log.info("获取商户信息，merchantNo：{}", merchantNo);
         try {
             AppBase appBase = saveOrUpdateAppBase(setWxBaseInfoForm, merchantNo);
+            AlipayBaseInfoForm alipayBaseInfoForm = BeanUtil.copyProperties(setWxBaseInfoForm,
+                    AlipayBaseInfoForm.class);
+            // 简介
+            alipayBaseInfoForm.setAppDesc(setWxBaseInfoForm.getSignature());
             log.info("setWxinApplyInfo，appBase信息：{}", appBase);
             Response response = new Response();
+            alipayBaseInfoModify(alipayBaseInfoForm);
             return response;
         } catch (Exception e) {
             updateStatus(setWxBaseInfoForm.getMerchantAppId(), merchantNo,

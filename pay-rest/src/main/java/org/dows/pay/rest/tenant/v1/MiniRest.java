@@ -101,7 +101,7 @@ public class MiniRest {
             if (setWxBaseInfoForm.getMerchantAppId() == null) {
                 return Response.failed("缺少商户appId");
             }
-            Response response = null;
+            Response response;
             if(setWxBaseInfoForm.getChannel().equals("weixin")){
                 // 微信
                 response = miniBiz.setWxinApplyInfo(setWxBaseInfoForm);
