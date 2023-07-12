@@ -178,5 +178,27 @@ public class AlipayMiniHandler extends AbstractAlipayHandler {
         }
     }
 
+    /**
+     * 小程序修改基础信息
+     * alipay.open.mini.baseinfo.modify(小程序修改基础信息)
+     */
+    @PayMapping(method = PayMethods.MINI_BASE_INFO_MODIFY)
+    public AlipayOpenMiniBaseinfoModifyResponse miniBaseInfoModify(PayRequest payRequest) {
+        AlipayOpenMiniInnerbaseinfoCreateModel alipayOpenMiniInnerbaseinfoCreateModel = new AlipayOpenMiniInnerbaseinfoCreateModel();
+        AlipayOpenMiniBaseinfoModifyRequest request = new AlipayOpenMiniBaseinfoModifyRequest();
+        request.setBizModel(alipayOpenMiniInnerbaseinfoCreateModel);
+        AlipayOpenMiniBaseinfoModifyResponse response;
+        try {
+            response = getAlipayClient(payRequest.getAppId()).certificateExecute(request);
+            if (response.isSuccess()) {
+                System.out.println("调用成功");
+            } else {
+                System.out.println("调用失败");
+            }
+            return response;
+        } catch (AlipayApiException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }
