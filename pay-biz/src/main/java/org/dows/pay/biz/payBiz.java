@@ -254,10 +254,10 @@ public class payBiz implements PayApi {
                         if(confirmIsv.getMsg().equals("Success")){
                             return Response.ok("申请成功");
                         }else{
-                            return Response.fail("申请失败");
+                            return Response.fail("申请失败,"+confirmIsv.getMsg());
                         }
                     } else {
-                        return Response.fail("申请失败");
+                        return Response.fail("申请失败,"+facetofaceIsv.getMsg());
                     }
                 }
             } catch (Exception e) {
