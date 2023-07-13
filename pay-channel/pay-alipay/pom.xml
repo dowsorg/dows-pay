@@ -28,10 +28,11 @@
             <artifactId>pay-crud</artifactId>
             <version>20220701-SNAPSHOT</version>
         </dependency>
-
-
-
-
+        <dependency>
+            <groupId>org.dows.saas</groupId>
+            <artifactId>order-api</artifactId>
+            <version>20220701-SNAPSHOT</version>
+        </dependency>
         <dependency>
             <groupId>com.alipay.sdk</groupId>
             <artifactId>alipay-sdk-java</artifactId>
@@ -41,6 +42,7 @@
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
         </dependency>
+
 
     </dependencies>
 

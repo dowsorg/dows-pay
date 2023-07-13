@@ -12,6 +12,7 @@ import com.alipay.api.response.AlipayTradeAppPayResponse;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.dows.order.bo.OrderInstanceBo;
 import org.dows.pay.api.PayEvent;
 import org.dows.pay.api.PayException;
 import org.dows.pay.api.PayRequest;
@@ -29,8 +30,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.IdGenerator;
 import org.springframework.util.SimpleIdGenerator;
 import org.dows.auth.biz.context.SecurityUtils;
+import org.dows.order.api.OrderInstanceBizApiService;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -47,6 +50,8 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
     private final PayTransactionService payTransactionService;
 
     private final IdGenerator idGenerator = new SimpleIdGenerator();
+
+    private final OrderInstanceBizApiService orderInstanceBizApiService;
 
     /**
      * 去支付
@@ -65,9 +70,14 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
         payTransaction.setAppId(payRequest.getAppId());
         payTransaction.setMerchantNo(SecurityUtils.getMerchantNo());
         payTransactionService.save(payTransaction);
+
+        OrderInstanceBo orderInstanceBo = orderInstanceBizApiService.getOne(payTransactionBo.getOrderId());
         AlipayTradeAppPayModel alipayTradeAppPayModel = new AlipayTradeAppPayModel();
         // 自动
-        autoMappingValue(payRequest, alipayTradeAppPayModel);
+//        autoMappingValue(payRequest, alipayTradeAppPayModel);
+        alipayTradeAppPayModel.setTotalAmount(orderInstanceBo.getAgreeAmout().multiply(new BigDecimal(100)).toString());
+        alipayTradeAppPayModel.setSubject(payTransactionBo.getOrderTitle());
+        alipayTradeAppPayModel.setOutTradeNo(payTransaction.getOrderId());
         AlipayTradeAppPayRequest request = new AlipayTradeAppPayRequest();
         request.setBizModel(alipayTradeAppPayModel);
         AlipayTradeAppPayResponse response = null;
