@@ -196,6 +196,7 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
         appApply.setPlatform("ALIPAY");
         appApply.setPlatformOrderNo(miniConfirmed.getOrder_no());
         appApply.setApplyOrderNo(miniConfirmed.getOut_order_no());
+        appApply.setAppId(miniConfirmed.getMin_app_id());
         if (miniConfirmed.getStatus().equals("AGREED")) {
             // 成功
             appApply.setAppStatus(String.valueOf(2));
