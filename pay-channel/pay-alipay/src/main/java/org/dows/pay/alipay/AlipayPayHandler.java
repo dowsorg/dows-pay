@@ -82,7 +82,7 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
         request.setBizModel(alipayTradeAppPayModel);
         AlipayTradeAppPayResponse response = null;
         try {
-            response = getAlipayClient(payRequest.getAppId()).execute(request);
+            response = getAlipayClient(payRequest.getAppId()).certificateExecute(request);
         } catch (AlipayApiException e) {
             throw new RuntimeException(e);
         }

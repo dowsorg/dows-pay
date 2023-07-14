@@ -20,5 +20,7 @@ public class PayQueryIsvRequest extends AbstractPayRequest<PayIsvResponse> {
     private String batch_no;
     @ApiModelProperty("应用ID")
     private String appid;
+    @ApiModelProperty("支付宝账号")
+    private String account;
 
 }

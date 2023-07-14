@@ -8,6 +8,7 @@ import com.alipay.api.domain.AlipayOpenAgentOrderQueryModel;
 import com.alipay.api.domain.ContactModel;
 import com.alipay.api.request.*;
 import com.alipay.api.response.*;
+import com.alipay.service.schema.util.StringUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -55,6 +56,7 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
 
     @Autowired
     private AppApplyService appApplyService;
+
     /**
      * 开启代商户签约、创建应用事务
      * https://opendocs.alipay.com/isv/02s1f9
@@ -67,7 +69,7 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
 
         LambdaQueryWrapper<AppApply> queryWrapper = new LambdaQueryWrapper();
         queryWrapper.eq(AppApply::getApplicant, payCreateIsvRequest.getAccount());
-        appApply = (AppApply)this.appApplyService.getOne(queryWrapper);
+        appApply = (AppApply) this.appApplyService.getOne(queryWrapper);
 
         if (Objects.isNull(appApply)) {
             appApply = new AppApply();
@@ -169,6 +171,7 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
      * 开启代商户签约、创建应用事务
      * https://opendocs.alipay.com/isv/02s1f9
      * 通过 alipay.open.agent.create（开启代商户签约、创建应用事务）接口创建应用事务，返回生成 batch_no。
+     *
      * @return
      */
     @PayMapping(method = PayMethods.AGENT_CONFIRM)
@@ -199,8 +202,16 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
      */
     @PayMapping(method = PayMethods.AGENT_QUERY)
     public AlipayOpenAgentOrderQueryResponse queryAgent(PayQueryIsvRequest payQueryIsvRequest) {
+        String BatchNo = payQueryIsvRequest.getBatch_no();
+        if (StringUtil.isEmpty(BatchNo)) {
+            LambdaQueryWrapper<AppApply> queryWrapper = new LambdaQueryWrapper();
+            queryWrapper.eq(AppApply::getApplicant, payQueryIsvRequest.getAccount());
+            AppApply appApply = this.appApplyService.getOne(queryWrapper);
+            BatchNo = appApply.getPlatformOrderNo();
+        }
+
         AlipayOpenAgentOrderQueryModel alipayOpenAgentOrderQueryModel = new AlipayOpenAgentOrderQueryModel();
-        alipayOpenAgentOrderQueryModel.setBatchNo(payQueryIsvRequest.getBatch_no());
+        alipayOpenAgentOrderQueryModel.setBatchNo(BatchNo);
         AlipayOpenAgentOrderQueryRequest request = new AlipayOpenAgentOrderQueryRequest();
         request.setBizModel(alipayOpenAgentOrderQueryModel);
         AlipayOpenAgentOrderQueryResponse response = null;
