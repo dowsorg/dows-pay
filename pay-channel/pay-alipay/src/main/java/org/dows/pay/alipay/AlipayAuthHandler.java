@@ -4,8 +4,10 @@ import com.alipay.api.AlipayApiException;
 import com.alipay.api.domain.AlipayOpenAuthTokenAppModel;
 import com.alipay.api.request.AlipayOpenAuthTokenAppRequest;
 import com.alipay.api.response.AlipayOpenAuthTokenAppResponse;
+import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.dows.auth.api.TempRedisApi;
 import org.springframework.stereotype.Service;
 
 
@@ -19,6 +21,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Service
 public class AlipayAuthHandler extends AbstractAlipayHandler {
+
+    private final TempRedisApi tempRedisApi;
 
 
     /**
@@ -42,6 +46,9 @@ public class AlipayAuthHandler extends AbstractAlipayHandler {
         String appAuthToken = alipayOpenAuthTokenAppResponse.getAppAuthToken();
         String appRefreshToken = alipayOpenAuthTokenAppResponse.getAppRefreshToken();
 
+        // save redis
+        tempRedisApi.setKey(appId, appAuthToken);
+        tempRedisApi.setKey(String.join(StringPool.UNDERSCORE,appId,"authorizer_refresh_token"),appRefreshToken);
     }
 
 
