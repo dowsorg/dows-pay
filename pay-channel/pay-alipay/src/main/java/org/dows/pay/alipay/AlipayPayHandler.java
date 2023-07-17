@@ -2,13 +2,16 @@ package org.dows.pay.alipay;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayRequest;
 import com.alipay.api.domain.AlipayTradeAppPayModel;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.msg.AlipayMsgClient;
 import com.alipay.api.request.AlipayTradeAppPayRequest;
+import com.alipay.api.request.AlipayTradeCreateRequest;
 import com.alipay.api.response.AlipayTradeAppPayResponse;
+import com.alipay.api.response.AlipayTradeCreateResponse;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -72,15 +75,17 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
         payTransactionService.save(payTransaction);
 
         OrderInstanceBo orderInstanceBo = orderInstanceBizApiService.getOne(payTransactionBo.getOrderId());
-        AlipayTradeAppPayModel alipayTradeAppPayModel = new AlipayTradeAppPayModel();
-        // 自动
-//        autoMappingValue(payRequest, alipayTradeAppPayModel);
-        alipayTradeAppPayModel.setTotalAmount(orderInstanceBo.getAgreeAmout().multiply(new BigDecimal(100)).toString());
-        alipayTradeAppPayModel.setSubject(payTransactionBo.getOrderTitle());
-        alipayTradeAppPayModel.setOutTradeNo(payTransaction.getOrderId());
-        AlipayTradeAppPayRequest request = new AlipayTradeAppPayRequest();
-        request.setBizModel(alipayTradeAppPayModel);
-        AlipayTradeAppPayResponse response = null;
+
+        AlipayTradeCreateRequest request = new AlipayTradeCreateRequest ();
+        JSONObject bizContent = new JSONObject();
+        bizContent.put("out_trade_no", payTransaction.getOrderId());
+        bizContent.put("total_amount", orderInstanceBo.getAgreeAmout().multiply(new BigDecimal(100)).toString());
+        bizContent.put("subject", payTransactionBo.getOrderTitle());
+        bizContent.put("buyer_id",payTransactionBo.getDealForm());
+        bizContent.put("op_app_id", payTransactionBo.getDealTo());
+
+        request.setBizContent(bizContent.toString());
+        AlipayTradeCreateResponse response = null;
         try {
             response = getAlipayClient(payRequest.getAppId()).certificateExecute(request);
         } catch (AlipayApiException e) {
