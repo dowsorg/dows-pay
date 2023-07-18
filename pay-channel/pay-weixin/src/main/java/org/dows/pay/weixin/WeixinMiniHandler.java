@@ -230,7 +230,7 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
         log.info("上传类目请求入参：{}", categoriesJson);
         String post = HttpUtil.post(WX_SET_ADD_CATEGORY +
                 "?access_token=" + payRequest.getAuthorizerAccessToken(), categoriesJson);
-        System.out.println(post);
+        System.out.println("上传类目请求结果:"+post);
         response = (WxOpenResult) WxOpenGsonBuilder.create().fromJson(post, WxOpenResult.class);
         //        Map param = JSONObject.parseObject(categoriesJson, Map.class);
 //        String content = uploadTemplateResult.getContent();
