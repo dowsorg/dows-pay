@@ -227,7 +227,7 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
         Categories categories = new Categories();
         categories.setCategories(list);
         String categoriesJson = JSONObject.toJSONString(categories);
-        log.info("请求入参：{}", categoriesJson);
+        log.info("上传类目请求入参：{}", categoriesJson);
         String post = HttpUtil.post(WX_SET_ADD_CATEGORY +
                 "?access_token=" + payRequest.getAuthorizerAccessToken(), categoriesJson);
         System.out.println(post);
@@ -241,6 +241,7 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
 //       (list);
         return response;
     }
+
 
     /**
      * 小程序类目管理

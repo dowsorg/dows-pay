@@ -438,11 +438,13 @@ public class MiniBiz {
                 String[] certicateList = setWxBaseInfoForm.getCerticate() != null
                         ? setWxBaseInfoForm.getCerticate().split(",") : null;
                 if (certicateList != null) {
+                    int i = 1;
                     for (String certicate : certicateList) {
                         WxFastMaCategoryBo.Certificate certificate = new WxFastMaCategoryBo.Certificate();
-                        certificate.setKey("《食品经营许可证》");
+                        certificate.setKey("key"+i);
                         certificate.setValue(certicate);
                         certicates.add(certificate);
+                        i++;
                     }
                 }
                 wxFastMaCategoryForm.setCerticates(certicates);
