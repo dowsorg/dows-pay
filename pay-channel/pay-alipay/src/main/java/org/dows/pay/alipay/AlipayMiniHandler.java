@@ -1,5 +1,6 @@
 package org.dows.pay.alipay;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.domain.*;
 import com.alipay.api.request.*;
@@ -9,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.dows.pay.api.PayRequest;
 import org.dows.pay.api.annotation.PayMapping;
 import org.dows.pay.api.enums.PayMethods;
+import org.dows.pay.bo.AlipayBaseInfoBo;
+import org.dows.pay.bo.AlipayOpenMiniVersionAuditBo;
 import org.springframework.stereotype.Service;
 
 /**
@@ -192,6 +195,30 @@ public class AlipayMiniHandler extends AbstractAlipayHandler {
         AlipayOpenMiniBaseinfoModifyResponse response;
         try {
             response = getAlipayClient(payRequest.getAppId()).certificateExecute(request);
+            if (response.isSuccess()) {
+                System.out.println("调用成功");
+            } else {
+                System.out.println("调用失败");
+            }
+            return response;
+        } catch (AlipayApiException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    @PayMapping(method = PayMethods.MINI_VERSION_AUDIT_APPLY)
+    public AlipayOpenMiniVersionAuditApplyResponse miniVersionAuditApply(PayRequest payRequest) {
+        // 自动
+//        AlipayOpenMiniVersionAuditApplyRequest request = new AlipayOpenMiniVersionAuditApplyRequest();
+        AlipayOpenMiniVersionAuditBo alipayOpenMiniVersionAuditBo = (AlipayOpenMiniVersionAuditBo) payRequest.getBizModel();
+        AlipayOpenMiniVersionAuditApplyRequest request = BeanUtil.copyProperties(alipayOpenMiniVersionAuditBo,
+                AlipayOpenMiniVersionAuditApplyRequest.class);
+        AlipayOpenMiniVersionAuditApplyResponse response;
+        try {
+            String authorizerAccessToken = payRequest.getAuthorizerAccessToken();
+            response = getAlipayClient(payRequest.getAppId()).certificateExecute(request, null,
+                    authorizerAccessToken);
             if (response.isSuccess()) {
                 System.out.println("调用成功");
             } else {

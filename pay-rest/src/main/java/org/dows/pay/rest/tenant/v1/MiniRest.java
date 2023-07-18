@@ -107,7 +107,7 @@ public class MiniRest {
                 response = miniBiz.setWxinApplyInfo(setWxBaseInfoForm);
             }else{
                 // 支付宝
-                response = miniBiz.setAlipayApplyInfo(setWxBaseInfoForm);
+                response = miniBiz.miniVersionAuditApply(setWxBaseInfoForm);
             }
             return response;
         } catch (Exception e) {

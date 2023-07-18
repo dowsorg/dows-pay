@@ -26,6 +26,7 @@ import org.dows.auth.api.weixin.WeixinTokenApi;
 import org.dows.auth.biz.context.SecurityUtils;
 import org.dows.framework.api.Response;
 import org.dows.pay.bo.AlipayBaseInfoBo;
+import org.dows.pay.bo.AlipayOpenMiniVersionAuditBo;
 import org.dows.pay.enums.WxSetNickNameExceptionEnum;
 import org.dows.pay.api.PayResponse;
 import org.dows.pay.api.enums.PayMethods;
@@ -33,10 +34,7 @@ import org.dows.pay.api.request.PayIsvRequest;
 import org.dows.pay.bo.WxBaseInfoBo;
 import org.dows.pay.bo.WxFastMaCategoryBo;
 import org.dows.pay.enums.WxSetSignatureExceptionEnum;
-import org.dows.pay.form.AlipayBaseInfoForm;
-import org.dows.pay.form.SetWxBaseInfoForm;
-import org.dows.pay.form.WxBaseInfoForm;
-import org.dows.pay.form.WxFastMaCategoryForm;
+import org.dows.pay.form.*;
 import org.dows.pay.gateway.PayDispatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -289,6 +287,31 @@ public class MiniBiz {
         log.info("返回结果:{}", data);
         return response;
     }
+
+    /**
+     * MiniCategory 设置支付宝小程序基础信息
+     * alipay.open.mini.baseinfo.modify
+     *
+     * @param alipayOpenMiniVersionAuditForm
+     */
+    public Response miniVersionAuditApply(AlipayOpenMiniVersionAuditForm alipayOpenMiniVersionAuditForm) {
+        PayIsvRequest payRequest = new PayIsvRequest();
+        // todo
+        AlipayOpenMiniVersionAuditBo alipayOpenMiniVersionAuditBo = BeanUtil.copyProperties(alipayOpenMiniVersionAuditForm,
+                AlipayOpenMiniVersionAuditBo.class);
+        // 设置请求方法
+        payRequest.setMethod(PayMethods.MINI_VERSION_AUDIT_APPLY.getNamespace());
+        // 设置业务参数对象bizModel
+        payRequest.setBizModel(alipayOpenMiniVersionAuditBo);
+        // 填充公共参数
+        payRequest.autoSet(alipayOpenMiniVersionAuditForm);
+        // 请求分发
+        Response<PayResponse> response = payDispatcher.dispatcher(payRequest);
+        PayResponse data = response.getData();
+        log.info("返回结果:{}", data);
+        return response;
+    }
+
 
     /**
      * MiniBaseInfo 设置微信小程序 名称 、介绍、类目。头像等信息
@@ -555,6 +578,77 @@ public class MiniBiz {
             return Response.failed(e.getMessage());
         }
     }
+
+
+
+
+    /**
+     * MiniBaseInfo 设置支付宝小程序 名称 、介绍、类目。log等信息
+     *
+     * @param setWxBaseInfoForm
+     */
+    public Response miniVersionAuditApply(SetWxBaseInfoForm setWxBaseInfoForm) {
+        setWxBaseInfoForm.setAppId("2021003129694075");
+        String merchantNo = SecurityUtils.getMerchantNo();
+        if (StringUtils.isBlank(merchantNo)) {
+            merchantNo = "xhr0002";
+        }
+        String channel = setWxBaseInfoForm.getChannel();
+        log.info("获取商户信息，merchantNo：{}", merchantNo);
+        Response response = new Response();
+        try {
+            AppBase appBase = saveOrUpdateAppBase(setWxBaseInfoForm, merchantNo);
+            // 获取access_token使用authorizer_access_token
+            String authorizerAccessToken = weixinTokenApi.getAuthorizerAccessToken(setWxBaseInfoForm.getMerchantAppId());
+            AlipayOpenMiniVersionAuditForm alipayOpenMiniVersionAuditForm = BeanUtil.copyProperties(setWxBaseInfoForm,
+                    AlipayOpenMiniVersionAuditForm.class);
+            log.info("获取authorizerAccessToken ：{}", authorizerAccessToken);
+            alipayOpenMiniVersionAuditForm.setAuthorizerAccessToken(authorizerAccessToken);
+            alipayOpenMiniVersionAuditForm.setMerchantAppId(setWxBaseInfoForm.getMerchantAppId());
+            // 简介 客户邮箱
+            alipayOpenMiniVersionAuditForm.setAppSlogan(setWxBaseInfoForm.getSignature());
+            log.info("setWxinApplyInfo，appBase信息：{}", appBase);
+            Response<PayResponse> alipayBaseInfoModifyResponse = miniVersionAuditApply(alipayOpenMiniVersionAuditForm);
+            log.info("设置支付宝小程序基础信息返回结果 ：{}", alipayBaseInfoModifyResponse);
+            AlipayOpenMiniBaseinfoModifyResponse alipayOpenMiniBaseinfoModifyResponse;
+            if (alipayBaseInfoModifyResponse != null) {
+                String body = alipayBaseInfoModifyResponse.getData().getBody();
+                alipayOpenMiniBaseinfoModifyResponse = WxOpenGsonBuilder.create().fromJson(body,
+                        AlipayOpenMiniBaseinfoModifyResponse.class);
+                log.info("设置支付宝小程序基础信息返回结果转换，alipayOpenMiniBaseinfoModifyResponse：{}", alipayOpenMiniBaseinfoModifyResponse);
+                String errcode = alipayOpenMiniBaseinfoModifyResponse.getCode();
+                response.setCode(Integer.valueOf(errcode));
+                response.setDescr(alipayOpenMiniBaseinfoModifyResponse.getSubMsg());
+                if (alipayOpenMiniBaseinfoModifyResponse.isSuccess() && errcode.equals("0")) {
+                    // 提交成功
+                    updateStatus(channel, setWxBaseInfoForm.getMerchantAppId(), merchantNo,
+                            1, null, 1,
+                            1, 1, "昵称、简介、类目已提交");
+                    return response;
+                } else {
+                    updateStatus(channel, setWxBaseInfoForm.getMerchantAppId(), merchantNo,
+                            2, null, 2,
+                            2, 2, alipayOpenMiniBaseinfoModifyResponse.getSubMsg());
+                    return response;
+                }
+            } else {
+                response.setCode(500);
+                response.setDescr("设置小程序基础信息返回结果为空");
+                // 失败
+                updateStatus(channel, setWxBaseInfoForm.getMerchantAppId(), merchantNo,
+                        2, null, 2,
+                        2, 2, "设置小程序基础信息返回结果为空");
+                return response;
+            }
+        } catch (Exception e) {
+            updateStatus(channel, setWxBaseInfoForm.getMerchantAppId(), merchantNo,
+                    -1, null, -1,
+                    -1, 2, "设置小程序基础信息内部错误：" + e.getMessage());
+            return Response.failed(e.getMessage());
+        }
+    }
+
+
 
 
     //todo 后续优化
