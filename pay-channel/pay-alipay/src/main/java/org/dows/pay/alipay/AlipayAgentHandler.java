@@ -63,7 +63,7 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
      * 通过 alipay.open.agent.create（开启代商户签约、创建应用事务）接口创建应用事务，返回生成 batch_no。
      */
     @PayMapping(method = PayMethods.AGENT_CREATE)
-    public String createAgent(PayCreateIsvRequest payCreateIsvRequest) {
+    public AlipayOpenAgentCreateResponse createAgent(PayCreateIsvRequest payCreateIsvRequest) {
 
         AppApply appApply;
 
@@ -103,10 +103,8 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
             queryWrapperAppApply.eq(AppApply::getApplyOrderNo, appApply.getApplyOrderNo());
             appApply.setPlatformOrderNo(response.getBatchNo());
             this.appApplyService.update(appApply, queryWrapperAppApply);
-            return response.getBatchNo();
-        } else {
-            throw new RuntimeException("调用失败");
         }
+        return response;
 
     }
 
@@ -131,16 +129,12 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
         request.setShopName(payCreateIsvRequest.getShop_name());
         AlipayOpenAgentFacetofaceSignResponse response = null;
         try {
-            response = getAlipayClient(payCreateIsvRequest.getAppid()).certificateExecute(request);
+            return getAlipayClient(payCreateIsvRequest.getAppid()).certificateExecute(request);
         } catch (AlipayApiException e) {
             throw new RuntimeException(e);
         }
-        if (response.isSuccess()) {
-            return response;
-        } else {
-            //todo 失败逻辑
-            throw new RuntimeException("调用失败");
-        }
+
+
 
     }
 
@@ -182,17 +176,10 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
         request.setBizModel(alipayOpenAgentConfirmModel);
         AlipayOpenAgentConfirmResponse response;
         try {
-            response = getAlipayClient(payCreateIsvRequest.getAppid()).certificateExecute(request);
+            return getAlipayClient(payCreateIsvRequest.getAppid()).certificateExecute(request);
         } catch (AlipayApiException e) {
             throw new RuntimeException(e);
         }
-        if (response.isSuccess()) {
-            return response;
-        } else {
-            //todo 失败逻辑
-            throw new RuntimeException("调用失败");
-        }
-
     }
 
     /**
@@ -204,30 +191,25 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
     public AlipayOpenAgentOrderQueryResponse queryAgent(PayQueryIsvRequest payQueryIsvRequest) {
         String BatchNo = payQueryIsvRequest.getBatch_no();
         if (StringUtil.isEmpty(BatchNo)) {
-            LambdaQueryWrapper<AppApply> queryWrapper = new LambdaQueryWrapper();
-            queryWrapper.eq(AppApply::getApplicant, payQueryIsvRequest.getAccount());
-            AppApply appApply = this.appApplyService.getOne(queryWrapper);
-            BatchNo = appApply.getPlatformOrderNo();
+            try {
+                LambdaQueryWrapper<AppApply> queryWrapper = new LambdaQueryWrapper();
+                queryWrapper.eq(AppApply::getApplicant, payQueryIsvRequest.getAccount());
+                AppApply appApply = this.appApplyService.getOne(queryWrapper);
+                BatchNo = appApply.getPlatformOrderNo();
+            } catch (Exception e) {
+                return null;
+            }
         }
-
         AlipayOpenAgentOrderQueryModel alipayOpenAgentOrderQueryModel = new AlipayOpenAgentOrderQueryModel();
         alipayOpenAgentOrderQueryModel.setBatchNo(BatchNo);
         AlipayOpenAgentOrderQueryRequest request = new AlipayOpenAgentOrderQueryRequest();
         request.setBizModel(alipayOpenAgentOrderQueryModel);
         AlipayOpenAgentOrderQueryResponse response = null;
         try {
-            response = getAlipayClient(payQueryIsvRequest.getAppid()).certificateExecute(request);
+            return getAlipayClient(payQueryIsvRequest.getAppid()).certificateExecute(request);
         } catch (AlipayApiException e) {
             throw new RuntimeException(e);
         }
-        if (response.isSuccess()) {
-            System.out.println("调用成功");
-            return response;
-        } else {
-            //todo 失败逻辑
-            return response;
-        }
-
     }
 
 }

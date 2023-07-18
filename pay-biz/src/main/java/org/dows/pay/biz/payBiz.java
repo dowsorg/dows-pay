@@ -246,25 +246,25 @@ public class payBiz implements PayApi {
             try {
                 // 小程序申请支付权限
 //                log.info("生成WxPayApplymentCreateResult参数payRequest：{}", payRequest);
-                String batchNo = alipayAgentHandler.createAgent(payCreateIsvRequest);
-                if (!StringUtil.isEmpty(batchNo)) {
-                    AlipayOpenAgentFacetofaceSignResponse facetofaceIsv = alipayAgentHandler.facetofaceAgent(payCreateIsvRequest, batchNo);
-                    if (facetofaceIsv.getMsg().equals("Success")) {
-                        AlipayOpenAgentConfirmResponse confirmIsv = alipayAgentHandler.confirmAgent(payCreateIsvRequest, batchNo);
-                        if(confirmIsv.getMsg().equals("Success")){
+                AlipayOpenAgentCreateResponse batchNoreponse = alipayAgentHandler.createAgent(payCreateIsvRequest);
+                if (batchNoreponse.isSuccess()) {
+                    AlipayOpenAgentFacetofaceSignResponse facetofaceIsv = alipayAgentHandler.facetofaceAgent(payCreateIsvRequest, batchNoreponse.getBatchNo());
+                    if (facetofaceIsv.isSuccess()) {
+                        AlipayOpenAgentConfirmResponse confirmIsv = alipayAgentHandler.confirmAgent(payCreateIsvRequest, batchNoreponse.getBatchNo());
+                        if(confirmIsv.isSuccess()){
                             return Response.ok("申请成功");
                         }else{
-                            return Response.fail("申请失败,"+confirmIsv.getMsg());
+                            return Response.fail("申请失败,"+confirmIsv.getSubMsg());
                         }
                     } else {
-                        return Response.fail("申请失败,"+facetofaceIsv.getMsg());
+                        return Response.fail("申请失败,"+facetofaceIsv.getSubMsg());
                     }
+                }else {
+                    return Response.fail("申请失败,"+batchNoreponse.getSubMsg());
                 }
             } catch (Exception e) {
-
                 return Response.fail("申请失败");
             }
-        return Response.fail("申请失败");
     }
 
     @Override
