@@ -58,8 +58,8 @@ public class AlipayBaseInfoForm implements BizForm {
     /**
      * 小程序客服电话，
      */
-    @AlipayApiField(name = "service_email")
-    private String serviceEmail;
+    @AlipayApiField(name = "service_mail")
+    private String serviceMail;
 
     /**
      * 新小程序前台类目，格式为 第一个一级类目_第一个二级类目;第二个一级类目_第二个二级类目_第二个三级类目，详细类目可以通过，

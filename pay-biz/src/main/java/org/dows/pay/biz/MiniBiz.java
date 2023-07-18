@@ -512,8 +512,9 @@ public class MiniBiz {
             AppBase appBase = saveOrUpdateAppBase(setWxBaseInfoForm, merchantNo);
             AlipayBaseInfoForm alipayBaseInfoForm = BeanUtil.copyProperties(setWxBaseInfoForm,
                     AlipayBaseInfoForm.class);
-            // 简介
-            alipayBaseInfoForm.setAppDesc(setWxBaseInfoForm.getSignature());
+            // 简介 客户邮箱
+            alipayBaseInfoForm.setAppSlogan(setWxBaseInfoForm.getSignature());
+            alipayBaseInfoForm.setServiceMail(setWxBaseInfoForm.getServiceEmail());
             log.info("setWxinApplyInfo，appBase信息：{}", appBase);
             Response<PayResponse> alipayBaseInfoModifyResponse = alipayBaseInfoModify(alipayBaseInfoForm);
             log.info("设置支付宝小程序基础信息返回结果 ：{}", alipayBaseInfoModifyResponse);
@@ -535,22 +536,22 @@ public class MiniBiz {
                 } else {
                     updateStatus(channel, setWxBaseInfoForm.getMerchantAppId(), merchantNo,
                             2, null, 2,
-                            2, 2,alipayOpenMiniBaseinfoModifyResponse.getSubMsg());
+                            2, 2, alipayOpenMiniBaseinfoModifyResponse.getSubMsg());
                     return response;
                 }
             } else {
                 response.setCode(500);
-                response.setDescr("设置类目返回结果为空");
+                response.setDescr("设置小程序基础信息返回结果为空");
                 // 失败
                 updateStatus(channel, setWxBaseInfoForm.getMerchantAppId(), merchantNo,
                         2, null, 2,
-                        2, 2, "设置类目返回结果为空");
+                        2, 2, "设置小程序基础信息返回结果为空");
                 return response;
             }
         } catch (Exception e) {
             updateStatus(channel, setWxBaseInfoForm.getMerchantAppId(), merchantNo,
                     -1, null, -1,
-                    -1, 2, "内部错误：" + e.getMessage());
+                    -1, 2, "设置小程序基础信息内部错误：" + e.getMessage());
             return Response.failed(e.getMessage());
         }
     }

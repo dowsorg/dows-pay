@@ -185,6 +185,8 @@ public class AlipayMiniHandler extends AbstractAlipayHandler {
     @PayMapping(method = PayMethods.MINI_BASE_INFO_MODIFY)
     public AlipayOpenMiniBaseinfoModifyResponse miniBaseInfoModify(PayRequest payRequest) {
         AlipayOpenMiniInnerbaseinfoCreateModel alipayOpenMiniInnerbaseinfoCreateModel = new AlipayOpenMiniInnerbaseinfoCreateModel();
+        // 自动
+        autoMappingValue(payRequest, alipayOpenMiniInnerbaseinfoCreateModel);
         AlipayOpenMiniBaseinfoModifyRequest request = new AlipayOpenMiniBaseinfoModifyRequest();
         request.setBizModel(alipayOpenMiniInnerbaseinfoCreateModel);
         AlipayOpenMiniBaseinfoModifyResponse response;
