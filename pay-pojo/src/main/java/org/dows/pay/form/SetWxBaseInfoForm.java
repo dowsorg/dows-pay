@@ -25,7 +25,7 @@ import java.util.List;
 @NoArgsConstructor
 @ApiModel(value = "WxBaseInfoForm 表单对象", description = " 支付宝/微信小程序基本信息")
 @Data
-public class SetWxBaseInfoForm extends AlipayOpenMiniVersionAuditForm  implements BizForm{
+public class SetWxBaseInfoForm extends SetWxBaseInfoExtForm  implements BizForm{
 //    @ApiModelProperty("平台应用ID")
 //    private String appId;
 
