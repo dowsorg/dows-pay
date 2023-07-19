@@ -5,6 +5,9 @@ package org.dows.pay.biz;
  */
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.thread.ThreadUtil;
+import cn.hutool.http.HttpRequest;
+import com.alibaba.fastjson.JSON;
 import com.alipay.api.response.AlipayOpenMiniBaseinfoModifyResponse;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +17,7 @@ import me.chanjar.weixin.open.bean.result.WxOpenResult;
 import me.chanjar.weixin.open.util.json.WxOpenGsonBuilder;
 import org.apache.commons.lang3.StringUtils;
 import org.dows.app.api.mini.AppApplyApi;
+import org.dows.app.api.mini.request.HttpResult;
 import org.dows.app.api.mini.request.PayApplyStatusReq;
 import org.dows.app.api.mini.response.AppApplyAndItemResponse;
 import org.dows.app.entity.AppBase;
@@ -55,6 +59,9 @@ public class MiniBiz {
 
     @Autowired
     private AppApplyApi appApplyApi;
+
+    private static final String domain_request = "{\"action\":\"set\",\"requestdomain\":[\"https://www.dxzsaas.com\"],\"wsrequestdomain\":[\"wss://www.dxzsaas.com\"],\"uploaddomain\":[\"https://www.dxzsaas.com\"],\"downloaddomain\":[\"https://www.dxzsaas.com\"],\"udpdomain\":[\"udp://www.dxzsaas.com\"],\"tcpdomain\":[\"tcp://www.dxzsaas.com\"]}";
+
 
     @Autowired
     private AppBaseService appBaseService;
@@ -505,8 +512,9 @@ public class MiniBiz {
             AppBase appBase = saveOrUpdateAppBase(setWxBaseInfoForm, merchantNo);
             AlipayBaseInfoForm alipayBaseInfoForm = BeanUtil.copyProperties(setWxBaseInfoForm,
                     AlipayBaseInfoForm.class);
-            // 简介
-            alipayBaseInfoForm.setAppDesc(setWxBaseInfoForm.getSignature());
+            // 简介 客户邮箱
+            alipayBaseInfoForm.setAppSlogan(setWxBaseInfoForm.getSignature());
+            alipayBaseInfoForm.setServiceMail(setWxBaseInfoForm.getServiceEmail());
             log.info("setWxinApplyInfo，appBase信息：{}", appBase);
             Response<PayResponse> alipayBaseInfoModifyResponse = alipayBaseInfoModify(alipayBaseInfoForm);
             log.info("设置支付宝小程序基础信息返回结果 ：{}", alipayBaseInfoModifyResponse);
@@ -528,22 +536,22 @@ public class MiniBiz {
                 } else {
                     updateStatus(channel, setWxBaseInfoForm.getMerchantAppId(), merchantNo,
                             2, null, 2,
-                            2, 2,alipayOpenMiniBaseinfoModifyResponse.getSubMsg());
+                            2, 2, alipayOpenMiniBaseinfoModifyResponse.getSubMsg());
                     return response;
                 }
             } else {
                 response.setCode(500);
-                response.setDescr("设置类目返回结果为空");
+                response.setDescr("设置小程序基础信息返回结果为空");
                 // 失败
                 updateStatus(channel, setWxBaseInfoForm.getMerchantAppId(), merchantNo,
                         2, null, 2,
-                        2, 2, "设置类目返回结果为空");
+                        2, 2, "设置小程序基础信息返回结果为空");
                 return response;
             }
         } catch (Exception e) {
             updateStatus(channel, setWxBaseInfoForm.getMerchantAppId(), merchantNo,
                     -1, null, -1,
-                    -1, 2, "内部错误：" + e.getMessage());
+                    -1, 2, "设置小程序基础信息内部错误：" + e.getMessage());
             return Response.failed(e.getMessage());
         }
     }
@@ -602,9 +610,23 @@ public class MiniBiz {
             appBase.setMerchantNo(merchantNo);
             appBase.setAppId(setWxBaseInfoForm.getMerchantAppId());
             appBaseService.save(appBase);
+            ThreadUtil.execAsync(() -> setDomain(appBase));
             log.info("保存AppBase");
         }
         return checkAppBase;
+    }
+
+    private void setDomain(AppBase appBase) {
+        String authorizerAccessToken = weixinTokenApi.getAuthorizerAccessToken(appBase.getAppId());
+        String bodyRes = HttpRequest.post("https://api.weixin.qq.com/wxa/modify_domain"+"?access_token="+authorizerAccessToken)
+                .body(domain_request)
+                .execute().body();
+        log.info("setDomain res is {}",bodyRes);
+        HttpResult httpResult = JSON.parseObject(bodyRes, HttpResult.class);
+        if (Objects.equals(httpResult.getErrcode(),0)) {
+            appBase.setSetDomain(1);
+            appBaseService.updateById(appBase);
+        }
     }
 
     private void updateStatus(

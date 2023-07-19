@@ -66,6 +66,12 @@ public class SetWxBaseInfoForm implements BizForm{
     private String signature;
 
     /**
+     * 小程序介绍
+     */
+    @ApiModelProperty(name = "小程序描述")
+    private String appDesc;
+
+    /**
      * 小程序logo图标
      */
     @ApiModelProperty(name = "小程序logo图标")
@@ -81,6 +87,15 @@ public class SetWxBaseInfoForm implements BizForm{
      */
     @ApiModelProperty(name = "小程序客服邮箱，")
     private String serviceEmail;
+
+    /**
+     * 新小程序前台类目，格式为 第一个一级类目_第一个二级类目;第二个一级类目_第二个二级类目_第二个三级类目，详细类目可以通过 https://docs.open.alipay.com/api_49/alipay.open.mini.category.query
+     * 接口查询mini_category_list。
+     * 如果前期已经设置过该信息，本次可不填，平台将会为你默认上传该信息。如果前期没有设置过该信息，则本次为必填。可通过https://opendocs.alipay.com/mini/03l21r查询当前小程序信息
+     * 注意：个人开发者不得使用企业类目。
+     */
+    @ApiModelProperty(name = "mini_category_ids")
+    private String miniCategoryIds;
 
     /**
      * 身份证照片 mediaid. 个人号必填
