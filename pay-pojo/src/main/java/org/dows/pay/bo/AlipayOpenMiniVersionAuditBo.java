@@ -1,8 +1,11 @@
 package org.dows.pay.bo;
 
+import com.alipay.api.domain.RegionInfo;
 import lombok.Data;
 import org.dows.pay.api.ChannelBizModel;
 import org.dows.pay.api.annotation.AlipayApiField;
+
+import java.util.List;
 
 @Data
 public class AlipayOpenMiniVersionAuditBo implements ChannelBizModel {
@@ -39,7 +42,7 @@ public class AlipayOpenMiniVersionAuditBo implements ChannelBizModel {
      * 如果前期已经设置过该信息，本次可不填，平台将会为你默认上传该信息。如果前期没有设置过该信息，则本次为必填。
      */
     @AlipayApiField(name = "service_region_info")
-    private AlipayOpenMiniVersionAuditRegionBo serviceRegionInfo;
+    private List<RegionInfo> serviceRegionInfo;
     /**
      * 小程序第一张应用截图，模板实例化的小程序可不传应用截图。
      * 截图大小不能超过 4MB，最大宽度 2160px，最大高度 3840px。图片格式仅支持 png,jpg,PNG,JPG 格式。小程序截图数量最小为2，最大为5。
@@ -66,6 +69,8 @@ public class AlipayOpenMiniVersionAuditBo implements ChannelBizModel {
     private String fourthScreenShot;
     /**
      *
+     * 小程序第五张应用截图，模板实例化的小程序可不传应用截图。
+     * 截图大小不能超过 4MB，最大宽度 2160px，最大高度3840px。图片格式仅支持 png,jpg,PNG,JPG 格式。小程序截图数量最小为2，最大为5。
      */
     @AlipayApiField(name = "fifth_screen_shot")
     private String fifthScreenShot;

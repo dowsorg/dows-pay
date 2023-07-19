@@ -580,8 +580,6 @@ public class MiniBiz {
     }
 
 
-
-
     /**
      * MiniBaseInfo 设置支付宝小程序 名称 、介绍、类目。log等信息
      *
@@ -599,7 +597,8 @@ public class MiniBiz {
         try {
             AppBase appBase = saveOrUpdateAppBase(setWxBaseInfoForm, merchantNo);
             // 获取access_token使用authorizer_access_token
-            String authorizerAccessToken = weixinTokenApi.getAuthorizerAccessToken(setWxBaseInfoForm.getMerchantAppId());
+            String authorizerAccessToken = "2323232123123";
+//            String authorizerAccessToken = weixinTokenApi.getAuthorizerAccessToken(setWxBaseInfoForm.getMerchantAppId());
             AlipayOpenMiniVersionAuditForm alipayOpenMiniVersionAuditForm = BeanUtil.copyProperties(setWxBaseInfoForm,
                     AlipayOpenMiniVersionAuditForm.class);
             log.info("获取authorizerAccessToken ：{}", authorizerAccessToken);
@@ -607,6 +606,7 @@ public class MiniBiz {
             alipayOpenMiniVersionAuditForm.setMerchantAppId(setWxBaseInfoForm.getMerchantAppId());
             // 简介 客户邮箱
             alipayOpenMiniVersionAuditForm.setAppSlogan(setWxBaseInfoForm.getSignature());
+            alipayOpenMiniVersionAuditForm.setVersionDesc("ces");
             log.info("setWxinApplyInfo，appBase信息：{}", appBase);
             Response<PayResponse> alipayBaseInfoModifyResponse = miniVersionAuditApply(alipayOpenMiniVersionAuditForm);
             log.info("设置支付宝小程序基础信息返回结果 ：{}", alipayBaseInfoModifyResponse);
@@ -647,8 +647,6 @@ public class MiniBiz {
             return Response.failed(e.getMessage());
         }
     }
-
-
 
 
     //todo 后续优化
@@ -712,12 +710,12 @@ public class MiniBiz {
 
     private void setDomain(AppBase appBase) {
         String authorizerAccessToken = weixinTokenApi.getAuthorizerAccessToken(appBase.getAppId());
-        String bodyRes = HttpRequest.post("https://api.weixin.qq.com/wxa/modify_domain"+"?access_token="+authorizerAccessToken)
+        String bodyRes = HttpRequest.post("https://api.weixin.qq.com/wxa/modify_domain" + "?access_token=" + authorizerAccessToken)
                 .body(domain_request)
                 .execute().body();
-        log.info("setDomain res is {}",bodyRes);
+        log.info("setDomain res is {}", bodyRes);
         HttpResult httpResult = JSON.parseObject(bodyRes, HttpResult.class);
-        if (Objects.equals(httpResult.getErrcode(),0)) {
+        if (Objects.equals(httpResult.getErrcode(), 0)) {
             appBase.setSetDomain(1);
             appBaseService.updateById(appBase);
         }
