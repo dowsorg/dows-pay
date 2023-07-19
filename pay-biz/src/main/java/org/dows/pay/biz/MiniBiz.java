@@ -606,7 +606,6 @@ public class MiniBiz {
             alipayOpenMiniVersionAuditForm.setMerchantAppId(setWxBaseInfoForm.getMerchantAppId());
             // 简介 客户邮箱
             alipayOpenMiniVersionAuditForm.setAppSlogan(setWxBaseInfoForm.getSignature());
-            alipayOpenMiniVersionAuditForm.setVersionDesc("ces");
             log.info("setWxinApplyInfo，appBase信息：{}", appBase);
             Response<PayResponse> alipayBaseInfoModifyResponse = miniVersionAuditApply(alipayOpenMiniVersionAuditForm);
             log.info("设置支付宝小程序基础信息返回结果 ：{}", alipayBaseInfoModifyResponse);
