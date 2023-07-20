@@ -441,7 +441,7 @@ public class MiniBiz {
                     int i = 1;
                     for (String certicate : certicateList) {
                         WxFastMaCategoryBo.Certificate certificate = new WxFastMaCategoryBo.Certificate();
-                        certificate.setKey("key"+i);
+                        certificate.setKey(String.format("《材料%s》",i));
                         certificate.setValue(certicate);
                         certicates.add(certificate);
                         i++;
