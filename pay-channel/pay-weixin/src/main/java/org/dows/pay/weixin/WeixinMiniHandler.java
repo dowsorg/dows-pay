@@ -227,20 +227,15 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
         Categories categories = new Categories();
         categories.setCategories(list);
         String categoriesJson = JSONObject.toJSONString(categories);
-        log.info("请求入参：{}", categoriesJson);
+        log.info("====================上传类目请求入参：{}", categoriesJson);
+        System.out.println("====================上传类目请求入参:"+categoriesJson);
         String post = HttpUtil.post(WX_SET_ADD_CATEGORY +
                 "?access_token=" + payRequest.getAuthorizerAccessToken(), categoriesJson);
-        System.out.println(post);
-        response = (WxOpenResult) WxOpenGsonBuilder.create().fromJson(post, WxOpenResult.class);
-        //        Map param = JSONObject.parseObject(categoriesJson, Map.class);
-//        String content = uploadTemplateResult.getContent();
-//        HttpResponse execute = HttpRequest.post(WX_SET_ADD_CATEGORY +
-//                "?access_token=" + payRequest.getAuthorizerAccessToken()).body(categoriesJson).execute();
-//        response = WxOpenGsonBuilder.create().fromJson(content, WxOpenResult.class);
-//response = this.getWxOpenMaClient(payRequest.getAppId()).getBasicService().addCategory
-//       (list);
+        System.out.println("上传类目请求结果:"+post);
+        response = WxOpenGsonBuilder.create().fromJson(post, WxOpenResult.class);
         return response;
     }
+
 
     /**
      * 小程序类目管理
