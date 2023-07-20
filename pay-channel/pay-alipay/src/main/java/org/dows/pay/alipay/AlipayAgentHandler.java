@@ -197,7 +197,7 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
      */
     @PayMapping(method = PayMethods.AGENT_QUERY)
     public AlipayOpenAgentOrderQueryResponse queryAgent(PayQueryIsvRequest payQueryIsvRequest) {
-        AlipayOpenAgentOrderQueryResponse response = null;
+        AlipayOpenAgentOrderQueryResponse response = new AlipayOpenAgentOrderQueryResponse();
         String BatchNo = payQueryIsvRequest.getBatch_no();
         if (StringUtil.isEmpty(BatchNo)) {
             try {
