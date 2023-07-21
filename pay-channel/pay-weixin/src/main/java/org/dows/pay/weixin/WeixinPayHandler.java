@@ -114,7 +114,7 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
         amount.setCurrency("CNY");
         amount.setTotal(orderInstanceBo.getAgreeAmout().multiply(new BigDecimal(100)).intValue());
         PartnerTransactionsRequest.Payer payer = new PartnerTransactionsRequest.Payer();
-        payer.setSpOpenid(payRequest.getSubOpenid());
+        payer.setSubOpenid(payRequest.getSubOpenid());
         //获取商户号
         log.info("WeixinPayHandler.toPay.orderInstanceBo的参数:{}",orderInstanceBo);
         PayAccount payAccount = payAccountService.getOne(Wrappers.lambdaQuery(PayAccount.class).eq(PayAccount::getChannelAccount, payTransactionBo.getAppId()));
@@ -126,6 +126,7 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
         PartnerTransactionsRequest partnerTransactionsRequest = PartnerTransactionsRequest.builder()
                 .spAppid("wx1f2863eb6cdee6a1")
                 .spMchid("1604404392")
+                .subAppid(payRequest.getAppId())
                 .amount(amount)
                 .subMchid(payAccount.getChannelMerchantNo())
                 .description(payTransactionBo.getOrderTitle())
@@ -245,7 +246,7 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
         amount.setCurrency("CNY");
         amount.setTotal(orderInstanceBo.getAgreeAmout().multiply(new BigDecimal(100)).intValue());
         PartnerTransactionsRequest.Payer payer = new PartnerTransactionsRequest.Payer();
-        payer.setSpOpenid(payRequest.getSubOpenid());
+        payer.setSubOpenid(payRequest.getSubOpenid());
         //获取商户号
         log.info("WeixinPayHandler.toPay.orderInstanceBo的参数:{}",orderInstanceBo);
         PayAccount payAccount = payAccountService.getOne(Wrappers.lambdaQuery(PayAccount.class).eq(PayAccount::getChannelAccount, payTransactionBo.getAppId()));
@@ -257,6 +258,7 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
         PartnerTransactionsRequest partnerTransactionsRequest = PartnerTransactionsRequest.builder()
                 .spAppid("wx1f2863eb6cdee6a1")
                 .spMchid("1604404392")
+                .subAppid(payRequest.getAppId())
                 .amount(amount)
                 .subMchid(payAccount.getChannelMerchantNo())
                 .description(payTransactionBo.getOrderTitle())
