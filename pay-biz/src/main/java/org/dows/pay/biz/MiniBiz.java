@@ -16,6 +16,7 @@ import me.chanjar.weixin.open.bean.result.WxFastMaSetNickameResult;
 import me.chanjar.weixin.open.bean.result.WxOpenResult;
 import me.chanjar.weixin.open.util.json.WxOpenGsonBuilder;
 import org.apache.commons.lang3.StringUtils;
+import org.dows.amp.api.MsgTemplateApi;
 import org.dows.app.api.mini.AppApplyApi;
 import org.dows.app.api.mini.request.HttpResult;
 import org.dows.app.api.mini.request.PayApplyStatusReq;
@@ -59,6 +60,8 @@ public class MiniBiz {
 
     @Autowired
     private AppApplyApi appApplyApi;
+
+    private final MsgTemplateApi msgTemplateApi;
 
     private static final String domain_request = "{\"action\":\"set\",\"requestdomain\":[\"https://www.dxzsaas.com\"],\"wsrequestdomain\":[\"wss://www.dxzsaas.com\"],\"uploaddomain\":[\"https://www.dxzsaas.com\"],\"downloaddomain\":[\"https://www.dxzsaas.com\"],\"udpdomain\":[\"udp://www.dxzsaas.com\"],\"tcpdomain\":[\"tcp://www.dxzsaas.com\"]}";
 
@@ -610,6 +613,12 @@ public class MiniBiz {
         } else {
             appBase.setMerchantNo(merchantNo);
             appBase.setAppId(setWxBaseInfoForm.getMerchantAppId());
+            try {
+                msgTemplateApi.addSubscribeTemplate(setWxBaseInfoForm.getMerchantAppId());
+                appBase.setSetTemplateMsg(1);
+            } catch (Exception e) {
+                log.info("appId:{} set template msg error:",setWxBaseInfoForm.getMerchantAppId(),e);
+            }
             appBaseService.save(appBase);
             ThreadUtil.execAsync(() -> setDomain(appBase));
             log.info("保存AppBase");
