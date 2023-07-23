@@ -25,6 +25,7 @@ import me.chanjar.weixin.open.bean.message.WxOpenMaSubmitAuditMessage;
 import me.chanjar.weixin.open.bean.result.*;
 import me.chanjar.weixin.open.util.json.WxOpenGsonBuilder;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.io.FileUtils;
 import org.dows.auth.api.weixin.WeixinTokenApi;
 import org.dows.auth.biz.utils.HttpClientResult;
 import org.dows.auth.biz.utils.HttpClientUtils;
@@ -54,7 +55,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
 import java.util.*;
 
 /**
@@ -200,17 +203,22 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
         if (!ObjectUtil.isEmpty(certicates)) {
             certicates.forEach(x -> {
                 if (!ObjectUtil.isEmpty(x.getValue())) {
-                    String filePath = getFilePath(x.getValue());
-                    File uboIdDocCopyFile = new File(filePath);
-//                    String idCardMediaId = upload(uboIdDocCopyFile, payRequest).getMediaId();
-//                    log.info("新增类目MediaId：{}", idCardMediaId);
-//                    if (null != idCardMediaId) {
-////                        UploadBo uploadBo = JSONObject.parseObject(uploadimg, UploadBo.class);
-//                        x.setValue(idCardMediaId);
-//                    } else {
-//                        log.info("文件上传失败，idCardMediaId为空");
-//                        throw new BizException("文件上传失败");
-//                    }
+                    File uboIdDocCopyFile = null;
+                    if (x.getValue().startsWith("http")) {
+                        URL url = null;
+                        try {
+                            url = new URL(x.getValue());
+                            String tempPath = x.getValue().substring(x.getValue().lastIndexOf('/'));
+                            File mediaFile = new File("/opt/dows/tenant/image"+tempPath);
+                            FileUtils.copyURLToFile(url, mediaFile);
+                        } catch (Exception e) {
+                            System.out.println("url convert error:"+e);
+                            log.error("url convert error:",e);
+                        }
+                    } else {
+                        String filePath = getFilePath(x.getValue());
+                        uboIdDocCopyFile = new File(filePath);
+                    }
                     String uploadimg = uploadimg(uboIdDocCopyFile, payRequest.getAuthorizerAccessToken());
                     log.info("新增类目MediaId：{}", uploadimg);
                     if (null != uploadimg) {
