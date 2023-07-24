@@ -17,10 +17,16 @@ public class PayCreateIsvRequest extends AbstractPayRequest<PayIsvResponse> {
 
     @ApiModelProperty("支付宝账号")
     private String account;
+    @ApiModelProperty("账号类型，0个人，1企业")
+    private int isPerson;
+    @ApiModelProperty("账号类型为个人0填写")
+    private String business_license_pic;
     @ApiModelProperty("联系人名称")
     private String contact_name;
     @ApiModelProperty("联系人手机号码")
     private String contact_mobile;
+    @ApiModelProperty("联系人邮箱")
+    private String contact_email;
     @ApiModelProperty("类目，A0001_B0199")
     private String mcc_code;
     @ApiModelProperty("应用ID")
@@ -31,5 +37,6 @@ public class PayCreateIsvRequest extends AbstractPayRequest<PayIsvResponse> {
     private String shop_sign_board_pic;
     @ApiModelProperty("店铺名称")
     private String shop_name;
-
+    @ApiModelProperty("营业执照法人手机号码，上传非同人营业执照时必填")
+    private String business_license_mobile;
 }

@@ -86,6 +86,7 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
         ContactModel contactModel = new ContactModel();
         contactModel.setContactName(payCreateIsvRequest.getContact_name());
         contactModel.setContactMobile(payCreateIsvRequest.getContact_mobile());
+        contactModel.setContactEmail(payCreateIsvRequest.getContact_email());
         alipayOpenAgentCreateModel.setContactInfo(contactModel);
         alipayOpenAgentCreateModel.setAccount(payCreateIsvRequest.getAccount());
         // 自动映射
@@ -127,6 +128,13 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
         FileItem BusinessShopSignPic = new FileItem(payCreateIsvRequest.getShop_sign_board_pic());
         request.setShopSignBoardPic(BusinessShopSignPic);
         request.setShopName(payCreateIsvRequest.getShop_name());
+        if(payCreateIsvRequest.getIsPerson()==0){
+            FileItem BusinessLicensePic = new FileItem(payCreateIsvRequest.getBusiness_license_pic());
+            request.setBusinessLicenseAuthPic(BusinessLicensePic);
+        }
+        if(!StringUtil.isEmpty(payCreateIsvRequest.getBusiness_license_mobile())) {
+            payCreateIsvRequest.setBusiness_license_mobile(payCreateIsvRequest.getBusiness_license_mobile());
+        }
 //        AlipayOpenAgentFacetofaceSignResponse response = null;
         try {
             return getAlipayClient(payCreateIsvRequest.getAppid()).certificateExecute(request);
@@ -189,7 +197,7 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
      */
     @PayMapping(method = PayMethods.AGENT_QUERY)
     public AlipayOpenAgentOrderQueryResponse queryAgent(PayQueryIsvRequest payQueryIsvRequest) {
-        AlipayOpenAgentOrderQueryResponse response = null;
+        AlipayOpenAgentOrderQueryResponse response = new AlipayOpenAgentOrderQueryResponse();
         String BatchNo = payQueryIsvRequest.getBatch_no();
         if (StringUtil.isEmpty(BatchNo)) {
             try {
