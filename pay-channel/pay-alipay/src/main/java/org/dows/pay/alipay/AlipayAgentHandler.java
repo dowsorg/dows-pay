@@ -130,7 +130,7 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
         request.setShopName(payCreateIsvRequest.getShop_name());
         if(payCreateIsvRequest.getIsPerson()==0){
             FileItem BusinessLicensePic = new FileItem(payCreateIsvRequest.getBusiness_license_pic());
-            request.setBusinessLicenseAuthPic(BusinessLicensePic);
+            request.setBusinessLicensePic(BusinessLicensePic);
         }
         if(!StringUtil.isEmpty(payCreateIsvRequest.getBusiness_license_mobile())) {
             payCreateIsvRequest.setBusiness_license_mobile(payCreateIsvRequest.getBusiness_license_mobile());
