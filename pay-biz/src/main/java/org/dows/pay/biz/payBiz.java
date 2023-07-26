@@ -263,7 +263,7 @@ public class payBiz implements PayApi {
                     return Response.fail("申请失败,"+batchNoreponse.getSubMsg());
                 }
             } catch (Exception e) {
-                return Response.fail("申请失败");
+                return Response.fail("申请失败"+e);
             }
     }
 
