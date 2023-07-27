@@ -148,7 +148,6 @@ public class WeixinPayNotifyController {
                 PartnerTransactionsNotifyResult notifyResult = new PartnerTransactionsNotifyResult();
                 if (Objects.equals(transactionsResult.getTradeState(),"SUCCESS")) {
                     try {
-
                         notifyResult.setRawData(notifyResponse);
                         notifyResult.setResult(transactionsResult);
                         OrderUpdatePaymentStatusBo instanceBo = new OrderUpdatePaymentStatusBo();
@@ -157,7 +156,8 @@ public class WeixinPayNotifyController {
                         instanceBo.setTradeType(1);
                         PayTransaction payTransaction = payTransactionService.getByTransactionNo(transactionsResult.getOutTradeNo());
                         ThreadUtil.execAsync(()->weixinRoyaltyRelationHandler.claimProfit(payTransaction.getOrderId(),transactionsResult.getAmount().getTotal(),transactionsResult.getTransactionId(),payTransaction.getTransactionNo(),payTransaction.getAppId()));
-                        payTransactionService.updateStatusByOrderId(transactionsResult.getTransactionId(),transactionsResult.getOutTradeNo(),OrderPayTypeEnum.pay_finish.getCode());
+                        payTransactionService.updateStatusByOrderId(transactionsResult.getTransactionId(),
+                                transactionsResult.getOutTradeNo(),OrderPayTypeEnum.pay_finish.getCode(),transactionsResult.getAmount().getTotal());
                         instanceBo.setOrderId(payTransaction.getOrderId());
                         orderInstanceBizApiService.updateOrderInstance(instanceBo);
                     } catch (Exception e) {
@@ -435,6 +435,12 @@ public class WeixinPayNotifyController {
             log.error("接收票据事件异常" + e.getMessage(), e);
         }
         return "success";
+    }
+
+
+    @GetMapping("/claimProfit")
+    public void startClaimProfit(String orderId) {
+        weixinRoyaltyRelationHandler.startClaimProfit(orderId);
     }
 
 

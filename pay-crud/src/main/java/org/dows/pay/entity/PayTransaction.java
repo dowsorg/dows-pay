@@ -64,7 +64,7 @@ public class PayTransaction implements CrudEntity {
     private String dealTo;
 
     @ApiModelProperty("交易金额")
-    private Object amount;
+    private Integer amount;
 
     @ApiModelProperty("备注")
     private String remark;

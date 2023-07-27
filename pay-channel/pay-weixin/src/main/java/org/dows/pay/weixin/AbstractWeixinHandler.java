@@ -4,11 +4,14 @@ import com.github.binarywang.wxpay.service.WxPayService;
 import com.google.gson.annotations.SerializedName;
 import me.chanjar.weixin.open.api.WxOpenMaService;
 import me.chanjar.weixin.open.api.WxOpenService;
+import org.dows.framework.api.exceptions.BizException;
 import org.dows.pay.api.ChannelBizModel;
 import org.dows.pay.api.PayHandler;
 import org.dows.pay.api.PayRequest;
 import org.dows.pay.api.enums.PayChannels;
 import org.dows.pay.boot.PayClientFactory;
+import org.dows.pay.entity.PayTransaction;
+import org.dows.pay.service.PayTransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.lang.reflect.Field;
@@ -22,6 +25,7 @@ public abstract class AbstractWeixinHandler implements PayHandler {
     protected final Map<Class, Map<String, Field>> WX_OBJECT_MODLE_FIELD_MAP = new ConcurrentHashMap<>();
     @Autowired
     private PayClientFactory payClientFactory;
+
 
     /**
      * todo 改换成微信的
@@ -95,4 +99,7 @@ public abstract class AbstractWeixinHandler implements PayHandler {
     public String getChannel() {
         return PayChannels.WEIXIN.name();
     }
+
+
+
 }
