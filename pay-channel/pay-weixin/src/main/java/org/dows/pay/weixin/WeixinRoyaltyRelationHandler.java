@@ -21,6 +21,7 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.dows.framework.api.exceptions.BizException;
 import org.dows.order.api.OrderInstanceBizApiService;
 import org.dows.order.bo.OrderInstanceBo;
 import org.dows.pay.api.PayRequest;
@@ -34,11 +35,14 @@ import org.dows.pay.boot.PayClientConfig;
 import org.dows.pay.entity.PayAccount;
 import org.dows.pay.entity.PayAllocation;
 import org.dows.pay.entity.PayLedgers;
+import org.dows.pay.entity.PayTransaction;
 import org.dows.pay.service.PayAccountService;
 import org.dows.pay.service.PayAllocationService;
 import org.dows.pay.service.PayLedgersService;
+import org.dows.pay.service.PayTransactionService;
 import org.dows.store.api.StoreInstanceApi;
 import org.dows.store.api.response.StoreResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -78,6 +82,9 @@ public class WeixinRoyaltyRelationHandler extends AbstractWeixinHandler {
     private final PayClientConfig payClientConfig;
 
     private final StoreInstanceApi storeInstanceApi;
+
+
+    private final PayTransactionService payTransactionService;
 
 
     private final OrderInstanceBizApiService orderInstanceBizApiService;
@@ -336,6 +343,15 @@ public class WeixinRoyaltyRelationHandler extends AbstractWeixinHandler {
         } catch (IllegalBlockSizeException | BadPaddingException e) {
             throw new IllegalBlockSizeException("加密原串的长度不能超过214字节");
         }
+    }
+
+    public void startClaimProfit(String orderId) {
+        PayTransaction payTransaction = payTransactionService.getByOrderId(orderId);
+        if (payTransaction == null) {
+            throw new BizException("payTransaction is null");
+        }
+        claimProfit(payTransaction.getOrderId(),payTransaction.getAmount(),payTransaction.getDealTo(),
+                payTransaction.getTransactionNo(),payTransaction.getAppId());
     }
 
 }
