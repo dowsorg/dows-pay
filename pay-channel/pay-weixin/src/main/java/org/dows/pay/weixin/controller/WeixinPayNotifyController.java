@@ -37,6 +37,7 @@ import org.dows.app.api.mini.AppLicenseApi;
 import org.dows.app.api.mini.request.AppLicenseRequest;
 import org.dows.framework.api.Response;
 import org.dows.order.api.OrderInstanceBizApiService;
+import org.dows.order.bo.OrderInstanceBo;
 import org.dows.order.bo.OrderUpdatePaymentStatusBo;
 import org.dows.order.enums.OrderPayTypeEnum;
 import org.dows.pay.api.request.ProfitReceiverAddReq;
