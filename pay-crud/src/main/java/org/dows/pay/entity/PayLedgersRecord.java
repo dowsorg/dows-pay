@@ -29,16 +29,16 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@ApiModel(value = "PayLedgers对象", description = "支付-分账账本")
-public class PayLedgers implements CrudEntity {
+@ApiModel(value = "PayLedgersRecord", description = "支付-分账日志")
+public class PayLedgersRecord implements CrudEntity {
     private static final long serialVersionUID = -18348313867081999L;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     @ApiModelProperty("主键")
     private Long id;
 
-    @ApiModelProperty("支付通道实例编号")
-    private String instanceNo;
+    private String orderId;
+
 
     @ApiModelProperty("商户号")
     private String merchantNo;
@@ -55,8 +55,6 @@ public class PayLedgers implements CrudEntity {
     @ApiModelProperty("用户真实名")
     private String userName;
 
-    @ApiModelProperty("通道ID")
-    private String channelId;
 
     @ApiModelProperty("服务商code")
     private String channelCode;
@@ -73,11 +71,17 @@ public class PayLedgers implements CrudEntity {
     @ApiModelProperty("分账接收账号类型: 0-个人(对私) 1-商户(对公)")
     private Boolean channelAccountType;
 
-    @ApiModelProperty("分账状态（本系统状态，并不调用上游关联关系）: 1-正常分账, 0-暂停分账")
-    private Boolean state;
-
     @ApiModelProperty("分账比例")
     private BigDecimal allocationProfit;
+
+    @ApiModelProperty("分账金额")
+    private Integer amount;
+
+    @ApiModelProperty("请求结果")
+    private String result;
+
+    @ApiModelProperty("请求状态")
+    private String state;
 
     private Date createTime;
 
