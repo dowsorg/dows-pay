@@ -4,16 +4,13 @@ import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.github.binarywang.wxpay.bean.ecommerce.*;
 import com.github.binarywang.wxpay.exception.WxPayException;
-import com.github.binarywang.wxpay.service.EcommerceService;
 import com.github.binarywang.wxpay.v3.util.RsaCryptoUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.math3.dfp.DfpField;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -29,23 +26,20 @@ import org.dows.pay.api.annotation.PayMapping;
 import org.dows.pay.api.enums.PayMethods;
 import org.dows.pay.api.request.ProfitReceiverAddReq;
 import org.dows.pay.api.request.SeparateAccountReq;
-import org.dows.pay.bo.PayTransactionBo;
 import org.dows.pay.bo.RelationBingBo;
 import org.dows.pay.boot.PayClientConfig;
 import org.dows.pay.entity.PayAccount;
-import org.dows.pay.entity.PayAllocation;
 import org.dows.pay.entity.PayLedgers;
+import org.dows.pay.entity.PayLedgersRecord;
 import org.dows.pay.entity.PayTransaction;
+import org.dows.pay.mapper.PayLedgersRecordMapper;
 import org.dows.pay.service.PayAccountService;
-import org.dows.pay.service.PayAllocationService;
 import org.dows.pay.service.PayLedgersService;
 import org.dows.pay.service.PayTransactionService;
 import org.dows.store.api.StoreInstanceApi;
 import org.dows.store.api.response.StoreResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -57,10 +51,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -85,6 +76,8 @@ public class WeixinRoyaltyRelationHandler extends AbstractWeixinHandler {
 
 
     private final PayTransactionService payTransactionService;
+
+    private final PayLedgersRecordMapper payLedgersRecordMapper;
 
 
     private final OrderInstanceBizApiService orderInstanceBizApiService;
@@ -227,6 +220,7 @@ public class WeixinRoyaltyRelationHandler extends AbstractWeixinHandler {
                     .setSub_mchid(payAccount.getChannelMerchantNo())
                     .setName("上海有星科技有限公司")
                     .setAccount("1604404392")
+                    .setType("MERCHANT_ID")
                     .setRelation_type("SERVICE_PROVIDER");
             if (addProfitReceiver(req)) {
                 PayLedgers adPayLedgers = new PayLedgers();
@@ -239,6 +233,7 @@ public class WeixinRoyaltyRelationHandler extends AbstractWeixinHandler {
                 adPayLedgers.setChannelAccountNo(payAccount.getChannelMerchantNo());
                 adPayLedgers.setChannelAccountType(true);
                 adPayLedgers.setState(true);
+                adPayLedgers.setCreateTime(new Date());
                 adPayLedgers.setDeleted(false);
                 payLedgersService.save(adPayLedgers);
             }
@@ -251,14 +246,17 @@ public class WeixinRoyaltyRelationHandler extends AbstractWeixinHandler {
             return;
         }
 
+        PayLedgersRecord payLedgersRecord = addPayLedgerRecord(payAccount, orderId, amount, appId, storeById.getCommissionRatio());
+
         ThreadUtil.sleep(70, TimeUnit.SECONDS);
         List<SeparateAccountReq.Receivers> receivers = new ArrayList<>();
-        int profitAmount = new BigDecimal(amount).multiply(BigDecimal.valueOf(storeById.getCommissionRatio()))
-                .divide(new BigDecimal("100"),2, RoundingMode.UNNECESSARY).intValue();
+        double separateAmount=  (amount * 0.2 / 100);
+        int profitAmount = new BigDecimal(separateAmount).multiply(BigDecimal.valueOf(storeById.getCommissionRatio()))
+                .divide(new BigDecimal("100"),2, RoundingMode.CEILING).intValue();
         SeparateAccountReq.Receivers  receiver = SeparateAccountReq.Receivers.builder()
                 .type("MERCHANT_ID")
                 .account("1604404392")// 应该分给服务商
-                .amount(profitAmount) // 需要计算
+                .amount(profitAmount) // 分账金额
                 .description("分给服务商")
                 .build();
         receivers.add(receiver);
@@ -290,9 +288,28 @@ public class WeixinRoyaltyRelationHandler extends AbstractWeixinHandler {
             String res = EntityUtils.toString(entity, StandardCharsets.UTF_8);
             System.out.println("profitSharing result is:"+res);
             // 后面加日志记录
+            payLedgersRecord.setResult(res);
+            payLedgersRecordMapper.updateById(payLedgersRecord);
         } catch (IOException e) {
            log.error("profitSharing error:",e);
         }
+    }
+
+    private PayLedgersRecord addPayLedgerRecord(PayAccount payAccount,String orderId, Integer amount, String appId,Double allocationProfit) {
+        PayLedgersRecord payLedgersRecord = new PayLedgersRecord();
+        payLedgersRecord.setMerchantNo(payAccount.getMerchantNo());
+        payLedgersRecord.setAppId("wx1f2863eb6cdee6a1");
+        payLedgersRecord.setOrderId(orderId);
+        payLedgersRecord.setAccountId("1604404392");
+        payLedgersRecord.setAccountName("上海有星科技有限公司");
+        payLedgersRecord.setChannelCode("weixin");
+        payLedgersRecord.setChannelAppId(appId);
+        payLedgersRecord.setChannelAccountNo(payAccount.getChannelMerchantNo());
+        payLedgersRecord.setChannelAccountType(true);
+        payLedgersRecord.setAllocationProfit(BigDecimal.valueOf(allocationProfit));
+        payLedgersRecord.setAmount(amount);
+        payLedgersRecordMapper.insert(payLedgersRecord);
+        return payLedgersRecord;
     }
 
     public Boolean addProfitReceiver(ProfitReceiverAddReq req) {
@@ -351,5 +368,6 @@ public class WeixinRoyaltyRelationHandler extends AbstractWeixinHandler {
         claimProfit(payTransaction.getOrderId(),payTransaction.getAmount(),payTransaction.getDealTo(),
                 payTransaction.getTransactionNo(),payTransaction.getAppId());
     }
+
 
 }
