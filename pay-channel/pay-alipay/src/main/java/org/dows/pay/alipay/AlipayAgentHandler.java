@@ -12,6 +12,7 @@ import com.alipay.service.schema.util.StringUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.dows.app.entity.AppApply;
 import org.dows.app.service.AppApplyService;
 import org.dows.pay.api.PayRequest;
@@ -23,6 +24,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
+import java.io.File;
+import java.net.URL;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -123,16 +126,16 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
         request.setMccCode(payCreateIsvRequest.getMcc_code());
         request.setRate("0.38");
         request.setSignAndAuth(true);
-        FileItem BusinessShopPic = new FileItem(payCreateIsvRequest.getShop_scene_pic());
+        FileItem BusinessShopPic = getPicFile(payCreateIsvRequest.getShop_scene_pic());
         request.setShopScenePic(BusinessShopPic);
-        FileItem BusinessShopSignPic = new FileItem(payCreateIsvRequest.getShop_sign_board_pic());
+        FileItem BusinessShopSignPic = getPicFile(payCreateIsvRequest.getShop_sign_board_pic());
         request.setShopSignBoardPic(BusinessShopSignPic);
         request.setShopName(payCreateIsvRequest.getShop_name());
         if(payCreateIsvRequest.getIsPerson()==0){
             FileItem BusinessLicensePic = new FileItem(payCreateIsvRequest.getBusiness_license_pic());
-            request.setBusinessLicensePic(BusinessLicensePic);
+            request.setBusinessLicenseAuthPic(BusinessLicensePic);
         }
-        if(!StringUtil.isEmpty(payCreateIsvRequest.getBusiness_license_mobile())) {
+        if (!StringUtil.isEmpty(payCreateIsvRequest.getBusiness_license_mobile())) {
             payCreateIsvRequest.setBusiness_license_mobile(payCreateIsvRequest.getBusiness_license_mobile());
         }
 //        AlipayOpenAgentFacetofaceSignResponse response = null;
@@ -141,7 +144,6 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
         } catch (AlipayApiException e) {
             throw new RuntimeException(e);
         }
-
 
 
     }
@@ -219,6 +221,26 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
         } catch (AlipayApiException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static FileItem getPicFile(String path) {
+        FileItem file = null;
+        if (path.startsWith("http")) {
+            URL url;
+            try {
+                url = new URL(path);
+                String tempPath = path.substring(path.lastIndexOf('/'));
+                String patrol = "/opt/dows/tenant/image"+tempPath;
+                File mediaFile = new File(patrol);
+                FileUtils.copyURLToFile(url, mediaFile);
+                file = new FileItem(patrol);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            file = new FileItem(path);
+        }
+        return file;
     }
 
 }

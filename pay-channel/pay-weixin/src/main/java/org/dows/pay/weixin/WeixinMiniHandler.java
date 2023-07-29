@@ -207,8 +207,9 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
                     if (x.getValue().startsWith("http")) {
                         URL url = null;
                         try {
-                            url = new URL(x.getValue());
-                            String tempPath = x.getValue().substring(x.getValue().lastIndexOf('/'));
+                            String replaceUrl = x.getValue().replaceAll("https:/", "https://");
+                            url = new URL(replaceUrl);
+                            String tempPath = replaceUrl.substring(replaceUrl.lastIndexOf('/'));
                             File mediaFile = new File("/opt/dows/tenant/image"+tempPath);
                             FileUtils.copyURLToFile(url, mediaFile);
                         } catch (Exception e) {

@@ -17,8 +17,6 @@ import com.alipay.api.kms.aliyun.utils.StringUtils;
 import com.github.binarywang.wxpay.bean.ecommerce.*;
 import com.github.binarywang.wxpay.bean.notify.CombineNotifyResult;
 import com.github.binarywang.wxpay.bean.profitsharingV3.ProfitSharingNotifyData;
-import com.github.binarywang.wxpay.bean.request.WxPayOrderQueryV3Request;
-import com.github.binarywang.wxpay.bean.result.WxPayOrderQueryV3Result;
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.github.binarywang.wxpay.v3.util.AesUtils;
 import com.google.gson.Gson;
@@ -152,7 +150,6 @@ public class WeixinPayNotifyController {
                 PartnerTransactionsNotifyResult notifyResult = new PartnerTransactionsNotifyResult();
                 if (Objects.equals(transactionsResult.getTradeState(),"SUCCESS")) {
                     try {
-
                         notifyResult.setRawData(notifyResponse);
                         notifyResult.setResult(transactionsResult);
                         OrderUpdatePaymentStatusBo instanceBo = new OrderUpdatePaymentStatusBo();
@@ -161,7 +158,8 @@ public class WeixinPayNotifyController {
                         instanceBo.setTradeType(1);
                         PayTransaction payTransaction = payTransactionService.getByTransactionNo(transactionsResult.getOutTradeNo());
                         ThreadUtil.execAsync(()->weixinRoyaltyRelationHandler.claimProfit(payTransaction.getOrderId(),transactionsResult.getAmount().getTotal(),transactionsResult.getTransactionId(),payTransaction.getTransactionNo(),payTransaction.getAppId()));
-                        payTransactionService.updateStatusByOrderId(transactionsResult.getTransactionId(),transactionsResult.getOutTradeNo(),OrderPayTypeEnum.pay_finish.getCode());
+                        payTransactionService.updateStatusByOrderId(transactionsResult.getTransactionId(),
+                                transactionsResult.getOutTradeNo(),OrderPayTypeEnum.pay_finish.getCode(),transactionsResult.getAmount().getTotal());
                         instanceBo.setOrderId(payTransaction.getOrderId());
                         orderInstanceBizApiService.updateOrderInstance(instanceBo);
 
@@ -448,6 +446,12 @@ public class WeixinPayNotifyController {
             log.error("接收票据事件异常" + e.getMessage(), e);
         }
         return "success";
+    }
+
+
+    @GetMapping("/claimProfit")
+    public void startClaimProfit(String orderId) {
+        weixinRoyaltyRelationHandler.startClaimProfit(orderId);
     }
 
 
