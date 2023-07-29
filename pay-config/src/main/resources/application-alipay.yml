@@ -18,7 +18,6 @@ dows:
         aliPayCertPath: classpath:alipay/alipayCertPublicKey_RSA2.crt
         #支付宝CA根证书文件路径
         aliPayRootCertPath: classpath:alipay/alipayRootCert.crt
-        test: test
 
 
       - env: test

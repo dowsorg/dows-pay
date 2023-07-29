@@ -28,6 +28,7 @@ import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -71,7 +72,15 @@ public class PayClientFactory {
         //List<PayInstance> payInstanceList = payInstanceService.list();
         //PCM.putAll(payClientPropertiesList.stream().collect(Collectors.toMap(PayClientProperties::getAppId, Function.identity())));
         List<PayClientProperties> clientConfigs = payClientConfig.getClientConfigs();
-        log.info("ali client: init client is {}",JSON.toJSONString(clientConfigs));
+        log.info("ali client: update client is {}",JSON.toJSONString(clientConfigs));
+        clientConfigs.forEach(config->{
+            if (Objects.equals(config.getChannelCode(),"alipay")) {
+                config.setAliCertPath("classpath:alipay/appCertPublicKey_2021003129694075.crt");
+                config.setAliPayCertPath("classpath:alipay/alipayCertPublicKey_RSA2.crt");
+                config.setAliPayRootCertPath("classpath:alipay/alipayRootCert.crt");
+            }
+        });
+        log.info("ali client: update client is {}",JSON.toJSONString(clientConfigs));
         PCM.putAll(clientConfigs.stream()
                 .filter(pc -> StrUtil.isNotBlank(pc.getAppId()))
                 .collect(Collectors.toMap(PayClientProperties::getPayId, Function.identity())));
