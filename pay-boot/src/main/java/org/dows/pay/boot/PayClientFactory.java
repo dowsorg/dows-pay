@@ -72,7 +72,7 @@ public class PayClientFactory {
         //List<PayInstance> payInstanceList = payInstanceService.list();
         //PCM.putAll(payClientPropertiesList.stream().collect(Collectors.toMap(PayClientProperties::getAppId, Function.identity())));
         List<PayClientProperties> clientConfigs = payClientConfig.getClientConfigs();
-        log.info("ali client: update client is {}",JSON.toJSONString(clientConfigs));
+        log.info("ali client: init client is {}",JSON.toJSONString(clientConfigs));
         clientConfigs.forEach(config->{
             if (Objects.equals(config.getChannelCode(),"alipay")) {
                 config.setAliCertPath("classpath:alipay/appCertPublicKey_2021003129694075.crt");
