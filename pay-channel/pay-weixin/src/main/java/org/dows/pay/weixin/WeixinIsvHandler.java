@@ -812,10 +812,10 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
     public static File getFile(String path) {
         File file = null;
         if (path.startsWith("http")) {
-            path.replaceAll("https:/", "https://");
+            String replacePath = path.replaceAll("https:/", "https://");
             URL url;
             try {
-                url = new URL(path);
+                url = new URL(replacePath);
                 String tempPath = path.substring(path.lastIndexOf('/'));
                 File mediaFile = new File("/opt/dows/tenant/image" + tempPath);
                 FileUtils.copyURLToFile(url, mediaFile);
