@@ -813,6 +813,7 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
         File file = null;
         if (path.startsWith("http")) {
             String replacePath = path.replaceAll("https:/", "https://");
+            log.info("replacePath===={}",replacePath);
             URL url;
             try {
                 url = new URL(replacePath);
