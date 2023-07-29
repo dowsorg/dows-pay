@@ -9,5 +9,4 @@ public class ClaimProfitReq implements Serializable {
 
     private String orderId;
 
-
 }
