@@ -32,6 +32,7 @@ public class PayClientProperties {
     private String aliPayCertPath;
     //支付宝CA根证书文件路径
     private String aliPayRootCertPath;
+    private String test;
 
     /**************************************微信支付参数配置START**************************/
     /**

@@ -13,11 +13,12 @@ dows:
         # 两种模式（公钥模式：psk:0,证书模式：crt:1）
         certModel: 1
         #应用公钥证书路径
-        appCertPath: classpath:alipay/appCertPublicKey_2021003129694075.crt
+        aliCertPath: classpath:alipay/appCertPublicKey_2021003129694075.crt
         #支付宝公钥证书文件路径
-        payCertPath: classpath:alipay/alipayCertPublicKey_RSA2.crt
+        aliPayCertPath: classpath:alipay/alipayCertPublicKey_RSA2.crt
         #支付宝CA根证书文件路径
-        payRootCertPath: classpath:alipay/alipayRootCert.crt
+        aliPayRootCertPath: classpath:alipay/alipayRootCert.crt
+        test: test
 
 
       - env: test
