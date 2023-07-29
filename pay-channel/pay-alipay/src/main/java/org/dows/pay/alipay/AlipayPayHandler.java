@@ -5,12 +5,9 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayRequest;
-import com.alipay.api.domain.AlipayTradeAppPayModel;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.msg.AlipayMsgClient;
-import com.alipay.api.request.AlipayTradeAppPayRequest;
 import com.alipay.api.request.AlipayTradeCreateRequest;
-import com.alipay.api.response.AlipayTradeAppPayResponse;
 import com.alipay.api.response.AlipayTradeCreateResponse;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import lombok.RequiredArgsConstructor;
@@ -166,7 +163,7 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
         //调用SDK验证签名
         PayClientProperties payClientProperties = payClientFactory.getPayClientProperties(appId);
         if (payClientProperties != null) {
-            String payCertPath = payClientProperties.getPayCertPath();
+            String payCertPath = payClientProperties.getAliPayCertPath();
             boolean signVerified = AlipaySignature.rsaCertCheckV1(params, payCertPath, "utf-8", "RSA2");
             //验证成功
             if (!signVerified) {

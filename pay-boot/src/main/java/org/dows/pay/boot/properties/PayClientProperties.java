@@ -27,11 +27,11 @@ public class PayClientProperties {
     private String format = "json";
     private int certModel;
     // 应用公钥证书路径
-    private String appCertPath;
+    private String aliCertPath;
     //支付宝公钥证书文件路径
-    private String payCertPath;
+    private String aliPayCertPath;
     //支付宝CA根证书文件路径
-    private String payRootCertPath;
+    private String aliPayRootCertPath;
 
     /**************************************微信支付参数配置START**************************/
     /**

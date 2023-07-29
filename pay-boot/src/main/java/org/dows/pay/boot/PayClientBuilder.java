@@ -1,7 +1,5 @@
 package org.dows.pay.boot;
 
-import cn.binarywang.wx.miniapp.api.WxMaService;
-import cn.binarywang.wx.miniapp.api.impl.WxMaServiceImpl;
 import cn.binarywang.wx.miniapp.config.WxMaConfig;
 import cn.binarywang.wx.miniapp.config.impl.WxMaDefaultConfigImpl;
 import com.alipay.api.AlipayApiException;
@@ -11,14 +9,11 @@ import com.alipay.api.DefaultAlipayClient;
 import com.github.binarywang.wxpay.config.WxPayConfig;
 import com.github.binarywang.wxpay.service.WxPayService;
 import com.github.binarywang.wxpay.service.impl.WxPayServiceImpl;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.open.api.WxOpenConfigStorage;
-import me.chanjar.weixin.open.api.WxOpenMaBasicService;
 import me.chanjar.weixin.open.api.WxOpenMaService;
 import me.chanjar.weixin.open.api.WxOpenService;
 import me.chanjar.weixin.open.api.impl.WxOpenInMemoryConfigStorage;
-import me.chanjar.weixin.open.api.impl.WxOpenMaBasicServiceImpl;
 import me.chanjar.weixin.open.api.impl.WxOpenMaServiceImpl;
 import me.chanjar.weixin.open.api.impl.WxOpenServiceImpl;
 import org.apache.commons.lang3.StringUtils;
@@ -78,11 +73,11 @@ public class PayClientBuilder {
         alipayConfig.setSignType(alipayProperties.getSignType());
         try {
             //设置 新应用公钥证书路径（需要变更）"classpath:alipay/appCertPublicKey_2021003129694075.crt"
-            alipayConfig.setAppCertPath(ResourceUtils.getFile(alipayProperties.getAppCertPath()).getAbsolutePath());
+            alipayConfig.setAppCertPath(ResourceUtils.getFile(alipayProperties.getAliCertPath()).getAbsolutePath());
             //设置支付宝公钥证书路径（无需变更）"alipay/alipayCertPublicKey_RSA2.crt"
-            alipayConfig.setAlipayPublicCertPath(ResourceUtils.getFile(alipayProperties.getPayCertPath()).getAbsolutePath());
+            alipayConfig.setAlipayPublicCertPath(ResourceUtils.getFile(alipayProperties.getAliPayCertPath()).getAbsolutePath());
             //设置支付宝根证书路径（无需变更）"alipay/alipayRootCert.crt"
-            alipayConfig.setRootCertPath(ResourceUtils.getFile(alipayProperties.getPayRootCertPath()).getAbsolutePath());
+            alipayConfig.setRootCertPath(ResourceUtils.getFile(alipayProperties.getAliPayRootCertPath()).getAbsolutePath());
             //构造client
             return new DefaultAlipayClient(alipayConfig);
         } catch (Exception e) {
