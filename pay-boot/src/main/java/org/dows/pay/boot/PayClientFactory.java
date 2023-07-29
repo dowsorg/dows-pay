@@ -2,6 +2,7 @@ package org.dows.pay.boot;
 
 import cn.binarywang.wx.miniapp.api.WxMaService;
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSON;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.internal.util.AlipaySignature;
@@ -25,6 +26,7 @@ import org.springframework.util.ResourceUtils;
 
 import javax.annotation.PostConstruct;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
@@ -68,7 +70,9 @@ public class PayClientFactory {
         //todo 从数据查询客户端配置列表payClientConfigService.selectAll(profiles);
         //List<PayInstance> payInstanceList = payInstanceService.list();
         //PCM.putAll(payClientPropertiesList.stream().collect(Collectors.toMap(PayClientProperties::getAppId, Function.identity())));
-        PCM.putAll(payClientConfig.getClientConfigs().stream()
+        List<PayClientProperties> clientConfigs = payClientConfig.getClientConfigs();
+        log.info("ali client: init client is {}",JSON.toJSONString(clientConfigs));
+        PCM.putAll(clientConfigs.stream()
                 .filter(pc -> StrUtil.isNotBlank(pc.getAppId()))
                 .collect(Collectors.toMap(PayClientProperties::getPayId, Function.identity())));
 
@@ -83,9 +87,11 @@ public class PayClientFactory {
     public AlipayClient getAlipayClient(String appId) {
         AlipayClient client = ALIPAY_CLIENT_MAP.get(appId);
         if (client != null) {
+            log.info("ali client:client is {}", JSON.toJSONString(client));
             return client;
         }
         PayClientProperties payClientProperties = PCM.get(appId + "@" + PayChannels.ALIPAY.name().toLowerCase());
+        log.info("ali client:certModel==========={}",payClientProperties.getCertModel());
         if (payClientProperties.getCertModel() == 0) {
             client = PayClientBuilder.buildClient(payClientProperties);
 
