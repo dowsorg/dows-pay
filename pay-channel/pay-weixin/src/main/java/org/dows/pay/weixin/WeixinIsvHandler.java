@@ -656,6 +656,7 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
                 }
                 map.put("idCardCopyFile", upload(idCardCopyFile, payRequest));
             }
+            
             //经营者/法人身份证信息 反面照片
             if (!StringUtil.isEmpty(isvCreateTyBo.getSubjectInfo().getIdentityInfo().getIdCardInfo().getIdCardNational())) {
                 String filePath = getFilePath(isvCreateTyBo.getSubjectInfo().getIdentityInfo().getIdCardInfo().getIdCardNational());
