@@ -104,7 +104,7 @@ public class PayClientBuilder {
 //        AlipayClient alipayClient = new DefaultAlipayClient(certAlipayRequest);
     }
 
-    private static String getAbsolutePath(String aliCertPath) {
+    public static String getAbsolutePath(String aliCertPath) {
         log.info("init getAbsolutePath:{}",aliCertPath);
         String filePath = PREFIX_CERTIFICATE_PATH + aliCertPath.split(StringPool.COLON)[1];
         File inuModel = new File(filePath);

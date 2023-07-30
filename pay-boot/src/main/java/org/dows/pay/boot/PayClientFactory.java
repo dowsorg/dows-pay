@@ -134,11 +134,11 @@ public class PayClientFactory {
         AlipayMsgClient alipayMsgClient = AlipayMsgClient.getInstance(appId);
         try {
             //设置 新应用公钥证书路径（需要变更）"classpath:alipay/appCertPublicKey_2021003129694075.crt"
-            String certPath = ResourceUtils.getFile(payClientProperties.getAliCertPath()).getAbsolutePath();
+            String certPath = PayClientBuilder.getAbsolutePath(payClientProperties.getAliCertPath());
             //设置支付宝公钥证书路径（无需变更）"alipay/alipayCertPublicKey_RSA2.crt"
-            String alipayPublicCertPath = ResourceUtils.getFile(payClientProperties.getAliPayCertPath()).getAbsolutePath();
+            String alipayPublicCertPath = PayClientBuilder.getAbsolutePath(payClientProperties.getAliPayCertPath());
             //设置支付宝根证书路径（无需变更）"alipay/alipayRootCert.crt"
-            String rootCertPath = ResourceUtils.getFile(payClientProperties.getAliPayRootCertPath()).getAbsolutePath();
+            String rootCertPath = PayClientBuilder.getAbsolutePath(payClientProperties.getAliPayRootCertPath());
             alipayMsgClient.setConnector(serverHost);
             alipayMsgClient.setSecurityCertConfig(signType, appPrivateKey, certPath, alipayPublicCertPath, rootCertPath);
             alipayMsgClient.setCharset(charset);
