@@ -6,6 +6,7 @@ import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.AlipayConfig;
 import com.alipay.api.DefaultAlipayClient;
+import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.github.binarywang.wxpay.config.WxPayConfig;
 import com.github.binarywang.wxpay.service.WxPayService;
 import com.github.binarywang.wxpay.service.impl.WxPayServiceImpl;
@@ -16,17 +17,24 @@ import me.chanjar.weixin.open.api.WxOpenService;
 import me.chanjar.weixin.open.api.impl.WxOpenInMemoryConfigStorage;
 import me.chanjar.weixin.open.api.impl.WxOpenMaServiceImpl;
 import me.chanjar.weixin.open.api.impl.WxOpenServiceImpl;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dows.auth.api.TempRedisApi;
 import org.dows.pay.boot.properties.PayClientProperties;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.io.File;
+import java.io.IOException;
 
 @Service
 @Slf4j
 public class PayClientBuilder {
+
+    private static String PREFIX_CERTIFICATE_PATH = "/opt/file/";
     @Autowired
     private   TempRedisApi tempRedisApi;
     private static  PayClientBuilder payClientBuilder;
@@ -72,14 +80,11 @@ public class PayClientBuilder {
         alipayConfig.setSignType(alipayProperties.getSignType());
         try {
             //设置 新应用公钥证书路径（需要变更）"classpath:alipay/appCertPublicKey_2021003129694075.crt"
-//            alipayConfig.setAppCertPath(ResourceUtils.getFile(alipayProperties.getAliCertPath()).getAbsolutePath());
-            alipayConfig.setAppCertPath(StringUtils.trimToNull(alipayProperties.getAliCertPath()));
+            alipayConfig.setAppCertPath(getAbsolutePath(alipayProperties.getAliCertPath()));
             //设置支付宝公钥证书路径（无需变更）"alipay/alipayCertPublicKey_RSA2.crt"
-//            alipayConfig.setAlipayPublicCertPath(ResourceUtils.getFile(alipayProperties.getAliPayCertPath()).getAbsolutePath());
-            alipayConfig.setAlipayPublicCertPath(StringUtils.trimToNull(alipayProperties.getAliPayCertPath()));
+            alipayConfig.setAlipayPublicCertPath(getAbsolutePath(alipayProperties.getAliPayCertPath()));
             //设置支付宝根证书路径（无需变更）"alipay/alipayRootCert.crt"
-//            alipayConfig.setRootCertPath(ResourceUtils.getFile(alipayProperties.getAliPayRootCertPath()).getAbsolutePath());
-            alipayConfig.setRootCertPath(StringUtils.trimToNull(alipayProperties.getAliPayRootCertPath()));
+            alipayConfig.setRootCertPath(getAbsolutePath(alipayProperties.getAliPayRootCertPath()));
             //构造client
             return new DefaultAlipayClient(alipayConfig);
         } catch (Exception e) {
@@ -97,6 +102,22 @@ public class PayClientBuilder {
 //        certAlipayRequest.setCharset(alipayProperties.getCharset());
 //        certAlipayRequest.setSignType(alipayProperties.getSignType());
 //        AlipayClient alipayClient = new DefaultAlipayClient(certAlipayRequest);
+    }
+
+    private static String getAbsolutePath(String aliCertPath) {
+        String filePath = PREFIX_CERTIFICATE_PATH + aliCertPath.split(StringPool.COLON)[1];
+        File inuModel = new File(filePath);
+        if (inuModel.exists()) {
+            return inuModel.getAbsolutePath();
+        }
+        try {
+            Resource resource = new ClassPathResource(aliCertPath.split(StringPool.COLON)[1]);
+            FileUtils.copyToFile(resource.getInputStream(), inuModel);
+            return inuModel.getAbsolutePath();
+        } catch (IOException e) {
+           log.error("getAbsolutePath error:",e);
+        }
+        return null;
     }
 
 
