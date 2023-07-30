@@ -21,7 +21,6 @@ import org.dows.auth.api.TempRedisApi;
 import org.dows.pay.boot.properties.PayClientProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
 
 import javax.annotation.PostConstruct;
 
@@ -73,11 +72,14 @@ public class PayClientBuilder {
         alipayConfig.setSignType(alipayProperties.getSignType());
         try {
             //设置 新应用公钥证书路径（需要变更）"classpath:alipay/appCertPublicKey_2021003129694075.crt"
-            alipayConfig.setAppCertPath(ResourceUtils.getFile(alipayProperties.getAliCertPath()).getAbsolutePath());
+//            alipayConfig.setAppCertPath(ResourceUtils.getFile(alipayProperties.getAliCertPath()).getAbsolutePath());
+            alipayConfig.setAppCertPath(StringUtils.trimToNull(alipayProperties.getAliCertPath()));
             //设置支付宝公钥证书路径（无需变更）"alipay/alipayCertPublicKey_RSA2.crt"
-            alipayConfig.setAlipayPublicCertPath(ResourceUtils.getFile(alipayProperties.getAliPayCertPath()).getAbsolutePath());
+//            alipayConfig.setAlipayPublicCertPath(ResourceUtils.getFile(alipayProperties.getAliPayCertPath()).getAbsolutePath());
+            alipayConfig.setAlipayPublicCertPath(StringUtils.trimToNull(alipayProperties.getAliPayCertPath()));
             //设置支付宝根证书路径（无需变更）"alipay/alipayRootCert.crt"
-            alipayConfig.setRootCertPath(ResourceUtils.getFile(alipayProperties.getAliPayRootCertPath()).getAbsolutePath());
+//            alipayConfig.setRootCertPath(ResourceUtils.getFile(alipayProperties.getAliPayRootCertPath()).getAbsolutePath());
+            alipayConfig.setRootCertPath(StringUtils.trimToNull(alipayProperties.getAliPayRootCertPath()));
             //构造client
             return new DefaultAlipayClient(alipayConfig);
         } catch (Exception e) {
