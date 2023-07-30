@@ -811,7 +811,7 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
      * 获取文件路径 第三版
      */
     public static File getFile(String path) {
-        File file = null;
+        File file;
         if (path.startsWith("http")) {
             String replacePath = path.replaceAll("https:/", "https://");
             log.info("replacePath===={}",replacePath);
@@ -821,15 +821,18 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
                 String tempPath = path.substring(path.lastIndexOf('/'));
                 File mediaFile = new File("/opt/dows/tenant/image" + tempPath);
                 FileUtils.copyURLToFile(url, mediaFile);
+                return mediaFile;
             } catch (Exception e) {
                 System.out.println("url convert error:" + e);
                 log.error("url convert error:", e);
+                throw new BizException("文件下载失败");
             }
         } else {
             String filePath = getFilePath(path);
             file = new File(filePath);
+            return file;
         }
-        return file;
+
     }
 
     public static String getFilePath(String path) {
