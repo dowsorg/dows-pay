@@ -105,14 +105,17 @@ public class PayClientBuilder {
     }
 
     private static String getAbsolutePath(String aliCertPath) {
+        log.info("init getAbsolutePath:{}",aliCertPath);
         String filePath = PREFIX_CERTIFICATE_PATH + aliCertPath.split(StringPool.COLON)[1];
         File inuModel = new File(filePath);
         if (inuModel.exists()) {
+            log.info("init getAbsolutePath cache:{}",inuModel.getAbsolutePath());
             return inuModel.getAbsolutePath();
         }
         try {
             Resource resource = new ClassPathResource(aliCertPath.split(StringPool.COLON)[1]);
             FileUtils.copyToFile(resource.getInputStream(), inuModel);
+            log.info("init getAbsolutePath create:{}",inuModel.getAbsolutePath());
             return inuModel.getAbsolutePath();
         } catch (IOException e) {
            log.error("getAbsolutePath error:",e);
