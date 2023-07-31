@@ -35,6 +35,7 @@ import org.dows.pay.boot.PayClientFactory;
 import org.dows.pay.entity.PayAccount;
 import org.dows.pay.entity.PayLedgers;
 import org.dows.pay.entity.PayTransaction;
+import org.dows.pay.form.PayPartnerTransactionsQueryForm;
 import org.dows.pay.service.PayAccountService;
 import org.dows.pay.service.PayLedgersService;
 import org.dows.pay.service.PayTransactionService;
@@ -353,18 +354,20 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
      * @return
      */
     @PayMapping(method = PayMethods.TRADE_QUERY_ORDER)
-    public PartnerTransactionsResult queryOrder(PayRequest payRequest) {
-        String baseUrl = this.getWeixinClient(payRequest.getAppId()).getPayBaseUrl();
-        PartnerTransactionsQueryRequest request = GSON.fromJson
-                (GSON.toJson(payRequest.getBizModel().getWeixinFeilds()), PartnerTransactionsQueryRequest.class);
-        String url = String.format("%s/v3/pay/partner/transactions/out-trade-no/%s", baseUrl, request.getOutTradeNo());
-        if (Objects.isNull(request.getOutTradeNo())) {
-            url = String.format("%s/v3/pay/partner/transactions/id/%s", baseUrl, request.getTransactionId());
+    public PartnerTransactionsResult queryOrder(PayPartnerTransactionsQueryForm payRequest) {
+        String baseUrl = this.getWeixinClient(payClientConfig.getClientConfigs().get(1).getAppId()).getPayBaseUrl();
+        PayTransaction payTransaction = payTransactionService.getByOrderId(payRequest.getOutTradeNo());
+        PayAccount payAccount = payAccountService.getOne(Wrappers.lambdaQuery(PayAccount.class).eq(PayAccount::getChannelAccount, payRequest.getAppId()));
+//        PartnerTransactionsQueryRequest request = GSON.fromJson
+//                (GSON.toJson(payRequest.getBizModel().getWeixinFeilds()), PartnerTransactionsQueryRequest.class);
+        String url = String.format("%s/v3/pay/partner/transactions/out-trade-no/%s", baseUrl, payTransaction.getTransactionNo());
+        if (Objects.isNull(payRequest.getOutTradeNo())) {
+            url = String.format("%s/v3/pay/partner/transactions/id/%s", baseUrl, payTransaction.getTransactionNo());
         }
         String response="";
         try{
-            String query = String.format("?sp_mchid=%s&sub_mchid=%s", request.getSpMchid(), request.getSubMchid());
-            response = this.getWeixinClient(payRequest.getAppId()).getV3(url + query);
+            String query = String.format("?sp_mchid=%s&sub_mchid=%s", "1604404392", payAccount.getChannelMerchantNo());
+            response = this.getWeixinClient(payClientConfig.getClientConfigs().get(1).getAppId()).getV3(url + query);
         }catch (WxPayException e){
             throw new RuntimeException(e);
         }
@@ -398,14 +401,19 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
      * @return
      */
     @PayMapping(method = PayMethods.TRADE_CLOSE_ORDER)
-    public String closeOrder(PayRequest payRequest) {
-        PartnerTransactionsQueryRequest request = GSON.fromJson
-                (GSON.toJson(payRequest.getBizModel().getWeixinFeilds()), PartnerTransactionsQueryRequest.class);
-        String baseUrl = this.getWeixinClient(payRequest.getAppId()).getPayBaseUrl();
-        String url = String.format("%s/v3/pay/partner/transactions/out-trade-no/%s/close", baseUrl, request.getOutTradeNo());
+    public String closeOrder(PayPartnerTransactionsQueryForm payRequest) {
+        PartnerTransactionsQueryRequest request = new PartnerTransactionsQueryRequest();
+        PayAccount payAccount = payAccountService.getOne(Wrappers.lambdaQuery(PayAccount.class).eq(PayAccount::getChannelAccount, payRequest.getAppId()));
+        String appId = payClientConfig.getClientConfigs().get(1).getAppId();
+        PayTransaction payTransaction = payTransactionService.getByOrderId(payRequest.getOutTradeNo());
+        request.setSpMchid("1604404392");
+        request.setSubMchid(payAccount.getChannelMerchantNo());
+        request.setOutTradeNo(payTransaction.getTransactionNo());
+        String baseUrl = this.getWeixinClient(appId).getPayBaseUrl();
+        String url = String.format("%s/v3/pay/partner/transactions/out-trade-no/%s/close", baseUrl, payTransaction.getTransactionNo());
         String response ="";
         try{
-            response = this.getWeixinClient(payRequest.getAppId()).postV3(url, GSON.toJson(request));
+            response = this.getWeixinClient(appId).postV3(url, GSON.toJson(request));
         }catch (WxPayException e){
             throw new RuntimeException(e);
         }

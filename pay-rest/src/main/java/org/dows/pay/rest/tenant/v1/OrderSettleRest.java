@@ -1,5 +1,6 @@
 package org.dows.pay.rest.tenant.v1;
 
+import com.github.binarywang.wxpay.bean.ecommerce.PartnerTransactionsResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -55,9 +56,9 @@ public class OrderSettleRest {
 
     @PostMapping("/orderpay/queryOrder")
     @ApiOperation(value = "订单查询")
-    public Response<PayResponse> queryOrder(@RequestBody PayPartnerTransactionsQueryForm payPartnerTransactionsQueryForm) {
-        orderPayBiz.queryOrder(payPartnerTransactionsQueryForm);
-        return Response.ok();
+    public Response<PartnerTransactionsResult> queryOrder(@RequestBody PayPartnerTransactionsQueryForm payPartnerTransactionsQueryForm) {
+        PartnerTransactionsResult result = weixinPayHandler.queryOrder(payPartnerTransactionsQueryForm);
+        return Response.ok(result);
     }
 
 
@@ -69,9 +70,9 @@ public class OrderSettleRest {
     }
     @PostMapping("/orderpay/closeOrder")
     @ApiOperation(value = "关闭单笔订单")
-    public Response<PayResponse> closeOrder(@RequestBody PayPartnerTransactionsQueryForm payPartnerTransactionsQueryForm) {
-        orderPayBiz.closeOrder(payPartnerTransactionsQueryForm);
-        return Response.ok();
+    public Response<String> closeOrder(@RequestBody PayPartnerTransactionsQueryForm payPartnerTransactionsQueryForm) {
+        String result = weixinPayHandler.closeOrder(payPartnerTransactionsQueryForm);
+        return Response.ok(result);
     }
 
 
