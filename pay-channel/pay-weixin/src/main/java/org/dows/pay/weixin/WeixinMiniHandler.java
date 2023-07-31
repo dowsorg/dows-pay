@@ -9,6 +9,7 @@ import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.github.binarywang.wxpay.bean.ecommerce.ApplymentsRequest;
 import com.github.binarywang.wxpay.bean.media.ImageUploadResult;
 import com.github.binarywang.wxpay.service.WxPayService;
@@ -203,19 +204,22 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
         if (!ObjectUtil.isEmpty(certicates)) {
             certicates.forEach(x -> {
                 if (!ObjectUtil.isEmpty(x.getValue())) {
-                    File uboIdDocCopyFile = null;
+                    File uboIdDocCopyFile;
                     if (x.getValue().startsWith("http")) {
-                        URL url = null;
-                        try {
-                            String replaceUrl = x.getValue().replaceAll("https:/", "https://");
-                            url = new URL(replaceUrl);
-                            String tempPath = replaceUrl.substring(replaceUrl.lastIndexOf('/'));
-                            File mediaFile = new File("/opt/dows/tenant/image"+tempPath);
-                            FileUtils.copyURLToFile(url, mediaFile);
-                        } catch (Exception e) {
-                            System.out.println("url convert error:"+e);
-                            log.error("url convert error:",e);
-                        }
+                        String path = x.getValue();
+                        String substringPath = path.substring(path.lastIndexOf(StringPool.SLASH, path.lastIndexOf(StringPool.SLASH) - 1));
+                        uboIdDocCopyFile = new File("/opt/dows/tenant/image" + substringPath);
+//                        URL url = null;
+//                        try {
+//                            String replaceUrl = x.getValue().replaceAll("https:/", "https://");
+//                            url = new URL(replaceUrl);
+//                            String tempPath = replaceUrl.substring(replaceUrl.lastIndexOf('/'));
+//                            File mediaFile = new File("/opt/dows/tenant/image"+tempPath);
+//                            FileUtils.copyURLToFile(url, mediaFile);
+//                        } catch (Exception e) {
+//                            System.out.println("url convert error:"+e);
+//                            log.error("url convert error:",e);
+//                        }
                     } else {
                         String filePath = getFilePath(x.getValue());
                         uboIdDocCopyFile = new File(filePath);
