@@ -6,6 +6,7 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson.JSON;
 import com.alipay.service.schema.util.StringUtil;
+import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.github.binarywang.wxpay.bean.applyment.WxPayApplyment4SubCreateRequest;
 import com.github.binarywang.wxpay.bean.applyment.WxPayApplymentCreateResult;
 import com.github.binarywang.wxpay.bean.applyment.enums.SalesScenesTypeEnum;
@@ -813,18 +814,20 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
     public static File getFile(String path) {
         File file = null;
         if (path.startsWith("http")) {
-            String replacePath = path.replaceAll("https:/", "https://");
-            log.info("replacePath===={}",replacePath);
-            URL url;
-            try {
-                url = new URL(replacePath);
-                String tempPath = path.substring(path.lastIndexOf('/'));
-                File mediaFile = new File("/opt/dows/tenant/image" + tempPath);
-                FileUtils.copyURLToFile(url, mediaFile);
-            } catch (Exception e) {
-                System.out.println("url convert error:" + e);
-                log.error("url convert error:", e);
-            }
+            String substringPath = path.substring(path.lastIndexOf(StringPool.SLASH, path.lastIndexOf(StringPool.SLASH) - 1));
+            return new File("/opt/dows/tenant/image" + substringPath);
+//            String replacePath = path.replaceAll("https:/", "https://");
+//            log.info("replacePath===={}",replacePath);
+//            URL url;
+//            try {
+//                url = new URL(replacePath);
+//                String tempPath = path.substring(path.lastIndexOf('/'));
+//                File mediaFile = new File("/opt/dows/tenant/image" + tempPath);
+//                FileUtils.copyURLToFile(url, mediaFile);
+//            } catch (Exception e) {
+//                System.out.println("url convert error:" + e);
+//                log.error("url convert error:", e);
+//            }
         } else {
             String filePath = getFilePath(path);
             file = new File(filePath);
