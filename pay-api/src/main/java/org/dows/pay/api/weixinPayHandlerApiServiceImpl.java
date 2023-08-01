@@ -6,14 +6,14 @@ import org.dows.pay.form.PayPartnerTransactionsQueryForm;
 public interface weixinPayHandlerApiServiceImpl {
 
     /**
-     * 创建订单 (服务员和扫码下单)
-     * @param queryRequest
+     * 查询订单
+     * @param payRequest
      */
-    PartnerTransactionsResult queryOrder(PayPartnerTransactionsQueryForm queryRequest);
+    PartnerTransactionsResult queryOrder(PayPartnerTransactionsQueryForm payRequest);
 
     /**
-     * 创建订单 (服务员和扫码下单)
-     * @param closeRequest
+     * 关闭订单
+     * @param payRequest
      */
-    String closeOrder(PayPartnerTransactionsQueryForm closeRequest);
+    String closeOrder(PayPartnerTransactionsQueryForm payRequest);
 }
