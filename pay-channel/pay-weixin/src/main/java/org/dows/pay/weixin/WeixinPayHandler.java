@@ -1,9 +1,7 @@
 package org.dows.pay.weixin;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.net.Ipv4Util;
 import cn.hutool.core.util.IdUtil;
-import cn.hutool.http.HttpUtil;
 import com.alipay.service.schema.util.StringUtil;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -15,8 +13,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.bouncycastle.util.IPAddress;
 import org.dows.auth.biz.cache.CacheFactory;
 import org.dows.auth.biz.cache.LocalCache;
 import org.dows.auth.biz.context.SecurityUtils;
@@ -29,6 +25,7 @@ import org.dows.pay.api.annotation.PayMapping;
 import org.dows.pay.api.enums.PayMethods;
 import org.dows.pay.api.request.AccountsRequest;
 import org.dows.pay.api.request.AccountsSharingRequest;
+import org.dows.pay.api.weixinPayHandlerApiServiceImpl;
 import org.dows.pay.bo.PayTransactionBo;
 import org.dows.pay.boot.PayClientConfig;
 import org.dows.pay.boot.PayClientFactory;
@@ -45,7 +42,6 @@ import org.springframework.util.IdGenerator;
 import org.springframework.util.SimpleIdGenerator;
 
 import java.math.BigDecimal;
-import java.security.PrivateKey;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.ArrayList;
@@ -61,7 +57,7 @@ import java.util.UUID;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class WeixinPayHandler extends AbstractWeixinHandler {
+public class WeixinPayHandler extends AbstractWeixinHandler implements weixinPayHandlerApiServiceImpl {
     private final PayClientFactory payClientFactory;
 
     private final PayTransactionService payTransactionService;
