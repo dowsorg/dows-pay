@@ -35,6 +35,7 @@
         <dependency>
             <groupId>org.dows.saas</groupId>
             <artifactId>pay-pojo</artifactId>
+            <version>20220701-SNAPSHOT</version>
         </dependency>
 
     </dependencies>

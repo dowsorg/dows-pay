@@ -3,7 +3,7 @@ package org.dows.pay.api;
 import com.github.binarywang.wxpay.bean.ecommerce.PartnerTransactionsResult;
 import org.dows.pay.form.PayPartnerTransactionsQueryForm;
 
-public interface weixinPayHandlerApiServiceImpl {
+public interface weixinPayHandlerService {
 
     /**
      * 查询订单
