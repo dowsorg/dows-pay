@@ -1,4 +1,4 @@
-package org.dows.pay.api;
+package org.dows.pay.weixin.service;
 
 import com.github.binarywang.wxpay.bean.ecommerce.PartnerTransactionsResult;
 import org.dows.pay.form.PayPartnerTransactionsQueryForm;
