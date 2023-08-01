@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.open.bean.result.WxOpenQueryAuthResult;
 import me.chanjar.weixin.open.bean.result.WxOpenResult;
+import org.apache.commons.lang3.time.DateUtils;
 import org.dows.app.api.mini.request.AppApplyRequest;
 import org.dows.app.api.mini.request.PayApplyStatusReq;
 import org.dows.app.api.mini.request.WechatMiniUploadRequest;
@@ -33,21 +34,30 @@ import org.dows.pay.api.PayRequest;
 import org.dows.pay.api.request.MiniUploadRequest;
 import org.dows.pay.api.request.PayCreateIsvRequest;
 import org.dows.pay.api.request.PayIsvRequest;
+import org.dows.pay.api.request.PayQueryReq;
+import org.dows.pay.api.response.PayQueryRes;
 import org.dows.pay.bo.IsvCreateBo;
 import org.dows.pay.bo.IsvCreateTyBo;
 import org.dows.pay.boot.PayClientConfig;
 import org.dows.pay.entity.PayAccount;
 import org.dows.pay.entity.PayApply;
+import org.dows.pay.entity.PayTransaction;
 import org.dows.pay.form.WxBaseInfoForm;
 import org.dows.pay.service.PayAccountService;
 import org.dows.pay.service.PayApplyService;
+import org.dows.pay.service.PayTransactionService;
 import org.dows.pay.weixin.WeixinIsvHandler;
 import org.dows.pay.weixin.WeixinMiniHandler;
+import org.dows.pay.weixin.WeixinPayHandler;
+import org.dows.pay.weixin.WeixinRoyaltyRelationHandler;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
@@ -75,6 +85,14 @@ public class payBiz implements PayApi {
     private final AppApplyService appApplyService;
     @Lazy
     private final MiniBiz miniBiz;
+
+    @Autowired
+    @Lazy
+    private WeixinPayHandler weixinPayHandler;
+
+    @Autowired
+    @Lazy
+    private PayTransactionService payTransactionService;
 
     private final WeixinTokenApi weixinTokenApi;
 
@@ -195,6 +213,52 @@ public class payBiz implements PayApi {
             }
         }
         return null;
+    }
+
+    @Override
+    public Response<PayQueryRes> queryPayOrder(PayQueryReq req) {
+        PayTransaction payTransaction = payTransactionService.queryPayOrder(req.getOrderId(),req.getOutTradeNo());
+        PayQueryRes res = Optional.ofNullable(payTransaction).map(pay -> {
+            if (Objects.equals(pay.getStatus(), 1)) {
+                return PayQueryRes.builder()
+                        .orderId(pay.getOrderId())
+                        .outTradeNo(pay.getDealTo())
+                        .payAmount(pay.getAmount())
+                        .payChannel(pay.getPayChannel())
+                        .payDesc(pay.getTradeState())
+                        .payTime(pay.getTransactionTime())
+                        .build();
+            }
+            PayQueryRes payQueryRes = queryWechatOrder(pay);
+            pay.setTradeState(payQueryRes.getPayDesc());
+            if (Objects.equals(payQueryRes.getPayDesc(),"SUCCESS")) {
+                pay.setStatus(1);
+            }
+            payTransactionService.updateById(payTransaction);
+            return payQueryRes;
+        }).orElseGet(() -> PayQueryRes.builder().payDesc("NOTPAY").build());
+        return Response.ok(res);
+    }
+
+    private PayQueryRes queryWechatOrder(PayTransaction payTransaction) {
+        if (Objects.equals(payTransaction.getPayChannel(),"weixin")) {
+            Map<String, Object> map = weixinPayHandler.queryWechatOrder(payTransaction.getTransactionNo(),payTransaction.getAppId());
+            String success_time = map.get("success_time").toString();
+            // 解析时间字符串
+            OffsetDateTime offsetDateTime = OffsetDateTime.parse(success_time, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+            // 转换为 Date 类型
+            Date date = Date.from(offsetDateTime.toInstant());
+            return PayQueryRes.builder()
+                    .payTime(date)
+                    .payDesc(map.get("trade_state").toString())
+                    .outTradeNo(map.get("transaction_id").toString())
+                    .payChannel(payTransaction.getPayChannel())
+                    .orderId(payTransaction.getOrderId())
+                    .payAmount(payTransaction.getAmount())
+                    .build();
+        }
+        // todo:支付宝查询
+        return PayQueryRes.builder().payDesc("NOTPAY").build();
     }
 
     @Override
@@ -394,7 +458,7 @@ public class payBiz implements PayApi {
     }
 
     private void checkAndSavePayAccount(PayApply payApply) {
-        PayAccount payAccount = payAccountService.getByMerchantNo(payApply.getMerchantNo());
+        PayAccount payAccount = payAccountService.getByMerchantNo(payApply.getMerchantNo(),payApply.getApplyType());
         Optional.ofNullable(payAccount).map(p -> {
             if (StrUtil.isNotEmpty(p.getChannelMerchantNo())) {
                 return p;
@@ -407,6 +471,7 @@ public class payBiz implements PayApi {
         }).orElseGet(() -> {
             PayAccount createPayAccount = new PayAccount();
             createPayAccount.setMerchantNo(payApply.getMerchantNo());
+            createPayAccount.setChannelType(payApply.getApplyType());
             createPayAccount.setChannelAccount(payApply.getAppId());
             createPayAccount.setChannelMerchantNo(payApply.getSubMchid());
             payAccountService.save(createPayAccount);

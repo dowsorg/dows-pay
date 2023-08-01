@@ -63,6 +63,8 @@ public class PayAccount implements CrudEntity {
 
     @ApiModelProperty("状态")
     private Integer state;
+    @ApiModelProperty("类型")
+    private Integer channelType;
 
     @ApiModelProperty("时间戳")
     private Date dt;

@@ -12,6 +12,6 @@ import org.dows.framework.crud.mybatis.MybatisCrudService;
  */
 public interface PayAccountService extends MybatisCrudService<PayAccount> {
 
-    PayAccount getByMerchantNo(String merchantNo);
+    PayAccount getByMerchantNo(String merchantNo,Integer appType);
 }
 

@@ -2,7 +2,10 @@ package org.dows.pay.weixin;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.IdUtil;
+import cn.hutool.json.JSONUtil;
+import com.alibaba.fastjson.JSON;
 import com.alipay.service.schema.util.StringUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.binarywang.wxpay.bean.ecommerce.*;
@@ -13,6 +16,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.dows.auth.biz.cache.CacheFactory;
 import org.dows.auth.biz.cache.LocalCache;
 import org.dows.auth.biz.context.SecurityUtils;
@@ -25,6 +32,8 @@ import org.dows.pay.api.annotation.PayMapping;
 import org.dows.pay.api.enums.PayMethods;
 import org.dows.pay.api.request.AccountsRequest;
 import org.dows.pay.api.request.AccountsSharingRequest;
+import org.dows.pay.api.response.PayQueryRes;
+import org.dows.pay.entity.PayChannel;
 import org.dows.pay.weixin.service.WeixinPayHandlerService;
 import org.dows.pay.bo.PayTransactionBo;
 import org.dows.pay.boot.PayClientConfig;
@@ -535,6 +544,31 @@ public class WeixinPayHandler extends AbstractWeixinHandler implements WeixinPay
             throw new RuntimeException(e);
         }
         return GSON.fromJson(response, SpWithdrawResult.class);
+    }
+
+    public Map<String, Object> queryWechatOrder(String transactionNo, String appId) {
+        LambdaQueryWrapper<PayAccount> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(PayAccount::getChannelAccount,appId);
+        queryWrapper.eq(PayAccount::getDeleted, false);
+        PayAccount payAccount = payAccountService.getOne(queryWrapper);
+
+        CloseableHttpClient httpClient = this.getWeixinClient(payClientConfig.getClientConfigs().get(1)
+                .getAppId()).getConfig().getApiV3HttpClient();
+
+        HttpGet httpGet = new HttpGet("https://api.mch.weixin.qq.com/v3/pay/partner/transactions/out-trade-no/" +transactionNo+
+                "?sp_mchid=1604404392&sub_mchid="+payAccount.getChannelMerchantNo());
+        httpGet.setHeader("Accept","application/json");
+        try {
+            CloseableHttpResponse response = httpClient.execute(httpGet);
+            log.info("success,return body = {}", EntityUtils.toString(response.getEntity()));
+            String responseStr = EntityUtils.toString(response.getEntity());
+            Map<String, Object> map = JSONUtil.toBean(responseStr, Map.class);
+            log.info("wechatQuery map is {}", JSON.toJSONString(map));
+           return map;
+        } catch (Exception e) {
+           log.error("queryWechatOrder fail:",e);
+            return new HashMap<>();
+        }
     }
 
     /**

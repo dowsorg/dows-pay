@@ -18,9 +18,10 @@ import org.springframework.stereotype.Service;
 public class PayAccountServiceImpl extends MybatisCrudServiceImpl<PayAccountMapper, PayAccount> implements PayAccountService {
 
     @Override
-    public PayAccount getByMerchantNo(String merchantNo) {
+    public PayAccount getByMerchantNo(String merchantNo,Integer appType) {
         LambdaQueryWrapper<PayAccount> queryWrapper = new LambdaQueryWrapper<PayAccount>()
                 .eq(PayAccount::getMerchantNo, merchantNo)
+                .eq(PayAccount::getChannelType, appType)
                 .eq(PayAccount::getDeleted, false)
                 .last(" limit 1");
         return getOne(queryWrapper);
