@@ -102,10 +102,10 @@ public class MiniRest {
                 return Response.failed("缺少商户appId");
             }
             Response response;
-            if(setWxBaseInfoForm.getChannel().equals("weixin")){
+            if (setWxBaseInfoForm.getChannel().equals("weixin")) {
                 // 微信
                 response = miniBiz.setWxinApplyInfo(setWxBaseInfoForm);
-            }else{
+            } else {
                 // 支付宝
                 response = miniBiz.miniVersionAuditApply(setWxBaseInfoForm);
             }
@@ -116,4 +116,17 @@ public class MiniRest {
         }
     }
 
+
+    @PostMapping("/mini/queryIsvCategory")
+    @ApiOperation(value = "查询类目信息（支付宝）")
+    public Response<PayResponse> queryIsvCategory(@Validated @RequestBody WxBaseInfoForm setWxBaseInfoForm) {
+        try {
+            // 微信
+            Response   response = miniBiz.queryAlipayIsvCategory(setWxBaseInfoForm);
+            return response;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.failed(e.getMessage());
+        }
+    }
 }

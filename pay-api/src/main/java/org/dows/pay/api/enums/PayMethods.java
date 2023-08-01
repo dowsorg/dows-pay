@@ -39,6 +39,7 @@ public enum PayMethods {
 
     MINI_BASE_INFO_MODIFY("alipay.open.mini.baseinfo.modify", "", "支付宝小程序修改基础信息"),
     MINI_VERSION_AUDIT_APPLY("alipay.open.mini.version.audit.apply", "", "小程序提交审核"),
+    ISV_QUERY_category("alipay.open.mini.category.query", "", "小程序类目树查询"),
 
     ON_MINI_AUDITED("dows.pay.mini.audited", "", "小程序审核通过通知"),
     ON_MINI_REJECTED("dows.pay.mini.rejected", "", "小程序审核驳回通知"),
