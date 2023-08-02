@@ -34,6 +34,7 @@ import org.dows.pay.api.request.AccountsRequest;
 import org.dows.pay.api.request.AccountsSharingRequest;
 import org.dows.pay.api.response.PayQueryRes;
 import org.dows.pay.entity.PayChannel;
+import org.dows.pay.form.PayTransactionForm;
 import org.dows.pay.weixin.service.WeixinPayHandlerService;
 import org.dows.pay.bo.PayTransactionBo;
 import org.dows.pay.boot.PayClientConfig;
@@ -224,19 +225,19 @@ public class WeixinPayHandler extends AbstractWeixinHandler implements WeixinPay
      * @return
      */
     @PayMapping(method = PayMethods.TRADE_ORDER_PAY_NoAcc)
-    public TransactionsResult.JsapiResult toPayNoAcc(PayRequest payRequest) {
-        PayTransactionBo payTransactionBo = (PayTransactionBo)payRequest.getBizModel();
+    public TransactionsResult.JsapiResult toPayNoAcc(PayTransactionForm payRequest) {
+//        PayTransactionBo payTransactionBo = (PayTransactionBo)payRequest.getBizModel();
 
-        checkRepeatSubmit(payRequest.getAppId(),payTransactionBo.getOrderId());
+        checkRepeatSubmit(payRequest.getAppId(),payRequest.getOrderId());
 
-        PayTransaction payTransaction = getPayTransaction(SecurityUtils.getMerchantNo(),payTransactionBo.getOrderId());
+        PayTransaction payTransaction = getPayTransaction(SecurityUtils.getMerchantNo(),payRequest.getOrderId());
         if (payTransaction!=null && Objects.equals(payTransaction.getStatus(), OrderPayTypeEnum.pay_finish.getCode())) {
-            throw new BizException(String.format("该笔订单id:%s 已支付", payTransactionBo.getOrderId()));
+            throw new BizException(String.format("该笔订单id:%s 已支付", payRequest.getOrderId()));
         }
 
         if (payTransaction == null) {
             //先创建交易订单
-            payTransaction = BeanUtil.copyProperties(payTransactionBo, PayTransaction.class);
+            payTransaction = BeanUtil.copyProperties(payRequest, PayTransaction.class);
             payTransaction.setPayChannel(payRequest.getChannel());
             payTransaction.setTransactionNo(IdUtil.fastSimpleUUID());
             payTransaction.setAppId(payRequest.getAppId());
@@ -247,7 +248,7 @@ public class WeixinPayHandler extends AbstractWeixinHandler implements WeixinPay
             payTransactionService.save(payTransaction);
         }
         //组装订单逻辑
-        OrderInstanceBo orderInstanceBo = orderInstanceBizApiService.getOne(payTransactionBo.getOrderId());
+        OrderInstanceBo orderInstanceBo = orderInstanceBizApiService.getOne(payRequest.getOrderId());
         PartnerTransactionsRequest.Amount amount =  new PartnerTransactionsRequest.Amount();
         amount.setCurrency("CNY");
         amount.setTotal(orderInstanceBo.getAgreeAmout().multiply(new BigDecimal(100)).intValue());
@@ -255,7 +256,7 @@ public class WeixinPayHandler extends AbstractWeixinHandler implements WeixinPay
         payer.setSubOpenid(payRequest.getSubOpenid());
         //获取商户号
         log.info("WeixinPayHandler.toPay.orderInstanceBo的参数:{}",orderInstanceBo);
-        PayAccount payAccount = payAccountService.getOne(Wrappers.lambdaQuery(PayAccount.class).eq(PayAccount::getChannelAccount, payTransactionBo.getAppId()));
+        PayAccount payAccount = payAccountService.getOne(Wrappers.lambdaQuery(PayAccount.class).eq(PayAccount::getChannelAccount, payRequest.getAppId()));
         log.info("WeixinPayHandler.toPay.payAccount的参数:{}",payAccount);
         PartnerTransactionsRequest.SettleInfo settleInfo = new PartnerTransactionsRequest.SettleInfo();
         settleInfo.setProfitSharing(true);
@@ -267,7 +268,7 @@ public class WeixinPayHandler extends AbstractWeixinHandler implements WeixinPay
                 .subAppid(payRequest.getAppId())
                 .amount(amount)
                 .subMchid(payAccount.getChannelMerchantNo())
-                .description(payTransactionBo.getOrderTitle())
+                .description(payRequest.getOrderTitle())
                 .outTradeNo(payTransaction.getTransactionNo())
                 .settleInfo(settleInfo)
                 .notifyUrl(payClientConfig.getClientConfigs().get(1).getNotifyUrl())
@@ -286,11 +287,11 @@ public class WeixinPayHandler extends AbstractWeixinHandler implements WeixinPay
             throw new BizException(e.getMessage());
         }
         TransactionsResult.JsapiResult jsapiResult = transactionsResult.getPayInfo
-                (TradeTypeEnum.JSAPI,  payTransactionBo.getAppId(),
+                (TradeTypeEnum.JSAPI,  payRequest.getAppId(),
                         payClientConfig.getClientConfigs().get(1).getMchId(),
                         this.getWeixinClient(payClientConfig.getClientConfigs().get(1).getAppId()).getConfig().getPrivateKey());
         if (!StringUtil.isEmpty(transactionsResult.getPrepayId())) {
-            ORDER_PAY_CACHE.set(String.join(StringPool.UNDERSCORE, payRequest.getAppId(), payTransactionBo.getOrderId()),"success");
+            ORDER_PAY_CACHE.set(String.join(StringPool.UNDERSCORE, payRequest.getAppId(), payRequest.getOrderId()),"success");
             log.info("调用成功");
         } else {
             //todo 失败逻辑
