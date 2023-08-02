@@ -252,14 +252,10 @@ public class AlipayMiniHandler extends AbstractAlipayHandler {
         // 小程序logo图标
         if (StringUtils.isNotEmpty(alipayOpenMiniVersionAuditBo.getAppLogo())) {
 //            FileItem appLogo = new FileItem(alipayOpenMiniVersionAuditBo.getAppLogo());
-            String imageBase64 = "iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAEUlEQVR42mP4TyRgGFVIX4UAI/uOgGWVNeQAAAAASUVORK5CYII=";
-            // 下列FileItem中也可用直接读取本地文件的方式来获取文件
-            // FileItem imageContent = new FileItem("本地文件的绝对路径");
-            FileItem appLogo = new FileItem("appLogo.jpg", Base64.getDecoder().decode(imageBase64));
-            request.setAppLogo(appLogo);
-//            File appLogoFile = getFile(alipayOpenMiniVersionAuditBo.getAppLogo());
-//            FileItem imageContent = new FileItem(appLogoFile.getPath());
-//            request.setAppLogo(imageContent);
+//            request.setAppLogo(appLogo);
+            File appLogoFile = getFile(alipayOpenMiniVersionAuditBo.getAppLogo());
+            FileItem imageContent = new FileItem(appLogoFile.getPath());
+            request.setAppLogo(imageContent);
         }
         // 营业执照证件号
         request.setLicenseNo(alipayOpenMiniVersionAuditBo.getLicenseNo());
@@ -418,34 +414,33 @@ public class AlipayMiniHandler extends AbstractAlipayHandler {
 //            FileItem thirdSpecialLicensePic = new FileItem(alipayOpenMiniVersionAuditBo.getThirdSpecialLicensePic());
 //            request.setThirdSpecialLicensePic(thirdSpecialLicensePic);
 //        }
-            // 测试账号
-            request.setTestAccout(alipayOpenMiniVersionAuditBo.getTestAccount());
-            // 测试账号密码
-            request.setTestPassword(alipayOpenMiniVersionAuditBo.getTestPassword());
-            // 测试附件
-            if (StringUtils.isNotEmpty(alipayOpenMiniVersionAuditBo.getTestFileName())) {
-                File testFileName = getFile(alipayOpenMiniVersionAuditBo.getTestFileName());
-                FileItem testFileItem = new FileItem(testFileName.getPath());
-                request.setTestFileName(testFileItem);
-            }
-            try {
-                String authorizerAccessToken = payRequest.getAuthorizerAccessToken();
-                log.info("请求小程序审核入参：{}", request);
-                response = getAlipayClient(payRequest.getAppId()).certificateExecute(request, null,
-                        authorizerAccessToken);
-                log.info("请求小程序审核出参：{}", response);
-                if (response.isSuccess()) {
-                    System.out.println("调用成功");
-                } else {
-                    System.out.println("调用失败");
-                }
-                return response;
-            } catch (AlipayApiException e) {
-                throw new RuntimeException(e);
-            }
-
         }
-        return response;
+        // 测试账号
+        request.setTestAccout(alipayOpenMiniVersionAuditBo.getTestAccount());
+        // 测试账号密码
+        request.setTestPassword(alipayOpenMiniVersionAuditBo.getTestPassword());
+        // 测试附件
+        if (StringUtils.isNotEmpty(alipayOpenMiniVersionAuditBo.getTestFileName())) {
+            File testFileName = getFile(alipayOpenMiniVersionAuditBo.getTestFileName());
+            FileItem testFileItem = new FileItem(testFileName.getPath());
+            request.setTestFileName(testFileItem);
+        }
+        try {
+            String authorizerAccessToken = payRequest.getAuthorizerAccessToken();
+            log.info("请求小程序审核入参：{}", request);
+            response = getAlipayClient(payRequest.getAppId()).certificateExecute(request, null,
+                    authorizerAccessToken);
+            log.info("请求小程序审核出参：{}", response);
+            if (response.isSuccess()) {
+                System.out.println("调用成功");
+            } else {
+                System.out.println("调用失败");
+            }
+            return response;
+        } catch (AlipayApiException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     public static File getFile(String path) {
