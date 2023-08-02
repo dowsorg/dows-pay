@@ -119,7 +119,7 @@ public class MiniRest {
 
     @PostMapping("/mini/queryIsvCategory")
     @ApiOperation(value = "查询类目信息（支付宝）")
-    public Response<PayResponse> queryIsvCategory(@Validated @RequestBody WxBaseInfoForm setWxBaseInfoForm) {
+    public Response<PayResponse> queryIsvCategory(@Validated @RequestBody SetWxBaseInfoForm setWxBaseInfoForm) {
         try {
             // 微信
             Response   response = miniBiz.queryAlipayIsvCategory(setWxBaseInfoForm);

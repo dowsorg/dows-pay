@@ -798,7 +798,8 @@ public class MiniBiz {
         appBaseService.update(appBase, queryWrapperAppApply);
     }
 
-    public Response queryAlipayIsvCategory(WxBaseInfoForm wxBaseInfoForm) {
+    public Response queryAlipayIsvCategory(SetWxBaseInfoForm setWxBaseInfoForm) {
+        WxBaseInfoForm wxBaseInfoForm = BeanUtil.copyProperties(setWxBaseInfoForm, WxBaseInfoForm.class);
         Response<PayResponse> alipayBaseInfoModifyResponse =
                 queryIsvCategory(wxBaseInfoForm);
         return alipayBaseInfoModifyResponse;
