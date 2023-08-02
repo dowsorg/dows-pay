@@ -67,7 +67,7 @@ import java.util.UUID;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class WeixinPayHandler extends AbstractWeixinHandler implements WeixinPayHandlerService {
+public class WeixinPayHandler extends AbstractWeixinHandler {
     private final PayClientFactory payClientFactory;
 
     private final PayTransactionService payTransactionService;
