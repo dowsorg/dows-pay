@@ -317,6 +317,29 @@ public class MiniBiz {
 
 
     /**
+     * 查询类目信息
+     *
+     * @param wxBaseInfoForm
+     * @return
+     */
+    public Response queryIsvCategory(WxBaseInfoForm wxBaseInfoForm) {
+        PayIsvRequest payRequest = new PayIsvRequest();
+        // todo
+        WxBaseInfoBo wxBaseInfoBo = BeanUtil.copyProperties(wxBaseInfoForm, WxBaseInfoBo.class);
+        // 设置请求方法
+        payRequest.setMethod(PayMethods.ISV_QUERY_category.getNamespace());
+        // 设置业务参数对象bizModel
+        payRequest.setBizModel(wxBaseInfoBo);
+        // 填充公共参数
+        payRequest.autoSet(wxBaseInfoForm);
+        // 请求分发
+        Response<PayResponse> response = payDispatcher.dispatcher(payRequest);
+        PayResponse data = response.getData();
+        log.info("返回结果:{}", data);
+        return response;
+    }
+
+    /**
      * MiniBaseInfo 设置微信小程序 名称 、介绍、类目。头像等信息
      *
      * @param setWxBaseInfoForm
@@ -467,7 +490,7 @@ public class MiniBiz {
                     int i = 1;
                     for (String certicate : certicateList) {
                         WxFastMaCategoryBo.Certificate certificate = new WxFastMaCategoryBo.Certificate();
-                        certificate.setKey(String.format("《材料%s》",i));
+                        certificate.setKey(String.format("《材料%s》", i));
                         certificate.setValue(certicate);
                         certicates.add(certificate);
                         i++;
@@ -709,7 +732,7 @@ public class MiniBiz {
                 msgTemplateApi.addSubscribeTemplate(setWxBaseInfoForm.getMerchantAppId());
                 appBase.setSetTemplateMsg(1);
             } catch (Exception e) {
-                log.info("appId:{} set template msg error:",setWxBaseInfoForm.getMerchantAppId(),e);
+                log.info("appId:{} set template msg error:", setWxBaseInfoForm.getMerchantAppId(), e);
             }
             appBaseService.save(appBase);
             ThreadUtil.execAsync(() -> setDomain(appBase));
@@ -774,4 +797,12 @@ public class MiniBiz {
         }
         appBaseService.update(appBase, queryWrapperAppApply);
     }
+
+    public Response queryAlipayIsvCategory(SetWxBaseInfoForm setWxBaseInfoForm) {
+        WxBaseInfoForm wxBaseInfoForm = BeanUtil.copyProperties(setWxBaseInfoForm, WxBaseInfoForm.class);
+        Response<PayResponse> alipayBaseInfoModifyResponse =
+                queryIsvCategory(wxBaseInfoForm);
+        return alipayBaseInfoModifyResponse;
+    }
+
 }

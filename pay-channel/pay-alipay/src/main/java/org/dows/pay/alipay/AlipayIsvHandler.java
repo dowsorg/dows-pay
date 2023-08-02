@@ -147,6 +147,19 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
     }
 
     /**
+     * 查询类目信息
+     */
+    @PayMapping(method = PayMethods.ISV_QUERY_category)
+    public AlipayOpenMiniCategoryQueryResponse queryIsvCategory(PayRequest payRequest) throws AlipayApiException {
+        AlipayOpenMiniCategoryQueryRequest request = new AlipayOpenMiniCategoryQueryRequest();
+        AlipayOpenMiniCategoryQueryModel model = new AlipayOpenMiniCategoryQueryModel();
+        request.setBizModel(model);
+        AlipayOpenMiniCategoryQueryResponse response = getAlipayClient(payRequest.getAppId())
+                .certificateExecute(request);
+        return response;
+    }
+
+    /**
      * 查询该订单协助创建小程序的情况
      * 服务商调用 alipay.open.mini.isv.query 接口，传入 order_no（订单编号）参数，
      */
