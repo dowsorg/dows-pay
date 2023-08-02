@@ -7,6 +7,8 @@ import org.dows.app.api.mini.request.WechatMiniUploadRequest;
 import org.dows.app.api.mini.response.PayApplyStatusRes;
 import org.dows.framework.api.Response;
 import org.dows.pay.api.request.PayCreateIsvRequest;
+import org.dows.pay.api.request.PayQueryReq;
+import org.dows.pay.api.response.PayQueryRes;
 
 public interface PayApi {
 
@@ -41,6 +43,21 @@ public interface PayApi {
      * @return
      */
     Response applyForPaymentAuth(AppApplyRequest appApplyRequest);
+
+    /**
+     * 查询支付订单
+     * 交易状态，枚举值：
+     * SUCCESS：支付成功
+     * REFUND：转入退款
+     * NOTPAY：未支付
+     * CLOSED：已关闭
+     * REVOKED：已撤销（仅付款码支付会返回）
+     * USERPAYING：用户支付中（仅付款码支付会返回）
+     * PAYERROR：支付失败（仅付款码支付会返回）
+     * @param req req
+     * @return res
+     */
+    Response<PayQueryRes> queryPayOrder(PayQueryReq req);
 
     /**
      * 查询小程序申请状态(支付宝)

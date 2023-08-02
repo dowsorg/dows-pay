@@ -19,5 +19,7 @@ public interface PayTransactionService extends MybatisCrudService<PayTransaction
     PayTransaction getByTransactionNo(String outTradeNo);
 
     PayTransaction getByOrderId(String orderId);
+
+    PayTransaction queryPayOrder(String orderId, String outTradeNo);
 }
 

@@ -1,11 +1,16 @@
 package org.dows.pay.service.impl;
 
 import cn.hutool.core.util.StrUtil;
+import org.dows.framework.api.exceptions.BizException;
 import org.dows.framework.crud.mybatis.MybatisCrudServiceImpl;
 import org.dows.pay.mapper.PayTransactionMapper;
 import org.dows.pay.entity.PayTransaction;
 import org.dows.pay.service.PayTransactionService;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
+import java.util.Objects;
+import java.util.Optional;
 
 
 /**
@@ -23,6 +28,7 @@ public class PayTransactionServiceImpl extends MybatisCrudServiceImpl<PayTransac
                 .eq(PayTransaction::getTransactionNo, outTradeNo)
                 .set(PayTransaction::getStatus, code)
                 .set(PayTransaction::getAmount,amount)
+                .set(PayTransaction::getTransactionTime,new Date())
                 .set(PayTransaction::getDealTo, transactionId)
                 .update();
     }
@@ -41,6 +47,23 @@ public class PayTransactionServiceImpl extends MybatisCrudServiceImpl<PayTransac
                 .eq(PayTransaction::getOrderId,orderId)
                 .last(" limit 1")
                 .one();
+    }
+
+    @Override
+    public PayTransaction queryPayOrder(String orderId, String outTradeNo) {
+        if (StrUtil.isEmpty(orderId) && StrUtil.isEmpty(outTradeNo)) {
+            throw new BizException("交易单号任选一项必填");
+        }
+        return this.lambdaQuery()
+                .eq(StrUtil.isNotEmpty(orderId), PayTransaction::getOrderId, orderId)
+                .eq(StrUtil.isNotEmpty(outTradeNo), PayTransaction::getDealTo, outTradeNo)
+                .orderByDesc(PayTransaction::getId)
+                .last(" limit 1").one();
+    }
+
+    private String queryWechatOrder(String transactionNo, String appId) {
+
+        return null;
     }
 
     @Override

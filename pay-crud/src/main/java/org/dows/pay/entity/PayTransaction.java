@@ -78,6 +78,9 @@ public class PayTransaction implements CrudEntity {
     @ApiModelProperty("交易状态")
     private Integer status;
 
+    @ApiModelProperty("微信交易状态")
+    private String tradeState;
+
     @ApiModelProperty("交易时间")
     private Date transactionTime;
 
