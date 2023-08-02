@@ -1,7 +1,6 @@
 package org.dows.pay.rest.tenant.v1;
 
 import com.github.binarywang.wxpay.bean.ecommerce.PartnerTransactionsResult;
-import com.github.binarywang.wxpay.bean.ecommerce.TransactionsResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -44,9 +43,8 @@ public class OrderSettleRest {
     }
     @PostMapping("/orderpay/topayNoAcc")
     @ApiOperation(value = "去支付无分账")
-    public Response topayNoAcc(@RequestBody PayTransactionForm payTransactionForm) {
-        TransactionsResult.JsapiResult result = weixinPayHandler.toPayNoAcc(payTransactionForm);
-        return Response.ok(result);
+    public Response<PayResponse> topayNoAcc(@RequestBody PayTransactionForm payTransactionForm) {
+        return orderPayBiz.toPayNoAcc(payTransactionForm);
     }
 
     @PostMapping("/orderpay/toCombinePay")
