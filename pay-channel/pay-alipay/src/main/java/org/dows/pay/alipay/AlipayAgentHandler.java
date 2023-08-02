@@ -1,5 +1,6 @@
 package org.dows.pay.alipay;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.FileItem;
 import com.alipay.api.domain.AlipayOpenAgentConfirmModel;
@@ -10,11 +11,17 @@ import com.alipay.api.request.*;
 import com.alipay.api.response.*;
 import com.alipay.service.schema.util.StringUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
+import org.dows.app.api.mini.request.PayApplyStatusReq;
+import org.dows.app.api.mini.response.AppApplyAndItemResponse;
 import org.dows.app.entity.AppApply;
+import org.dows.app.entity.AppApplyItem;
+import org.dows.app.service.AppApplyItemService;
 import org.dows.app.service.AppApplyService;
+import org.dows.framework.api.Response;
 import org.dows.pay.api.PayRequest;
 import org.dows.pay.api.annotation.PayMapping;
 import org.dows.pay.api.enums.PayMethods;
@@ -60,6 +67,8 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
     @Autowired
     private AppApplyService appApplyService;
 
+    @Autowired
+    private AppApplyItemService appApplyItemService;
     /**
      * 开启代商户签约、创建应用事务
      * https://opendocs.alipay.com/isv/02s1f9
@@ -72,17 +81,33 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
 
         LambdaQueryWrapper<AppApply> queryWrapper = new LambdaQueryWrapper();
         queryWrapper.eq(AppApply::getApplicant, payCreateIsvRequest.getAccount());
-        appApply = (AppApply) this.appApplyService.getOne(queryWrapper);
+        appApply = this.appApplyService.getOne(queryWrapper);
 
         if (Objects.isNull(appApply)) {
             appApply = new AppApply();
+            AppApplyItem appApplyItem = new AppApplyItem();
+            String applyOrderNo = UUID.randomUUID().toString();
             appApply.setPlatform("ALIPAY");
-            appApply.setApplyOrderNo(UUID.randomUUID().toString());
+            appApply.setApplyOrderNo(applyOrderNo);
             appApply.setApplicant(payCreateIsvRequest.getAccount());
-            appApply.setMerchantNo("111");
-            appApply.setAuthStatus("0");
-            appApply.setFastRegister(0);
+            appApply.setAuthStatus("1");
+            appApplyItem.setApplyOrderNo(applyOrderNo);
+            appApplyItem.setContactEmail(payCreateIsvRequest.getContact_email());
+            appApplyItem.setContactName(payCreateIsvRequest.getContact_name());
+            appApplyItem.setContactPhone(payCreateIsvRequest.getContact_mobile());
+            if(payCreateIsvRequest.getIsPerson()==0){
+                appApplyItem.setCertPicture(payCreateIsvRequest.getBusiness_license_pic());
+            }
+            if (!StringUtil.isEmpty(payCreateIsvRequest.getBusiness_license_mobile())) {
+                appApplyItem.setSuperAdminPhone(payCreateIsvRequest.getBusiness_license_mobile());
+            }
+            appApplyItem.setBusinessScope(payCreateIsvRequest.getMcc_code());
+            appApplyItem.setTenantDoorPicture(payCreateIsvRequest.getShop_sign_board_pic());
+            appApplyItem.setTenantIndoorPicture(payCreateIsvRequest.getShop_scene_pic());
+            appApplyItem.setCertName(payCreateIsvRequest.getShop_name());
+            appApplyItem.setLegalName(payCreateIsvRequest.getAccount());
             this.appApplyService.save(appApply);
+            this.appApplyItemService.save(appApplyItem);
         }
 
         AlipayOpenAgentCreateModel alipayOpenAgentCreateModel = new AlipayOpenAgentCreateModel();
@@ -223,16 +248,38 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
         }
     }
 
+    public Response<PayCreateIsvRequest> getApplyIsvByMerchantNo(PayApplyStatusReq req) {
+        AppApply appApply = appApplyService.getAppApplyMerchantNoAndApplyType(req.getMerchantNo(),
+                req.getApplyType() == 1 ? "WEIXIN" : "ALIPAY", req.getAppId());
+        if (appApply != null) {
+            PayCreateIsvRequest payCreateIsvRequest= new PayCreateIsvRequest();
+            LambdaQueryWrapper<AppApplyItem> appApplyItemQueryWrapper = new LambdaQueryWrapper<AppApplyItem>();
+            appApplyItemQueryWrapper.eq(AppApplyItem::getApplyOrderNo, appApply.getApplyOrderNo());
+            AppApplyItem appApplyItem = appApplyItemService.getOne(appApplyItemQueryWrapper);
+
+//            payCreateIsvRequest.setAppid(appApply.getAppId());
+            payCreateIsvRequest.setBusiness_license_mobile(appApplyItem.getSuperAdminPhone());
+            payCreateIsvRequest.setAccount(appApply.getApplicant());
+            payCreateIsvRequest.setContact_email(appApplyItem.getContactEmail());
+            payCreateIsvRequest.setContact_mobile(appApplyItem.getContactPhone());
+            payCreateIsvRequest.setContact_name(appApplyItem.getContactName());
+            payCreateIsvRequest.setBusiness_license_pic(appApplyItem.getCertPicture());
+            payCreateIsvRequest.setShop_scene_pic(appApplyItem.getTenantIndoorPicture());
+            payCreateIsvRequest.setShop_sign_board_pic(appApplyItem.getTenantDoorPicture());
+            payCreateIsvRequest.setMcc_code(appApplyItem.getBusinessScope());
+            payCreateIsvRequest.setShop_name(appApplyItem.getCertName());
+
+            return Response.ok(payCreateIsvRequest);
+        }
+        return Response.ok();
+    }
+
     public static FileItem getPicFile(String path) {
-        FileItem file = null;
+        FileItem file;
         if (path.startsWith("http")) {
-            URL url;
             try {
-                url = new URL(path);
-                String tempPath = path.substring(path.lastIndexOf('/'));
-                String patrol = "/opt/dows/tenant/image"+tempPath;
-                File mediaFile = new File(patrol);
-                FileUtils.copyURLToFile(url, mediaFile);
+                String substringPath = path.substring(path.lastIndexOf(StringPool.SLASH, path.lastIndexOf(StringPool.SLASH) - 1));
+                String patrol = "/opt/dows/tenant/image"+substringPath;
                 file = new FileItem(patrol);
             } catch (Exception e) {
                 throw new RuntimeException(e);

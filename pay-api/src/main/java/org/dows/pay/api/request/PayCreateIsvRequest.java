@@ -19,7 +19,7 @@ public class PayCreateIsvRequest extends AbstractPayRequest<PayIsvResponse> {
     private String account;
     @ApiModelProperty("账号类型，0个人，1企业")
     private int isPerson;
-    @ApiModelProperty("账号类型为个人0填写")
+    @ApiModelProperty("营业执照图片，账号类型为个人0填写")
     private String business_license_pic;
     @ApiModelProperty("联系人名称")
     private String contact_name;

@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dows.app.api.mini.request.AppApplyRequest;
+import org.dows.app.api.mini.request.PayApplyStatusReq;
 import org.dows.framework.api.Response;
 import org.dows.pay.alipay.AlipayAgentHandler;
 import org.dows.pay.api.PayApi;
@@ -74,6 +75,12 @@ public class IsvRest {
         return alipayAgentHandler.queryAgent(payQueryIsvRequest);
     }
 
+    @PostMapping("/isv/queryIsvByMerchantNo")
+    @ApiOperation(value = "支付宝查询注册信息")
+    public Response queryIsvByMerchantNo(@RequestBody PayApplyStatusReq req) {
+        return alipayAgentHandler.getApplyIsvByMerchantNo(req);
+    }
+
     @PostMapping("/isv/queryIsvMiniStatus")
     @ApiOperation(value = "查询支付宝小程序状态")
     public Response<PayResponse> queryIsvMiniStatus(@RequestBody AppApplyRequest appApplyRequest) {
@@ -81,5 +88,5 @@ public class IsvRest {
         return Response.ok();
     }
 
-//asdasd
+
 }
