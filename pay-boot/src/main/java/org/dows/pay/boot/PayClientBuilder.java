@@ -8,6 +8,7 @@ import com.alipay.api.AlipayConfig;
 import com.alipay.api.DefaultAlipayClient;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.github.binarywang.wxpay.config.WxPayConfig;
+import com.github.binarywang.wxpay.exception.WxPayException;
 import com.github.binarywang.wxpay.service.WxPayService;
 import com.github.binarywang.wxpay.service.impl.WxPayServiceImpl;
 import lombok.extern.slf4j.Slf4j;
@@ -177,6 +178,11 @@ public class PayClientBuilder {
         wxPayConfig.setPrivateCertPath(StringUtils.trimToNull(config.getPrivateCertPath()));
         wxPayConfig.setCertSerialNo(StringUtils.trimToNull(config.getCertSerialNo()));
         wxPayConfig.setApiV3Key(StringUtils.trimToNull(config.getApiV3Key()));
+        try {
+            wxPayConfig.setApiV3HttpClient(wxPayConfig.initApiV3HttpClient());
+        } catch (WxPayException e) {
+            throw new RuntimeException(e);
+        }
         WxPayService wxPayService  = new WxPayServiceImpl();
         wxPayService.setConfig(wxPayConfig);
         return wxPayService;
