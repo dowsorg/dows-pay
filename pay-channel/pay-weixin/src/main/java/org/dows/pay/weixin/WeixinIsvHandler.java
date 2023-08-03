@@ -675,7 +675,7 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
                 }
                 map.put("idCardCopyFile", upload(idCardCopyFile, payRequest));
             }
-            
+
             //经营者/法人身份证信息 反面照片
             if (!StringUtil.isEmpty(isvCreateTyBo.getSubjectInfo().getIdentityInfo().getIdCardInfo().getIdCardNational())) {
                 String filePath = isvCreateTyBo.getSubjectInfo().getIdentityInfo().getIdCardInfo().getIdCardNational();
@@ -815,7 +815,9 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
         File file = null;
         if (path.startsWith("http")) {
             String substringPath = path.substring(path.lastIndexOf(StringPool.SLASH, path.lastIndexOf(StringPool.SLASH) - 1));
-            return new File("/opt/dows/tenant/image" + substringPath);
+            log.info("包含http图片路径：{}", substringPath);
+            file = new File("/opt/dows/tenant/image" + substringPath);
+            return file;
 //            String replacePath = path.replaceAll("https:/", "https://");
 //            log.info("replacePath===={}",replacePath);
 //            URL url;
@@ -830,6 +832,7 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
 //            }
         } else {
             String filePath = getFilePath(path);
+            log.info("不包含http图片路径：{}", filePath);
             file = new File(filePath);
             return file;
         }
