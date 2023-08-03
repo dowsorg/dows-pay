@@ -250,6 +250,7 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
         } else {
             payTransaction.setTransactionNo(transactionNo);
             payTransactionService.updateById(payTransaction);
+            log.info("WeixinPayHandler.toPay.payTransaction的参数:{}", payTransaction);
         }
 
         //组装订单逻辑
@@ -274,7 +275,7 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
                 .amount(amount)
                 .subMchid(payAccount.getChannelMerchantNo())
                 .description(payRequest.getOrderTitle())
-                .outTradeNo(payTransaction.getTransactionNo())
+                .outTradeNo(transactionNo)
                 .settleInfo(settleInfo)
                 .notifyUrl(payClientConfig.getClientConfigs().get(1).getNotifyUrl())
                 .payer(payer)
