@@ -815,8 +815,9 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
         File file = null;
         if (path.startsWith("http")) {
             String substringPath = path.substring(path.lastIndexOf(StringPool.SLASH, path.lastIndexOf(StringPool.SLASH) - 1));
-            log.info("包含http图片路径：{}", substringPath);
+            System.out.println("包含http图片路径：" + substringPath);
             file = new File("/opt/dows/tenant/image" + substringPath);
+            System.out.println(file);
             return file;
 //            String replacePath = path.replaceAll("https:/", "https://");
 //            log.info("replacePath===={}",replacePath);
@@ -832,8 +833,9 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
 //            }
         } else {
             String filePath = getFilePath(path);
-            log.info("不包含http图片路径：{}", filePath);
+            System.out.println("不包含http图片路径：" + filePath);
             file = new File(filePath);
+            System.out.println(file);
             return file;
         }
 
