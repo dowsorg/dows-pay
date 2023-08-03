@@ -231,6 +231,7 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
 
         checkRepeatSubmit(payRequest.getAppId(), payRequest.getOrderId());
         String transactionNo = IdUtil.fastSimpleUUID();
+        log.info("WeixinPayHandler.toPay.transactionNo的参数:{}", transactionNo);
         PayTransaction payTransaction;
         payTransaction = payTransactionService.getByOrderId(payRequest.getOrderId());
         if (payTransaction != null && Objects.equals(payTransaction.getStatus(), OrderPayTypeEnum.pay_finish.getCode())) {
