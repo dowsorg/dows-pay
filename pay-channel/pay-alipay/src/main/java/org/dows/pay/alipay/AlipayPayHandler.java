@@ -81,6 +81,7 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
         bizContent.put("subject", payTransactionBo.getOrderTitle());
         bizContent.put("buyer_id",payTransactionBo.getDealForm());
         bizContent.put("op_app_id", payTransactionBo.getDealTo());
+        bizContent.put("product_code", "JSAPI_PAY");
 
         request.setBizContent(bizContent.toString());
         AlipayTradeCreateResponse response = null;

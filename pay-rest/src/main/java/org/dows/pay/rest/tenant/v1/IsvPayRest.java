@@ -35,7 +35,7 @@ public class IsvPayRest {
 
     @PostMapping("/isvPay/topay")
     @ApiOperation(value = "支付宝去支付")
-    public Response topay(@RequestBody PayTransactionForm payTransactionForm) {
+    public Response toPay(@RequestBody PayTransactionForm payTransactionForm) {
         AlipayTradeCreateResponse result= alipayPayHandler.toPay(payTransactionForm);
         return Response.ok(result);
     }
