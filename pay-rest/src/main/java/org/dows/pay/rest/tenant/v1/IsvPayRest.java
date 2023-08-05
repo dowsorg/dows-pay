@@ -29,13 +29,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("v1")
-public class IsvPayRest implements MybatisCrudRest<PayApiForm, PayApi, PayApiService> {
+public class IsvPayRest {
 
     private final AlipayPayHandler alipayPayHandler;
 
     @PostMapping("/isvPay/topay")
     @ApiOperation(value = "支付宝去支付")
-    public Response topayNoAcc(@RequestBody PayTransactionForm payTransactionForm) {
+    public Response topay(@RequestBody PayTransactionForm payTransactionForm) {
         AlipayTradeCreateResponse result= alipayPayHandler.toPay(payTransactionForm);
         return Response.ok(result);
     }
