@@ -27,6 +27,8 @@ import org.dows.pay.api.annotation.PayMapping;
 import org.dows.pay.api.enums.PayMethods;
 import org.dows.pay.api.request.PayCreateIsvRequest;
 import org.dows.pay.api.request.PayQueryIsvRequest;
+import org.dows.pay.entity.PayApply;
+import org.dows.pay.service.PayApplyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -66,6 +68,9 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
 
     @Autowired
     private AppApplyService appApplyService;
+
+    @Autowired
+    private PayApplyService payApplyService;
 
     @Autowired
     private AppApplyItemService appApplyItemService;
@@ -110,6 +115,18 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
             this.appApplyItemService.save(appApplyItem);
         }
 
+        PayApply payApply;
+
+        LambdaQueryWrapper<PayApply> queryPayWrapper = new LambdaQueryWrapper();
+        queryPayWrapper.eq(PayApply::getBizNo, payCreateIsvRequest.getAccount());
+        payApply = this.payApplyService.getOne(queryPayWrapper);
+
+        if (Objects.isNull(payApply)) {
+            payApply = new PayApply();
+            payApply.setBizNo(payCreateIsvRequest.getAccount());
+            this.payApplyService.save(payApply);
+        }
+
         AlipayOpenAgentCreateModel alipayOpenAgentCreateModel = new AlipayOpenAgentCreateModel();
         ContactModel contactModel = new ContactModel();
         contactModel.setContactName(payCreateIsvRequest.getContact_name());
@@ -131,7 +148,9 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
             LambdaQueryWrapper<AppApply> queryWrapperAppApply = new LambdaQueryWrapper();
             queryWrapperAppApply.eq(AppApply::getApplyOrderNo, appApply.getApplyOrderNo());
             appApply.setPlatformOrderNo(response.getBatchNo());
+            payApply.setApplyNo(response.getBatchNo());
             this.appApplyService.update(appApply, queryWrapperAppApply);
+            this.payApplyService.updateById(payApply);
         }
         return response;
 

@@ -1,18 +1,23 @@
 package org.dows.pay.biz.job;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
+import com.alipay.api.response.AlipayOpenAgentOrderQueryResponse;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.github.binarywang.wxpay.bean.ecommerce.ApplymentsStatusResult;
 import lombok.extern.slf4j.Slf4j;
 import org.dows.app.api.mini.request.PayApplyStatusReq;
+import org.dows.framework.api.Response;
+import org.dows.pay.alipay.AlipayAgentHandler;
 import org.dows.pay.api.PayApi;
+import org.dows.pay.api.request.PayQueryIsvRequest;
 import org.dows.pay.entity.PayApply;
 import org.dows.pay.service.PayApplyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 @Component
 @Slf4j
@@ -20,6 +25,9 @@ public class QueryApplyStatusJob {
 
     @Autowired
     private PayApplyService payApplyService;
+
+    @Autowired
+    private AlipayAgentHandler alipayAgentHandler;
 
     @Autowired
     private PayApi payApi;
@@ -48,13 +56,36 @@ public class QueryApplyStatusJob {
     }
 
     private void doQueryStatus(PayApply p) {
-        PayApplyStatusReq payApplyStatusReq = new PayApplyStatusReq();
-        payApplyStatusReq.setMerchantNo(p.getMerchantNo());
-        try {
-            payApi.queryPayApplyStatus(payApplyStatusReq);
-        } catch (Exception e) {
-            log.warn("doQueryStatus fail：", e);
+        if(p.getApplyType().equals(2)){
+            PayQueryIsvRequest payQueryIsvRequest = new PayQueryIsvRequest();
+            payQueryIsvRequest.setBatch_no(p.getApplyNo());
+            AlipayOpenAgentOrderQueryResponse response=new AlipayOpenAgentOrderQueryResponse();
+            try {
+                response = alipayAgentHandler.queryAgent(payQueryIsvRequest);
+            } catch (Exception e) {
+                log.warn("doQueryStatus fail：", e);
+            }
+            String orderStatus = response.getOrderStatus();
+            p.setApplymentState(orderStatus);
+            p.setUpdateTime(new Date());
+            p.setAppUrl(response.getConfirmUrl());
+            if(Objects.equals("MERCHANT_CONFIRM_SUCCESS",orderStatus)){
+                    p.setChecked(true);
+            }
+            payApplyService.updateById(p);
+
+        }else {
+            PayApplyStatusReq payApplyStatusReq = new PayApplyStatusReq();
+            payApplyStatusReq.setMerchantNo(p.getMerchantNo());
+            try {
+                payApi.queryPayApplyStatus(payApplyStatusReq);
+            } catch (Exception e) {
+                log.warn("doQueryStatus fail：", e);
+            }
         }
+
+
+
 
     }
 
