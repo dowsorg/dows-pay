@@ -24,6 +24,7 @@ import org.dows.pay.bo.PayTransactionBo;
 import org.dows.pay.boot.PayClientFactory;
 import org.dows.pay.boot.properties.PayClientProperties;
 import org.dows.pay.entity.PayTransaction;
+import org.dows.pay.form.PayTransactionForm;
 import org.dows.pay.service.PayTransactionService;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
@@ -56,18 +57,18 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
     /**
      * 去支付
      *
-     * @param payRequest
+     * @param payTransactionBo
      * @return
      */
     @PayMapping(method = PayMethods.TRADE_ORDER_PAY)
-    public void toPay(PayRequest payRequest) {
+    public AlipayTradeCreateResponse toPay(PayTransactionForm payTransactionBo) {
         //先创建交易订单
         UUID uuid = idGenerator.generateId();
-        PayTransactionBo payTransactionBo = (PayTransactionBo)payRequest.getBizModel();
+//        PayTransactionBo payTransactionBo = (PayTransactionBo)payRequest.getBizModel();
         PayTransaction payTransaction = BeanUtil.copyProperties(payTransactionBo, PayTransaction.class);
-        payTransaction.setPayChannel(payRequest.getChannel());
+        payTransaction.setPayChannel(payTransactionBo.getChannel());
         payTransaction.setTransactionNo(uuid.toString());
-        payTransaction.setAppId(payRequest.getAppId());
+        payTransaction.setAppId(payTransactionBo.getDealTo());
         payTransaction.setMerchantNo(SecurityUtils.getMerchantNo());
         payTransactionService.save(payTransaction);
 
@@ -84,7 +85,7 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
         request.setBizContent(bizContent.toString());
         AlipayTradeCreateResponse response = null;
         try {
-            response = getAlipayClient(payRequest.getAppId()).certificateExecute(request);
+            response = getAlipayClient(payTransactionBo.getAppId()).certificateExecute(request);
         } catch (AlipayApiException e) {
             throw new RuntimeException(e);
         }
@@ -106,6 +107,7 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
             payTransactionService.updateById(updatePayTransaction);
             throw new RuntimeException("调用失败");
         }
+        return response;
     }
 
 
