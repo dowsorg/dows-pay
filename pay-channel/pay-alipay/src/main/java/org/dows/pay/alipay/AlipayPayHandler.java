@@ -72,7 +72,7 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
         payTransaction.setMerchantNo(SecurityUtils.getMerchantNo());
         payTransactionService.save(payTransaction);
 
-        OrderInstanceBo orderInstanceBo = orderInstanceBizApiService.getOne(payTransactionBo.getOrderId());
+        OrderInstanceBo orderInstanceBo = orderInstanceBizApiService.getOne(payTransactionBo.getOrderId(),true);
 
         AlipayTradeCreateRequest request = new AlipayTradeCreateRequest ();
         JSONObject bizContent = new JSONObject();
