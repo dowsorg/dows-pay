@@ -206,7 +206,7 @@ public class WeixinRoyaltyRelationHandler extends AbstractWeixinHandler {
             return;
         }
 
-        OrderInstanceBo orderInstanceBo = orderInstanceBizApiService.getOne(orderId);
+        OrderInstanceBo orderInstanceBo = orderInstanceBizApiService.getOne(orderId,true);
         if (orderInstanceBo == null) {
             log.error("通过orderId={} 查询订单信息为空,无法进行分账",orderId);
             return;

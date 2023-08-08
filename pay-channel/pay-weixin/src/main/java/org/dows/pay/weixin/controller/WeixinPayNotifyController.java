@@ -164,7 +164,7 @@ public class WeixinPayNotifyController {
                         orderInstanceBizApiService.updateOrderInstance(instanceBo);
 
                         //注销优惠卷
-                        OrderInstanceBo orderInstanceBo = orderInstanceBizApiService.getOne(payTransaction.getOrderId());
+                        OrderInstanceBo orderInstanceBo = orderInstanceBizApiService.getOne(payTransaction.getOrderId(),true);
                         String coupon_id = orderInstanceBo.getCouponId();
                         StoreCouponForm storeCouponForm = storeCouponapi.getFormByCouponId(coupon_id);
                         storeCouponForm.setStatus("0");
