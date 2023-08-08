@@ -115,6 +115,7 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
             log.info("WeixinPayHandler.toPay.payTransaction的参数:{}", payTransaction);
             payTransactionService.save(payTransaction);
         }
+
         //组装订单逻辑
         OrderInstanceBo orderInstanceBo = orderInstanceBizApiService.getOne(payTransactionBo.getOrderId(),true);
         PartnerTransactionsRequest.Amount amount = new PartnerTransactionsRequest.Amount();
