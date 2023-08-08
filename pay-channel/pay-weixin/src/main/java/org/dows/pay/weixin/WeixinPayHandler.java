@@ -109,7 +109,7 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
             payTransactionService.save(payTransaction);
         }
         //组装订单逻辑
-        OrderInstanceBo orderInstanceBo = orderInstanceBizApiService.getOne(payTransactionBo.getOrderId());
+        OrderInstanceBo orderInstanceBo = orderInstanceBizApiService.getOne(payTransactionBo.getOrderId(),true);
         PartnerTransactionsRequest.Amount amount =  new PartnerTransactionsRequest.Amount();
         amount.setCurrency("CNY");
         amount.setTotal(orderInstanceBo.getAgreeAmout().multiply(new BigDecimal(100)).intValue());
@@ -168,7 +168,7 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
     @PayMapping(method = PayMethods.TRADE_ORDER_PAY)
     public String toAccounts(AccountsRequest accountsRequest) {
         //调用分账申请
-        OrderInstanceBo orderInstanceBo = orderInstanceBizApiService.getOne(accountsRequest.getOrderId());
+        OrderInstanceBo orderInstanceBo = orderInstanceBizApiService.getOne(accountsRequest.getOrderId(),true);
         PayAccount payAccount = payAccountService.getOne(Wrappers.lambdaQuery(PayAccount.class).eq(PayAccount::getChannelAccount, accountsRequest.getAppId()));
         PayLedgers payLedger = payLedgersService.getOne(Wrappers.lambdaQuery(PayLedgers.class).eq(PayLedgers::getAppId, accountsRequest.getAppId()));
         log.info("WeixinPayHandler.toPay.payLedger的参数:{}",payLedger);
@@ -241,7 +241,7 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
             payTransactionService.save(payTransaction);
         }
         //组装订单逻辑
-        OrderInstanceBo orderInstanceBo = orderInstanceBizApiService.getOne(payTransactionBo.getOrderId());
+        OrderInstanceBo orderInstanceBo = orderInstanceBizApiService.getOne(payTransactionBo.getOrderId(),true);
         PartnerTransactionsRequest.Amount amount =  new PartnerTransactionsRequest.Amount();
         amount.setCurrency("CNY");
         amount.setTotal(orderInstanceBo.getAgreeAmout().multiply(new BigDecimal(100)).intValue());
