@@ -1,6 +1,7 @@
 package org.dows.pay.alipay;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.StrUtil;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.FileItem;
 import com.alipay.api.domain.*;
@@ -149,6 +150,9 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
 
         FileItem BusinessShopSignPic = getPicFile(payCreateIsvRequest.getShop_sign_board_pic());
         request.setShopSignBoardPic(BusinessShopSignPic);
+        if (StrUtil.isNotBlank(payCreateIsvRequest.getBusiness_license_auth_pic())) {
+            request.setBusinessLicenseAuthPic(getPicFile(payCreateIsvRequest.getBusiness_license_auth_pic()));
+        }
 
         request.setShopName(payCreateIsvRequest.getShop_name());
         if(payCreateIsvRequest.getIsPerson()==0){
@@ -219,21 +223,11 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
      */
     @PayMapping(method = PayMethods.AGENT_QUERY)
     public AlipayOpenAgentOrderQueryResponse queryAgent(PayQueryIsvRequest payQueryIsvRequest) {
-        AlipayOpenAgentOrderQueryResponse response = new AlipayOpenAgentOrderQueryResponse();
-        String BatchNo = payQueryIsvRequest.getBatch_no();
-        if (StringUtil.isEmpty(BatchNo)) {
-            try {
-                LambdaQueryWrapper<AppApply> queryWrapper = new LambdaQueryWrapper();
-                queryWrapper.eq(AppApply::getApplicant, payQueryIsvRequest.getAccount());
-                AppApply appApply = this.appApplyService.getOne(queryWrapper);
-                BatchNo = appApply.getPlatformOrderNo();
-            } catch (Exception e) {
-                response.setSubMsg("支付宝账号未申请");
-                return response;
-            }
+        if (StrUtil.isEmpty(payQueryIsvRequest.getAppid())) {
+            payQueryIsvRequest.setAppid("2021003129694075");
         }
         AlipayOpenAgentOrderQueryModel alipayOpenAgentOrderQueryModel = new AlipayOpenAgentOrderQueryModel();
-        alipayOpenAgentOrderQueryModel.setBatchNo(BatchNo);
+        alipayOpenAgentOrderQueryModel.setBatchNo(payQueryIsvRequest.getBatch_no());
         AlipayOpenAgentOrderQueryRequest request = new AlipayOpenAgentOrderQueryRequest();
         request.setBizModel(alipayOpenAgentOrderQueryModel);
         try {

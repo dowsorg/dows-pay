@@ -442,25 +442,40 @@ public class payBiz implements PayApi {
                 statusResult.setApplymentStateDesc("未申请");
                 return Response.ok(statusResult);
             }
-            response = queryApplymentStatus(payApply.getApplyNo());
-            ApplymentsStatusResult result = (ApplymentsStatusResult) response.getData();
-            if (!Objects.nonNull(payApply.getAppUrl())) {
-                payApply.setAppUrl(result.getSignUrl());
+            if (Objects.equals(payApply.getApplyType(),1)) {
+                response = queryApplymentStatus(payApply.getApplyNo());
+                ApplymentsStatusResult result = (ApplymentsStatusResult) response.getData();
+                if (!Objects.nonNull(payApply.getAppUrl())) {
+                    payApply.setAppUrl(result.getSignUrl());
+                }
+                payApply.setApplymentState(result.getApplymentState());
+                if (Objects.equals("APPLYMENT_STATE_FINISHED", payApply.getApplymentState())) {
+                    payApply.setChecked(true);
+                }
+                payApply.setApplymentStateDesc(result.getApplymentStateDesc());
+                payApply.setUpdateTime(new Date());
+                payApply.setSubMchid(result.getSubMchid());
+                payApplyService.updateById(payApply);
+                if (payApply.getChecked()) {
+                    log.info("start checkAndSavePayAccount......");
+                    // 插入支付账号通道
+                    checkAndSavePayAccount(payApply);
+                }
+                return response;
+            } else {
+                if (StrUtil.isEmpty(payApply.getApplyNo())) {
+                    ApplymentsStatusResult statusResult = new ApplymentsStatusResult();
+                    statusResult.setApplymentState("NOT_APPLYMENT");
+                    statusResult.setApplymentStateDesc("未申请");
+                    return Response.ok(statusResult);
+                }
+                ApplymentsStatusResult statusResult = new ApplymentsStatusResult();
+                statusResult.setApplymentStateDesc(payApply.getApplymentStateDesc());
+                statusResult.setApplymentState(payApply.getApplymentState());
+                statusResult.setSignUrl(payApply.getAppUrl());
+                return Response.ok(statusResult);
             }
-            payApply.setApplymentState(result.getApplymentState());
-            if (Objects.equals("APPLYMENT_STATE_FINISHED", payApply.getApplymentState())) {
-                payApply.setChecked(true);
-            }
-            payApply.setApplymentStateDesc(result.getApplymentStateDesc());
-            payApply.setUpdateTime(new Date());
-            payApply.setSubMchid(result.getSubMchid());
-            payApplyService.updateById(payApply);
-            if (payApply.getChecked()) {
-                log.info("start checkAndSavePayAccount......");
-                // 插入支付账号通道
-                checkAndSavePayAccount(payApply);
-            }
-            return response;
+
         }).orElseGet(() -> {
             ApplymentsStatusResult statusResult = new ApplymentsStatusResult();
             statusResult.setApplymentState("NOT_APPLYMENT");
