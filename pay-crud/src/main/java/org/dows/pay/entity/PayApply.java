@@ -60,8 +60,12 @@ public class PayApply implements CrudEntity {
     @ApiModelProperty("审核是否通过（0:否，1：是）")
     private Boolean checked;
 
+    private String account;
+
     @ApiModelProperty("子商户号")
     private String subMchid;
+
+    private String confirmRes;
 
     @ApiModelProperty("申请类型 1-微信 2-支付宝")
     private Integer applyType;
