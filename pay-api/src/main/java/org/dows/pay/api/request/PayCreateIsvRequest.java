@@ -39,4 +39,5 @@ public class PayCreateIsvRequest extends AbstractPayRequest<PayIsvResponse> {
     private String shop_name;
     @ApiModelProperty("营业执照法人手机号码，上传非同人营业执照时必填")
     private String business_license_mobile;
+    private String merchantNo;
 }

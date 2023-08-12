@@ -25,6 +25,7 @@ import org.dows.app.api.mini.request.uboInfoListRequest;
 import org.dows.app.entity.AppApply;
 import org.dows.app.service.AppApplyService;
 import org.dows.auth.api.weixin.WeixinTokenApi;
+import org.dows.auth.biz.context.SecurityUtils;
 import org.dows.framework.api.Response;
 import org.dows.framework.api.exceptions.BizException;
 import org.dows.pay.alipay.AlipayAgentHandler;
@@ -304,18 +305,28 @@ public class payBiz implements PayApi {
 
     @Override
     public Response applyForPaymentlsv(PayCreateIsvRequest payCreateIsvRequest) {
+        payCreateIsvRequest.setMerchantNo(SecurityUtils.getMerchantNo());
+        if (StrUtil.isEmpty(payCreateIsvRequest.getMerchantNo())) {
+            payCreateIsvRequest.setMerchantNo("0001");
+        }
         if(StringUtil.isEmpty(payCreateIsvRequest.getAppid())) {
             payCreateIsvRequest.setAppid("2021003129694075");
         }
             try {
                 // 小程序申请支付权限
-//                log.info("生成WxPayApplymentCreateResult参数payRequest：{}", payRequest);
                 AlipayOpenAgentCreateResponse batchNoreponse = alipayAgentHandler.createAgent(payCreateIsvRequest);
                 if (batchNoreponse.isSuccess()) {
                     AlipayOpenAgentFacetofaceSignResponse facetofaceIsv = alipayAgentHandler.facetofaceAgent(payCreateIsvRequest, batchNoreponse.getBatchNo());
                     if (facetofaceIsv.isSuccess()) {
                         AlipayOpenAgentConfirmResponse confirmIsv = alipayAgentHandler.confirmAgent(payCreateIsvRequest, batchNoreponse.getBatchNo());
+                        log.info("confirmAgent res is:{}",JSON.toJSONString(confirmIsv));
+                        PayApply payApply = payApplyService.getByApplyNo(batchNoreponse.getBatchNo());
+                        if (Objects.nonNull(payApply)) {
+                            payApply.setConfirmRes(JSON.toJSONString(confirmIsv));
+                            payApplyService.updateById(payApply);
+                        }
                         if(confirmIsv.isSuccess()){
+
                             return Response.ok("申请成功");
                         }else{
                             return Response.fail("申请失败,"+confirmIsv.getSubMsg());
@@ -327,7 +338,8 @@ public class payBiz implements PayApi {
                     return Response.fail("申请失败,"+batchNoreponse.getSubMsg());
                 }
             } catch (Exception e) {
-                return Response.fail("申请失败"+e);
+                log.error("applyForPaymentlsv fail:",e);
+                return Response.fail("申请失败:"+e.getMessage());
             }
     }
 

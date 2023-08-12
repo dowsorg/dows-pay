@@ -21,6 +21,14 @@ import java.util.Optional;
 @Service("payApplyService")
 public class PayApplyServiceImpl extends MybatisCrudServiceImpl<PayApplyMapper, PayApply> implements PayApplyService {
     @Override
+    public PayApply getByApplyNo(String batchNo) {
+        LambdaQueryWrapper<PayApply> queryWrapper = new LambdaQueryWrapper<PayApply>()
+                .eq(PayApply::getApplyNo, batchNo)
+                .last(" limit 1");
+        return getOne(queryWrapper);
+    }
+
+    @Override
     public PayApply getByMerchantNoAndType(String merchantNo, Integer applyType) {
         LambdaQueryWrapper<PayApply> queryWrapper = new LambdaQueryWrapper<PayApply>()
                 .eq(PayApply::getMerchantNo, merchantNo)
