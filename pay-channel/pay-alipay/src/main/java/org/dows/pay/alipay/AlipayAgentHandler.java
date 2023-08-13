@@ -2,6 +2,7 @@ package org.dows.pay.alipay;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSON;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.FileItem;
 import com.alipay.api.domain.*;
@@ -100,6 +101,7 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
             payApply.setAccount(request.getAccount());
             payApply.setApplyType(2);
             payApply.setDt(new Date());
+            payApply.setAliReq(JSON.toJSONString(request));
             payApply.setUpdateTime(new Date());
             payApplyService.save(payApply);
         }
@@ -124,6 +126,7 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
             throw new BizException("创建应用事务出错:"+e.getMessage());
         }
         if (response.isSuccess()) {
+            payApply.setAliReq(JSON.toJSONString(request));
             payApply.setApplyNo(response.getBatchNo());
             payApplyService.updateById(payApply);
         }
@@ -142,9 +145,10 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
         AlipayOpenAgentFacetofaceSignRequest request = new AlipayOpenAgentFacetofaceSignRequest();
         request.setBatchNo(batchNo);
         // https://opendocs.alipay.com/isv/d90ee567_alipay.open.agent.facetoface.sign?scene=common&pathHash=20d91b56
-        request.setMccCode("A0001_B0004");
+        request.setMccCode(payCreateIsvRequest.getMcc_code());
         request.setRate("0.38");
         request.setSignAndAuth(true);
+        request.setLongTerm(payCreateIsvRequest.isLong_term());
         FileItem BusinessShopPic = getPicFile(payCreateIsvRequest.getShop_scene_pic());
         request.setShopScenePic(BusinessShopPic);
 
@@ -161,6 +165,18 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
         }
         if (!StringUtil.isEmpty(payCreateIsvRequest.getBusiness_license_mobile())) {
             payCreateIsvRequest.setBusiness_license_mobile(payCreateIsvRequest.getBusiness_license_mobile());
+        }
+        if (payCreateIsvRequest.getCountry_code()!=null
+                && payCreateIsvRequest.getCity_code()!=null
+                && payCreateIsvRequest.getProvince_code()!=null
+                && payCreateIsvRequest.getDetail_address()!=null
+                && payCreateIsvRequest.getDistrict_code()!=null) {
+            SignAddressInfo signAddressInfo = new SignAddressInfo();
+            signAddressInfo.setCityCode(payCreateIsvRequest.getCity_code());
+            signAddressInfo.setCountryCode(payCreateIsvRequest.getCountry_code());
+            signAddressInfo.setDetailAddress(payCreateIsvRequest.getDetail_address());
+            signAddressInfo.setDistrictCode(payCreateIsvRequest.getDistrict_code());
+            request.setShopAddress(signAddressInfo);
         }
 
         try {
@@ -238,29 +254,14 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
     }
 
     public Response<PayCreateIsvRequest> getApplyIsvByMerchantNo(PayApplyStatusReq req) {
-        AppApply appApply = appApplyService.getAppApplyMerchantNoAndApplyType(req.getMerchantNo(),
-                req.getApplyType() == 1 ? "WEIXIN" : "ALIPAY", req.getAppId());
+        PayApply appApply = payApplyService.getByMerchantNoAndType(req.getMerchantNo(), req.getApplyType());
         if (appApply != null) {
-            PayCreateIsvRequest payCreateIsvRequest= new PayCreateIsvRequest();
-            LambdaQueryWrapper<AppApplyItem> appApplyItemQueryWrapper = new LambdaQueryWrapper<AppApplyItem>();
-            appApplyItemQueryWrapper.eq(AppApplyItem::getApplyOrderNo, appApply.getApplyOrderNo());
-            AppApplyItem appApplyItem = appApplyItemService.getOne(appApplyItemQueryWrapper);
-
-//            payCreateIsvRequest.setAppid(appApply.getAppId());
-            payCreateIsvRequest.setBusiness_license_mobile(appApplyItem.getSuperAdminPhone());
-            payCreateIsvRequest.setAccount(appApply.getApplicant());
-            payCreateIsvRequest.setContact_email(appApplyItem.getContactEmail());
-            payCreateIsvRequest.setContact_mobile(appApplyItem.getContactPhone());
-            payCreateIsvRequest.setContact_name(appApplyItem.getContactName());
-            payCreateIsvRequest.setBusiness_license_pic(appApplyItem.getCertPicture());
-            payCreateIsvRequest.setShop_scene_pic(appApplyItem.getTenantIndoorPicture());
-            payCreateIsvRequest.setShop_sign_board_pic(appApplyItem.getTenantDoorPicture());
-            payCreateIsvRequest.setMcc_code(appApplyItem.getBusinessScope());
-            payCreateIsvRequest.setShop_name(appApplyItem.getCertName());
-
-            return Response.ok(payCreateIsvRequest);
+            if (StrUtil.isNotBlank(appApply.getAliReq())) {
+                PayCreateIsvRequest payCreateIsvRequest= JSON.parseObject(appApply.getAliReq(),PayCreateIsvRequest.class);
+                return Response.ok(payCreateIsvRequest);
+            }
         }
-        return Response.ok();
+        return Response.ok(new PayCreateIsvRequest());
     }
 
     public static FileItem getPicFile(String path) {
