@@ -36,6 +36,9 @@ import java.io.IOException;
 public class PayClientBuilder {
 
     private static String PREFIX_CERTIFICATE_PATH = "/opt/file/";
+
+//    private static String PREFIX_CERTIFICATE_PATH = "/Users/wangjunchi/Downloads/youxing/alipay";
+
     @Autowired
     private   TempRedisApi tempRedisApi;
     private static  PayClientBuilder payClientBuilder;

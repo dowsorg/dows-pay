@@ -182,7 +182,8 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
         try {
             return getAlipayClient(payCreateIsvRequest.getAppid()).certificateExecute(request);
         } catch (AlipayApiException e) {
-            throw new RuntimeException(e);
+            log.error("facetofaceAgent fail:",e);
+            throw new BizException("facetofaceAgent fail:"+e.getMessage());
         }
 
 
