@@ -80,6 +80,7 @@ public class IsvRest {
     @PostMapping("/isv/queryIsvByMerchantNo")
     @ApiOperation(value = "支付宝查询注册信息")
     public Response queryIsvByMerchantNo(@RequestBody PayApplyStatusReq req) {
+        req.setMerchantNo(SecurityUtils.getMerchantNo());
         return alipayAgentHandler.getApplyIsvByMerchantNo(req);
     }
 

@@ -72,6 +72,10 @@ public class QueryApplyStatusJob {
                 } else {
                     p.setApplymentStateDesc(AliPayStatusEnum.getDesc(response.getOrderStatus()));
                 }
+                if (StrUtil.isNotBlank(response.getSubCode())) {
+                    p.setApplymentState(response.getSubCode());
+                    p.setApplymentStateDesc(response.getSubMsg());
+                }
                 p.setApplymentState(response.getOrderStatus());
                 p.setUpdateTime(new Date());
                 p.setAppUrl(response.getConfirmUrl());

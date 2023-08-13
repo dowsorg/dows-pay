@@ -84,6 +84,8 @@ public class PayApply implements CrudEntity {
     @ApiModelProperty("申请状态")
     private String applymentState;
 
+    private String aliReq;
+
     @ApiModelProperty("申请状态描述")
     private String applymentStateDesc;
 
