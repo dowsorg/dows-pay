@@ -23,11 +23,12 @@ import java.util.Optional;
 public class PayTransactionServiceImpl extends MybatisCrudServiceImpl<PayTransactionMapper, PayTransaction> implements PayTransactionService {
 
     @Override
-    public void updateStatusByOrderId(String transactionId,String outTradeNo, Integer code,Integer amount) {
+    public void updateStatusByOrderId(String transactionId,String desc,String outTradeNo, Integer code,Integer amount) {
         this.lambdaUpdate()
                 .eq(PayTransaction::getTransactionNo, outTradeNo)
                 .set(PayTransaction::getStatus, code)
                 .set(PayTransaction::getAmount,amount)
+                .set(PayTransaction::getTradeState,desc)
                 .set(PayTransaction::getTransactionTime,new Date())
                 .set(PayTransaction::getDealTo, transactionId)
                 .update();

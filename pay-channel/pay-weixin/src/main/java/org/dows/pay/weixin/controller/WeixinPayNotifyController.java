@@ -155,7 +155,7 @@ public class WeixinPayNotifyController {
 
                         PayTransaction payTransaction = payTransactionService.getByTransactionNo(transactionsResult.getOutTradeNo());
                         ThreadUtil.execAsync(()->weixinRoyaltyRelationHandler.claimProfit(payTransaction.getOrderId(),transactionsResult.getAmount().getTotal(),transactionsResult.getTransactionId(),payTransaction.getTransactionNo(),payTransaction.getAppId()));
-                        payTransactionService.updateStatusByOrderId(transactionsResult.getTransactionId(),
+                        payTransactionService.updateStatusByOrderId(transactionsResult.getTransactionId(),transactionsResult.getTradeState(),
                                 transactionsResult.getOutTradeNo(),OrderPayTypeEnum.pay_finish.getCode(),transactionsResult.getAmount().getTotal());
                         try {
                             OrderUpdatePaymentStatusBo instanceBo = new OrderUpdatePaymentStatusBo();
