@@ -152,16 +152,22 @@ public class WeixinPayNotifyController {
                     try {
                         notifyResult.setRawData(notifyResponse);
                         notifyResult.setResult(transactionsResult);
-                        OrderUpdatePaymentStatusBo instanceBo = new OrderUpdatePaymentStatusBo();
-                        instanceBo.setTradeStatus(3);
-                        instanceBo.setPayChannel(1);
-                        instanceBo.setTradeType(1);
+
                         PayTransaction payTransaction = payTransactionService.getByTransactionNo(transactionsResult.getOutTradeNo());
                         ThreadUtil.execAsync(()->weixinRoyaltyRelationHandler.claimProfit(payTransaction.getOrderId(),transactionsResult.getAmount().getTotal(),transactionsResult.getTransactionId(),payTransaction.getTransactionNo(),payTransaction.getAppId()));
                         payTransactionService.updateStatusByOrderId(transactionsResult.getTransactionId(),
                                 transactionsResult.getOutTradeNo(),OrderPayTypeEnum.pay_finish.getCode(),transactionsResult.getAmount().getTotal());
-                        instanceBo.setOrderId(payTransaction.getOrderId());
-                        orderInstanceBizApiService.updateOrderInstance(instanceBo);
+                        try {
+                            OrderUpdatePaymentStatusBo instanceBo = new OrderUpdatePaymentStatusBo();
+                            instanceBo.setTradeStatus(3);
+                            instanceBo.setPayChannel(1);
+                            instanceBo.setTradeType(1);
+                            instanceBo.setOrderId(payTransaction.getOrderId());
+                            orderInstanceBizApiService.updateOrderInstance(instanceBo);
+                        } catch (Exception e) {
+                            System.out.println("invoke updateOrderInstance error:"+e);
+                            log.error("invoke updateOrderInstance error :",e);
+                        }
 
                         //注销优惠卷
                         OrderInstanceBo orderInstanceBo = orderInstanceBizApiService.getOne(payTransaction.getOrderId(),true);
