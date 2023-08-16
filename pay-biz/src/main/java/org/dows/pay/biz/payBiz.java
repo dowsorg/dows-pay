@@ -218,7 +218,6 @@ public class payBiz implements PayApi {
 
     @Override
     public Response<PayQueryRes> queryPayOrder(PayQueryReq req) {
-        log.info("queryPayOrder req is :{}",JSON.toJSONString(req));
         PayTransaction payTransaction = payTransactionService.queryPayOrder(req.getOrderId(),req.getOutTradeNo());
         PayQueryRes res = Optional.ofNullable(payTransaction).map(pay -> {
             if (Objects.equals(pay.getStatus(), 1)) {
@@ -230,16 +229,14 @@ public class payBiz implements PayApi {
                         .payDesc(pay.getTradeState())
                         .payTime(pay.getTransactionTime())
                         .build();
-            } else {
-                PayQueryRes payQueryRes = queryWechatOrder(pay);
-                pay.setTradeState(payQueryRes.getPayDesc());
-                if (Objects.equals(payQueryRes.getPayDesc(),"SUCCESS")) {
-                    pay.setStatus(1);
-                }
-                payTransactionService.updateById(payTransaction);
-                return payQueryRes;
             }
-
+            PayQueryRes payQueryRes = queryWechatOrder(pay);
+            pay.setTradeState(payQueryRes.getPayDesc());
+            if (Objects.equals(payQueryRes.getPayDesc(),"SUCCESS")) {
+                pay.setStatus(1);
+            }
+            payTransactionService.updateById(payTransaction);
+            return payQueryRes;
         }).orElseGet(() -> PayQueryRes.builder().payDesc("NOTPAY").build());
         return Response.ok(res);
     }
@@ -247,17 +244,17 @@ public class payBiz implements PayApi {
     private PayQueryRes queryWechatOrder(PayTransaction payTransaction) {
         if (Objects.equals(payTransaction.getPayChannel(),"weixin")) {
             Map<String, Object> map = weixinPayHandler.queryWechatOrder(payTransaction.getTransactionNo(),payTransaction.getAppId());
-//            String trade_state = Objects.nonNull(map.get("trade_state"))?map.get("trade_state").toString():"";
-//            Date date =null;
-//            if (Objects.equals(trade_state,"SUCCESS")) {
-//                String success_time = map.get("success_time").toString();
-//                // 解析时间字符串
-//                OffsetDateTime offsetDateTime = OffsetDateTime.parse(success_time, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-//                // 转换为 Date 类型
-//                 date = Date.from(offsetDateTime.toInstant());
-//            }
-
+            Date date = null;
+            Object successTime = map.get("success_time");
+            if(successTime != null){
+                String success_time = successTime.toString();
+                // 解析时间字符串
+                OffsetDateTime offsetDateTime = OffsetDateTime.parse(success_time, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+                // 转换为 Date 类型
+                date = Date.from(offsetDateTime.toInstant());
+            }
             return PayQueryRes.builder()
+                    .payTime(date)
                     .payDesc(map.get("trade_state").toString())
                     .outTradeNo(map.get("transaction_id").toString())
                     .payChannel(payTransaction.getPayChannel())
