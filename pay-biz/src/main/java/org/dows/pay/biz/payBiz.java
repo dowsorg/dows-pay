@@ -256,7 +256,7 @@ public class payBiz implements PayApi {
             return PayQueryRes.builder()
                     .payTime(date)
                     .payDesc(map.get("trade_state").toString())
-                    .outTradeNo(map.get("transaction_id").toString())
+                    .outTradeNo(Optional.ofNullable(map.get("transaction_id")).map(Object::toString).orElse(null))
                     .payChannel(payTransaction.getPayChannel())
                     .orderId(payTransaction.getOrderId())
                     .payAmount(payTransaction.getAmount())
