@@ -244,11 +244,15 @@ public class payBiz implements PayApi {
     private PayQueryRes queryWechatOrder(PayTransaction payTransaction) {
         if (Objects.equals(payTransaction.getPayChannel(),"weixin")) {
             Map<String, Object> map = weixinPayHandler.queryWechatOrder(payTransaction.getTransactionNo(),payTransaction.getAppId());
-            String success_time = map.get("success_time").toString();
-            // 解析时间字符串
-            OffsetDateTime offsetDateTime = OffsetDateTime.parse(success_time, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-            // 转换为 Date 类型
-            Date date = Date.from(offsetDateTime.toInstant());
+            Date date = null;
+            Object successTime = map.get("success_time");
+            if(successTime != null){
+                String success_time = successTime.toString();
+                // 解析时间字符串
+                OffsetDateTime offsetDateTime = OffsetDateTime.parse(success_time, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+                // 转换为 Date 类型
+                date = Date.from(offsetDateTime.toInstant());
+            }
             return PayQueryRes.builder()
                     .payTime(date)
                     .payDesc(map.get("trade_state").toString())
