@@ -12,6 +12,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 import org.dows.framework.crud.mybatis.CrudEntity;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -64,7 +65,7 @@ public class PayTransaction implements CrudEntity {
     private String dealTo;
 
     @ApiModelProperty("交易金额")
-    private Integer amount;
+    private BigDecimal amount;
 
     @ApiModelProperty("备注")
     private String remark;

@@ -224,7 +224,7 @@ public class payBiz implements PayApi {
                 return PayQueryRes.builder()
                         .orderId(pay.getOrderId())
                         .outTradeNo(pay.getDealTo())
-                        .payAmount(pay.getAmount())
+                        .payAmount(pay.getAmount().intValue())
                         .payChannel(pay.getPayChannel())
                         .payDesc(pay.getTradeState())
                         .payTime(pay.getTransactionTime())
@@ -255,7 +255,7 @@ public class payBiz implements PayApi {
                     .outTradeNo(map.get("transaction_id").toString())
                     .payChannel(payTransaction.getPayChannel())
                     .orderId(payTransaction.getOrderId())
-                    .payAmount(payTransaction.getAmount())
+                    .payAmount(payTransaction.getAmount().intValue())
                     .build();
         }
         // todo:支付宝查询
