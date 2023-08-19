@@ -367,7 +367,7 @@ public class WeixinRoyaltyRelationHandler extends AbstractWeixinHandler {
         if (payTransaction == null) {
             throw new BizException("payTransaction is null");
         }
-        claimProfit(payTransaction.getOrderId(),payTransaction.getAmount(),payTransaction.getDealTo(),
+        claimProfit(payTransaction.getOrderId(),payTransaction.getAmount().intValue(),payTransaction.getDealTo(),
                 payTransaction.getTransactionNo(),payTransaction.getAppId());
     }
 
