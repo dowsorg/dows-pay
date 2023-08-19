@@ -133,7 +133,6 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
             //下单成功
             PayTransaction updatePayTransaction = PayTransaction.builder()
                     .id(payTransaction.getId())
-                    .status(2)
                     .dealTo(response.getTradeNo())
                     .build();
             payTransactionService.updateById(updatePayTransaction);
