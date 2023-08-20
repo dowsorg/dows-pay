@@ -58,32 +58,32 @@ public class QueryApplyStatusJob {
 
     private void doQueryStatus(PayApply p) {
         if(p.getApplyType().equals(2)){
-//            if (!p.getChecked()) {
-//                PayQueryIsvRequest payQueryIsvRequest = new PayQueryIsvRequest();
-//                payQueryIsvRequest.setBatch_no(p.getApplyNo());
-//                AlipayOpenAgentOrderQueryResponse response=new AlipayOpenAgentOrderQueryResponse();
-//                try {
-//                    response = alipayAgentHandler.queryAgent(payQueryIsvRequest);
-//                } catch (Exception e) {
-//                    log.warn("doQueryStatus fail：", e);
-//                }
-//                if (StrUtil.isNotBlank(response.getRejectReason())) {
-//                    p.setApplymentStateDesc(response.getRejectReason());
-//                } else {
-//                    p.setApplymentStateDesc(AliPayStatusEnum.getDesc(response.getOrderStatus()));
-//                }
-//                if (StrUtil.isNotBlank(response.getSubCode())) {
-//                    p.setApplymentState(response.getSubCode());
-//                    p.setApplymentStateDesc(response.getSubMsg());
-//                }
-//                p.setApplymentState(response.getOrderStatus());
-//                p.setUpdateTime(new Date());
-//                p.setAppUrl(response.getConfirmUrl());
-//                if(Objects.equals("MERCHANT_CONFIRM_SUCCESS",response.getOrderStatus())){
-//                    p.setChecked(true);
-//                }
-//                payApplyService.updateById(p);
-//            }
+            if (!p.getChecked()) {
+                PayQueryIsvRequest payQueryIsvRequest = new PayQueryIsvRequest();
+                payQueryIsvRequest.setBatch_no(p.getApplyNo());
+                AlipayOpenAgentOrderQueryResponse response=new AlipayOpenAgentOrderQueryResponse();
+                try {
+                    response = alipayAgentHandler.queryAgent(payQueryIsvRequest);
+                } catch (Exception e) {
+                    log.warn("doQueryStatus fail：", e);
+                }
+                if (StrUtil.isNotBlank(response.getRejectReason())) {
+                    p.setApplymentStateDesc(response.getRejectReason());
+                } else {
+                    p.setApplymentStateDesc(AliPayStatusEnum.getDesc(response.getOrderStatus()));
+                }
+                if (StrUtil.isNotBlank(response.getSubCode())) {
+                    p.setApplymentState(response.getSubCode());
+                    p.setApplymentStateDesc(response.getSubMsg());
+                }
+                p.setApplymentState(response.getOrderStatus());
+                p.setUpdateTime(new Date());
+                p.setAppUrl(response.getConfirmUrl());
+                if(Objects.equals("MERCHANT_CONFIRM_SUCCESS",response.getOrderStatus())){
+                    p.setChecked(true);
+                }
+                payApplyService.updateById(p);
+            }
         }else {
             PayApplyStatusReq payApplyStatusReq = new PayApplyStatusReq();
             payApplyStatusReq.setMerchantNo(p.getMerchantNo());
