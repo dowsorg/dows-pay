@@ -1,7 +1,9 @@
 package org.dows.pay.alipay;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.extra.qrcode.QrCodeUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alipay.api.AlipayApiException;
@@ -9,7 +11,9 @@ import com.alipay.api.AlipayRequest;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.msg.AlipayMsgClient;
 import com.alipay.api.request.AlipayTradeCreateRequest;
+import com.alipay.api.request.AlipayTradePrecreateRequest;
 import com.alipay.api.response.AlipayTradeCreateResponse;
+import com.alipay.api.response.AlipayTradePrecreateResponse;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +23,7 @@ import org.dows.account.vo.AccountInstanceVo;
 import org.dows.auth.api.TempRedisApi;
 import org.dows.auth.entity.TempRedis;
 import org.dows.framework.api.exceptions.BizException;
+import org.dows.framework.oss.tencent.TencentOssClient;
 import org.dows.order.bo.OrderInstanceBo;
 import org.dows.pay.api.PayEvent;
 import org.dows.pay.api.PayException;
@@ -27,6 +32,7 @@ import org.dows.pay.api.annotation.PayMapping;
 import org.dows.pay.api.enums.PayMethods;
 import org.dows.pay.api.event.OrderPaySuccessEvent;
 import org.dows.pay.api.message.AlipayMessage;
+import org.dows.pay.api.request.FacePayCreateRes;
 import org.dows.pay.bo.PayTransactionBo;
 import org.dows.pay.boot.PayClientFactory;
 import org.dows.pay.boot.properties.PayClientProperties;
@@ -34,6 +40,8 @@ import org.dows.pay.entity.PayTransaction;
 import org.dows.pay.form.AliPayRequest;
 import org.dows.pay.form.PayTransactionForm;
 import org.dows.pay.service.PayTransactionService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.util.IdGenerator;
@@ -41,6 +49,8 @@ import org.springframework.util.SimpleIdGenerator;
 import org.dows.auth.biz.context.SecurityUtils;
 import org.dows.order.api.OrderInstanceBizApiService;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
@@ -57,6 +67,8 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
     private final PayClientFactory payClientFactory;
 
     private final PayTransactionService payTransactionService;
+
+    private final TencentOssClient localOssClient;
 
     private static final String ALI_PAY_NOTIFY_URL = "https://www.dxzsaas.com/api/user/aliPay/notify";
 
@@ -87,14 +99,14 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
         if (orderInstanceBo == null) {
             throw new BizException("传入订单参数有误");
         }
-        String accountId = orderInstanceBo.getAccountId();
-        if (StrUtil.isEmpty(accountId)) {
-            throw new BizException("订单记录用户账号字段为空");
-        }
-        AccountInstanceVo accountInstanceVo = accountInstanceApi.selectAccountInstanceByAccountId(accountId);
-        if (Objects.isNull(accountInstanceVo)) {
-            throw new BizException("用户账号查询为空 accountId=:"+accountId);
-        }
+//        String accountId = orderInstanceBo.getAccountId();
+//        if (StrUtil.isEmpty(accountId)) {
+//            throw new BizException("订单记录用户账号字段为空");
+//        }
+//        AccountInstanceVo accountInstanceVo = accountInstanceApi.selectAccountInstanceByAccountId(accountId);
+//        if (Objects.isNull(accountInstanceVo)) {
+//            throw new BizException("用户账号查询为空 accountId=:"+accountId);
+//        }
         String appId = orderInstanceBo.getAppId();
         TempRedis tempRedis = tempRedisApi.getKey(appId);
         if (Objects.isNull(tempRedis)) {
@@ -116,10 +128,11 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
         bizContent.put("total_amount", orderInstanceBo.getAgreeAmout());
         bizContent.put("subject", "支付宝下单");
         bizContent.put("timeout_express", "10m");
-        bizContent.put("buyer_id",accountInstanceVo.getUserId());
+//        bizContent.put("buyer_id",accountInstanceVo.getUserId());
         // 商户实际经营主体的小程序应用的appid
         bizContent.put("op_app_id", orderInstanceBo.getAppId());
-        bizContent.put("product_code", "JSAPI_PAY");
+//        bizContent.put("product_code", "JSAPI_PAY");
+        bizContent.put("product_code", "FACE_TO_FACE_PAYMENT");
         request.setNotifyUrl(ALI_PAY_NOTIFY_URL);
         request.setBizContent(bizContent.toString());
         AlipayTradeCreateResponse response;
@@ -238,6 +251,71 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
         }
         AlipayRequest alipayRequest = null;
         alipayMsgClient.sendMessage(alipayRequest);
+    }
+
+
+
+    public FacePayCreateRes scanPay(AliPayRequest payTransactionBo) {
+
+        PayTransaction payTransaction = payTransactionService.getByOrderId(payTransactionBo.getOrderId());
+        if (payTransaction == null) {
+            payTransaction = new PayTransaction();
+        }
+        if (Objects.equals(payTransaction.getStatus(),1)) {
+            throw new BizException("该订单已支付,请勿重复发起");
+        }
+        OrderInstanceBo orderInstanceBo = orderInstanceBizApiService.getOne(payTransactionBo.getOrderId());
+        if (orderInstanceBo == null) {
+            throw new BizException("传入订单参数有误");
+        }
+        String appId = orderInstanceBo.getAppId();
+        TempRedis tempRedis = tempRedisApi.getKey(appId);
+        if (Objects.isNull(tempRedis)) {
+            throw new BizException("获取商家授权token为空,appId=" + appId);
+        }
+        //先创建交易订单
+        UUID uuid = idGenerator.generateId();
+        payTransaction.setPayChannel("aliPay");
+        payTransaction.setTransactionNo(uuid.toString());
+        payTransaction.setAppId(orderInstanceBo.getAppId());
+        payTransaction.setMerchantNo(SecurityUtils.getMerchantNo());
+        if (payTransaction.getId() ==null) {
+            payTransactionService.save(payTransaction);
+        }
+
+        AlipayTradePrecreateRequest request = new AlipayTradePrecreateRequest ();
+        JSONObject bizContent = new JSONObject();
+        bizContent.put("out_trade_no", uuid);
+        bizContent.put("total_amount", orderInstanceBo.getAgreeAmout());
+        bizContent.put("subject", "支付宝扫码下单");
+        // 商户实际经营主体的小程序应用的appid
+        bizContent.put("product_code", "FACE_TO_FACE_PAYMENT");
+        request.setNotifyUrl(ALI_PAY_NOTIFY_URL);
+        request.setBizContent(bizContent.toString());
+        AlipayTradePrecreateResponse response;
+        try {
+            // appId="2021004100609101"   token="202307BB6204a0ec6a3c4f7ebf83e7c993cc6X96"
+            response = getAlipayClient("2021003129694075").certificateExecute(request,null,tempRedis.getRvalue());
+        } catch (AlipayApiException e) {
+            throw new RuntimeException(e);
+        }
+        if (response.isSuccess()) {
+            //下单成功
+//            byte[] qr = QrCodeUtil.generatePng(response.getQrCode(), 200, 200);
+//            String fileName = DateUtil.formatDate(DateUtil.date())+payTransactionBo.getOrderId() + ".png";
+//            localOssClient.upLoad(new ByteArrayInputStream(qr), fileName);
+//            String imgUrl = File.separator + "image" + File.separator.concat(fileName);
+//            applyZfStatusRes.setImgUrl(imgUrl);
+           return FacePayCreateRes.builder().qrCodeImage(response.getQrCode()).tradeNo(response.getOutTradeNo()).build();
+        } else {
+            PayTransaction updatePayTransaction = PayTransaction.builder()
+                    .id(payTransaction.getId())
+                    .status(2)
+                    .remark(String.join(",",response.getMsg(),response.getSubMsg()))
+                    .build();
+            payTransactionService.updateById(updatePayTransaction);
+            throw new BizException("支付宝创建订单失败:"+response.getSubMsg());
+        }
     }
 
 }

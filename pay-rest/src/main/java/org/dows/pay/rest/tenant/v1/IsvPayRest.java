@@ -1,7 +1,9 @@
 package org.dows.pay.rest.tenant.v1;
 
 
+import com.alipay.api.request.AlipayTradePrecreateRequest;
 import com.alipay.api.response.AlipayTradeCreateResponse;
+import com.alipay.api.response.AlipayTradePrecreateResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.dows.framework.api.Response;
 import org.dows.framework.crud.mybatis.MybatisCrudRest;
 import org.dows.pay.alipay.AlipayPayHandler;
+import org.dows.pay.api.request.FacePayCreateRes;
 import org.dows.pay.entity.PayApi;
 import org.dows.pay.form.AliPayRequest;
 import org.dows.pay.form.PayApiForm;
@@ -38,6 +41,14 @@ public class IsvPayRest {
     @ApiOperation(value = "支付宝去支付")
     public Response toPay(@RequestBody AliPayRequest payTransactionForm) {
         AlipayTradeCreateResponse result= alipayPayHandler.toPay(payTransactionForm);
+        return Response.ok(result);
+    }
+
+
+    @PostMapping("/scanPay")
+    @ApiOperation(value = "支付宝去支付")
+    public Response scanPay(@RequestBody AliPayRequest payTransactionForm) {
+        FacePayCreateRes result= alipayPayHandler.scanPay(payTransactionForm);
         return Response.ok(result);
     }
 
