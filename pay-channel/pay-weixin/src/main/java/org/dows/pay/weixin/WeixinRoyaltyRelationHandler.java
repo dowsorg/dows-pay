@@ -290,7 +290,9 @@ public class WeixinRoyaltyRelationHandler extends AbstractWeixinHandler {
             String res = EntityUtils.toString(entity, StandardCharsets.UTF_8);
             System.out.println("profitSharing result is:"+res);
             // 后面加日志记录
+            JSONObject jsonObject = JSONObject.parseObject(res);
             payLedgersRecord.setResult(res);
+            payLedgersRecord.setState(jsonObject.getString("state"));
             payLedgersRecordMapper.updateById(payLedgersRecord);
         } catch (IOException e) {
            log.error("profitSharing error:",e);
@@ -310,6 +312,7 @@ public class WeixinRoyaltyRelationHandler extends AbstractWeixinHandler {
         payLedgersRecord.setChannelAccountType(true);
         payLedgersRecord.setAllocationProfit(BigDecimal.valueOf(allocationProfit));
         payLedgersRecord.setAmount(amount);
+        payLedgersRecord.setCreateTime(new Date());
         payLedgersRecordMapper.insert(payLedgersRecord);
         return payLedgersRecord;
     }
