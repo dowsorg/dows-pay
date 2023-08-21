@@ -273,7 +273,7 @@ public class WeixinRoyaltyRelationHandler extends AbstractWeixinHandler {
                 .build();
 
         try {
-           log.info("订单id={} 发起分账:{}",orderId,JSON.toJSONString(profitSharingRequest));
+           log.info("订单id发起分账 {}:{}",orderId,JSON.toJSONString(profitSharingRequest));
             HttpPost httpPost = new HttpPost("https://api.mch.weixin.qq.com/v3/profitsharing/orders");
             StringEntity stringEntity = new StringEntity(JSON.toJSONString(profitSharingRequest), ContentType.create("application/json", "utf-8"));
             httpPost.setEntity(stringEntity);
