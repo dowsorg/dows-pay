@@ -67,8 +67,10 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
     private final PayClientFactory payClientFactory;
 
     private final PayTransactionService payTransactionService;
+
     @Lazy
-    private final TencentOssClient localOssClient;
+    @Autowired
+    private TencentOssClient localOssClient;
 
     private static final String ALI_PAY_NOTIFY_URL = "https://www.dxzsaas.com/api/user/aliPay/notify";
 
