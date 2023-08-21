@@ -414,7 +414,7 @@ public class payBiz implements PayApi {
         miniUploadRequest.setAppId(appId);
         miniUploadRequest.setAuthorizerAppid(request.getAppId());
         miniUploadRequest.setTemplateId(request.getTemplateId());
-        miniUploadRequest.setUserVersion("V1.0");
+        miniUploadRequest.setUserVersion(request.getAppVersion()==null?"V1.1":request.getAppVersion());
         miniUploadRequest.setUserDesc("normal");
         miniUploadRequest.setExtJsonObject(getExtJsonObject(request.getAppId()));
         return miniUploadRequest;
