@@ -280,12 +280,15 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
         }
         //先创建交易订单
         String uuid = IdUtil.fastSimpleUUID();
+        payTransaction.setOrderId(payTransactionBo.getOrderId());
         payTransaction.setPayChannel("aliPay");
         payTransaction.setTransactionNo(uuid);
         payTransaction.setAppId(orderInstanceBo.getAppId());
         payTransaction.setMerchantNo(SecurityUtils.getMerchantNo());
         if (payTransaction.getId() ==null) {
             payTransactionService.save(payTransaction);
+        } else {
+            payTransactionService.updateById(payTransaction);
         }
 
         AlipayTradePrecreateRequest request = new AlipayTradePrecreateRequest ();
