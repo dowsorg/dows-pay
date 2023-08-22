@@ -30,12 +30,10 @@ import org.dows.framework.api.Response;
 import org.dows.framework.api.exceptions.BizException;
 import org.dows.pay.alipay.AlipayAgentHandler;
 import org.dows.pay.alipay.AlipayIsvHandler;
+import org.dows.pay.alipay.AlipayPayHandler;
 import org.dows.pay.api.PayApi;
 import org.dows.pay.api.PayRequest;
-import org.dows.pay.api.request.MiniUploadRequest;
-import org.dows.pay.api.request.PayCreateIsvRequest;
-import org.dows.pay.api.request.PayIsvRequest;
-import org.dows.pay.api.request.PayQueryReq;
+import org.dows.pay.api.request.*;
 import org.dows.pay.api.response.PayQueryRes;
 import org.dows.pay.bo.IsvCreateBo;
 import org.dows.pay.bo.IsvCreateTyBo;
@@ -43,6 +41,7 @@ import org.dows.pay.boot.PayClientConfig;
 import org.dows.pay.entity.PayAccount;
 import org.dows.pay.entity.PayApply;
 import org.dows.pay.entity.PayTransaction;
+import org.dows.pay.form.AliPayRequest;
 import org.dows.pay.form.WxBaseInfoForm;
 import org.dows.pay.service.PayAccountService;
 import org.dows.pay.service.PayApplyService;
@@ -86,6 +85,10 @@ public class payBiz implements PayApi {
     private final AppApplyService appApplyService;
     @Lazy
     private final MiniBiz miniBiz;
+
+    @Autowired
+    @Lazy
+    private AlipayPayHandler alipayPayHandler;
 
     @Autowired
     @Lazy
@@ -394,6 +397,17 @@ public class payBiz implements PayApi {
         wxBaseInfoForm.setAuthorizerAccessToken(authorizerAccessToken);
         Response nickNameStatus = miniBiz.getNickNameStatus(wxBaseInfoForm);
         return nickNameStatus;
+    }
+
+    @Override
+    public ScanPayApplyRes scanPay(ScanPayReq req) {
+        log.info(" order scanPay req is {}",JSON.toJSONString(req));
+        AliPayRequest aliPayRequest = new AliPayRequest();
+        aliPayRequest.setOrderId(req.getOrderId());
+        aliPayRequest.setMerchantNo(req.getMerchantNo());
+        aliPayRequest.setAmount(req.getAmount());
+
+        return  alipayPayHandler.scanPay(aliPayRequest);
     }
 
     @Override
