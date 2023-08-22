@@ -8,6 +8,8 @@ import org.dows.app.api.mini.response.PayApplyStatusRes;
 import org.dows.framework.api.Response;
 import org.dows.pay.api.request.PayCreateIsvRequest;
 import org.dows.pay.api.request.PayQueryReq;
+import org.dows.pay.api.request.ScanPayApplyRes;
+import org.dows.pay.api.request.ScanPayReq;
 import org.dows.pay.api.response.PayQueryRes;
 
 public interface PayApi {
@@ -110,5 +112,7 @@ public interface PayApi {
      * @return
      */
     WxOpenQueryAuthResult apiQueryAuth(String authorizationCode);
+
+    ScanPayApplyRes scanPay(ScanPayReq req);
 
 }

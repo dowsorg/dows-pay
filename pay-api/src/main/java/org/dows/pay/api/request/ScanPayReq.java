@@ -1,4 +1,4 @@
-package org.dows.pay.form;
+package org.dows.pay.api.request;
 
 import lombok.Data;
 
@@ -6,19 +6,25 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Data
-public class AliPayRequest implements Serializable {
+public class ScanPayReq implements Serializable {
 
     /**
-     * 前端必传
+     * 订单id
      */
     private String orderId;
 
+    /**
+     * 商户号
+     */
     private String merchantNo;
 
-    private String openId;
-
+    /**
+     * 应付金额
+     */
     private BigDecimal amount;
 
+    /**
+     * 商家应用id
+     */
     private String appId;
-
 }

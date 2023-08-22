@@ -267,22 +267,27 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
         if (Objects.equals(payTransaction.getStatus(),1)) {
             throw new BizException("该订单已支付,请勿重复发起");
         }
-        OrderInstanceBo orderInstanceBo = orderInstanceBizApiService.getOne(payTransactionBo.getOrderId());
-        if (orderInstanceBo == null) {
-            throw new BizException("传入订单参数有误");
+        if (payTransactionBo.getAmount() == null) {
+            OrderInstanceBo orderInstanceBo = orderInstanceBizApiService.getOne(payTransactionBo.getOrderId());
+            if (orderInstanceBo == null) {
+                throw new BizException("传入订单参数有误");
+            }
+            payTransactionBo.setAmount(orderInstanceBo.getAgreeAmout());
+            payTransactionBo.setAppId(orderInstanceBo.getAppId());
+            payTransactionBo.setMerchantNo(SecurityUtils.getMerchantNo());
         }
-        String appId = orderInstanceBo.getAppId();
-        TempRedis tempRedis = tempRedisApi.getKey(appId);
+
+        TempRedis tempRedis = tempRedisApi.getKey(payTransactionBo.getAppId());
         if (Objects.isNull(tempRedis)) {
-            throw new BizException("获取商家授权token为空,appId=" + appId);
+            throw new BizException("获取商家授权token为空,appId=" + payTransactionBo.getAppId());
         }
         //先创建交易订单
         String uuid = IdUtil.fastSimpleUUID();
         payTransaction.setOrderId(payTransactionBo.getOrderId());
         payTransaction.setPayChannel("aliPay");
         payTransaction.setTransactionNo(uuid);
-        payTransaction.setAppId(orderInstanceBo.getAppId());
-        payTransaction.setMerchantNo(SecurityUtils.getMerchantNo());
+        payTransaction.setAppId(payTransactionBo.getAppId());
+        payTransaction.setMerchantNo(payTransactionBo.getMerchantNo());
         if (payTransaction.getId() ==null) {
             payTransaction.setDt(new Date());
             payTransactionService.save(payTransaction);
@@ -293,7 +298,7 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
         AlipayTradePrecreateRequest request = new AlipayTradePrecreateRequest ();
         JSONObject bizContent = new JSONObject();
         bizContent.put("out_trade_no", uuid);
-        bizContent.put("total_amount", orderInstanceBo.getAgreeAmout());
+        bizContent.put("total_amount", payTransactionBo.getAmount());
         bizContent.put("subject", "支付宝扫码下单");
         // 商户实际经营主体的小程序应用的appid
         bizContent.put("product_code", "FACE_TO_FACE_PAYMENT");
