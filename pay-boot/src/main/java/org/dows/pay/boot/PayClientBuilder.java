@@ -35,9 +35,9 @@ import java.io.IOException;
 @Slf4j
 public class PayClientBuilder {
 
-//    private static String PREFIX_CERTIFICATE_PATH = "/opt/file/";
+    private static String PREFIX_CERTIFICATE_PATH = "/opt/file/";
 
-    private static String PREFIX_CERTIFICATE_PATH = "/Users/wangjunchi/Downloads/youxing/alipay";
+//    private static String PREFIX_CERTIFICATE_PATH = "/Users/wangjunchi/Downloads/youxing/alipay";
 
     @Autowired
     private   TempRedisApi tempRedisApi;

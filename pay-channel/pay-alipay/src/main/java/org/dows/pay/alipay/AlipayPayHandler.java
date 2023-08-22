@@ -2,6 +2,7 @@ package org.dows.pay.alipay;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.qrcode.QrCodeUtil;
 import com.alibaba.fastjson.JSON;
@@ -23,6 +24,7 @@ import org.dows.account.vo.AccountInstanceVo;
 import org.dows.auth.api.TempRedisApi;
 import org.dows.auth.entity.TempRedis;
 import org.dows.framework.api.exceptions.BizException;
+import org.dows.framework.oss.api.OssInfo;
 import org.dows.framework.oss.tencent.TencentOssClient;
 import org.dows.order.bo.OrderInstanceBo;
 import org.dows.pay.api.PayEvent;
@@ -33,6 +35,7 @@ import org.dows.pay.api.enums.PayMethods;
 import org.dows.pay.api.event.OrderPaySuccessEvent;
 import org.dows.pay.api.message.AlipayMessage;
 import org.dows.pay.api.request.FacePayCreateRes;
+import org.dows.pay.api.request.ScanPayApplyRes;
 import org.dows.pay.bo.PayTransactionBo;
 import org.dows.pay.boot.PayClientFactory;
 import org.dows.pay.boot.properties.PayClientProperties;
@@ -99,14 +102,14 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
         if (orderInstanceBo == null) {
             throw new BizException("传入订单参数有误");
         }
-//        String accountId = orderInstanceBo.getAccountId();
-//        if (StrUtil.isEmpty(accountId)) {
-//            throw new BizException("订单记录用户账号字段为空");
-//        }
-//        AccountInstanceVo accountInstanceVo = accountInstanceApi.selectAccountInstanceByAccountId(accountId);
-//        if (Objects.isNull(accountInstanceVo)) {
-//            throw new BizException("用户账号查询为空 accountId=:"+accountId);
-//        }
+        String accountId = orderInstanceBo.getAccountId();
+        if (StrUtil.isEmpty(accountId)) {
+            throw new BizException("订单记录用户账号字段为空");
+        }
+        AccountInstanceVo accountInstanceVo = accountInstanceApi.selectAccountInstanceByAccountId(accountId);
+        if (Objects.isNull(accountInstanceVo)) {
+            throw new BizException("用户账号查询为空 accountId=:"+accountId);
+        }
         String appId = orderInstanceBo.getAppId();
         TempRedis tempRedis = tempRedisApi.getKey(appId);
         if (Objects.isNull(tempRedis)) {
@@ -255,7 +258,7 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
 
 
 
-    public FacePayCreateRes scanPay(AliPayRequest payTransactionBo) {
+    public ScanPayApplyRes scanPay(AliPayRequest payTransactionBo) {
 
         PayTransaction payTransaction = payTransactionService.getByOrderId(payTransactionBo.getOrderId());
         if (payTransaction == null) {
@@ -274,9 +277,9 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
             throw new BizException("获取商家授权token为空,appId=" + appId);
         }
         //先创建交易订单
-        UUID uuid = idGenerator.generateId();
+        String uuid = IdUtil.fastSimpleUUID();
         payTransaction.setPayChannel("aliPay");
-        payTransaction.setTransactionNo(uuid.toString());
+        payTransaction.setTransactionNo(uuid);
         payTransaction.setAppId(orderInstanceBo.getAppId());
         payTransaction.setMerchantNo(SecurityUtils.getMerchantNo());
         if (payTransaction.getId() ==null) {
@@ -301,12 +304,13 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
         }
         if (response.isSuccess()) {
             //下单成功
-//            byte[] qr = QrCodeUtil.generatePng(response.getQrCode(), 200, 200);
-//            String fileName = DateUtil.formatDate(DateUtil.date())+payTransactionBo.getOrderId() + ".png";
-//            localOssClient.upLoad(new ByteArrayInputStream(qr), fileName);
-//            String imgUrl = File.separator + "image" + File.separator.concat(fileName);
-//            applyZfStatusRes.setImgUrl(imgUrl);
-           return FacePayCreateRes.builder().qrCodeImage(response.getQrCode()).tradeNo(response.getOutTradeNo()).build();
+            byte[] qr = QrCodeUtil.generatePng(response.getQrCode(), 200, 200);
+            String fileName = DateUtil.formatDate(DateUtil.date())+payTransactionBo.getOrderId() + ".png";
+            OssInfo ossInfo = localOssClient.upLoad(new ByteArrayInputStream(qr), fileName);
+            return ScanPayApplyRes.builder()
+                    .orderId(payTransactionBo.getOrderId())
+                    .scanQrCode(ossInfo.getFileLink())
+                    .tradeNo(uuid).build();
         } else {
             PayTransaction updatePayTransaction = PayTransaction.builder()
                     .id(payTransaction.getId())

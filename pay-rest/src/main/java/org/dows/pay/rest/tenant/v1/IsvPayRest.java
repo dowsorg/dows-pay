@@ -12,6 +12,7 @@ import org.dows.framework.api.Response;
 import org.dows.framework.crud.mybatis.MybatisCrudRest;
 import org.dows.pay.alipay.AlipayPayHandler;
 import org.dows.pay.api.request.FacePayCreateRes;
+import org.dows.pay.api.request.ScanPayApplyRes;
 import org.dows.pay.entity.PayApi;
 import org.dows.pay.form.AliPayRequest;
 import org.dows.pay.form.PayApiForm;
@@ -48,7 +49,7 @@ public class IsvPayRest {
     @PostMapping("/scanPay")
     @ApiOperation(value = "支付宝去支付")
     public Response scanPay(@RequestBody AliPayRequest payTransactionForm) {
-        FacePayCreateRes result= alipayPayHandler.scanPay(payTransactionForm);
+        ScanPayApplyRes result= alipayPayHandler.scanPay(payTransactionForm);
         return Response.ok(result);
     }
 
