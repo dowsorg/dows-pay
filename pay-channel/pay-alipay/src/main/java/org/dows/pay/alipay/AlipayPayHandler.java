@@ -284,6 +284,7 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
         payTransaction.setAppId(orderInstanceBo.getAppId());
         payTransaction.setMerchantNo(SecurityUtils.getMerchantNo());
         if (payTransaction.getId() ==null) {
+            payTransaction.setDt(new Date());
             payTransactionService.save(payTransaction);
         } else {
             payTransactionService.updateById(payTransaction);
