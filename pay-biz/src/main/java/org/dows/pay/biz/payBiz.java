@@ -25,16 +25,15 @@ import org.dows.app.api.mini.request.uboInfoListRequest;
 import org.dows.app.entity.AppApply;
 import org.dows.app.service.AppApplyService;
 import org.dows.auth.api.weixin.WeixinTokenApi;
+import org.dows.auth.biz.context.SecurityUtils;
 import org.dows.framework.api.Response;
 import org.dows.framework.api.exceptions.BizException;
 import org.dows.pay.alipay.AlipayAgentHandler;
 import org.dows.pay.alipay.AlipayIsvHandler;
+import org.dows.pay.alipay.AlipayPayHandler;
 import org.dows.pay.api.PayApi;
 import org.dows.pay.api.PayRequest;
-import org.dows.pay.api.request.MiniUploadRequest;
-import org.dows.pay.api.request.PayCreateIsvRequest;
-import org.dows.pay.api.request.PayIsvRequest;
-import org.dows.pay.api.request.PayQueryReq;
+import org.dows.pay.api.request.*;
 import org.dows.pay.api.response.PayQueryRes;
 import org.dows.pay.bo.IsvCreateBo;
 import org.dows.pay.bo.IsvCreateTyBo;
@@ -42,6 +41,7 @@ import org.dows.pay.boot.PayClientConfig;
 import org.dows.pay.entity.PayAccount;
 import org.dows.pay.entity.PayApply;
 import org.dows.pay.entity.PayTransaction;
+import org.dows.pay.form.AliPayRequest;
 import org.dows.pay.form.WxBaseInfoForm;
 import org.dows.pay.service.PayAccountService;
 import org.dows.pay.service.PayApplyService;
@@ -85,6 +85,10 @@ public class payBiz implements PayApi {
     private final AppApplyService appApplyService;
     @Lazy
     private final MiniBiz miniBiz;
+
+    @Autowired
+    @Lazy
+    private AlipayPayHandler alipayPayHandler;
 
     @Autowired
     @Lazy
@@ -228,14 +232,29 @@ public class payBiz implements PayApi {
                         .payDesc(pay.getTradeState())
                         .payTime(pay.getTransactionTime())
                         .build();
+            } else {
+                PayQueryRes payQueryRes = null;
+                if (Objects.equals(payTransaction.getPayChannel(),"weixin")) {
+                     payQueryRes = queryWechatOrder(pay);
+                    pay.setTradeState(payQueryRes.getPayDesc());
+                    if (Objects.equals(payQueryRes.getPayDesc(),"SUCCESS")) {
+                        pay.setStatus(1);
+                        pay.setDealTo(payQueryRes.getOutTradeNo());
+                    }
+                } else if(Objects.equals(payTransaction.getPayChannel(),"aliPay")) {
+                    payQueryRes = alipayPayHandler.queryPayStatus(payTransaction.getAppId(),payTransaction.getTransactionNo());
+                    payQueryRes.setPayChannel(payTransaction.getPayChannel());
+                    payQueryRes.setOrderId(payTransaction.getOrderId());
+                    if (payQueryRes.getPayTime()!=null) {
+                        pay.setTransactionTime(payQueryRes.getPayTime());
+                        pay.setStatus(1);
+                        pay.setDealTo(payQueryRes.getOutTradeNo());
+                        pay.setTradeState(payQueryRes.getPayDesc());
+                    }
+                }
+                payTransactionService.updateById(pay);
+                return payQueryRes;
             }
-            PayQueryRes payQueryRes = queryWechatOrder(pay);
-            pay.setTradeState(payQueryRes.getPayDesc());
-            if (Objects.equals(payQueryRes.getPayDesc(),"SUCCESS")) {
-                pay.setStatus(1);
-            }
-            payTransactionService.updateById(payTransaction);
-            return payQueryRes;
         }).orElseGet(() -> PayQueryRes.builder().payDesc("NOTPAY").build());
         return Response.ok(res);
     }
@@ -243,15 +262,19 @@ public class payBiz implements PayApi {
     private PayQueryRes queryWechatOrder(PayTransaction payTransaction) {
         if (Objects.equals(payTransaction.getPayChannel(),"weixin")) {
             Map<String, Object> map = weixinPayHandler.queryWechatOrder(payTransaction.getTransactionNo(),payTransaction.getAppId());
-            String success_time = map.get("success_time").toString();
-            // 解析时间字符串
-            OffsetDateTime offsetDateTime = OffsetDateTime.parse(success_time, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-            // 转换为 Date 类型
-            Date date = Date.from(offsetDateTime.toInstant());
+            Date date = null;
+            Object successTime = map.get("success_time");
+            if(successTime != null){
+                String success_time = successTime.toString();
+                // 解析时间字符串
+                OffsetDateTime offsetDateTime = OffsetDateTime.parse(success_time, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+                // 转换为 Date 类型
+                date = Date.from(offsetDateTime.toInstant());
+            }
             return PayQueryRes.builder()
                     .payTime(date)
                     .payDesc(map.get("trade_state").toString())
-                    .outTradeNo(map.get("transaction_id").toString())
+                    .outTradeNo(Optional.ofNullable(map.get("transaction_id")).map(Object::toString).orElse(null))
                     .payChannel(payTransaction.getPayChannel())
                     .orderId(payTransaction.getOrderId())
                     .payAmount(payTransaction.getAmount())
@@ -304,18 +327,28 @@ public class payBiz implements PayApi {
 
     @Override
     public Response applyForPaymentlsv(PayCreateIsvRequest payCreateIsvRequest) {
+        payCreateIsvRequest.setMerchantNo(SecurityUtils.getMerchantNo());
+        if (StrUtil.isEmpty(payCreateIsvRequest.getMerchantNo())) {
+            payCreateIsvRequest.setMerchantNo("0001");
+        }
         if(StringUtil.isEmpty(payCreateIsvRequest.getAppid())) {
             payCreateIsvRequest.setAppid("2021003129694075");
         }
             try {
                 // 小程序申请支付权限
-//                log.info("生成WxPayApplymentCreateResult参数payRequest：{}", payRequest);
                 AlipayOpenAgentCreateResponse batchNoreponse = alipayAgentHandler.createAgent(payCreateIsvRequest);
                 if (batchNoreponse.isSuccess()) {
                     AlipayOpenAgentFacetofaceSignResponse facetofaceIsv = alipayAgentHandler.facetofaceAgent(payCreateIsvRequest, batchNoreponse.getBatchNo());
                     if (facetofaceIsv.isSuccess()) {
                         AlipayOpenAgentConfirmResponse confirmIsv = alipayAgentHandler.confirmAgent(payCreateIsvRequest, batchNoreponse.getBatchNo());
+                        log.info("confirmAgent res is:{}",JSON.toJSONString(confirmIsv));
+                        PayApply payApply = payApplyService.getByApplyNo(batchNoreponse.getBatchNo());
+                        if (Objects.nonNull(payApply)) {
+                            payApply.setConfirmRes(JSON.toJSONString(confirmIsv));
+                            payApplyService.updateById(payApply);
+                        }
                         if(confirmIsv.isSuccess()){
+
                             return Response.ok("申请成功");
                         }else{
                             return Response.fail("申请失败,"+confirmIsv.getSubMsg());
@@ -327,7 +360,8 @@ public class payBiz implements PayApi {
                     return Response.fail("申请失败,"+batchNoreponse.getSubMsg());
                 }
             } catch (Exception e) {
-                return Response.fail("申请失败"+e);
+                log.error("applyForPaymentlsv fail:",e);
+                return Response.fail("申请失败:"+e.getMessage());
             }
     }
 
@@ -381,6 +415,17 @@ public class payBiz implements PayApi {
     }
 
     @Override
+    public ScanPayApplyRes scanPay(ScanPayReq req) {
+        log.info(" order scanPay req is {}",JSON.toJSONString(req));
+        AliPayRequest aliPayRequest = new AliPayRequest();
+        aliPayRequest.setOrderId(req.getOrderId());
+        aliPayRequest.setMerchantNo(req.getMerchantNo());
+        aliPayRequest.setAmount(req.getAmount());
+        aliPayRequest.setAppId(req.getAppId());
+        return  alipayPayHandler.scanPay(aliPayRequest);
+    }
+
+    @Override
     public WxOpenQueryAuthResult apiQueryAuth(String authorizationCode) {
         PayRequest payRequest = new PayIsvRequest();
         payRequest.setChannel("weixin");
@@ -398,7 +443,7 @@ public class payBiz implements PayApi {
         miniUploadRequest.setAppId(appId);
         miniUploadRequest.setAuthorizerAppid(request.getAppId());
         miniUploadRequest.setTemplateId(request.getTemplateId());
-        miniUploadRequest.setUserVersion("V1.0");
+        miniUploadRequest.setUserVersion(request.getAppVersion()==null?"V1.1":request.getAppVersion());
         miniUploadRequest.setUserDesc("normal");
         miniUploadRequest.setExtJsonObject(getExtJsonObject(request.getAppId()));
         return miniUploadRequest;
@@ -430,25 +475,40 @@ public class payBiz implements PayApi {
                 statusResult.setApplymentStateDesc("未申请");
                 return Response.ok(statusResult);
             }
-            response = queryApplymentStatus(payApply.getApplyNo());
-            ApplymentsStatusResult result = (ApplymentsStatusResult) response.getData();
-            if (!Objects.nonNull(payApply.getAppUrl())) {
-                payApply.setAppUrl(result.getSignUrl());
+            if (Objects.equals(payApply.getApplyType(),1)) {
+                response = queryApplymentStatus(payApply.getApplyNo());
+                ApplymentsStatusResult result = (ApplymentsStatusResult) response.getData();
+                if (!Objects.nonNull(payApply.getAppUrl())) {
+                    payApply.setAppUrl(result.getSignUrl());
+                }
+                payApply.setApplymentState(result.getApplymentState());
+                if (Objects.equals("APPLYMENT_STATE_FINISHED", payApply.getApplymentState())) {
+                    payApply.setChecked(true);
+                }
+                payApply.setApplymentStateDesc(result.getApplymentStateDesc());
+                payApply.setUpdateTime(new Date());
+                payApply.setSubMchid(result.getSubMchid());
+                payApplyService.updateById(payApply);
+                if (payApply.getChecked()) {
+                    log.info("start checkAndSavePayAccount......");
+                    // 插入支付账号通道
+                    checkAndSavePayAccount(payApply);
+                }
+                return response;
+            } else {
+                if (StrUtil.isEmpty(payApply.getApplyNo())) {
+                    ApplymentsStatusResult statusResult = new ApplymentsStatusResult();
+                    statusResult.setApplymentState("NOT_APPLYMENT");
+                    statusResult.setApplymentStateDesc("未申请");
+                    return Response.ok(statusResult);
+                }
+                ApplymentsStatusResult statusResult = new ApplymentsStatusResult();
+                statusResult.setApplymentStateDesc(payApply.getApplymentStateDesc());
+                statusResult.setApplymentState(payApply.getApplymentState());
+                statusResult.setSignUrl(payApply.getAppUrl());
+                return Response.ok(statusResult);
             }
-            payApply.setApplymentState(result.getApplymentState());
-            if (Objects.equals("APPLYMENT_STATE_FINISHED", payApply.getApplymentState())) {
-                payApply.setChecked(true);
-            }
-            payApply.setApplymentStateDesc(result.getApplymentStateDesc());
-            payApply.setUpdateTime(new Date());
-            payApply.setSubMchid(result.getSubMchid());
-            payApplyService.updateById(payApply);
-            if (payApply.getChecked()) {
-                log.info("start checkAndSavePayAccount......");
-                // 插入支付账号通道
-                checkAndSavePayAccount(payApply);
-            }
-            return response;
+
         }).orElseGet(() -> {
             ApplymentsStatusResult statusResult = new ApplymentsStatusResult();
             statusResult.setApplymentState("NOT_APPLYMENT");

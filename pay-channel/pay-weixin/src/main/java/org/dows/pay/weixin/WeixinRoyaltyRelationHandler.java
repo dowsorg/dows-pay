@@ -206,7 +206,7 @@ public class WeixinRoyaltyRelationHandler extends AbstractWeixinHandler {
             return;
         }
 
-        OrderInstanceBo orderInstanceBo = orderInstanceBizApiService.getOne(orderId);
+        OrderInstanceBo orderInstanceBo = orderInstanceBizApiService.getOne(orderId,true);
         if (orderInstanceBo == null) {
             log.error("通过orderId={} 查询订单信息为空,无法进行分账",orderId);
             return;
@@ -273,7 +273,7 @@ public class WeixinRoyaltyRelationHandler extends AbstractWeixinHandler {
                 .build();
 
         try {
-           log.info("订单id={} 发起分账:{}",orderId,JSON.toJSONString(profitSharingRequest));
+           log.info("订单id发起分账 {}:{}",orderId,JSON.toJSONString(profitSharingRequest));
             HttpPost httpPost = new HttpPost("https://api.mch.weixin.qq.com/v3/profitsharing/orders");
             StringEntity stringEntity = new StringEntity(JSON.toJSONString(profitSharingRequest), ContentType.create("application/json", "utf-8"));
             httpPost.setEntity(stringEntity);
@@ -290,7 +290,9 @@ public class WeixinRoyaltyRelationHandler extends AbstractWeixinHandler {
             String res = EntityUtils.toString(entity, StandardCharsets.UTF_8);
             System.out.println("profitSharing result is:"+res);
             // 后面加日志记录
+            JSONObject jsonObject = JSONObject.parseObject(res);
             payLedgersRecord.setResult(res);
+            payLedgersRecord.setState(jsonObject.getString("state"));
             payLedgersRecordMapper.updateById(payLedgersRecord);
         } catch (IOException e) {
            log.error("profitSharing error:",e);
@@ -310,6 +312,7 @@ public class WeixinRoyaltyRelationHandler extends AbstractWeixinHandler {
         payLedgersRecord.setChannelAccountType(true);
         payLedgersRecord.setAllocationProfit(BigDecimal.valueOf(allocationProfit));
         payLedgersRecord.setAmount(amount);
+        payLedgersRecord.setCreateTime(new Date());
         payLedgersRecordMapper.insert(payLedgersRecord);
         return payLedgersRecord;
     }
@@ -367,7 +370,7 @@ public class WeixinRoyaltyRelationHandler extends AbstractWeixinHandler {
         if (payTransaction == null) {
             throw new BizException("payTransaction is null");
         }
-        claimProfit(payTransaction.getOrderId(),payTransaction.getAmount(),payTransaction.getDealTo(),
+        claimProfit(payTransaction.getOrderId(),payTransaction.getAmount().intValue(),payTransaction.getDealTo(),
                 payTransaction.getTransactionNo(),payTransaction.getAppId());
     }
 

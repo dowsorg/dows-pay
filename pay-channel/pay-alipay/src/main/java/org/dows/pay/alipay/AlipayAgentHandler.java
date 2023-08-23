@@ -1,12 +1,11 @@
 package org.dows.pay.alipay;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSON;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.FileItem;
-import com.alipay.api.domain.AlipayOpenAgentConfirmModel;
-import com.alipay.api.domain.AlipayOpenAgentCreateModel;
-import com.alipay.api.domain.AlipayOpenAgentOrderQueryModel;
-import com.alipay.api.domain.ContactModel;
+import com.alipay.api.domain.*;
 import com.alipay.api.request.*;
 import com.alipay.api.response.*;
 import com.alipay.service.schema.util.StringUtil;
@@ -22,11 +21,13 @@ import org.dows.app.entity.AppApplyItem;
 import org.dows.app.service.AppApplyItemService;
 import org.dows.app.service.AppApplyService;
 import org.dows.framework.api.Response;
+import org.dows.framework.api.exceptions.BizException;
 import org.dows.pay.api.PayRequest;
 import org.dows.pay.api.annotation.PayMapping;
 import org.dows.pay.api.enums.PayMethods;
 import org.dows.pay.api.request.PayCreateIsvRequest;
 import org.dows.pay.api.request.PayQueryIsvRequest;
+import org.dows.pay.bo.IsvCreateBo;
 import org.dows.pay.entity.PayApply;
 import org.dows.pay.service.PayApplyService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.net.URL;
+import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -80,77 +82,53 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
      * 通过 alipay.open.agent.create（开启代商户签约、创建应用事务）接口创建应用事务，返回生成 batch_no。
      */
     @PayMapping(method = PayMethods.AGENT_CREATE)
-    public AlipayOpenAgentCreateResponse createAgent(PayCreateIsvRequest payCreateIsvRequest) {
-
-        AppApply appApply;
-
-        LambdaQueryWrapper<AppApply> queryWrapper = new LambdaQueryWrapper();
-        queryWrapper.eq(AppApply::getApplicant, payCreateIsvRequest.getAccount());
-        appApply = this.appApplyService.getOne(queryWrapper);
-
-        if (Objects.isNull(appApply)) {
-            appApply = new AppApply();
-            AppApplyItem appApplyItem = new AppApplyItem();
-            String applyOrderNo = UUID.randomUUID().toString();
-            appApply.setPlatform("ALIPAY");
-            appApply.setApplyOrderNo(applyOrderNo);
-            appApply.setApplicant(payCreateIsvRequest.getAccount());
-            appApply.setAuthStatus("1");
-            appApplyItem.setApplyOrderNo(applyOrderNo);
-            appApplyItem.setContactEmail(payCreateIsvRequest.getContact_email());
-            appApplyItem.setContactName(payCreateIsvRequest.getContact_name());
-            appApplyItem.setContactPhone(payCreateIsvRequest.getContact_mobile());
-            if(payCreateIsvRequest.getIsPerson()==0){
-                appApplyItem.setCertPicture(payCreateIsvRequest.getBusiness_license_pic());
-            }
-            if (!StringUtil.isEmpty(payCreateIsvRequest.getBusiness_license_mobile())) {
-                appApplyItem.setSuperAdminPhone(payCreateIsvRequest.getBusiness_license_mobile());
-            }
-            appApplyItem.setBusinessScope(payCreateIsvRequest.getMcc_code());
-            appApplyItem.setTenantDoorPicture(payCreateIsvRequest.getShop_sign_board_pic());
-            appApplyItem.setTenantIndoorPicture(payCreateIsvRequest.getShop_scene_pic());
-            appApplyItem.setCertName(payCreateIsvRequest.getShop_name());
-            appApplyItem.setLegalName(payCreateIsvRequest.getAccount());
-            this.appApplyService.save(appApply);
-            this.appApplyItemService.save(appApplyItem);
+    public AlipayOpenAgentCreateResponse createAgent(PayCreateIsvRequest request) {
+        if (Objects.isNull(request.getMerchantNo())) {
+            throw new BizException("获取商户号为空");
         }
 
-        PayApply payApply;
-
-        LambdaQueryWrapper<PayApply> queryPayWrapper = new LambdaQueryWrapper();
-        queryPayWrapper.eq(PayApply::getBizNo, payCreateIsvRequest.getAccount());
-        payApply = this.payApplyService.getOne(queryPayWrapper);
+        LambdaQueryWrapper<PayApply> queryWrapper = new LambdaQueryWrapper<PayApply>()
+                .eq(PayApply::getMerchantNo, request.getMerchantNo())
+                .eq(PayApply::getApplyType, 2)
+                .eq(PayApply::getAccount, request.getAccount())
+                .eq(PayApply::getDeleted, false);
+        PayApply payApply = this.payApplyService.getOne(queryWrapper);
 
         if (Objects.isNull(payApply)) {
             payApply = new PayApply();
-            payApply.setBizNo(payCreateIsvRequest.getAccount());
-            this.payApplyService.save(payApply);
+            payApply.setMerchantNo(request.getMerchantNo());
+            payApply.setBizName("支付宝当面付");
+            payApply.setAccount(request.getAccount());
+            payApply.setApplyType(2);
+            payApply.setDt(new Date());
+            payApply.setAliReq(JSON.toJSONString(request));
+            payApply.setUpdateTime(new Date());
+            payApplyService.save(payApply);
         }
 
         AlipayOpenAgentCreateModel alipayOpenAgentCreateModel = new AlipayOpenAgentCreateModel();
+
         ContactModel contactModel = new ContactModel();
-        contactModel.setContactName(payCreateIsvRequest.getContact_name());
-        contactModel.setContactMobile(payCreateIsvRequest.getContact_mobile());
-        contactModel.setContactEmail(payCreateIsvRequest.getContact_email());
+        contactModel.setContactName(request.getContact_name());
+        contactModel.setContactMobile(request.getContact_mobile());
+        contactModel.setContactEmail(request.getContact_email());
         alipayOpenAgentCreateModel.setContactInfo(contactModel);
-        alipayOpenAgentCreateModel.setAccount(payCreateIsvRequest.getAccount());
-        // 自动映射
-//        autoMappingValue(payRequest, alipayOpenAgentCreateModel);
-        AlipayOpenAgentCreateRequest request = new AlipayOpenAgentCreateRequest();
-        request.setBizModel(alipayOpenAgentCreateModel);
-        AlipayOpenAgentCreateResponse response = null;
+        alipayOpenAgentCreateModel.setAccount(request.getAccount());
+
+        AlipayOpenAgentCreateRequest createRequest = new AlipayOpenAgentCreateRequest();
+        createRequest.setBizModel(alipayOpenAgentCreateModel);
+
+        AlipayOpenAgentCreateResponse response;
         try {
-            response = getAlipayClient(payCreateIsvRequest.getAppid()).certificateExecute(request);
-        } catch (AlipayApiException e) {
-            throw new RuntimeException(e);
+            response = getAlipayClient(request.getAppid()).certificateExecute(createRequest);
+        } catch (Exception e) {
+            log.error("createAgent fail:",e);
+            throw new BizException("创建应用事务出错:"+e.getMessage());
         }
         if (response.isSuccess()) {
-            LambdaQueryWrapper<AppApply> queryWrapperAppApply = new LambdaQueryWrapper();
-            queryWrapperAppApply.eq(AppApply::getApplyOrderNo, appApply.getApplyOrderNo());
-            appApply.setPlatformOrderNo(response.getBatchNo());
+            payApply.setAliReq(JSON.toJSONString(request));
             payApply.setApplyNo(response.getBatchNo());
-            this.appApplyService.update(appApply, queryWrapperAppApply);
-            this.payApplyService.updateById(payApply);
+            payApplyService.updateById(payApply);
         }
         return response;
 
@@ -164,29 +142,48 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
      */
     @PayMapping(method = PayMethods.AGENT_FACETOFACE)
     public AlipayOpenAgentFacetofaceSignResponse facetofaceAgent(PayCreateIsvRequest payCreateIsvRequest, String batchNo) {
-//        IsvCreateBo isvCreateBo = (IsvCreateBo) payRequest.getBizModel();
         AlipayOpenAgentFacetofaceSignRequest request = new AlipayOpenAgentFacetofaceSignRequest();
         request.setBatchNo(batchNo);
+        // https://opendocs.alipay.com/isv/d90ee567_alipay.open.agent.facetoface.sign?scene=common&pathHash=20d91b56
         request.setMccCode(payCreateIsvRequest.getMcc_code());
         request.setRate("0.38");
         request.setSignAndAuth(true);
+        request.setLongTerm(payCreateIsvRequest.isLong_term());
         FileItem BusinessShopPic = getPicFile(payCreateIsvRequest.getShop_scene_pic());
         request.setShopScenePic(BusinessShopPic);
+
         FileItem BusinessShopSignPic = getPicFile(payCreateIsvRequest.getShop_sign_board_pic());
         request.setShopSignBoardPic(BusinessShopSignPic);
+        if (StrUtil.isNotBlank(payCreateIsvRequest.getBusiness_license_auth_pic())) {
+            request.setBusinessLicenseAuthPic(getPicFile(payCreateIsvRequest.getBusiness_license_auth_pic()));
+        }
+
         request.setShopName(payCreateIsvRequest.getShop_name());
         if(payCreateIsvRequest.getIsPerson()==0){
-            FileItem BusinessLicensePic = new FileItem(payCreateIsvRequest.getBusiness_license_pic());
+            FileItem BusinessLicensePic = getPicFile(payCreateIsvRequest.getBusiness_license_pic());
             request.setBusinessLicensePic(BusinessLicensePic);
         }
         if (!StringUtil.isEmpty(payCreateIsvRequest.getBusiness_license_mobile())) {
             payCreateIsvRequest.setBusiness_license_mobile(payCreateIsvRequest.getBusiness_license_mobile());
         }
-//        AlipayOpenAgentFacetofaceSignResponse response = null;
+        if (payCreateIsvRequest.getCountry_code()!=null
+                && payCreateIsvRequest.getCity_code()!=null
+                && payCreateIsvRequest.getProvince_code()!=null
+                && payCreateIsvRequest.getDetail_address()!=null
+                && payCreateIsvRequest.getDistrict_code()!=null) {
+            SignAddressInfo signAddressInfo = new SignAddressInfo();
+            signAddressInfo.setCityCode(payCreateIsvRequest.getCity_code());
+            signAddressInfo.setCountryCode(payCreateIsvRequest.getCountry_code());
+            signAddressInfo.setDetailAddress(payCreateIsvRequest.getDetail_address());
+            signAddressInfo.setDistrictCode(payCreateIsvRequest.getDistrict_code());
+            request.setShopAddress(signAddressInfo);
+        }
+
         try {
             return getAlipayClient(payCreateIsvRequest.getAppid()).certificateExecute(request);
         } catch (AlipayApiException e) {
-            throw new RuntimeException(e);
+            log.error("facetofaceAgent fail:",e);
+            throw new BizException("facetofaceAgent fail:"+e.getMessage());
         }
 
 
@@ -228,11 +225,11 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
         alipayOpenAgentConfirmModel.setBatchNo(batchNo);
         AlipayOpenAgentConfirmRequest request = new AlipayOpenAgentConfirmRequest();
         request.setBizModel(alipayOpenAgentConfirmModel);
-//        AlipayOpenAgentConfirmResponse response;
         try {
             return getAlipayClient(payCreateIsvRequest.getAppid()).certificateExecute(request);
         } catch (AlipayApiException e) {
-            throw new RuntimeException(e);
+            log.error("confirmAgent fail:",e);
+            throw new BizException("提交事务报错:"+e.getMessage());
         }
     }
 
@@ -243,21 +240,11 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
      */
     @PayMapping(method = PayMethods.AGENT_QUERY)
     public AlipayOpenAgentOrderQueryResponse queryAgent(PayQueryIsvRequest payQueryIsvRequest) {
-        AlipayOpenAgentOrderQueryResponse response = new AlipayOpenAgentOrderQueryResponse();
-        String BatchNo = payQueryIsvRequest.getBatch_no();
-        if (StringUtil.isEmpty(BatchNo)) {
-            try {
-                LambdaQueryWrapper<AppApply> queryWrapper = new LambdaQueryWrapper();
-                queryWrapper.eq(AppApply::getApplicant, payQueryIsvRequest.getAccount());
-                AppApply appApply = this.appApplyService.getOne(queryWrapper);
-                BatchNo = appApply.getPlatformOrderNo();
-            } catch (Exception e) {
-                response.setSubMsg("支付宝账号未申请");
-                return response;
-            }
+        if (StrUtil.isEmpty(payQueryIsvRequest.getAppid())) {
+            payQueryIsvRequest.setAppid("2021003129694075");
         }
         AlipayOpenAgentOrderQueryModel alipayOpenAgentOrderQueryModel = new AlipayOpenAgentOrderQueryModel();
-        alipayOpenAgentOrderQueryModel.setBatchNo(BatchNo);
+        alipayOpenAgentOrderQueryModel.setBatchNo(payQueryIsvRequest.getBatch_no());
         AlipayOpenAgentOrderQueryRequest request = new AlipayOpenAgentOrderQueryRequest();
         request.setBizModel(alipayOpenAgentOrderQueryModel);
         try {
@@ -268,29 +255,14 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
     }
 
     public Response<PayCreateIsvRequest> getApplyIsvByMerchantNo(PayApplyStatusReq req) {
-        AppApply appApply = appApplyService.getAppApplyMerchantNoAndApplyType(req.getMerchantNo(),
-                req.getApplyType() == 1 ? "WEIXIN" : "ALIPAY", req.getAppId());
+        PayApply appApply = payApplyService.getByMerchantNoAndType(req.getMerchantNo(), req.getApplyType());
         if (appApply != null) {
-            PayCreateIsvRequest payCreateIsvRequest= new PayCreateIsvRequest();
-            LambdaQueryWrapper<AppApplyItem> appApplyItemQueryWrapper = new LambdaQueryWrapper<AppApplyItem>();
-            appApplyItemQueryWrapper.eq(AppApplyItem::getApplyOrderNo, appApply.getApplyOrderNo());
-            AppApplyItem appApplyItem = appApplyItemService.getOne(appApplyItemQueryWrapper);
-
-//            payCreateIsvRequest.setAppid(appApply.getAppId());
-            payCreateIsvRequest.setBusiness_license_mobile(appApplyItem.getSuperAdminPhone());
-            payCreateIsvRequest.setAccount(appApply.getApplicant());
-            payCreateIsvRequest.setContact_email(appApplyItem.getContactEmail());
-            payCreateIsvRequest.setContact_mobile(appApplyItem.getContactPhone());
-            payCreateIsvRequest.setContact_name(appApplyItem.getContactName());
-            payCreateIsvRequest.setBusiness_license_pic(appApplyItem.getCertPicture());
-            payCreateIsvRequest.setShop_scene_pic(appApplyItem.getTenantIndoorPicture());
-            payCreateIsvRequest.setShop_sign_board_pic(appApplyItem.getTenantDoorPicture());
-            payCreateIsvRequest.setMcc_code(appApplyItem.getBusinessScope());
-            payCreateIsvRequest.setShop_name(appApplyItem.getCertName());
-
-            return Response.ok(payCreateIsvRequest);
+            if (StrUtil.isNotBlank(appApply.getAliReq())) {
+                PayCreateIsvRequest payCreateIsvRequest= JSON.parseObject(appApply.getAliReq(),PayCreateIsvRequest.class);
+                return Response.ok(payCreateIsvRequest);
+            }
         }
-        return Response.ok();
+        return Response.ok(new PayCreateIsvRequest());
     }
 
     public static FileItem getPicFile(String path) {

@@ -7,6 +7,7 @@ import org.dows.pay.api.ChannelBizModel;
 import org.dows.pay.api.PayHandler;
 import org.dows.pay.api.PayRequest;
 import org.dows.pay.api.enums.PayChannels;
+import org.dows.pay.api.response.PayQueryRes;
 import org.dows.pay.boot.PayClientFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -67,4 +68,5 @@ public abstract class AbstractAlipayHandler implements PayHandler {
     public String getChannel() {
         return PayChannels.ALIPAY.name();
     }
+
 }

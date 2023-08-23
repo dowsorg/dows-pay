@@ -1,5 +1,6 @@
 package org.dows.pay.rest.tenant.v1;
 
+import cn.hutool.core.util.StrUtil;
 import com.alipay.api.response.AlipayOpenAgentOrderQueryResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -7,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dows.app.api.mini.request.AppApplyRequest;
 import org.dows.app.api.mini.request.PayApplyStatusReq;
+import org.dows.auth.biz.context.SecurityUtils;
 import org.dows.framework.api.Response;
 import org.dows.pay.alipay.AlipayAgentHandler;
 import org.dows.pay.api.PayApi;
@@ -78,6 +80,7 @@ public class IsvRest {
     @PostMapping("/isv/queryIsvByMerchantNo")
     @ApiOperation(value = "支付宝查询注册信息")
     public Response queryIsvByMerchantNo(@RequestBody PayApplyStatusReq req) {
+        req.setMerchantNo(SecurityUtils.getMerchantNo());
         return alipayAgentHandler.getApplyIsvByMerchantNo(req);
     }
 
