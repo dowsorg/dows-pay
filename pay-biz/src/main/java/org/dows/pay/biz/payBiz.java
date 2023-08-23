@@ -406,7 +406,7 @@ public class payBiz implements PayApi {
         aliPayRequest.setOrderId(req.getOrderId());
         aliPayRequest.setMerchantNo(req.getMerchantNo());
         aliPayRequest.setAmount(req.getAmount());
-
+        aliPayRequest.setAppId(req.getAppId());
         return  alipayPayHandler.scanPay(aliPayRequest);
     }
 
