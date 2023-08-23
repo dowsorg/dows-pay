@@ -5,13 +5,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dows.order.api.OrderInstanceBizApiService;
 import org.dows.order.bo.OrderUpdatePaymentStatusBo;
+import org.dows.pay.alipay.AlipayPayHandler;
+import org.dows.pay.api.response.PayQueryRes;
 import org.dows.pay.entity.PayTransaction;
 import org.dows.pay.service.PayTransactionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
@@ -29,6 +29,9 @@ public class AliPayNotifyController {
 
     private final PayTransactionService payTransactionService;
 
+
+    private final AlipayPayHandler alipayPayHandler;
+
     private final OrderInstanceBizApiService orderInstanceBizApiService;
 
 
@@ -43,7 +46,7 @@ public class AliPayNotifyController {
      * @param request
      * @return
      */
-    @RequestMapping(value = "/notify", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/notify")
     public ResponseEntity<Object> notify(HttpServletRequest request) {
         log.info("收到支付宝异步回调：{}", JSON.toJSONString(request.getParameterMap().toString()));
         // 获取支付宝POST过来反馈信息
@@ -91,6 +94,12 @@ public class AliPayNotifyController {
         log.info("aliPay notify order req is {}",JSON.toJSONString(instanceBo));
         orderInstanceBizApiService.updateOrderInstance(instanceBo);
         return new ResponseEntity<>("success", HttpStatus.OK);
+    }
+
+
+    @GetMapping(value = "/queryPayStatus")
+    public PayQueryRes queryPayStatus(@RequestParam("appId") String appId,@RequestParam("tradeNo")  String tradeNo) {
+        return alipayPayHandler.queryPayStatus(appId, tradeNo);
     }
 
 

@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
@@ -16,7 +17,7 @@ public class PayQueryRes implements Serializable {
 
     private String payChannel;
 
-    private Integer payAmount;
+    private BigDecimal payAmount;
 
     private String payDesc;
 

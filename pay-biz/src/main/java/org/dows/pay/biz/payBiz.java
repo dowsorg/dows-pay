@@ -227,19 +227,32 @@ public class payBiz implements PayApi {
                 return PayQueryRes.builder()
                         .orderId(pay.getOrderId())
                         .outTradeNo(pay.getDealTo())
-                        .payAmount(pay.getAmount().intValue())
+                        .payAmount(pay.getAmount())
                         .payChannel(pay.getPayChannel())
                         .payDesc(pay.getTradeState())
                         .payTime(pay.getTransactionTime())
                         .build();
+            } else {
+                PayQueryRes payQueryRes = null;
+                if (Objects.equals(payTransaction.getPayChannel(),"weixin")) {
+                     payQueryRes = queryWechatOrder(pay);
+                    pay.setTradeState(payQueryRes.getPayDesc());
+                    if (Objects.equals(payQueryRes.getPayDesc(),"SUCCESS")) {
+                        pay.setStatus(1);
+                    }
+                } else if(Objects.equals(payTransaction.getPayChannel(),"aliPay")) {
+                    payQueryRes = alipayPayHandler.queryPayStatus(payTransaction.getAppId(),payTransaction.getTransactionNo());
+                    payQueryRes.setPayChannel(payTransaction.getPayChannel());
+                    payQueryRes.setOrderId(payTransaction.getOrderId());
+                    if (payQueryRes.getPayTime()!=null) {
+                        pay.setTransactionTime(payQueryRes.getPayTime());
+                        pay.setStatus(1);
+                        pay.setTradeState(payQueryRes.getPayDesc());
+                    }
+                }
+                payTransactionService.updateById(pay);
+                return payQueryRes;
             }
-            PayQueryRes payQueryRes = queryWechatOrder(pay);
-            pay.setTradeState(payQueryRes.getPayDesc());
-            if (Objects.equals(payQueryRes.getPayDesc(),"SUCCESS")) {
-                pay.setStatus(1);
-            }
-            payTransactionService.updateById(payTransaction);
-            return payQueryRes;
         }).orElseGet(() -> PayQueryRes.builder().payDesc("NOTPAY").build());
         return Response.ok(res);
     }
@@ -262,7 +275,7 @@ public class payBiz implements PayApi {
                     .outTradeNo(Optional.ofNullable(map.get("transaction_id")).map(Object::toString).orElse(null))
                     .payChannel(payTransaction.getPayChannel())
                     .orderId(payTransaction.getOrderId())
-                    .payAmount(payTransaction.getAmount().intValue())
+                    .payAmount(payTransaction.getAmount())
                     .build();
         }
         // todo:支付宝查询

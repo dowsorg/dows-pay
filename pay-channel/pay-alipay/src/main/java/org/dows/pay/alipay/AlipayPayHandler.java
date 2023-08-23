@@ -13,8 +13,10 @@ import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.msg.AlipayMsgClient;
 import com.alipay.api.request.AlipayTradeCreateRequest;
 import com.alipay.api.request.AlipayTradePrecreateRequest;
+import com.alipay.api.request.AlipayTradeQueryRequest;
 import com.alipay.api.response.AlipayTradeCreateResponse;
 import com.alipay.api.response.AlipayTradePrecreateResponse;
+import com.alipay.api.response.AlipayTradeQueryResponse;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +38,7 @@ import org.dows.pay.api.event.OrderPaySuccessEvent;
 import org.dows.pay.api.message.AlipayMessage;
 import org.dows.pay.api.request.FacePayCreateRes;
 import org.dows.pay.api.request.ScanPayApplyRes;
+import org.dows.pay.api.response.PayQueryRes;
 import org.dows.pay.bo.PayTransactionBo;
 import org.dows.pay.boot.PayClientFactory;
 import org.dows.pay.boot.properties.PayClientProperties;
@@ -256,6 +259,33 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
         }
         AlipayRequest alipayRequest = null;
         alipayMsgClient.sendMessage(alipayRequest);
+    }
+
+    public PayQueryRes queryPayStatus(String appId,String tradeNo) {
+        TempRedis tempRedis = tempRedisApi.getKey(appId);
+        if (Objects.isNull(tempRedis)) {
+            throw new BizException("获取商家授权token为空,appId=" +appId);
+        }
+        AlipayTradeQueryRequest req = new AlipayTradeQueryRequest();
+        JSONObject bizContent = new JSONObject();
+        bizContent.put("out_trade_no", tradeNo);
+        req.setBizContent(bizContent.toString());
+        AlipayTradeQueryResponse response;
+        try {
+            response = getAlipayClient("2021003129694075").certificateExecute(req, null, tempRedis.getRvalue());
+            if (response.getSendPayDate()!=null) {
+                return PayQueryRes.builder()
+                        .payDesc(response.getTradeStatus())
+                        .outTradeNo(tradeNo)
+                        .payAmount(new BigDecimal(response.getBuyerPayAmount()))
+                        .payTime(response.getSendPayDate()).build();
+            }
+           return PayQueryRes.builder().build();
+        } catch (AlipayApiException e) {
+           log.error("queryPayStatus fail:",e);
+            throw new BizException("查询订单失败:" + e.getMessage());
+        }
+
     }
 
 
