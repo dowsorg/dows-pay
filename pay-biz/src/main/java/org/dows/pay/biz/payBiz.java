@@ -239,6 +239,7 @@ public class payBiz implements PayApi {
                     pay.setTradeState(payQueryRes.getPayDesc());
                     if (Objects.equals(payQueryRes.getPayDesc(),"SUCCESS")) {
                         pay.setStatus(1);
+                        pay.setDealTo(payQueryRes.getOutTradeNo());
                     }
                 } else if(Objects.equals(payTransaction.getPayChannel(),"aliPay")) {
                     payQueryRes = alipayPayHandler.queryPayStatus(payTransaction.getAppId(),payTransaction.getTransactionNo());
@@ -247,6 +248,7 @@ public class payBiz implements PayApi {
                     if (payQueryRes.getPayTime()!=null) {
                         pay.setTransactionTime(payQueryRes.getPayTime());
                         pay.setStatus(1);
+                        pay.setDealTo(payQueryRes.getOutTradeNo());
                         pay.setTradeState(payQueryRes.getPayDesc());
                     }
                 }

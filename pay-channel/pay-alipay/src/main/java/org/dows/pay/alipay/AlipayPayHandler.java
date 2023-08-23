@@ -276,7 +276,7 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
             if (response.getSendPayDate()!=null) {
                 return PayQueryRes.builder()
                         .payDesc(response.getTradeStatus())
-                        .outTradeNo(tradeNo)
+                        .outTradeNo(response.getTradeNo())
                         .payAmount(new BigDecimal(response.getBuyerPayAmount()))
                         .payTime(response.getSendPayDate()).build();
             }
