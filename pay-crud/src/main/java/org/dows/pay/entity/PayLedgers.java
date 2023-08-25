@@ -46,6 +46,9 @@ public class PayLedgers implements CrudEntity {
     @ApiModelProperty("应用ID")
     private String appId;
 
+    @ApiModelProperty("请求编号")
+    private String requestNo;
+
     @ApiModelProperty("分账接收者ID(统一账号ID)")
     private String accountId;
 

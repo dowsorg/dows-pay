@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.dows.order.api.OrderInstanceBizApiService;
 import org.dows.order.bo.OrderUpdatePaymentStatusBo;
 import org.dows.pay.alipay.AlipayPayHandler;
+import org.dows.pay.api.request.AliRelationBindReq;
 import org.dows.pay.api.response.PayQueryRes;
 import org.dows.pay.entity.PayTransaction;
 import org.dows.pay.service.PayTransactionService;
@@ -101,6 +102,12 @@ public class AliPayNotifyController {
     public PayQueryRes queryPayStatus(@RequestParam("appId") String appId,@RequestParam("tradeNo")  String tradeNo) {
         return alipayPayHandler.queryPayStatus(appId, tradeNo);
     }
+
+    @PostMapping(value = "/relation/bind")
+    public Boolean bindRelation(@RequestBody AliRelationBindReq req) {
+        return alipayPayHandler.bindRelation(req.getAccount(), req.getType(),req.getAppId(),req.getMerchantNo());
+    }
+
 
 
     private String getRequestParameter(HttpServletRequest request, String name) {

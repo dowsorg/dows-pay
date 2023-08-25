@@ -221,6 +221,7 @@ public class payBiz implements PayApi {
 
     @Override
     public Response<PayQueryRes> queryPayOrder(PayQueryReq req) {
+        log.info("queryPayOrder req is {}",JSON.toJSONString(req));
         PayTransaction payTransaction = payTransactionService.queryPayOrder(req.getOrderId(),req.getOutTradeNo());
         PayQueryRes res = Optional.ofNullable(payTransaction).map(pay -> {
             if (Objects.equals(pay.getStatus(), 1)) {
@@ -256,6 +257,7 @@ public class payBiz implements PayApi {
                 return payQueryRes;
             }
         }).orElseGet(() -> PayQueryRes.builder().payDesc("NOTPAY").build());
+        log.info("queryPayOrder res is {}",JSON.toJSONString(res));
         return Response.ok(res);
     }
 

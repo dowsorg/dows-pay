@@ -14,9 +14,11 @@ import com.alipay.api.msg.AlipayMsgClient;
 import com.alipay.api.request.AlipayTradeCreateRequest;
 import com.alipay.api.request.AlipayTradePrecreateRequest;
 import com.alipay.api.request.AlipayTradeQueryRequest;
+import com.alipay.api.request.AlipayTradeRoyaltyRelationBindRequest;
 import com.alipay.api.response.AlipayTradeCreateResponse;
 import com.alipay.api.response.AlipayTradePrecreateResponse;
 import com.alipay.api.response.AlipayTradeQueryResponse;
+import com.alipay.api.response.AlipayTradeRoyaltyRelationBindResponse;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,13 +44,16 @@ import org.dows.pay.api.response.PayQueryRes;
 import org.dows.pay.bo.PayTransactionBo;
 import org.dows.pay.boot.PayClientFactory;
 import org.dows.pay.boot.properties.PayClientProperties;
+import org.dows.pay.entity.PayLedgers;
 import org.dows.pay.entity.PayTransaction;
 import org.dows.pay.form.AliPayRequest;
 import org.dows.pay.form.PayTransactionForm;
+import org.dows.pay.service.PayLedgersService;
 import org.dows.pay.service.PayTransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.event.EventListener;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.util.IdGenerator;
 import org.springframework.util.SimpleIdGenerator;
@@ -77,6 +82,8 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
     @Lazy
     @Autowired
     private TencentOssClient localOssClient;
+
+    private final PayLedgersService payLedgersService;
 
     private static final String ALI_PAY_NOTIFY_URL = "https://www.dxzsaas.com/api/user/aliPay/notify";
 
@@ -289,6 +296,55 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
     }
 
 
+    public Boolean bindRelation(String account, String type,String appId,String merchantNo) {
+
+        PayLedgers payLedgers = payLedgersService.lambdaQuery()
+                .eq(PayLedgers::getAppId,"2021003129694075")
+                .eq(PayLedgers::getChannelAppId, appId)
+                .orderByDesc(PayLedgers::getId).one();
+        if (Objects.isNull(payLedgers)) {
+            TempRedis tempRedis = tempRedisApi.getKey(appId);
+            if (Objects.isNull(tempRedis)) {
+                throw new BizException("获取商家授权token为空,appId=" +appId);
+            }
+
+            String requestNo = IdUtil.fastSimpleUUID();
+
+            AlipayTradeRoyaltyRelationBindRequest request = new AlipayTradeRoyaltyRelationBindRequest();
+            JSONObject bizContent = new JSONObject();
+            bizContent.put("type", type);
+            bizContent.put("account", account);
+            bizContent.put("memo", "分账给服务商");
+            bizContent.put("out_request_no", requestNo);
+            request.setBizContent(bizContent.toString());
+            AlipayTradeRoyaltyRelationBindResponse response;
+
+            log.info("bindRelation req is {}", bizContent);
+            try {
+                response = getAlipayClient("2021003129694075").certificateExecute(request, null, tempRedis.getRvalue());
+                if (response.isSuccess()) {
+                    payLedgers = new PayLedgers();
+                    payLedgers.setMerchantNo(merchantNo);
+                    payLedgers.setAppId("2021003129694075");
+                    payLedgers.setAccountId(account);
+                    payLedgers.setAccountName("上海有星科技有限公司");
+                    payLedgers.setChannelId(requestNo);
+                    payLedgers.setChannelCode("aliPay");
+                    payLedgers.setChannelAppId(appId);
+                    payLedgers.setState(true);
+                    payLedgers.setAllocationProfit(new BigDecimal(20));
+                    payLedgers.setCreateTime(new Date());
+                    payLedgersService.save(payLedgers);
+                }
+            } catch (AlipayApiException e) {
+               log.error("bindRelation req fail:",e);
+                throw new BizException("支付宝绑定分账关系报错:"+e.getMessage());
+            }
+        }
+        return Boolean.TRUE;
+    }
+
+
 
     public ScanPayApplyRes scanPay(AliPayRequest payTransactionBo) {
 
@@ -338,7 +394,6 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
         request.setBizContent(bizContent.toString());
         AlipayTradePrecreateResponse response;
         try {
-            // appId="2021004100609101"   token="202307BB6204a0ec6a3c4f7ebf83e7c993cc6X96"
             response = getAlipayClient("2021003129694075").certificateExecute(request,null,tempRedis.getRvalue());
         } catch (AlipayApiException e) {
             throw new RuntimeException(e);
