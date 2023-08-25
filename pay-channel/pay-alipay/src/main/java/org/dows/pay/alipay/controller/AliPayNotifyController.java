@@ -8,6 +8,7 @@ import org.dows.order.bo.OrderUpdatePaymentStatusBo;
 import org.dows.pay.alipay.AlipayPayHandler;
 import org.dows.pay.api.request.AliRelationBindReq;
 import org.dows.pay.api.response.PayQueryRes;
+import org.dows.pay.api.util.HttpRequestUtils;
 import org.dows.pay.entity.PayTransaction;
 import org.dows.pay.service.PayTransactionService;
 import org.springframework.http.HttpStatus;
@@ -47,22 +48,22 @@ public class AliPayNotifyController {
      * @param request
      * @return
      */
-    @RequestMapping(value = "/notify")
+    @PostMapping( "/notify")
     public ResponseEntity<Object> notify(HttpServletRequest request) {
         log.info("收到支付宝异步回调：{}", JSON.toJSONString(request.getParameterMap().toString()));
         // 获取支付宝POST过来反馈信息
-        Map<String, String> params = new HashMap<>();
-        Map<String, String[]> requestParams = request.getParameterMap();
-
-        for (Iterator<String> iter = requestParams.keySet().iterator(); iter.hasNext(); ) {
-            String name = iter.next();
-            String[] values = requestParams.get(name);
-            String valueStr = "";
-            for (int i = 0; i < values.length; i++) {
-                valueStr = (i == values.length - 1) ? valueStr + values[i] : valueStr + values[i] + ",";
-            }
-            params.put(name, valueStr);
-        }
+//        Map<String, String> params = new HashMap<>();
+//        Map<String, String[]> requestParams = request.getParameterMap();
+//
+//        for (Iterator<String> iter = requestParams.keySet().iterator(); iter.hasNext(); ) {
+//            String name = iter.next();
+//            String[] values = requestParams.get(name);
+//            String valueStr = "";
+//            for (int i = 0; i < values.length; i++) {
+//                valueStr = (i == values.length - 1) ? valueStr + values[i] : valueStr + values[i] + ",";
+//            }
+//            params.put(name, valueStr);
+//        }
 
         String tradeStatus = getRequestParameter(request, "trade_status");
         // 商户订单号
@@ -73,6 +74,10 @@ public class AliPayNotifyController {
         String totalAmount = getRequestParameter(request, "total_amount");
         //退款金额
         String refundFee = getRequestParameter(request, "refund_fee");
+        log.info("tradeStatus=={} outTradeNo=={} tradeNo=={} totalAmount={}",tradeStatus,outTradeNo,tradeNo,totalAmount);
+
+        String notifyData = HttpRequestUtils.getRequestParam(request).toString();
+        log.info("notifyData=={}",notifyData);
 
         PayTransaction payTransaction = payTransactionService.getByTransactionNo(outTradeNo);
         PayTransaction updatePay = new PayTransaction();
