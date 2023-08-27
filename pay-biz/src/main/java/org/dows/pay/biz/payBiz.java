@@ -249,6 +249,7 @@ public class payBiz implements PayApi {
                     if (payQueryRes.getPayTime()!=null) {
                         pay.setTransactionTime(payQueryRes.getPayTime());
                         pay.setStatus(1);
+                        pay.setAmount(payQueryRes.getPayAmount());
                         pay.setDealTo(payQueryRes.getOutTradeNo());
                         pay.setTradeState(payQueryRes.getPayDesc());
                     }
