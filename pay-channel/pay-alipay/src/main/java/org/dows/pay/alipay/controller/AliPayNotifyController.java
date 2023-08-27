@@ -1,7 +1,6 @@
 package org.dows.pay.alipay.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.alipay.api.internal.util.AlipaySignature;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dows.order.api.OrderInstanceBizApiService;
