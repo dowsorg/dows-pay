@@ -75,7 +75,7 @@ public class PayLedgersRecord implements CrudEntity {
     private BigDecimal allocationProfit;
 
     @ApiModelProperty("分账金额")
-    private Integer amount;
+    private BigDecimal amount;
 
     @ApiModelProperty("请求结果")
     private String result;
