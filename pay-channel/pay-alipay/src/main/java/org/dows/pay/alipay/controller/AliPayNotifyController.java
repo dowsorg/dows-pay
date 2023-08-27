@@ -1,6 +1,7 @@
 package org.dows.pay.alipay.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alipay.api.internal.util.AlipaySignature;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dows.order.api.OrderInstanceBizApiService;
@@ -52,18 +53,20 @@ public class AliPayNotifyController {
     public ResponseEntity<Object> notify(HttpServletRequest request) {
         log.info("收到支付宝异步回调：{}", JSON.toJSONString(request.getParameterMap().toString()));
         // 获取支付宝POST过来反馈信息
-//        Map<String, String> params = new HashMap<>();
-//        Map<String, String[]> requestParams = request.getParameterMap();
-//
-//        for (Iterator<String> iter = requestParams.keySet().iterator(); iter.hasNext(); ) {
-//            String name = iter.next();
-//            String[] values = requestParams.get(name);
-//            String valueStr = "";
-//            for (int i = 0; i < values.length; i++) {
-//                valueStr = (i == values.length - 1) ? valueStr + values[i] : valueStr + values[i] + ",";
-//            }
-//            params.put(name, valueStr);
-//        }
+        Map<String, String> params = new HashMap<>();
+        Map<String, String[]> requestParams = request.getParameterMap();
+
+        for (Iterator<String> iter = requestParams.keySet().iterator(); iter.hasNext(); ) {
+            String name = iter.next();
+            String[] values = requestParams.get(name);
+            String valueStr = "";
+            for (int i = 0; i < values.length; i++) {
+                valueStr = (i == values.length - 1) ? valueStr + values[i] : valueStr + values[i] + ",";
+            }
+            params.put(name, valueStr);
+        }
+        log.info("notify params=={}",JSON.toJSONString(params));
+//        boolean signVerified= AlipaySignature.rsaCertCheckV1(params, "", "UTF-8","RSA2");
 
         String tradeStatus = getRequestParameter(request, "trade_status");
         // 商户订单号
@@ -110,7 +113,7 @@ public class AliPayNotifyController {
 
     @PostMapping(value = "/relation/bind")
     public Boolean bindRelation(@RequestBody AliRelationBindReq req) {
-        return alipayPayHandler.bindRelation(req.getAccount(), req.getType(),req.getAppId(),req.getMerchantNo());
+        return alipayPayHandler.bindRelation(req.getAccount(), req.getType(),req.getAppId(),req.getMerchantNo(),null);
     }
 
 
