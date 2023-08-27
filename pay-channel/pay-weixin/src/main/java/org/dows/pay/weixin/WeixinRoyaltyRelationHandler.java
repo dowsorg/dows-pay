@@ -311,7 +311,7 @@ public class WeixinRoyaltyRelationHandler extends AbstractWeixinHandler {
         payLedgersRecord.setChannelAccountNo(payAccount.getChannelMerchantNo());
         payLedgersRecord.setChannelAccountType(true);
         payLedgersRecord.setAllocationProfit(BigDecimal.valueOf(allocationProfit));
-        payLedgersRecord.setAmount(amount);
+        payLedgersRecord.setAmount(new BigDecimal(amount));
         payLedgersRecord.setCreateTime(new Date());
         payLedgersRecordMapper.insert(payLedgersRecord);
         return payLedgersRecord;
