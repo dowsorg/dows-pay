@@ -14,6 +14,7 @@ import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.msg.AlipayMsgClient;
 import com.alipay.api.request.*;
 import com.alipay.api.response.*;
+import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,23 +34,19 @@ import org.dows.pay.api.annotation.PayMapping;
 import org.dows.pay.api.enums.PayMethods;
 import org.dows.pay.api.event.OrderPaySuccessEvent;
 import org.dows.pay.api.message.AlipayMessage;
-import org.dows.pay.api.request.FacePayCreateRes;
 import org.dows.pay.api.request.ScanPayApplyRes;
 import org.dows.pay.api.response.PayQueryRes;
-import org.dows.pay.bo.PayTransactionBo;
 import org.dows.pay.boot.PayClientFactory;
 import org.dows.pay.boot.properties.PayClientProperties;
 import org.dows.pay.entity.PayLedgers;
 import org.dows.pay.entity.PayLedgersRecord;
 import org.dows.pay.entity.PayTransaction;
 import org.dows.pay.form.AliPayRequest;
-import org.dows.pay.form.PayTransactionForm;
 import org.dows.pay.service.PayLedgersService;
 import org.dows.pay.service.PayTransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.event.EventListener;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.util.IdGenerator;
 import org.springframework.util.SimpleIdGenerator;
@@ -57,7 +54,6 @@ import org.dows.auth.biz.context.SecurityUtils;
 import org.dows.order.api.OrderInstanceBizApiService;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
@@ -459,7 +455,7 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
         if (response.isSuccess()) {
             //下单成功
             byte[] qr = QrCodeUtil.generatePng(response.getQrCode(), 200, 200);
-            String fileName = System.currentTimeMillis()+payTransactionBo.getOrderId() + ".png";
+            String fileName = String.join(StringPool.UNDERSCORE,System.currentTimeMillis()+"",payTransactionBo.getOrderId(),".png");
             OssInfo ossInfo = localOssClient.upLoad(new ByteArrayInputStream(qr), fileName);
             return ScanPayApplyRes.builder()
                     .orderId(payTransactionBo.getOrderId())
