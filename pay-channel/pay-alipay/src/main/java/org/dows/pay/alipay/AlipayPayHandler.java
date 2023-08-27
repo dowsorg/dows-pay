@@ -402,7 +402,7 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
         if (response.isSuccess()) {
             //下单成功
             byte[] qr = QrCodeUtil.generatePng(response.getQrCode(), 200, 200);
-            String fileName = DateUtil.formatDate(DateUtil.date())+payTransactionBo.getOrderId() + ".png";
+            String fileName = DateUtil.formatDate(DateUtil.date())+uuid + ".png";
             OssInfo ossInfo = localOssClient.upLoad(new ByteArrayInputStream(qr), fileName);
             return ScanPayApplyRes.builder()
                     .orderId(payTransactionBo.getOrderId())
