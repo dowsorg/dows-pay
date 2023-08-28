@@ -67,6 +67,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.util.Date;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @ClassName: WeixinPayNotifyController
@@ -154,7 +155,11 @@ public class WeixinPayNotifyController {
                         notifyResult.setResult(transactionsResult);
 
                         PayTransaction payTransaction = payTransactionService.getByTransactionNo(transactionsResult.getOutTradeNo());
-                        ThreadUtil.execAsync(()->weixinRoyaltyRelationHandler.claimProfit(payTransaction.getOrderId(),transactionsResult.getAmount().getTotal(),transactionsResult.getTransactionId(),payTransaction.getTransactionNo(),payTransaction.getAppId()));
+                        ThreadUtil.execAsync(()->{
+                            ThreadUtil.sleep(70, TimeUnit.SECONDS);
+                            weixinRoyaltyRelationHandler.claimProfit(payTransaction.getOrderId(),transactionsResult.getAmount().getTotal(),
+                                    transactionsResult.getTransactionId(),payTransaction.getTransactionNo(),payTransaction.getAppId());
+                        });
                         payTransactionService.updateStatusByOrderId(transactionsResult.getTransactionId(),transactionsResult.getTradeState(),
                                 transactionsResult.getOutTradeNo(),OrderPayTypeEnum.pay_finish.getCode(),transactionsResult.getAmount().getTotal());
                         try {

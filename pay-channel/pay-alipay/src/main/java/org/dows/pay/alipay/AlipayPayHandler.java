@@ -1,7 +1,5 @@
 package org.dows.pay.alipay;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.qrcode.QrCodeUtil;
@@ -14,22 +12,23 @@ import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.msg.AlipayMsgClient;
 import com.alipay.api.request.*;
 import com.alipay.api.response.*;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dows.account.api.AccountInstanceApi;
-import org.dows.account.vo.AccountInstanceResVo;
 import org.dows.account.vo.AccountInstanceVo;
 import org.dows.auth.api.TempRedisApi;
+import org.dows.auth.biz.context.SecurityUtils;
 import org.dows.auth.entity.TempRedis;
 import org.dows.framework.api.exceptions.BizException;
 import org.dows.framework.oss.api.OssInfo;
 import org.dows.framework.oss.tencent.TencentOssClient;
+import org.dows.order.api.OrderInstanceBizApiService;
 import org.dows.order.bo.OrderInstanceBo;
 import org.dows.pay.api.PayEvent;
 import org.dows.pay.api.PayException;
-import org.dows.pay.api.PayRequest;
 import org.dows.pay.api.annotation.PayMapping;
 import org.dows.pay.api.enums.PayMethods;
 import org.dows.pay.api.event.OrderPaySuccessEvent;
@@ -38,10 +37,13 @@ import org.dows.pay.api.request.ScanPayApplyRes;
 import org.dows.pay.api.response.PayQueryRes;
 import org.dows.pay.boot.PayClientFactory;
 import org.dows.pay.boot.properties.PayClientProperties;
+import org.dows.pay.entity.PayAccount;
 import org.dows.pay.entity.PayLedgers;
 import org.dows.pay.entity.PayLedgersRecord;
 import org.dows.pay.entity.PayTransaction;
 import org.dows.pay.form.AliPayRequest;
+import org.dows.pay.mapper.PayLedgersRecordMapper;
+import org.dows.pay.service.PayAccountService;
 import org.dows.pay.service.PayLedgersService;
 import org.dows.pay.service.PayTransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,8 +52,6 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.util.IdGenerator;
 import org.springframework.util.SimpleIdGenerator;
-import org.dows.auth.biz.context.SecurityUtils;
-import org.dows.order.api.OrderInstanceBizApiService;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -70,6 +70,10 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
     private final PayClientFactory payClientFactory;
 
     private final PayTransactionService payTransactionService;
+
+    private final PayLedgersRecordMapper payLedgersRecordMapper;
+
+    private final PayAccountService payAccountService;
 
     @Lazy
     @Autowired
@@ -90,8 +94,6 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
     /**
      * 去支付
      *
-     * @param payTransactionBo
-     * @return
      */
     @PayMapping(method = PayMethods.TRADE_ORDER_PAY)
     public AlipayTradeCreateResponse toPay(AliPayRequest payTransactionBo) {
@@ -260,19 +262,21 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
         alipayMsgClient.sendMessage(alipayRequest);
     }
 
-    public PayQueryRes queryPayStatus(String appId,String tradeNo) {
-        TempRedis tempRedis = tempRedisApi.getKey(appId);
+    public PayQueryRes queryPayStatus(PayTransaction payTransaction) {
+        TempRedis tempRedis = tempRedisApi.getKey(payTransaction.getAppId());
         if (Objects.isNull(tempRedis)) {
-            throw new BizException("获取商家授权token为空,appId=" +appId);
+            throw new BizException("获取商家授权token为空,appId=" +payTransaction.getAppId());
         }
         AlipayTradeQueryRequest req = new AlipayTradeQueryRequest();
         JSONObject bizContent = new JSONObject();
-        bizContent.put("out_trade_no", tradeNo);
+        bizContent.put("out_trade_no", payTransaction.getTransactionNo());
         req.setBizContent(bizContent.toString());
         AlipayTradeQueryResponse response;
         try {
             response = getAlipayClient("2021003129694075").certificateExecute(req, null, tempRedis.getRvalue());
             if (response.getSendPayDate()!=null) {
+                payTransaction.setDealTo(response.getTradeNo());
+               readyClaimProfit(tempRedis.getRvalue(),payTransaction);
                 return PayQueryRes.builder()
                         .payDesc(response.getTradeStatus())
                         .outTradeNo(response.getTradeNo())
@@ -287,12 +291,40 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
 
     }
 
+    private void readyClaimProfit(String token, PayTransaction payTransaction) {
+        bindRelation("2088131534177640","userId",payTransaction.getAppId(),payTransaction.getMerchantNo(),token);
+        orderSettle(payTransaction.getMerchantNo(),payTransaction.getAppId(),token,payTransaction.getDealTo(),
+                payTransaction.getOrderId());
+    }
 
-    public void orderSettle(String merchantNo,String appId,String token,String tradeNo,String orderId,BigDecimal amount) {
-        TempRedis tempRedis = tempRedisApi.getKey(appId);
-        if (Objects.isNull(tempRedis)) {
-            throw new BizException("获取商家授权token为空,appId=" +appId);
+
+    public void orderSettle(String merchantNo,String appId,String token,String tradeNo,String orderId) {
+
+        Long count = payLedgersRecordMapper.selectCount(
+                new LambdaQueryWrapper<PayLedgersRecord>().eq(PayLedgersRecord::getOrderId, orderId)
+                        .eq(PayLedgersRecord::getState, 1)
+        );
+
+        if (count>0) {
+            return;
         }
+
+        OrderInstanceBo orderInstanceBo = orderInstanceBizApiService.getOne(orderId,true);
+        if (orderInstanceBo == null) {
+            log.error("orderId={} 查询订单信息为空",orderId);
+            throw new BizException("订单信息为空");
+        }
+        PayAccount payAccount = payAccountService.lambdaQuery()
+                .eq(PayAccount::getChannelAccount,appId)
+                .eq(PayAccount::getDeleted,0)
+                .orderByDesc(PayAccount::getId)
+                .last(" limit 1").one();
+        if (payAccount == null) {
+            log.error("通过appId={} 查询支付账号信息为空,无法进行分账",appId);
+            return;
+        }
+        // 暂定20%比例
+        BigDecimal separateAmount = orderInstanceBo.getAgreeAmout().multiply(new BigDecimal("0.2"));
         String receiveUserId = "2088131534177640";
         String requestNo = IdUtil.fastSimpleUUID();
         AlipayTradeOrderSettleRequest request = new AlipayTradeOrderSettleRequest();
@@ -302,23 +334,26 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
 
         JSONArray jsonArray = new JSONArray();
         JSONObject settleDetail = new JSONObject();
-//        settleDetail.put("trans_out","");
-//        settleDetail.put("trans_out_type","userId");
+        settleDetail.put("trans_out",payAccount.getChannelMerchantNo());
+        settleDetail.put("trans_out_type","userId");
         settleDetail.put("trans_in_type","userId");
         settleDetail.put("trans_in",receiveUserId);
-        settleDetail.put("amount",amount);
+        settleDetail.put("amount",separateAmount);
         settleDetail.put("desc",String.format("分账给 %s","2088131534177640"));
         jsonArray.add(settleDetail);
         bizContent.put("royalty_parameters",jsonArray);
         request.setBizContent(bizContent.toString());
         AlipayTradeOrderSettleResponse response;
+        PayLedgersRecord payLedgersRecord = buildPayLedgerRecord(orderId,merchantNo,appId,receiveUserId,
+                payAccount.getChannelMerchantNo(),separateAmount,20);
         try {
             log.info("ali orderSettle req is {}",bizContent);
             response = getAlipayClient("2021003129694075").certificateExecute(request,null,token);
             log.info("orderSettle res is:{}",JSON.toJSONString(response));
+            payLedgersRecord.setResult(JSON.toJSONString(response));
             if (response.isSuccess()) {
-                PayLedgersRecord payLedgersRecord = buildPayLedgerRecord(orderId,merchantNo,appId,receiveUserId,
-                        "aaa",amount,JSON.toJSONString(response));
+                payLedgersRecord.setState(1);
+                payLedgersRecordMapper.updateById(payLedgersRecord);
             }
         } catch (AlipayApiException e) {
           log.error("orderSettle fail:",e);
@@ -326,7 +361,7 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
     }
 
     private PayLedgersRecord buildPayLedgerRecord(String orderId,String merchantNo, String appId, String receiveUserId,
-                                                  String transOut, BigDecimal amount,String result) {
+                                                  String transOut, BigDecimal amount,Integer ratio) {
         PayLedgersRecord payLedgersRecord = new PayLedgersRecord();
         payLedgersRecord.setOrderId(orderId);
         payLedgersRecord.setMerchantNo(merchantNo);
@@ -336,12 +371,10 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
         payLedgersRecord.setChannelAppId(appId);
         payLedgersRecord.setChannelAccountNo(transOut);
         payLedgersRecord.setChannelAccountType(true);
-//        payLedgersRecord.setAllocationProfit();
+        payLedgersRecord.setAllocationProfit(new BigDecimal(ratio));
         payLedgersRecord.setAmount(amount);
-        payLedgersRecord.setResult(result);
-//        payLedgersRecord.setState();
         payLedgersRecord.setCreateTime(new Date());
-
+        payLedgersRecordMapper.insert(payLedgersRecord);
         return payLedgersRecord;
     }
 

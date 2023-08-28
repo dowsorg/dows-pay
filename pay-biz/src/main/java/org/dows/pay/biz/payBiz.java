@@ -243,7 +243,7 @@ public class payBiz implements PayApi {
                         pay.setDealTo(payQueryRes.getOutTradeNo());
                     }
                 } else if(Objects.equals(payTransaction.getPayChannel(),"aliPay")) {
-                    payQueryRes = alipayPayHandler.queryPayStatus(payTransaction.getAppId(),payTransaction.getTransactionNo());
+                    payQueryRes = alipayPayHandler.queryPayStatus(pay);
                     payQueryRes.setPayChannel(payTransaction.getPayChannel());
                     payQueryRes.setOrderId(payTransaction.getOrderId());
                     if (payQueryRes.getPayTime()!=null) {

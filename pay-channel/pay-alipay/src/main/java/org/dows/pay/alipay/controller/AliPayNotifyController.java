@@ -105,10 +105,6 @@ public class AliPayNotifyController {
     }
 
 
-    @GetMapping(value = "/queryPayStatus")
-    public PayQueryRes queryPayStatus(@RequestParam("appId") String appId,@RequestParam("tradeNo")  String tradeNo) {
-        return alipayPayHandler.queryPayStatus(appId, tradeNo);
-    }
 
     @PostMapping(value = "/relation/bind")
     public Boolean bindRelation(@RequestBody AliRelationBindReq req) {
