@@ -81,7 +81,7 @@ public class PayLedgersRecord implements CrudEntity {
     private String result;
 
     @ApiModelProperty("请求状态")
-    private String state;
+    private Integer state;
 
     private Date createTime;
 

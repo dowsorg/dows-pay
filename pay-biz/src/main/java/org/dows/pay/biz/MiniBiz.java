@@ -5,6 +5,7 @@ package org.dows.pay.biz;
  */
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.http.HttpRequest;
 import com.alibaba.fastjson.JSON;
@@ -473,7 +474,7 @@ public class MiniBiz {
             }
             // 设置类目
             if (!StringUtils.isBlank(String.valueOf(setWxBaseInfoForm.getFirst()))
-                    && setWxBaseInfoForm.getCerticate() != null) {
+                    && CollUtil.isNotEmpty(setWxBaseInfoForm.getCerticates())) {
                 // todo
                 WxFastMaCategoryForm wxFastMaCategoryForm = BeanUtil.copyProperties(setWxBaseInfoForm, WxFastMaCategoryForm.class);
                 wxFastMaCategoryForm.setAuthorizerAccessToken(authorizerAccessToken);
@@ -483,20 +484,20 @@ public class MiniBiz {
                     wxFastMaCategoryForm.setSecond(setWxBaseInfoForm.getSecond());
                 }
 
-                List<WxFastMaCategoryBo.Certificate> certicates = new ArrayList<>();
-                String[] certicateList = setWxBaseInfoForm.getCerticate() != null
-                        ? setWxBaseInfoForm.getCerticate().split(",") : null;
-                if (certicateList != null) {
-                    int i = 1;
-                    for (String certicate : certicateList) {
-                        WxFastMaCategoryBo.Certificate certificate = new WxFastMaCategoryBo.Certificate();
-                        certificate.setKey(String.format("《材料%s》", i));
-                        certificate.setValue(certicate);
-                        certicates.add(certificate);
-                        i++;
-                    }
-                }
-                wxFastMaCategoryForm.setCerticates(certicates);
+//                List<WxFastMaCategoryBo.Certificate> certicates = new ArrayList<>();
+//                String[] certicateList = setWxBaseInfoForm.getCerticate() != null
+//                        ? setWxBaseInfoForm.getCerticate().split(",") : null;
+//                if (certicateList != null) {
+//                    int i = 1;
+//                    for (String certicate : certicateList) {
+//                        WxFastMaCategoryBo.Certificate certificate = new WxFastMaCategoryBo.Certificate();
+//                        certificate.setKey(String.format("《材料%s》", i));
+//                        certificate.setValue(certicate);
+//                        certicates.add(certificate);
+//                        i++;
+//                    }
+//                }
+                wxFastMaCategoryForm.setCerticates(setWxBaseInfoForm.getCerticates());
                 Response<PayResponse> addCategoryResponse = addCategory(wxFastMaCategoryForm);
                 log.info("设置类目返回结果 ：{}", addCategoryResponse);
                 if (addCategoryResponse != null) {

@@ -248,13 +248,17 @@ public class WeixinRoyaltyRelationHandler extends AbstractWeixinHandler {
             return;
         }
 
-        PayLedgersRecord payLedgersRecord = addPayLedgerRecord(payAccount, orderId, amount, appId, storeById.getCommissionRatio());
+        if (storeById.getCommissionRatio() == null) {
+            log.error("根据storeId={} 查询门店分账比例为空,无法进行分账",orderInstanceBo.getStoreId());
+            return;
+        }
 
-        ThreadUtil.sleep(70, TimeUnit.SECONDS);
+
         List<SeparateAccountReq.Receivers> receivers = new ArrayList<>();
-        double separateAmount=  (amount * 0.2 / 100);
-        int profitAmount = new BigDecimal(separateAmount).multiply(BigDecimal.valueOf(storeById.getCommissionRatio()))
+        BigDecimal separateAmount = orderInstanceBo.getAgreeAmout().multiply(new BigDecimal("100"));
+        int profitAmount = separateAmount.multiply(BigDecimal.valueOf(storeById.getCommissionRatio()))
                 .divide(new BigDecimal("100"),2, RoundingMode.CEILING).intValue();
+        PayLedgersRecord payLedgersRecord = addPayLedgerRecord(payAccount, orderId, profitAmount, appId, storeById.getCommissionRatio());
         SeparateAccountReq.Receivers  receiver = SeparateAccountReq.Receivers.builder()
                 .type("MERCHANT_ID")
                 .account("1604404392")// 应该分给服务商
@@ -289,10 +293,10 @@ public class WeixinRoyaltyRelationHandler extends AbstractWeixinHandler {
             HttpEntity entity = response.getEntity();
             String res = EntityUtils.toString(entity, StandardCharsets.UTF_8);
             System.out.println("profitSharing result is:"+res);
-            // 后面加日志记录
+
             JSONObject jsonObject = JSONObject.parseObject(res);
             payLedgersRecord.setResult(res);
-            payLedgersRecord.setState(jsonObject.getString("state"));
+            payLedgersRecord.setState(jsonObject.getString("state")==null?0:1);
             payLedgersRecordMapper.updateById(payLedgersRecord);
         } catch (IOException e) {
            log.error("profitSharing error:",e);
