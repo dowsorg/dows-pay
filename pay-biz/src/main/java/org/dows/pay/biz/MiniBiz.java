@@ -19,9 +19,11 @@ import me.chanjar.weixin.open.util.json.WxOpenGsonBuilder;
 import org.apache.commons.lang3.StringUtils;
 import org.dows.amp.api.MsgTemplateApi;
 import org.dows.app.api.mini.AppApplyApi;
+import org.dows.app.api.mini.request.AppApplyRequest;
 import org.dows.app.api.mini.request.HttpResult;
 import org.dows.app.api.mini.request.PayApplyStatusReq;
 import org.dows.app.api.mini.response.AppApplyAndItemResponse;
+import org.dows.app.entity.AppApplyItem;
 import org.dows.app.entity.AppBase;
 import org.dows.app.service.AppBaseService;
 import org.dows.auth.api.weixin.WeixinTokenApi;
@@ -346,6 +348,7 @@ public class MiniBiz {
      * @param setWxBaseInfoForm
      */
     public Response setWxinApplyInfo(SetWxBaseInfoForm setWxBaseInfoForm) {
+        log.info("setWxinApplyInfo req is {}",JSON.toJSONString(setWxBaseInfoForm));
         setWxBaseInfoForm.setAppId("wxdb8634feb22a5ab9");
         String merchantNo = SecurityUtils.getMerchantNo();
         if (StringUtils.isBlank(merchantNo)) {
@@ -536,6 +539,10 @@ public class MiniBiz {
                     return response;
                 }
             }
+            AppApplyRequest appApplyRequest = new AppApplyRequest();
+            appApplyRequest.setAppId(setWxBaseInfoForm.getAppId());
+            appApplyRequest.setBaseMsg(JSON.toJSONString(setWxBaseInfoForm));
+            appApplyApi.updateAppApplyItemByAppId(appApplyRequest);
             return response;
         } catch (Exception e) {
             updateStatus(channel, setWxBaseInfoForm.getMerchantAppId(), merchantNo,
