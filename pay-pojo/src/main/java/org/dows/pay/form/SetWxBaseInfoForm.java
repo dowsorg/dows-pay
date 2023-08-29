@@ -179,6 +179,7 @@ public class SetWxBaseInfoForm extends SetWxBaseInfoExtForm  implements BizForm{
         private String key;
         @ApiModelProperty("value")
         private String value;
+        private String code;
     }
 
 }

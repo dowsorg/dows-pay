@@ -196,30 +196,28 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
         //todo 待实现业务逻辑
         WxOpenResult response = null;
         List<WxFastMaCategory> list = new ArrayList<>();
-        WxFastMaCategory wxFastMaCategory = new WxFastMaCategory();
+
+
+
         WxFastMaCategoryBo wxFastMaCategoryBo = (WxFastMaCategoryBo) payRequest.getBizModel();
         log.info("设置小程序类目入参，：{}", wxFastMaCategoryBo);
         // 类目资质
         List<WxFastMaCategoryBo.Certificate> certicates = wxFastMaCategoryBo.getCerticates();
+        List<WxFastMaCategory.Certificate> certicateList = new ArrayList<>();
+        WxFastMaCategory wxFastMaCategory = new WxFastMaCategory();
         if (!ObjectUtil.isEmpty(certicates)) {
+            wxFastMaCategory.setFirst(wxFastMaCategoryBo.getFirst());
+            wxFastMaCategory.setSecond(wxFastMaCategoryBo.getSecond());
             certicates.forEach(x -> {
+                WxFastMaCategory.Certificate certificate = new WxFastMaCategory.Certificate();
+                certificate.setKey(x.getKey());
                 if (!ObjectUtil.isEmpty(x.getValue())) {
                     File uboIdDocCopyFile;
                     if (x.getValue().startsWith("http")) {
                         String path = x.getValue();
                         String substringPath = path.substring(path.lastIndexOf(StringPool.SLASH, path.lastIndexOf(StringPool.SLASH) - 1));
                         uboIdDocCopyFile = new File("/opt/dows/tenant/image" + substringPath);
-//                        URL url = null;
-//                        try {
-//                            String replaceUrl = x.getValue().replaceAll("https:/", "https://");
-//                            url = new URL(replaceUrl);
-//                            String tempPath = replaceUrl.substring(replaceUrl.lastIndexOf('/'));
-//                            File mediaFile = new File("/opt/dows/tenant/image"+tempPath);
-//                            FileUtils.copyURLToFile(url, mediaFile);
-//                        } catch (Exception e) {
-//                            System.out.println("url convert error:"+e);
-//                            log.error("url convert error:",e);
-//                        }
+
                     } else {
                         String filePath = getFilePath(x.getValue());
                         uboIdDocCopyFile = new File(filePath);
@@ -230,11 +228,14 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
                         UploadBo uploadBo = JSONObject.parseObject(uploadimg, UploadBo.class);
                         log.info("=========转换文件上传，{}", uploadBo);
                         x.setValue(uploadBo.getMedia_id());
+                        certificate.setValue(uploadBo.getMedia_id());
+                        certicateList.add(certificate);
                     }
                 }
+                wxFastMaCategory.setCerticates(certicateList);
             });
         }
-        BeanUtil.copyProperties(wxFastMaCategoryBo, wxFastMaCategory);
+
         list.add(wxFastMaCategory);
 
         Categories categories = new Categories();
