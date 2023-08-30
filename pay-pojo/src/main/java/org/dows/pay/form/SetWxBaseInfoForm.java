@@ -1,6 +1,5 @@
 package org.dows.pay.form;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -26,15 +25,7 @@ import java.util.List;
 @ApiModel(value = "WxBaseInfoForm 表单对象", description = " 支付宝/微信小程序基本信息")
 @Data
 public class SetWxBaseInfoForm extends SetWxBaseInfoExtForm  implements BizForm{
-//    @ApiModelProperty("平台应用ID")
-//    private String appId;
 
-//    @ApiModelProperty("商家应用ID")
-//    private String merchantAppId;
-
-//    // 通道code
-//    @ApiModelProperty("通道code")
-//    private String channel;
 
     // 账号
     @ApiModelProperty("账号")
