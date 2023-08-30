@@ -167,6 +167,14 @@ public class SetWxBaseInfoForm extends SetWxBaseInfoExtForm  implements BizForm{
     @ApiModelProperty("资质信息")
     private String certicate;
 
+    private String manageRelState;
+
+    private String respCommLetter;
+
+    private String foodBusLicense;
+
+    private String portHeaLicense;
+
     /**
      * 资质信息.
      */
