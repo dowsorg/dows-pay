@@ -479,6 +479,7 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
         bizContent.put("product_code", "FACE_TO_FACE_PAYMENT");
         request.setNotifyUrl(ALI_PAY_NOTIFY_URL);
         request.setBizContent(bizContent.toString());
+        log.info("支付宝扫码下单 data:{}",bizContent.toJSONString());
         AlipayTradePrecreateResponse response;
         try {
             response = getAlipayClient("2021003129694075").certificateExecute(request,null,tempRedis.getRvalue());

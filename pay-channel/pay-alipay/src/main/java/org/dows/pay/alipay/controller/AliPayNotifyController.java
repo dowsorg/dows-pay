@@ -50,6 +50,7 @@ public class AliPayNotifyController {
      */
     @PostMapping( "/notify")
     public ResponseEntity<Object> notify(HttpServletRequest request) {
+
         log.info("收到支付宝异步回调：{}", JSON.toJSONString(request.getParameterMap().toString()));
         // 获取支付宝POST过来反馈信息
         Map<String, String> params = new HashMap<>();
