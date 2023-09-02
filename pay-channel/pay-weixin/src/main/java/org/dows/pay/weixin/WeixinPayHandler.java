@@ -2,8 +2,10 @@ package org.dows.pay.weixin;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.IdUtil;
+import cn.hutool.http.HttpRequest;
 import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.alipay.service.schema.util.StringUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
@@ -23,6 +25,7 @@ import org.apache.http.util.EntityUtils;
 import org.dows.auth.biz.cache.CacheFactory;
 import org.dows.auth.biz.cache.LocalCache;
 import org.dows.auth.biz.context.SecurityUtils;
+import org.dows.framework.api.Response;
 import org.dows.framework.api.exceptions.BizException;
 import org.dows.order.api.OrderInstanceBizApiService;
 import org.dows.order.bo.OrderInstanceBo;
@@ -46,6 +49,7 @@ import org.dows.pay.form.PayPartnerTransactionsQueryForm;
 import org.dows.pay.service.PayAccountService;
 import org.dows.pay.service.PayLedgersService;
 import org.dows.pay.service.PayTransactionService;
+import org.dows.pay.weixin.utils.WeChatSignUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 import org.springframework.util.IdGenerator;
@@ -77,6 +81,12 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
     private final PayClientConfig payClientConfig;
 
     private final PayAccountService payAccountService;
+
+    private static String INVOICE_CHECK_OPEN_URL = "https://api.mch.weixin.qq.com/v3/new-tax-control-fapiao/merchant/%s/check";
+
+    private static String DEVELOP_OPTIONS_URL = "https://api.mch.weixin.qq.com/v3/new-tax-control-fapiao/merchant/development-config";
+
+    private static String SCHEMA = "WECHATPAY2-SHA256-RSA2048";
 
     private final IdGenerator idGenerator = new SimpleIdGenerator();
 
@@ -586,6 +596,44 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
             log.error("queryWechatOrder fail:", e);
             return new HashMap<>();
         }
+    }
+
+
+    public Response checkSubMeOpenInvoice(String subMchCode) {
+        String url = String.format(INVOICE_CHECK_OPEN_URL, subMchCode);
+        Map<String, String> headMap = new HashMap<>();
+        headMap.put("Accept","application/json");
+        headMap.put("Content-Type","application/json");
+        String sign = WeChatSignUtil.getAuthorization("POST", url, "");
+        headMap.put("Authorization",String.join(" ",SCHEMA,sign));
+
+        String result = HttpRequest.post(url)
+                .headerMap(headMap,false)
+                .timeout(20000)//超时，毫秒
+                .execute().body();
+        log.info("checkSubMeOpenInvoice res is {}",result);
+        return Response.ok(result);
+    }
+
+
+    public Response configDevelopOptions(String subMchCode) {
+        Map<String, String> headMap = new HashMap<>();
+        headMap.put("Accept","application/json");
+        headMap.put("Content-Type","application/json");
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("callback_url","");
+        jsonObject.put("sub_mch_code",subMchCode);
+        jsonObject.put("show_fapiao_cell",true);
+        String sign = WeChatSignUtil.getAuthorization("PATCH", DEVELOP_OPTIONS_URL, jsonObject.toString());
+        headMap.put("Authorization",String.join(" ",SCHEMA,sign));
+
+        String result = HttpRequest.post(DEVELOP_OPTIONS_URL)
+                .headerMap(headMap,false)
+                .timeout(20000)
+                .body(jsonObject.toString())
+                .execute().body();
+        log.info("configDevelopOptions res is {}",result);
+        return Response.ok(result);
     }
 
     /**
