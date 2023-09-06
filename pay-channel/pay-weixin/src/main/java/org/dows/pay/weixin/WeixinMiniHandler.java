@@ -417,13 +417,18 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
         WxOpenResult response = null;
         try {
             WxBaseInfoBo wxBaseInfoBo = (WxBaseInfoBo) payRequest.getBizModel();
-            File idCardNationalFile = new File(getFilePath(wxBaseInfoBo.getHeadImgMediaId()));
+            String path = wxBaseInfoBo.getHeadImgMediaId();
+            String substringPath = path.substring(path.lastIndexOf(StringPool.SLASH, path.lastIndexOf(StringPool.SLASH) - 1));
+            File file = new File("/opt/dows/tenant/image" + substringPath);
+            String uploadimg = uploadimg(file, payRequest.getAuthorizerAccessToken());
+            log.info("修改头像uploadimg：{}", uploadimg);
+            UploadBo uploadBo = JSONObject.parseObject(uploadimg, UploadBo.class);
             response = this.getWxOpenMaClient(payRequest.getAppId()).getBasicService().modifyHeadImage(
-                    upload(idCardNationalFile, payRequest).getMediaId(),
-                    wxBaseInfoBo.getX1(),
-                    wxBaseInfoBo.getY1(),
-                    wxBaseInfoBo.getX2(),
-                    wxBaseInfoBo.getY2());
+                    uploadBo.getMedia_id(),
+                    0f,
+                    0f,
+                    0.75f,
+                    0.49f);
         } catch (WxErrorException e) {
             e.printStackTrace();
         }
@@ -494,7 +499,7 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
 //        if (ObjectUtil.isNotEmpty(arrPath) && arrPath.length > 1) {
 //            path = arrPath[1];
 //        }
-        String jPath = "/opt/dows/tenant" + path;
+        String jPath = "/opt/dows/tenant/image" + path;
         log.info("图片绝对路径 ：{}", jPath);
         return jPath;
     }
