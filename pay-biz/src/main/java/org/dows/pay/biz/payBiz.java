@@ -56,6 +56,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -228,7 +229,7 @@ public class payBiz implements PayApi {
                 return PayQueryRes.builder()
                         .orderId(pay.getOrderId())
                         .outTradeNo(pay.getDealTo())
-                        .payAmount(pay.getAmount())
+                        .payAmount(pay.getAmount().divide(new BigDecimal("100")))
                         .payChannel(pay.getPayChannel())
                         .payDesc(pay.getTradeState())
                         .payTime(pay.getTransactionTime())

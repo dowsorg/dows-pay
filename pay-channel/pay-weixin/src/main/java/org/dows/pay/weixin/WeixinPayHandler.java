@@ -242,7 +242,7 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
         if (payTransaction == null) {
             //先创建交易订单
             payTransaction = BeanUtil.copyProperties(payRequest, PayTransaction.class);
-            payTransaction.setPayChannel(payRequest.getChannel());
+            payTransaction.setPayChannel("weixin");
             payTransaction.setTransactionNo(transactionNo);
             payTransaction.setAppId(payRequest.getAppId());
             payTransaction.setMerchantNo(SecurityUtils.getMerchantNo());
@@ -251,6 +251,7 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
             payTransactionService.save(payTransaction);
             log.info("WeixinPayHandler.toPay.payTransaction的参数:{}", payTransaction);
         } else {
+            payTransaction.setPayChannel("weixin");
             payTransaction.setTransactionNo(transactionNo);
             payTransactionService.updateById(payTransaction);
             log.info("WeixinPayHandler.toPay.payTransaction的参数:{}", payTransaction);

@@ -37,7 +37,7 @@ public class PayClientBuilder {
 
     private static String PREFIX_CERTIFICATE_PATH = "/opt/file/";
 
-//    private static String PREFIX_CERTIFICATE_PATH = "/Users/wangjunchi/Downloads/youxing/alipay";
+//    private static String PREFIX_CERTIFICATE_PATH = "/Users/xx/Downloads/youxing/alipay";
 
     @Autowired
     private   TempRedisApi tempRedisApi;

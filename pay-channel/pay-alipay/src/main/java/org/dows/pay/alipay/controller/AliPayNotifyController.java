@@ -112,6 +112,12 @@ public class AliPayNotifyController {
         return alipayPayHandler.bindRelation(req.getAccount(), req.getType(),req.getAppId(),req.getMerchantNo(),null);
     }
 
+    @PostMapping(value = "/readyClaimProfit")
+    public void readyClaimProfit(String orderId) {
+        PayTransaction payTransaction = payTransactionService.getByOrderId(orderId);
+        alipayPayHandler.readyClaimProfit("202308BB8687463402634e0ea08305cece0d2X97",payTransaction);
+    }
+
 
 
     private String getRequestParameter(HttpServletRequest request, String name) {
