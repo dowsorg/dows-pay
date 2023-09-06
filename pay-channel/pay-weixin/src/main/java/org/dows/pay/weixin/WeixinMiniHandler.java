@@ -85,6 +85,8 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
     // 添加类目
     private final String WX_SET_FILED_URL = "https://api.weixin.qq.com/cgi-bin/media/upload";
 
+    private final String MODIFY_HEAD_URL = "https://api.weixin.qq.com/cgi-bin/account/modifyheadimage";
+
 
     private static final Gson GSON = new GsonBuilder().create();
 
@@ -423,13 +425,20 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
             String uploadimg = uploadimg(file, payRequest.getAuthorizerAccessToken());
             log.info("修改头像uploadimg：{}", uploadimg);
             UploadBo uploadBo = JSONObject.parseObject(uploadimg, UploadBo.class);
-            response = this.getWxOpenMaClient(payRequest.getAppId()).getBasicService().modifyHeadImage(
-                    uploadBo.getMedia_id(),
-                    0f,
-                    0f,
-                    0.75f,
-                    0.49f);
+            Map<String, String> param = new HashMap<>();
+            param.put("head_img_media_id", uploadBo.getMedia_id());
+            param.put("x1", "0");
+            param.put("y1", "0");
+            param.put("x2", "0.75");
+            param.put("y2", "0.49");
+            HttpClientResult uploadTemplateResult = HttpClientUtils.doPost(MODIFY_HEAD_URL +
+                    "?access_token=" + payRequest.getAuthorizerAccessToken(), param, 1);
+            String content = uploadTemplateResult.getContent();
+            response = WxOpenGsonBuilder.create().fromJson(content, WxOpenResult.class);
+            return response;
         } catch (WxErrorException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return response;
