@@ -5,6 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.alipay.api.response.*;
 import com.alipay.service.schema.util.StringUtil;
+import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.github.binarywang.wxpay.bean.applyment.WxPayApplyment4SubCreateRequest;
 import com.github.binarywang.wxpay.bean.applyment.WxPayApplymentCreateResult;
 import com.github.binarywang.wxpay.bean.applyment.enums.BankAccountTypeEnum;
@@ -60,6 +61,7 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * ISV 代理商业务
@@ -447,7 +449,7 @@ public class payBiz implements PayApi {
         miniUploadRequest.setAppId(appId);
         miniUploadRequest.setAuthorizerAppid(request.getAppId());
         miniUploadRequest.setTemplateId(request.getTemplateId());
-        miniUploadRequest.setUserVersion(request.getAppVersion()==null?"V1.1":request.getAppVersion());
+        miniUploadRequest.setUserVersion(String.join(StringPool.DOT,"1",ThreadLocalRandom.current().nextInt(101)+""));
         miniUploadRequest.setUserDesc("normal");
         miniUploadRequest.setExtJsonObject(getExtJsonObject(request.getAppId()));
         return miniUploadRequest;
