@@ -47,6 +47,8 @@ import org.dows.pay.mapper.PayLedgersRecordMapper;
 import org.dows.pay.service.PayAccountService;
 import org.dows.pay.service.PayLedgersService;
 import org.dows.pay.service.PayTransactionService;
+import org.dows.store.api.MerchantInstanceApi;
+import org.dows.store.api.response.MerchantResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.event.EventListener;
@@ -90,6 +92,8 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
     private final AccountInstanceApi accountInstanceApi;
 
     private final TempRedisApi tempRedisApi;
+
+    private final MerchantInstanceApi merchantInstanceApi;
 
     private final OrderInstanceBizApiService orderInstanceBizApiService;
 
@@ -138,16 +142,13 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
         bizContent.put("total_amount", orderInstanceBo.getAgreeAmout());
         bizContent.put("subject", "支付宝下单");
         bizContent.put("timeout_express", "10m");
-//        bizContent.put("buyer_id",accountInstanceVo.getUserId());
         // 商户实际经营主体的小程序应用的appid
         bizContent.put("op_app_id", orderInstanceBo.getAppId());
-//        bizContent.put("product_code", "JSAPI_PAY");
         bizContent.put("product_code", "FACE_TO_FACE_PAYMENT");
         request.setNotifyUrl(ALI_PAY_NOTIFY_URL);
         request.setBizContent(bizContent.toString());
         AlipayTradeCreateResponse response;
         try {
-            // appId="2021004100609101"   token="202307BB6204a0ec6a3c4f7ebf83e7c993cc6X96"
             response = getAlipayClient("2021003129694075").certificateExecute(request, null, tempRedis.getRvalue());
         } catch (AlipayApiException e) {
             throw new RuntimeException(e);
@@ -322,8 +323,19 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
             log.error("通过appId={} 查询支付账号信息为空,无法进行分账", appId);
             return;
         }
+        MerchantResponse merchantByNo = merchantInstanceApi.getMerchantByNo(merchantNo);
+        if (Objects.isNull(merchantByNo)) {
+            log.error("根据商户号:【{}】查询商户信息为空",merchantNo);
+            return;
+        }
+
+        if (Objects.isNull(merchantByNo.getAlipayCommissionRatio())) {
+            log.error("根据商户号:【{}】查询商户支付宝结算利率为空",merchantNo);
+            return;
+        }
+
         // 暂定20%比例
-        BigDecimal separateAmount = orderInstanceBo.getAgreeAmout().multiply(new BigDecimal(20))
+        BigDecimal separateAmount = orderInstanceBo.getAgreeAmout().multiply(BigDecimal.valueOf(merchantByNo.getAlipayCommissionRatio()))
          .divide(new BigDecimal("100"),2, RoundingMode.CEILING);
         String receiveUserId = "2088131534177640";
         String requestNo = IdUtil.fastSimpleUUID();
@@ -345,7 +357,7 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
         request.setBizContent(bizContent.toString());
         AlipayTradeOrderSettleResponse response;
         PayLedgersRecord payLedgersRecord = buildPayLedgerRecord(orderId, merchantNo, appId, receiveUserId,
-                payAccount.getChannelMerchantNo(), separateAmount.multiply(new BigDecimal("100")), 20);
+                payAccount.getChannelMerchantNo(), separateAmount.multiply(new BigDecimal("100")), merchantByNo.getAlipayCommissionRatio()+"");
         try {
             log.info("ali orderSettle req is {}", bizContent);
             response = getAlipayClient("2021003129694075").certificateExecute(request, null, token);
@@ -361,7 +373,7 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
     }
 
     private PayLedgersRecord buildPayLedgerRecord(String orderId, String merchantNo, String appId, String receiveUserId,
-                                                  String transOut, BigDecimal amount, Integer ratio) {
+                                                  String transOut, BigDecimal amount, String ratio) {
         PayLedgersRecord payLedgersRecord = new PayLedgersRecord();
         payLedgersRecord.setOrderId(orderId);
         payLedgersRecord.setMerchantNo(merchantNo);
