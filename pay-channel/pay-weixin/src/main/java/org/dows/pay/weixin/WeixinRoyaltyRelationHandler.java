@@ -36,7 +36,9 @@ import org.dows.pay.mapper.PayLedgersRecordMapper;
 import org.dows.pay.service.PayAccountService;
 import org.dows.pay.service.PayLedgersService;
 import org.dows.pay.service.PayTransactionService;
+import org.dows.store.api.MerchantInstanceApi;
 import org.dows.store.api.StoreInstanceApi;
+import org.dows.store.api.response.MerchantResponse;
 import org.dows.store.api.response.StoreResponse;
 import org.springframework.stereotype.Service;
 
@@ -74,6 +76,7 @@ public class WeixinRoyaltyRelationHandler extends AbstractWeixinHandler {
 
     private final StoreInstanceApi storeInstanceApi;
 
+    private final MerchantInstanceApi merchantInstanceApi;
 
     private final PayTransactionService payTransactionService;
 
@@ -193,7 +196,7 @@ public class WeixinRoyaltyRelationHandler extends AbstractWeixinHandler {
         }
     }
 
-    public void claimProfit(String orderId,Integer amount,String transactionId,String transactionNo,String appId) {
+        public void claimProfit(String orderId,Integer amount,String transactionId,String transactionNo,String appId) {
        log.info("orderId={},amount={},transactionId={},transactionNo={},appId={} ask claimProfit",
                orderId,amount,transactionId,transactionNo, appId);
         PayAccount payAccount = payAccountService.lambdaQuery()
@@ -248,15 +251,18 @@ public class WeixinRoyaltyRelationHandler extends AbstractWeixinHandler {
             return;
         }
 
-        if (storeById.getCommissionRatio() == null) {
-            log.error("根据storeId={} 查询门店分账比例为空,无法进行分账",orderInstanceBo.getStoreId());
+
+        MerchantResponse merchantResponse = merchantInstanceApi.getMerchantByNo(storeById.getMerchantNo());
+
+        if (merchantResponse.getCommissionRatio() == null) {
+            log.error("根据merchantId={} 查询商户分账比例为空,无法进行分账",storeById.getMerchantNo());
             return;
         }
 
 
         List<SeparateAccountReq.Receivers> receivers = new ArrayList<>();
         BigDecimal separateAmount = orderInstanceBo.getAgreeAmout().multiply(new BigDecimal("100"));
-        int profitAmount = separateAmount.multiply(BigDecimal.valueOf(storeById.getCommissionRatio()))
+        int profitAmount = separateAmount.multiply(BigDecimal.valueOf(merchantResponse.getCommissionRatio()))
                 .divide(new BigDecimal("100"),2, RoundingMode.CEILING).intValue();
         PayLedgersRecord payLedgersRecord = addPayLedgerRecord(payAccount, orderId, profitAmount, appId, storeById.getCommissionRatio());
         SeparateAccountReq.Receivers  receiver = SeparateAccountReq.Receivers.builder()
