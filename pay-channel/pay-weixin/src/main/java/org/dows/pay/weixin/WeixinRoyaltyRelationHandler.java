@@ -264,7 +264,7 @@ public class WeixinRoyaltyRelationHandler extends AbstractWeixinHandler {
         BigDecimal separateAmount = orderInstanceBo.getAgreeAmout().multiply(new BigDecimal("100"));
         int profitAmount = separateAmount.multiply(BigDecimal.valueOf(merchantResponse.getCommissionRatio()))
                 .divide(new BigDecimal("100"),2, RoundingMode.CEILING).intValue();
-        PayLedgersRecord payLedgersRecord = addPayLedgerRecord(payAccount, orderId, profitAmount, appId, storeById.getCommissionRatio());
+        PayLedgersRecord payLedgersRecord = addPayLedgerRecord(payAccount, orderId, profitAmount, appId, merchantResponse.getCommissionRatio());
         SeparateAccountReq.Receivers  receiver = SeparateAccountReq.Receivers.builder()
                 .type("MERCHANT_ID")
                 .account("1604404392")// 应该分给服务商
