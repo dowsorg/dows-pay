@@ -79,9 +79,10 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
 
     private final PayAccountService payAccountService;
 
-    @Lazy
+
     @Autowired
-    private TencentOssClient localOssClient;
+    @Lazy
+    private TencentOssClient tencentOssClient;
 
     private final PayLedgersService payLedgersService;
 
@@ -509,7 +510,7 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
             //下单成功
             byte[] qr = QrCodeUtil.generatePng(response.getQrCode(), 200, 200);
             String fileName = String.join(StringPool.UNDERSCORE, System.currentTimeMillis() + "", payTransactionBo.getOrderId(), ".png");
-            OssInfo ossInfo = localOssClient.upLoad(new ByteArrayInputStream(qr), fileName);
+            OssInfo ossInfo = tencentOssClient.upLoad(new ByteArrayInputStream(qr), fileName);
             return ScanPayApplyRes.builder()
                     .orderId(payTransactionBo.getOrderId())
                     .scanQrCode(ossInfo.getFileLink())
