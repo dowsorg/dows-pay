@@ -16,4 +16,13 @@
         <maven.compiler.target>17</maven.compiler.target>
     </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.dows.saas</groupId>
+            <artifactId>pay-biz</artifactId>
+            <version>20220701-SNAPSHOT</version>
+        </dependency>
+
+    </dependencies>
+
 </project>

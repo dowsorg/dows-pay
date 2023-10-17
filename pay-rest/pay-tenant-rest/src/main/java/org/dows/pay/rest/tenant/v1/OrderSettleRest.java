@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.dows.framework.api.Response;
 import org.dows.pay.api.PayResponse;
 import org.dows.pay.api.request.AccountsRequest;
-import org.dows.pay.biz.IsvBiz;
 import org.dows.pay.biz.OrderPayBiz;
 import org.dows.pay.form.*;
 import org.dows.pay.weixin.WeixinPayHandler;
@@ -17,7 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.dows.pay.api.PayRequest;
+
 /**
  * 统一收单
  */
