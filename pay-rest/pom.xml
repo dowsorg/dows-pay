@@ -7,15 +7,11 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>pay-rest</artifactId>
+    <packaging>pom</packaging>
+    <modules>
+        <module>pay-tenant-rest</module>
+        <module>pay-user-rest</module>
+        <module>pay-admin-rest</module>
+    </modules>
 
-
-    <dependencies>
-
-        <dependency>
-            <groupId>org.dows.saas</groupId>
-            <artifactId>pay-biz</artifactId>
-            <version>20220701-SNAPSHOT</version>
-        </dependency>
-
-    </dependencies>
 </project>
