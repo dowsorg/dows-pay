@@ -14,8 +14,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.dows.app.api.mini.AppApplyApi;
-import org.dows.app.api.mini.request.AppApplyRequest;
 import org.dows.app.biz.AppApplyBiz;
 import org.dows.app.entity.AppApply;
 import org.dows.app.service.AppApplyService;
@@ -30,6 +28,7 @@ import org.dows.pay.api.enums.PayChannels;
 import org.dows.pay.api.enums.PayMethods;
 import org.dows.pay.api.message.AlipayMessage;
 import org.dows.pay.api.message.alipay.MiniConfirmed;
+import org.dows.pay.api.request.AppApplyRequest;
 import org.dows.pay.api.util.JsonUtils;
 import org.dows.pay.bo.IsvCreateBo;
 import org.dows.user.biz.UserCompanyBiz;
@@ -138,7 +137,7 @@ public class AlipayIsvHandler extends AbstractAlipayHandler {
             appApplyUpdateRequest.setPlatformOrderNo(orderNo);
             // 申请状态 0未申请 1-申请中 2-已申请 3.申请失败
             appApplyUpdateRequest.setAppStatus(String.valueOf(1));
-            appApplyBiz.updateApplyPlatformOrderNo(appApplyUpdateRequest);
+            //appApplyBiz.updateApplyPlatformOrderNo(appApplyUpdateRequest);
             log.info("调用成功,响应信息:{}", JSONUtil.toJsonStr(response));
         } else {
             log.error("调用失败,响应信息:{}", JSONUtil.toJsonStr(response));

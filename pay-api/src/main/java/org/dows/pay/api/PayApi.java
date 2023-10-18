@@ -1,16 +1,16 @@
 package org.dows.pay.api;
 
-import me.chanjar.weixin.open.bean.result.WxOpenQueryAuthResult;
-import org.dows.app.api.mini.request.AppApplyRequest;
-import org.dows.app.api.mini.request.PayApplyStatusReq;
-import org.dows.app.api.mini.request.WechatMiniUploadRequest;
-import org.dows.app.api.mini.response.PayApplyStatusRes;
 import org.dows.framework.api.Response;
+import org.dows.pay.api.request.AppApplyRequest;
+import org.dows.pay.api.request.PayApplyStatusReq;
 import org.dows.pay.api.request.PayCreateIsvRequest;
 import org.dows.pay.api.request.PayQueryReq;
 import org.dows.pay.api.request.ScanPayApplyRes;
 import org.dows.pay.api.request.ScanPayReq;
+import org.dows.pay.api.request.WechatMiniUploadRequest;
 import org.dows.pay.api.response.PayQueryRes;
+
+import me.chanjar.weixin.open.bean.result.WxOpenQueryAuthResult;
 
 public interface PayApi {
 

@@ -16,12 +16,24 @@
             <groupId>org.dows.saas</groupId>
             <artifactId>app-biz</artifactId>
             <version>20220701-SNAPSHOT</version>
+            <exclusions>
+            	<exclusion>
+            		<groupId>org.dows.saas</groupId>
+            		<artifactId>app-api</artifactId>
+            	</exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
             <groupId>org.dows.cloud</groupId>
             <artifactId>user-biz</artifactId>
             <version>20220701-SNAPSHOT</version>
+            <exclusions>
+            	<exclusion>
+            		<groupId>org.dows.saas</groupId>
+            		<artifactId>app-api</artifactId>
+            	</exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.dows.saas</groupId>
@@ -50,6 +62,17 @@
         </dependency>
 
 
+        <dependency>
+        	<groupId>org.dows.cloud</groupId>
+        	<artifactId>auth-boot</artifactId>
+        	<version>20220701-SNAPSHOT</version>
+        	<exclusions>
+        		<exclusion>
+        			<groupId>org.dows.saas</groupId>
+        			<artifactId>app-api</artifactId>
+        		</exclusion>
+        	</exclusions>
+        </dependency>
     </dependencies>
 
 
