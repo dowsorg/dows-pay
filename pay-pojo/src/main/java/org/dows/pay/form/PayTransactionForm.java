@@ -93,5 +93,8 @@ public class PayTransactionForm implements Serializable, BizForm {
     @ApiModelProperty("下单交易类型")
     private String tradeType;
 
+    @ApiModelProperty("付款码")
+    private String authCode;
+
 }
 

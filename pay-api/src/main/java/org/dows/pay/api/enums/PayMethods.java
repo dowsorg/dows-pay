@@ -71,6 +71,7 @@ public enum PayMethods {
     // 支付交易相关
     TRADE_ORDER_PAY("dows.trade.order.pay", "", "交易订单支付"),
     TRADE_ORDER_PAY_NoAcc("dows.trade.order.payNoAcc", "", "交易订单支付无分账"),
+    TRADE_ORDER_MICROPAY_NoAcc("dows.trade.order.micropay", "", "付款码支付"),
     TRADE_COMBINE_ORDER_PAY("dows.trade.order.combine.pay", "", "合单交易订单支付"),
     TRADE_QUERY_ORDER("dows.trade.order.query.pay", "", "查询支付订单结果"),
     TRADE_COMBINE_QUERY_ORDER("dows.trade.order.query.combine.pay", "", "查询合并支付订单结果"),
