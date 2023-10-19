@@ -2,6 +2,7 @@ package org.dows.pay.rest.tenant.v1;
 
 import com.github.binarywang.wxpay.bean.ecommerce.PartnerTransactionsResult;
 import com.github.binarywang.wxpay.bean.ecommerce.TransactionsResult;
+import com.github.binarywang.wxpay.bean.result.WxPayMicropayResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -47,6 +48,14 @@ public class OrderSettleRest {
         TransactionsResult.JsapiResult result= weixinPayHandler.toPayNoAcc(payTransactionForm);
         return Response.ok(result);
     }
+
+    @PostMapping("/orderpay/micropay")
+    @ApiOperation(value = "付款码支付")
+    public Response micropay(@RequestBody PayTransactionForm payTransactionForm) {
+        WxPayMicropayResult result= weixinPayHandler.micropay(payTransactionForm);
+        return Response.ok(result);
+    }
+
 
     @PostMapping("/orderpay/toCombinePay")
     @ApiOperation(value = "去合并支付")
