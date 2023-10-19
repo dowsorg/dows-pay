@@ -96,5 +96,8 @@ public class PayTransactionForm implements Serializable, BizForm {
     @ApiModelProperty("付款码")
     private String authCode;
 
+    @ApiModelProperty("微信支付商户号")
+    private String mchId;
+
 }
 

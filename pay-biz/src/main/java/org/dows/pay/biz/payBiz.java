@@ -489,6 +489,7 @@ public class payBiz implements PayApi {
                 statusResult.setApplymentState(payApply.getApplymentState());
                 statusResult.setApplymentStateDesc(payApply.getApplymentStateDesc());
                 statusResult.setSignUrl(payApply.getAppUrl());
+                statusResult.setSubMchid(payApply.getSubMchid());
                 return Response.ok(statusResult);
             }
             if (StrUtil.isEmpty(payApply.getApplyNo())) {
