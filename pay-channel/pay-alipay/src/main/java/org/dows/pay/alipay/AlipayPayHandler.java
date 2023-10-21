@@ -98,6 +98,83 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
 
     private final OrderInstanceBizApiService orderInstanceBizApiService;
 
+
+    /**
+     * 支付宝付款码支付
+     * @param payTransactionBo
+     * @return
+     */
+    public AlipayTradeCreateResponse payByAuthCode(AliPayRequest payTransactionBo) {
+        PayTransaction payTransaction = payTransactionService.getByOrderId(payTransactionBo.getOrderId());
+        if (payTransaction == null) {
+            payTransaction = new PayTransaction();
+        }
+        if (Objects.equals(payTransaction.getStatus(), 1)) {
+            throw new BizException("该订单已支付,请勿重复发起");
+        }
+        OrderInstanceBo orderInstanceBo = orderInstanceBizApiService.getOne(payTransactionBo.getOrderId());
+        if (orderInstanceBo == null) {
+            throw new BizException("传入订单参数有误");
+        }
+        String accountId = orderInstanceBo.getAccountId();
+        if (StrUtil.isEmpty(accountId)) {
+            throw new BizException("订单记录用户账号字段为空");
+        }
+        AccountInstanceVo accountInstanceVo = accountInstanceApi.selectAccountInstanceByAccountId(accountId);
+        if (Objects.isNull(accountInstanceVo)) {
+            throw new BizException("用户账号查询为空 accountId=:" + accountId);
+        }
+        String appId = orderInstanceBo.getAppId();
+        TempRedis tempRedis = tempRedisApi.getKey(appId);
+        if (Objects.isNull(tempRedis)) {
+            throw new BizException("获取商家授权token为空,appId=" + appId);
+        }
+        //先创建交易订单
+        UUID uuid = idGenerator.generateId();
+        payTransaction.setPayChannel("aliPay");
+        payTransaction.setTransactionNo(uuid.toString());
+        payTransaction.setAppId(orderInstanceBo.getAppId());
+        payTransaction.setMerchantNo(SecurityUtils.getMerchantNo());
+        if (payTransaction.getId() == null) {
+            payTransactionService.save(payTransaction);
+        }
+
+        AlipayTradeCreateRequest request = new AlipayTradeCreateRequest();
+        JSONObject bizContent = new JSONObject();
+        bizContent.put("out_trade_no", uuid);
+        bizContent.put("total_amount", orderInstanceBo.getAgreeAmout());
+        bizContent.put("subject", "支付宝下单");
+        bizContent.put("timeout_express", "10m");
+        // 商户实际经营主体的小程序应用的appid
+        bizContent.put("op_app_id", orderInstanceBo.getAppId());
+        bizContent.put("product_code", "FACE_TO_FACE_PAYMENT");
+        request.setNotifyUrl(ALI_PAY_NOTIFY_URL);
+        request.setBizContent(bizContent.toString());
+        AlipayTradeCreateResponse response;
+        try {
+            response = getAlipayClient("2021003129694075").certificateExecute(request, null, tempRedis.getRvalue());
+        } catch (AlipayApiException e) {
+            throw new RuntimeException(e);
+        }
+        if (response.isSuccess()) {
+            //下单成功
+            PayTransaction updatePayTransaction = PayTransaction.builder()
+                    .id(payTransaction.getId())
+                    .dealTo(response.getTradeNo())
+                    .build();
+            payTransactionService.updateById(updatePayTransaction);
+        } else {
+            PayTransaction updatePayTransaction = PayTransaction.builder()
+                    .id(payTransaction.getId())
+                    .status(2)
+                    .remark(String.join(",", response.getMsg(), response.getSubMsg()))
+                    .build();
+            payTransactionService.updateById(updatePayTransaction);
+            throw new BizException("支付宝创建订单失败:" + response.getSubMsg());
+        }
+        return response;
+    }
+
     /**
      * 去支付
      */

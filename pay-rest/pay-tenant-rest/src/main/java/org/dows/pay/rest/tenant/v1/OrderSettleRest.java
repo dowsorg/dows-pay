@@ -52,6 +52,7 @@ public class OrderSettleRest {
     @PostMapping("/orderpay/micropay")
     @ApiOperation(value = "付款码支付")
     public Response micropay(@RequestBody PayTransactionForm payTransactionForm) {
+        log.info("开始付款码支付");
         WxPayMicropayResult result= weixinPayHandler.micropay(payTransactionForm);
         return Response.ok(result);
     }
