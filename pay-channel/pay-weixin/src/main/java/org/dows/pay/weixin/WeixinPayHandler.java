@@ -1,6 +1,7 @@
 package org.dows.pay.weixin;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.cron.timingwheel.SystemTimer;
@@ -37,6 +38,8 @@ import org.dows.order.api.OrderInstanceBizApiService;
 import org.dows.order.bo.OrderInstanceBo;
 import org.dows.order.bo.OrderUpdatePaymentStatusBo;
 import org.dows.order.enums.OrderPayTypeEnum;
+import org.dows.order.form.OrderCashPayForm;
+import org.dows.order.vo.OrderPayCodeVo;
 import org.dows.pay.api.PayRequest;
 import org.dows.pay.api.annotation.PayMapping;
 import org.dows.pay.api.enums.PayMethods;
@@ -104,6 +107,7 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
     private static final SystemTimer SYSTEMTIMER = new SystemTimer().start();
 
     private final PayLedgersService payLedgersService;
+
 
     private static LocalCache<String, String> ORDER_PAY_CACHE = CacheFactory.build(5L, TimeUnit.SECONDS);
 
@@ -249,9 +253,9 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
      */
     @PayMapping(method = PayMethods.TRADE_ORDER_MICROPAY_NoAcc)
     public WxPayMicropayResult micropay(PayTransactionForm payRequest) {
-        checkRepeatSubmit(payRequest.getAppId(), payRequest.getOrderId());
+
         String transactionNo = IdUtil.fastSimpleUUID();
-        log.info("WeixinPayHandler.toPay.transactionNo的参数:{}", transactionNo);
+        log.info("WeixinPayHandler.micropay.传入的参数:{}", GSON.toJson(payRequest));
         PayTransaction payTransaction;
         payTransaction = payTransactionService.getByOrderId(payRequest.getOrderId());
         if (payTransaction != null && Objects.equals(payTransaction.getStatus(), OrderPayTypeEnum.pay_finish.getCode())) {
@@ -267,40 +271,39 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
             payTransaction.setDt(new Date());
             payTransaction.setStatus(OrderPayTypeEnum.pay.getCode());
             payTransactionService.save(payTransaction);
-            log.info("WeixinPayHandler.toPay.payTransaction的参数:{}", payTransaction);
+            log.info("WeixinPayHandler.micropay.payTransaction的参数:{}", payTransaction);
         } else {
             payTransaction.setPayChannel("weixin");
             payTransaction.setTransactionNo(transactionNo);
             payTransactionService.updateById(payTransaction);
             log.info("WeixinPayHandler.micropay.payTransaction的参数:{}", payTransaction);
         }
+
+        if(null!=payRequest.getCouponInfoList()&& CollUtil.isNotEmpty(payRequest.getCouponInfoList())) {
+            OrderCashPayForm orderCashPayForm = new OrderCashPayForm();
+            orderCashPayForm.setOrderId(payRequest.getOrderId());
+            List<OrderCashPayForm.StoreCouponInfo> couponInfoList = BeanUtil.copyToList(payRequest.getCouponInfoList(), OrderCashPayForm.StoreCouponInfo.class);
+            orderCashPayForm.setCouponInfoList(couponInfoList);
+            OrderPayCodeVo orderPayCodeVo = orderInstanceBizApiService.paymentCode(orderCashPayForm);
+            log.info("WeixinPayHandler.micropay calc result:{}"+GSON.toJson(orderPayCodeVo));
+        }
         //组装订单逻辑
         OrderInstanceBo orderInstanceBo = orderInstanceBizApiService.getOne(payRequest.getOrderId(),true);
-        PartnerTransactionsRequest.Amount amount = new PartnerTransactionsRequest.Amount();
-        amount.setCurrency("CNY");
-        amount.setTotal(orderInstanceBo.getAgreeAmout().multiply(new BigDecimal(100)).intValue());
-        PartnerTransactionsRequest.Payer payer = new PartnerTransactionsRequest.Payer();
-        payer.setSubOpenid(payRequest.getSubOpenid());
-        //获取商户号
-        log.info("WeixinPayHandler.micropay.orderInstanceBo的参数:{}", orderInstanceBo);
-        PayAccount payAccount = payAccountService.getOne(Wrappers.lambdaQuery(PayAccount.class).eq(PayAccount::getChannelAccount, payRequest.getAppId()));
-        log.info("WeixinPayHandler.micropay.payAccount的参数:{}", payAccount);
+
 
         try {
 
             WxPayMicropayRequest wxPayMicropayRequest =  WxPayMicropayRequest.newBuilder().authCode(payRequest.getAuthCode()).profitSharing("Y")
                     .totalFee(orderInstanceBo.getAgreeAmout().multiply(new BigDecimal(100)).intValue()).outTradeNo(payRequest.getOrderId())
                     .body(payRequest.getOrderTitle()).spbillCreateIp(payClientConfig.getClientConfigs().get(1).getIp()).build();
-            wxPayMicropayRequest.setAppid("wx1f2863eb6cdee6a1");
-            wxPayMicropayRequest.setMchId("1604404392");
-            wxPayMicropayRequest.setSubAppId(payRequest.getAppId());
-            wxPayMicropayRequest.setSubMchId(payAccount.getChannelMerchantNo());
+            wxPayMicropayRequest.setAppid("wxdb8634feb22a5ab9");
+            wxPayMicropayRequest.setMchId(payRequest.getMchId());
+            wxPayMicropayRequest.setSubMchId(payRequest.getMchId());
 
             WxPayMicropayResult wxPayMicropayResult =  this.getWeixinClient(payClientConfig.getClientConfigs().get(1).getAppId()).micropay(wxPayMicropayRequest);
 
             log.info("WeixinPayHandler.micropay.response的参数:{}", GSON.toJson(wxPayMicropayResult));
 
-            ORDER_PAY_CACHE.set(String.join(StringPool.UNDERSCORE, payRequest.getAppId(), payRequest.getOrderId()), "success");
             if("SUCCESS".equals(wxPayMicropayResult.getReturnCode())&&"SUCCESS".equals(wxPayMicropayResult.getResultCode())){
                 log.info("支付成功");
                 updateOrderStateForSucc(payRequest.getOrderId(),wxPayMicropayResult,null);
