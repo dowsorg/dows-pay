@@ -1,5 +1,6 @@
 package org.dows.pay.form;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -11,6 +12,7 @@ import org.dows.pay.api.BizForm;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 支付交易(PayTransaction)表单
@@ -98,6 +100,19 @@ public class PayTransactionForm implements Serializable, BizForm {
 
     @ApiModelProperty("微信支付商户号")
     private String mchId;
+
+    @ApiModelProperty(value = "劵信息")
+    private List<StoreCouponInfo> couponInfoList;
+
+    @Data
+    public static class StoreCouponInfo {
+
+        @ApiModelProperty(value = "劵id")
+        private String couponId;
+
+        @ApiModelProperty(value = "劵金额")
+        private BigDecimal amount;
+    }
 
 }
 
