@@ -351,7 +351,7 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
      * @param wxPayOrderQueryResult
      */
     private void updateOrderStateForSucc(String orderId,WxPayMicropayResult wxPayMicropayResult,WxPayOrderQueryResult wxPayOrderQueryResult){
-        PayTransaction payTransaction = payTransactionService.getByTransactionNo(orderId);
+        PayTransaction payTransaction = payTransactionService.getByOrderId(orderId);
         ThreadUtil.execAsync(()->{
             ThreadUtil.sleep(70, TimeUnit.SECONDS);
             weixinRoyaltyRelationHandler.startClaimProfit(orderId);
