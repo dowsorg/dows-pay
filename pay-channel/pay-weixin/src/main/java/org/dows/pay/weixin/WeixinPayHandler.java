@@ -300,7 +300,6 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
             wxPayMicropayRequest.setMchId("1604404392");
             wxPayMicropayRequest.setSubMchId(payRequest.getMchId());
 
-            log.info("付款码支付appId:{}",payClientConfig.getClientConfigs().get(1).getAppId());
             WxPayMicropayResult wxPayMicropayResult =  this.getWeixinClient(payClientConfig.getClientConfigs().get(1).getAppId()).micropay(wxPayMicropayRequest);
 
             log.info("WeixinPayHandler.micropay.response的参数:{}", GSON.toJson(wxPayMicropayResult));

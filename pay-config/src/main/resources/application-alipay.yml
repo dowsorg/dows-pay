@@ -27,6 +27,7 @@ dows:
         appId: wxdb8634feb22a5ab9
         appSecret: 712e104d3d2586fcb8952cd8d272c9a6
         mchId: 1604404392
+        mchKey: uTzzdszjnW6XCWTbOYxHk9wTf0SgV5QI
         apiV3Key: ba40df0c6afb01e5bae35d7337372cde
         serviceUrl: https://api.weixin.qq.com
         charset: UTF-8
