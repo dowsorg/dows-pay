@@ -164,7 +164,7 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
         bizContent.put("total_amount", orderInstanceBo.getAgreeAmout());
         bizContent.put("subject", aliPayRequest.getSubject());
         bizContent.put("timeout_express", "10m");
-        //bizContent.put("seller_id",aliPayRequest.getSellerId());
+        bizContent.put("seller_id",aliPayRequest.getSellerId());
         bizContent.put("scene", "bar_code");
         bizContent.put("auth_code", aliPayRequest.getAuthCode());
         request.setNotifyUrl(ALI_PAY_NOTIFY_URL);
