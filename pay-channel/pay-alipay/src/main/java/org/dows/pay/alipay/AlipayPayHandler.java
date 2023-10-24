@@ -1,8 +1,12 @@
 package org.dows.pay.alipay;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.cron.timingwheel.SystemTimer;
+import cn.hutool.cron.timingwheel.TimerTask;
 import cn.hutool.extra.qrcode.QrCodeUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -13,7 +17,6 @@ import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.msg.AlipayMsgClient;
 import com.alipay.api.request.*;
 import com.alipay.api.response.*;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +31,9 @@ import org.dows.framework.oss.api.OssInfo;
 import org.dows.framework.oss.tencent.TencentOssClient;
 import org.dows.order.api.OrderInstanceBizApiService;
 import org.dows.order.bo.OrderInstanceBo;
+import org.dows.order.bo.OrderUpdatePaymentStatusBo;
+import org.dows.order.form.OrderCashPayForm;
+import org.dows.order.vo.OrderPayCodeVo;
 import org.dows.pay.api.PayEvent;
 import org.dows.pay.api.PayException;
 import org.dows.pay.api.annotation.PayMapping;
@@ -79,6 +85,7 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
 
     private final PayAccountService payAccountService;
 
+    private static final SystemTimer SYSTEMTIMER = new SystemTimer().start();
 
     @Autowired
     @Lazy
@@ -101,18 +108,18 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
 
     /**
      * 支付宝付款码支付
-     * @param payTransactionBo
+     * @param aliPayRequest
      * @return
      */
-    public AlipayTradeCreateResponse payByAuthCode(AliPayRequest payTransactionBo) {
-        PayTransaction payTransaction = payTransactionService.getByOrderId(payTransactionBo.getOrderId());
+    public AlipayTradePayResponse payByAuthCode(AliPayRequest aliPayRequest) {
+        PayTransaction payTransaction = payTransactionService.getByOrderId(aliPayRequest.getOrderId());
         if (payTransaction == null) {
             payTransaction = new PayTransaction();
         }
         if (Objects.equals(payTransaction.getStatus(), 1)) {
             throw new BizException("该订单已支付,请勿重复发起");
         }
-        OrderInstanceBo orderInstanceBo = orderInstanceBizApiService.getOne(payTransactionBo.getOrderId());
+        OrderInstanceBo orderInstanceBo = orderInstanceBizApiService.getOne(aliPayRequest.getOrderId());
         if (orderInstanceBo == null) {
             throw new BizException("传入订单参数有误");
         }
@@ -134,35 +141,52 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
         payTransaction.setPayChannel("aliPay");
         payTransaction.setTransactionNo(uuid.toString());
         payTransaction.setAppId(orderInstanceBo.getAppId());
+        payTransaction.setOrderId(aliPayRequest.getOrderId());
         payTransaction.setMerchantNo(SecurityUtils.getMerchantNo());
         if (payTransaction.getId() == null) {
             payTransactionService.save(payTransaction);
         }
 
-        AlipayTradeCreateRequest request = new AlipayTradeCreateRequest();
+         //计算优惠金额
+        if(null!=aliPayRequest.getCouponInfoList()&& CollUtil.isNotEmpty(aliPayRequest.getCouponInfoList())) {
+            OrderCashPayForm orderCashPayForm = new OrderCashPayForm();
+            orderCashPayForm.setOrderId(aliPayRequest.getOrderId());
+            List<OrderCashPayForm.StoreCouponInfo> couponInfoList = BeanUtil.copyToList(aliPayRequest.getCouponInfoList(), OrderCashPayForm.StoreCouponInfo.class);
+            orderCashPayForm.setCouponInfoList(couponInfoList);
+            OrderPayCodeVo orderPayCodeVo = orderInstanceBizApiService.paymentCode(orderCashPayForm);
+            log.info("AliPayHandler.micropay calc result:{}"+JSON.toJSONString(orderPayCodeVo));
+        }
+
+
+        AlipayTradePayRequest request = new AlipayTradePayRequest();
         JSONObject bizContent = new JSONObject();
         bizContent.put("out_trade_no", uuid);
         bizContent.put("total_amount", orderInstanceBo.getAgreeAmout());
-        bizContent.put("subject", "支付宝下单");
+        bizContent.put("subject", aliPayRequest.getSubject());
         bizContent.put("timeout_express", "10m");
-        // 商户实际经营主体的小程序应用的appid
-        bizContent.put("op_app_id", orderInstanceBo.getAppId());
-        bizContent.put("product_code", "FACE_TO_FACE_PAYMENT");
+        //bizContent.put("seller_id",aliPayRequest.getSellerId());
+        bizContent.put("scene", "bar_code");
+        bizContent.put("auth_code", aliPayRequest.getAuthCode());
         request.setNotifyUrl(ALI_PAY_NOTIFY_URL);
         request.setBizContent(bizContent.toString());
-        AlipayTradeCreateResponse response;
+        AlipayTradePayResponse response;
         try {
             response = getAlipayClient("2021003129694075").certificateExecute(request, null, tempRedis.getRvalue());
         } catch (AlipayApiException e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
-        if (response.isSuccess()) {
+        log.info("alipay扫码支付返回:{}",JSON.toJSONString(response));
+        if ("10000".equals(response.getCode())) {
             //下单成功
             PayTransaction updatePayTransaction = PayTransaction.builder()
                     .id(payTransaction.getId())
                     .dealTo(response.getTradeNo())
                     .build();
             payTransactionService.updateById(updatePayTransaction);
+        }else if("10003".equals(response.getCode())){
+            //等待付款查询支付状态
+            delayQueryOrder(payTransaction,1);
         } else {
             PayTransaction updatePayTransaction = PayTransaction.builder()
                     .id(payTransaction.getId())
@@ -170,10 +194,83 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
                     .remark(String.join(",", response.getMsg(), response.getSubMsg()))
                     .build();
             payTransactionService.updateById(updatePayTransaction);
-            throw new BizException("支付宝创建订单失败:" + response.getSubMsg());
+            throw new BizException("支付宝扫码支付失败:" + response.getSubMsg());
         }
         return response;
     }
+
+
+    /**
+     * 延迟查询订单
+     * @param payTransaction
+     * @param times
+     */
+    private void delayQueryOrder(PayTransaction payTransaction,final int times) {
+        SYSTEMTIMER.addTask(new TimerTask(()->{
+            try {
+                AlipayTradeQueryResponse alipayTradeQueryResponse = null;
+                    alipayTradeQueryResponse = queryOrderPayStatus(payTransaction.getTransactionNo());
+
+                log.info("query order alipay result:{}"+JSON.toJSONString(alipayTradeQueryResponse));
+                if("WAIT_BUYER_PAY".equals(alipayTradeQueryResponse.getTradeStatus())){//支付中
+                    int newTimes = times+1;
+                    if(newTimes<=60){
+                        delayQueryOrder(payTransaction,newTimes);
+                    }
+                }
+                if("TRADE_SUCCESS".equals(alipayTradeQueryResponse.getTradeStatus())){//支付成功
+                    log.info("支付成功");
+                    PayTransaction updatePayTransaction = PayTransaction.builder()
+                            .id(payTransaction.getId())
+                            .amount(new BigDecimal(alipayTradeQueryResponse.getPayAmount()))
+                            .status(2)
+                            .dealTo(alipayTradeQueryResponse.getTradeNo())
+                            .build();
+                    payTransactionService.updateById(updatePayTransaction);
+                    //更新订单状态
+                    updateOrderStatusForSucc(payTransaction);
+                }
+
+
+
+            } catch (AlipayApiException e) {
+                e.printStackTrace();
+            }
+        }, 60000));
+    }
+
+    /**
+     * 更新订单状态
+     * @param payTransaction
+     */
+    private void updateOrderStatusForSucc(PayTransaction payTransaction){
+        OrderUpdatePaymentStatusBo instanceBo = new OrderUpdatePaymentStatusBo();
+        instanceBo.setTradeStatus(3);
+        instanceBo.setPayChannel(2);
+        instanceBo.setTradeType(1);
+        instanceBo.setOrderId(payTransaction.getOrderId());
+    }
+
+
+
+
+    /**
+     * 查询订单支付状态
+     * @param outTradeNo
+     * @return
+     * @throws AlipayApiException
+     */
+    private AlipayTradeQueryResponse queryOrderPayStatus(String outTradeNo) throws AlipayApiException {
+        AlipayTradeQueryRequest alipayTradeQueryRequest = new AlipayTradeQueryRequest();
+        JSONObject bizContent = new JSONObject();
+        bizContent.put("out_trade_no", outTradeNo);
+        alipayTradeQueryRequest.setBizContent(bizContent.toString());
+        return getAlipayClient("2021003129694075").execute(alipayTradeQueryRequest);
+    }
+
+
+
+
 
     /**
      * 去支付

@@ -2,6 +2,7 @@ package org.dows.pay.rest.tenant.v1;
 
 
 import com.alipay.api.response.AlipayTradeCreateResponse;
+import com.alipay.api.response.AlipayTradePayResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,13 @@ public class IsvPayRest {
     @ApiOperation(value = "支付宝去支付")
     public Response toPay(@RequestBody AliPayRequest payTransactionForm) {
         AlipayTradeCreateResponse result= alipayPayHandler.toPay(payTransactionForm);
+        return Response.ok(result);
+    }
+
+    @PostMapping("/alipay/micropay")
+    @ApiOperation(value = "支付宝付款码支付")
+    public Response miacropay(@RequestBody AliPayRequest aliPayRequest) {
+        AlipayTradePayResponse result= alipayPayHandler.payByAuthCode(aliPayRequest);
         return Response.ok(result);
     }
 
