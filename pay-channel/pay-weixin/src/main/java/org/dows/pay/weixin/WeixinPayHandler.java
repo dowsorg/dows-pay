@@ -308,7 +308,7 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
                 log.info("支付成功");
                 updateOrderStateForSucc(payRequest.getOrderId(),wxPayMicropayResult,null);
             }else {
-                delayQueryOrder(payRequest.getOrderId(),1,5000L);
+                delayQueryOrder(payRequest.getOrderId(),transactionNo,1,5000L);
             }
             return wxPayMicropayResult;
         } catch (WxPayException e) {
@@ -323,15 +323,15 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
      * @param delayTime
      * @throws WxPayException
      */
-    private void delayQueryOrder(String orderId,final int times, Long delayTime) throws WxPayException {
+    private void delayQueryOrder(String orderId,String transactionNo,final int times, Long delayTime) throws WxPayException {
         SYSTEMTIMER.addTask(new TimerTask(()->{
             try {
-                WxPayOrderQueryResult wxPayOrderQueryResult =   queryOrderPayStatus(orderId);
+                WxPayOrderQueryResult wxPayOrderQueryResult =   queryOrderPayStatus(transactionNo);
                 log.info("query order pay result:{}"+GSON.toJson(wxPayOrderQueryResult));
                 if("USERPAYING".equals(wxPayOrderQueryResult.getTradeState())){//支付中
                     int newTimes = times + 10000;
                     if(newTimes<=5){
-                        delayQueryOrder(orderId,newTimes,10000L);
+                        delayQueryOrder(orderId,transactionNo,newTimes,10000L);
                     }
                 }
                 if("SUCCESS".equals(wxPayOrderQueryResult.getTradeState())){//支付成功
@@ -388,12 +388,12 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
 
     /**
      * 查询订单支付状态
-     * @param orderId
+     * @param transactionNo
      * @return
      * @throws WxPayException
      */
-    private WxPayOrderQueryResult queryOrderPayStatus(String orderId) throws WxPayException {
-        return this.getWeixinClient(payClientConfig.getClientConfigs().get(1).getAppId()).queryOrder(null,orderId);
+    private WxPayOrderQueryResult queryOrderPayStatus(String transactionNo) throws WxPayException {
+        return this.getWeixinClient(payClientConfig.getClientConfigs().get(1).getAppId()).queryOrder(null,transactionNo);
     }
 
     /**
