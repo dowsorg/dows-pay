@@ -294,7 +294,7 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
         try {
 
             WxPayMicropayRequest wxPayMicropayRequest =  WxPayMicropayRequest.newBuilder().authCode(payRequest.getAuthCode()).profitSharing("Y")
-                    .totalFee(orderInstanceBo.getAgreeAmout().multiply(new BigDecimal(100)).intValue()).outTradeNo(payRequest.getOrderId())
+                    .totalFee(orderInstanceBo.getAgreeAmout().multiply(new BigDecimal(100)).intValue()).outTradeNo(transactionNo)
                     .body(payRequest.getOrderTitle()).spbillCreateIp(payClientConfig.getClientConfigs().get(1).getIp()).build();
             wxPayMicropayRequest.setAppid("wxcea260a244fa8559");
             wxPayMicropayRequest.setMchId("1604404392");
