@@ -2,6 +2,7 @@ package org.dows.pay.biz.job;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSON;
 import com.alipay.api.response.AlipayOpenAgentOrderQueryResponse;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.github.binarywang.wxpay.bean.ecommerce.ApplymentsStatusResult;
@@ -64,6 +65,7 @@ public class QueryApplyStatusJob {
                 AlipayOpenAgentOrderQueryResponse response=new AlipayOpenAgentOrderQueryResponse();
                 try {
                     response = alipayAgentHandler.queryAgent(payQueryIsvRequest);
+                    log.info("####查询支付宝申请状态:{}", JSON.toJSONString(response));
                 } catch (Exception e) {
                     log.warn("doQueryStatus fail：", e);
                 }
