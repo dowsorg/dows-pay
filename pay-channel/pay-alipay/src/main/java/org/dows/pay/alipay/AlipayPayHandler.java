@@ -123,14 +123,7 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
         if (orderInstanceBo == null) {
             throw new BizException("传入订单参数有误");
         }
-        String accountId = orderInstanceBo.getAccountId();
-        if (StrUtil.isEmpty(accountId)) {
-            throw new BizException("订单记录用户账号字段为空");
-        }
-        AccountInstanceVo accountInstanceVo = accountInstanceApi.selectAccountInstanceByAccountId(accountId);
-        if (Objects.isNull(accountInstanceVo)) {
-            throw new BizException("用户账号查询为空 accountId=:" + accountId);
-        }
+
         String appId = orderInstanceBo.getAppId();
         TempRedis tempRedis = tempRedisApi.getKey(appId);
         if (Objects.isNull(tempRedis)) {
