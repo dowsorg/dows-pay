@@ -10,6 +10,8 @@
 package org.dows.pay.weixin.controller;
 
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.thread.ThreadUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -26,13 +28,25 @@ import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.open.api.WxOpenService;
 import me.chanjar.weixin.open.bean.message.WxOpenXmlMessage;
+import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.io.IOUtils;
+import org.dows.account.api.AccountInstanceApi;
 import org.dows.account.api.AccountTenantApi;
 import org.dows.account.api.AccountUserApi;
 import org.dows.account.bo.AccountTenantBo;
 import org.dows.account.bo.AccountUserBo;
+import org.dows.account.entity.AccountInstance;
+import org.dows.account.vo.AccountInstanceResVo;
 import org.dows.account.vo.AccountTenantVo;
 import org.dows.account.vo.AccountUserVo;
+import org.dows.account.vo.AccountVo;
+import org.dows.amp.api.MsgApi;
+import org.dows.amp.enums.ChannelType;
+import org.dows.amp.enums.MsgType;
+import org.dows.amp.enums.SendType;
+import org.dows.amp.model.ma.MaM3ContentModel;
+import org.dows.amp.model.ma.MessageParam;
+import org.dows.amp.request.MsgEventRequest;
 import org.dows.app.api.mini.AppLicenseApi;
 import org.dows.app.api.mini.request.AppLicenseRequest;
 import org.dows.framework.api.Response;
@@ -65,9 +79,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
-import java.util.Date;
-import java.util.Objects;
+import java.util.*;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName: WeixinPayNotifyController
@@ -84,6 +99,11 @@ public class WeixinPayNotifyController {
     @Autowired
     private PayClientFactory payClientFactory;
 
+    @Autowired
+    private MsgApi msgApi;
+
+    private static final ScheduledThreadPoolExecutor scheduledExecutor = ThreadUtil.createScheduledExecutor(2);
+
     private static final Gson GSON = (new GsonBuilder()).create();
 
     private static final ThreadLocal<DocumentBuilder> BUILDER_LOCAL;
@@ -91,6 +111,8 @@ public class WeixinPayNotifyController {
     private final UserCompanyApi userCompanyApi;
 
     private final AccountUserApi acountUserApi;
+
+    private final AccountInstanceApi accountInstanceApi;
 
     private final AccountTenantApi acountTenantApi;
 
@@ -180,8 +202,28 @@ public class WeixinPayNotifyController {
                         StoreCouponForm storeCouponForm = storeCouponapi.getFormByCouponId(coupon_id);
                         storeCouponForm.setStatus("0");
                         storeCouponapi.updateCouponForm(storeCouponForm);
-
-
+                        //30分钟 发订阅消息
+                        scheduledExecutor.schedule(()->{
+                            log.info("scheduledExecutor payTransaction.getOrderId():{}",payTransaction.getOrderId());
+                            MsgEventRequest msgEventRequest= new MsgEventRequest();
+                            msgEventRequest.setAppId(orderInstanceBo.getAppId());
+                            msgEventRequest.setStoreId(orderInstanceBo.getStoreId());
+                            msgEventRequest.setSendTime(DateUtil.now());
+                            msgEventRequest.setSendType(SendType.actual_time);
+                            msgEventRequest.setChannelType(ChannelType.MA_SUBSCRIBE);
+                            msgEventRequest.setMsgType(MsgType.M8);
+                            AccountVo accountVo = acountUserApi.getInfoByAccountId(orderInstanceBo.getAccountId());
+                            MessageParam param = new MessageParam();
+                            param.setAccountId(accountVo.getAccountId());
+//                            MaM3ContentModel model = new MaM3ContentModel();
+//                            model.setThing4(couponEntity.getMarketName());
+//                            model.setThing1(m3Notes);
+//                            model.setThing6(m3Prompt);
+//                            param.setContentModel(model);
+                            param.setReceiver(accountVo.getOpenid());
+                            msgEventRequest.setMessageParams(CollUtil.newArrayList(param));
+                            msgApi.sendMsgWithPublish(msgEventRequest);
+                        },30,TimeUnit.MINUTES);
                     } catch (Exception e) {
                         log.info("更新状态失败：",e);
                     }

@@ -107,7 +107,7 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
             param.put("user_version", payRequest.getUserVersion());
             param.put("user_desc", payRequest.getUserDesc());
             HttpClientResult uploadTemplateResult = HttpClientUtils.doPost(WX_API_UPLOAD_TEMPLATE_URL + "?component_access_token=" + authorizerAccessToken, param, 1);
-            log.info("上传小程序模板 uploadMini:request:{} response",JSONUtil.toJsonStr(param), JSONUtil.toJsonStr(uploadTemplateResult));
+            log.info("上传小程序模板 uploadMini:request:{} response:{}",JSONUtil.toJsonStr(param), JSONUtil.toJsonStr(uploadTemplateResult));
             String content = uploadTemplateResult.getContent();
             return JSON.parseObject(content, WxOpenResult.class);
         } catch (Exception e) {
