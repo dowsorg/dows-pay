@@ -164,7 +164,7 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
         request.setBizContent(bizContent.toString());
         AlipayTradePayResponse response;
         try {
-            response = getAlipayClient("2021003129694075").certificateExecute(request, null, tempRedis.getRvalue());
+            response = getAlipayClient("2021003129694075").certificateExecute(request, null, "202308BB8687463402634e0ea08305cece0d2X97");
         } catch (AlipayApiException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
