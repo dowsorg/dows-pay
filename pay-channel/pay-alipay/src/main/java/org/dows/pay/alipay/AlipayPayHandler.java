@@ -163,6 +163,17 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
             payTransactionService.save(payTransaction);
         }
 
+        AlipayTradePayRequest request = new AlipayTradePayRequest();
+        JSONObject bizContent = new JSONObject();
+        bizContent.put("out_trade_no", uuid);
+
+        bizContent.put("subject", aliPayRequest.getSubject());
+        bizContent.put("timeout_express", "10m");
+        //bizContent.put("seller_id",aliPayRequest.getSellerId());
+        bizContent.put("scene", "bar_code");
+        bizContent.put("auth_code", aliPayRequest.getAuthCode());
+        request.setNotifyUrl(ALI_PAY_NOTIFY_URL);
+
          //计算优惠金额
         if(null!=aliPayRequest.getCouponInfoList()&& CollUtil.isNotEmpty(aliPayRequest.getCouponInfoList())) {
             OrderCashPayForm orderCashPayForm = new OrderCashPayForm();
@@ -171,21 +182,11 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
             orderCashPayForm.setCouponInfoList(couponInfoList);
             OrderPayCodeVo orderPayCodeVo = orderInstanceBizApiService.paymentCode(orderCashPayForm);
             log.info("AliPayHandler.micropay calc result:{}"+JSON.toJSONString(orderPayCodeVo));
+            bizContent.put("total_amount", orderPayCodeVo.getAmount());
+        }else{
+            bizContent.put("total_amount", orderInstanceBo.getAgreeAmout());
         }
-
-
-        OrderInstanceBo newOrderInstanceBo = orderInstanceBizApiService.getOne(aliPayRequest.getOrderId(),true);
-        log.info("结算后金额明细:{}",JSON.toJSONString(newOrderInstanceBo));
-        AlipayTradePayRequest request = new AlipayTradePayRequest();
-        JSONObject bizContent = new JSONObject();
-        bizContent.put("out_trade_no", uuid);
-        bizContent.put("total_amount", newOrderInstanceBo.getAgreeAmout());
-        bizContent.put("subject", aliPayRequest.getSubject());
-        bizContent.put("timeout_express", "10m");
-        //bizContent.put("seller_id",aliPayRequest.getSellerId());
-        bizContent.put("scene", "bar_code");
-        bizContent.put("auth_code", aliPayRequest.getAuthCode());
-        request.setNotifyUrl(ALI_PAY_NOTIFY_URL);
+        log.info("付款码支付传入支付宝参数:{}",bizContent.toJSONString());
         request.setBizContent(bizContent.toString());
         AlipayTradePayResponse response;
         try {
