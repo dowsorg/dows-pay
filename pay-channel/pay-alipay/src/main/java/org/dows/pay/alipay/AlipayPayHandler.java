@@ -174,10 +174,11 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
         }
 
 
+        OrderInstanceBo newOrderInstanceBo = orderInstanceBizApiService.getOne(aliPayRequest.getOrderId());
         AlipayTradePayRequest request = new AlipayTradePayRequest();
         JSONObject bizContent = new JSONObject();
         bizContent.put("out_trade_no", uuid);
-        bizContent.put("total_amount", orderInstanceBo.getAgreeAmout());
+        bizContent.put("total_amount", newOrderInstanceBo.getAgreeAmout());
         bizContent.put("subject", aliPayRequest.getSubject());
         bizContent.put("timeout_express", "10m");
         //bizContent.put("seller_id",aliPayRequest.getSellerId());
