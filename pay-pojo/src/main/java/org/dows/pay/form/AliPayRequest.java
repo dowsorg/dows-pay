@@ -29,6 +29,8 @@ public class AliPayRequest implements Serializable {
 
     private String sellerId;
 
+    private String payChannel;
+
     @ApiModelProperty(value = "劵信息")
     private List<PayTransactionForm.StoreCouponInfo> couponInfoList;
 

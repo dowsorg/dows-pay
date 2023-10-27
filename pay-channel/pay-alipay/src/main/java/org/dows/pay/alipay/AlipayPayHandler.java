@@ -23,9 +23,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dows.account.api.AccountInstanceApi;
 import org.dows.account.vo.AccountInstanceVo;
+import org.dows.app.api.mini.AppBaseApi;
+import org.dows.app.api.mini.request.MerchantAppIdReq;
+import org.dows.app.api.mini.response.MerchantAppIdRes;
 import org.dows.auth.api.TempRedisApi;
 import org.dows.auth.biz.context.SecurityUtils;
 import org.dows.auth.entity.TempRedis;
+import org.dows.framework.api.Response;
 import org.dows.framework.api.exceptions.BizException;
 import org.dows.framework.oss.api.OssInfo;
 import org.dows.framework.oss.tencent.TencentOssClient;
@@ -85,6 +89,8 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
 
     private final PayAccountService payAccountService;
 
+    private final AppBaseApi baseApi;
+
     private static final SystemTimer SYSTEMTIMER = new SystemTimer().start();
 
     @Autowired
@@ -124,16 +130,33 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
             throw new BizException("传入订单参数有误");
         }
 
-        String appId = orderInstanceBo.getAppId();
+        MerchantAppIdReq statusReq = new MerchantAppIdReq();
+        statusReq.setMerchantNo(orderInstanceBo.getMerchantNo());
+        statusReq.setMiniType(2);
+        Response<MerchantAppIdRes> appIdResponse = baseApi.getMiniAppIdByMerchantNo(statusReq);
+        if(!appIdResponse.getStatus()){
+            throw new BizException("获取支付appId失败");
+        }
+
+        String appId = appIdResponse.getData().getAppId();
+        if(StrUtil.isEmpty(appId)){
+            throw new BizException("获取支付appId为空");
+        }
+
+        log.info("付款码支付获取的appId:{}",appId);
+
         TempRedis tempRedis = tempRedisApi.getKey(appId);
         if (Objects.isNull(tempRedis)) {
             throw new BizException("获取商家授权token为空,appId=" + appId);
         }
+
+        String appAuthToken = tempRedis.getRvalue();
+        log.info("付款码支付授权token:{}",appAuthToken);
         //先创建交易订单
         UUID uuid = idGenerator.generateId();
         payTransaction.setPayChannel("aliPay");
         payTransaction.setTransactionNo(uuid.toString());
-        payTransaction.setAppId(orderInstanceBo.getAppId());
+        payTransaction.setAppId(appId);
         payTransaction.setOrderId(aliPayRequest.getOrderId());
         payTransaction.setMerchantNo(SecurityUtils.getMerchantNo());
         if (payTransaction.getId() == null) {
@@ -164,7 +187,7 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
         request.setBizContent(bizContent.toString());
         AlipayTradePayResponse response;
         try {
-            response = getAlipayClient("2021003129694075").certificateExecute(request, null, "202308BB8687463402634e0ea08305cece0d2X97");
+            response = getAlipayClient("2021003129694075").certificateExecute(request, null, appAuthToken);
         } catch (AlipayApiException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -455,6 +478,7 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
             }
             return PayQueryRes.builder().build();
         } catch (AlipayApiException e) {
+            e.printStackTrace();
             log.error("queryPayStatus fail:", e);
             throw new BizException("查询订单失败:" + e.getMessage());
         }
