@@ -175,6 +175,7 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
 
 
         OrderInstanceBo newOrderInstanceBo = orderInstanceBizApiService.getOne(aliPayRequest.getOrderId(),true);
+        log.info("结算后金额明细:{}",JSON.toJSONString(newOrderInstanceBo));
         AlipayTradePayRequest request = new AlipayTradePayRequest();
         JSONObject bizContent = new JSONObject();
         bizContent.put("out_trade_no", uuid);
