@@ -153,9 +153,9 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
         String appAuthToken = tempRedis.getRvalue();
         log.info("付款码支付授权token:{}",appAuthToken);
         //先创建交易订单
-        UUID uuid = idGenerator.generateId();
+        String uuid =  IdUtil.fastSimpleUUID();
         payTransaction.setPayChannel("aliPay");
-        payTransaction.setTransactionNo(uuid.toString());
+        payTransaction.setTransactionNo(uuid);
         payTransaction.setAppId(appId);
         payTransaction.setOrderId(aliPayRequest.getOrderId());
         payTransaction.setMerchantNo(SecurityUtils.getMerchantNo());
@@ -318,9 +318,9 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
             throw new BizException("获取商家授权token为空,appId=" + appId);
         }
         //先创建交易订单
-        UUID uuid = idGenerator.generateId();
+        String uuid =  IdUtil.fastSimpleUUID();
         payTransaction.setPayChannel("aliPay");
-        payTransaction.setTransactionNo(uuid.toString());
+        payTransaction.setTransactionNo(uuid);
         payTransaction.setAppId(orderInstanceBo.getAppId());
         payTransaction.setMerchantNo(SecurityUtils.getMerchantNo());
         if (payTransaction.getId() == null) {
