@@ -1,5 +1,6 @@
 package org.dows.pay.rest.tenant.v1;
 
+import com.alipay.api.response.AlipayOpenAgentConfirmResponse;
 import com.alipay.api.response.AlipayOpenAgentOrderQueryResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -68,6 +69,12 @@ public class IsvRest {
     @ApiOperation(value = "支付宝申请支付")
     public Response<PayResponse> createpay(@Validated @RequestBody PayCreateIsvRequest appApplyRequest) {
         return payApi.applyForPaymentlsv(appApplyRequest);
+    }
+
+    @PostMapping("/isv/confirmAgent")
+    @ApiOperation(value = "确认支付申请")
+    public Response<AlipayOpenAgentConfirmResponse> confirmAgent(@Validated @RequestBody PayCreateIsvRequest appApplyRequest) {
+        return Response.ok(alipayAgentHandler.confirmAgent(appApplyRequest,appApplyRequest.getBatchNo())) ;
     }
 
     @PostMapping("/isv/queryPay")

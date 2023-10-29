@@ -64,4 +64,8 @@ public class PayCreateIsvRequest extends AbstractPayRequest<PayIsvResponse> {
     private String district_code;
 
     private String detail_address;
+
+    @ApiModelProperty("支付宝账号")
+    private String batchNo;
+
 }
