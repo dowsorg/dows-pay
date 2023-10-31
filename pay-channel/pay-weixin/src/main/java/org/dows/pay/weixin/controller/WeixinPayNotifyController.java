@@ -223,6 +223,7 @@ public class WeixinPayNotifyController {
                             param.setReceiver(accountVo.getOpenid());
                             msgEventRequest.setMessageParams(CollUtil.newArrayList(param));
                             msgApi.sendMsgWithPublish(msgEventRequest);
+                            log.info("msgApi.sendMsgWithPublish:{}",msgEventRequest);
                         },30,TimeUnit.MINUTES);
                     } catch (Exception e) {
                         log.info("更新状态失败：",e);
