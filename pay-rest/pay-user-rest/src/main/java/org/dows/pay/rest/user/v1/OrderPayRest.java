@@ -35,11 +35,5 @@ public class OrderPayRest {
         return Response.ok();
     }
 
-    @PostMapping("/orderpay/topayNoAcc")
-    @ApiOperation(value = "去支付无分账")
-    public Response topayNoAcc(@RequestBody PayTransactionForm payTransactionForm) {
-        TransactionsResult.JsapiResult result= weixinPayHandler.toPayNoAcc(payTransactionForm);
-        return Response.ok(result);
-    }
 
 }
