@@ -78,9 +78,16 @@ public class QueryApplyStatusJob {
                     p.setApplymentState(response.getSubCode());
                     p.setApplymentStateDesc(response.getSubMsg());
                 }
+                if(StrUtil.isNotBlank(response.getMerchantPid())){
+                    p.setSubMchid(response.getMerchantPid());
+                }
+                if(StrUtil.isNotBlank(response.getAgentAppId())){
+                    p.setAppId(response.getAgentAppId());
+                }
                 p.setApplymentState(response.getOrderStatus());
                 p.setUpdateTime(new Date());
                 p.setAppUrl(response.getConfirmUrl());
+
                 if(Objects.equals("MERCHANT_CONFIRM_SUCCESS",response.getOrderStatus())){
                     p.setChecked(true);
                 }
