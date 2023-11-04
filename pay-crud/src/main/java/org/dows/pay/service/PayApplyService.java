@@ -18,6 +18,8 @@ public interface PayApplyService extends MybatisCrudService<PayApply> {
 
     PayApply getByMerchantNoAndType(String merchantNo, Integer applyType);
 
+    PayApply getByMchIdAndType(String mchId,Integer applyType);
+
     PayApply getByApplyNo(String batchNo);
 }
 

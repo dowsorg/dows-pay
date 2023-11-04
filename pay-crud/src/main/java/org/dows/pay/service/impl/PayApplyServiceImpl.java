@@ -40,6 +40,17 @@ public class PayApplyServiceImpl extends MybatisCrudServiceImpl<PayApplyMapper, 
     }
 
     @Override
+    public PayApply getByMchIdAndType(String mchId, Integer applyType) {
+        LambdaQueryWrapper<PayApply> queryWrapper = new LambdaQueryWrapper<PayApply>()
+                .eq(PayApply::getSubMchid, mchId)
+                .eq(PayApply::getApplyType, applyType)
+                .eq(PayApply::getDeleted, 0)
+                .orderByDesc(PayApply::getId)
+                .last(" limit 1");
+        return getOne(queryWrapper);
+    }
+
+    @Override
     public void updateApplyNoById(Long payApplyId, String applyId) {
         // 正常下肯定会有值
         PayApply payApply = getById(payApplyId);

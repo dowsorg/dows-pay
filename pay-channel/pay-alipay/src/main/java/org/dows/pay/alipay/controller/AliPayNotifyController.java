@@ -1,10 +1,13 @@
 package org.dows.pay.alipay.controller;
 
 import com.alibaba.fastjson.JSON;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.dows.framework.api.Response;
 import org.dows.order.api.OrderInstanceBizApiService;
 import org.dows.order.bo.OrderUpdatePaymentStatusBo;
+import org.dows.pay.alipay.AlipayAuthHandler;
 import org.dows.pay.alipay.AlipayPayHandler;
 import org.dows.pay.api.request.AliRelationBindReq;
 import org.dows.pay.api.response.PayQueryRes;
@@ -35,6 +38,8 @@ public class AliPayNotifyController {
     private final AlipayPayHandler alipayPayHandler;
 
     private final OrderInstanceBizApiService orderInstanceBizApiService;
+
+    private final AlipayAuthHandler alipayAuthHandler;
 
 
     /**
@@ -103,6 +108,40 @@ public class AliPayNotifyController {
         log.info("aliPay notify order req is {}",JSON.toJSONString(instanceBo));
         orderInstanceBizApiService.updateOrderInstance(instanceBo);
         return new ResponseEntity<>("success", HttpStatus.OK);
+    }
+
+
+    @RequestMapping("/authCallback")
+    @ApiOperation(value = "阿里支付授权回调")
+    public Response authCallback(HttpServletRequest request) {
+        getAllRequest(request);
+        String appId = request.getParameter("appId");
+        String appAuthCode = request.getParameter("app_auth_code");
+        try{
+            alipayAuthHandler.onAuthorization(appId,appAuthCode);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return Response.ok();
+    }
+
+    private void getAllRequest(HttpServletRequest request){
+        log.info("收到支付宝授权回调：{}", JSON.toJSONString(request.getParameterMap().toString()));
+        // 获取支付宝POST过来反馈信息
+        Map<String, String> params = new HashMap<>();
+        Map<String, String[]> requestParams = request.getParameterMap();
+
+        for (Iterator<String> iter = requestParams.keySet().iterator(); iter.hasNext(); ) {
+            String name = iter.next();
+            String[] values = requestParams.get(name);
+            String valueStr = "";
+            for (int i = 0; i < values.length; i++) {
+                valueStr = (i == values.length - 1) ? valueStr + values[i] : valueStr + values[i] + ",";
+            }
+            params.put(name, valueStr);
+        }
+        log.info("收到支付宝授权回调 params=={}",JSON.toJSONString(params));
+
     }
 
 
