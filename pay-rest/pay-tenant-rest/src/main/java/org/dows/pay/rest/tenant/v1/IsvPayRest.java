@@ -1,6 +1,7 @@
 package org.dows.pay.rest.tenant.v1;
 
 
+import com.alibaba.fastjson.JSON;
 import com.alipay.api.response.AlipayTradeCreateResponse;
 import com.alipay.api.response.AlipayTradePayResponse;
 import io.swagger.annotations.Api;
@@ -41,6 +42,7 @@ public class IsvPayRest {
     @PostMapping("/alipay/micropay")
     @ApiOperation(value = "支付宝付款码支付")
     public Response miacropay(@RequestBody AliPayRequest aliPayRequest) {
+        log.info("开始支付宝付款码支付:{}", JSON.toJSONString(aliPayRequest));
         AlipayTradePayResponse result= alipayPayHandler.payByAuthCode(aliPayRequest);
         return Response.ok(result);
     }
