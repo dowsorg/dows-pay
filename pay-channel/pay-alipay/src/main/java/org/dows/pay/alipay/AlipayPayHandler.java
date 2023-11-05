@@ -48,13 +48,11 @@ import org.dows.pay.api.request.ScanPayApplyRes;
 import org.dows.pay.api.response.PayQueryRes;
 import org.dows.pay.boot.PayClientFactory;
 import org.dows.pay.boot.properties.PayClientProperties;
-import org.dows.pay.entity.PayAccount;
-import org.dows.pay.entity.PayLedgers;
-import org.dows.pay.entity.PayLedgersRecord;
-import org.dows.pay.entity.PayTransaction;
+import org.dows.pay.entity.*;
 import org.dows.pay.form.AliPayRequest;
 import org.dows.pay.mapper.PayLedgersRecordMapper;
 import org.dows.pay.service.PayAccountService;
+import org.dows.pay.service.PayApplyService;
 import org.dows.pay.service.PayLedgersService;
 import org.dows.pay.service.PayTransactionService;
 import org.dows.store.api.MerchantInstanceApi;
@@ -88,6 +86,8 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
     private final PayLedgersRecordMapper payLedgersRecordMapper;
 
     private final PayAccountService payAccountService;
+
+    private final PayApplyService payApplyService;
 
     private final AppBaseApi baseApi;
 
@@ -130,15 +130,20 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
             throw new BizException("传入订单参数有误");
         }
 
-        MerchantAppIdReq statusReq = new MerchantAppIdReq();
-        statusReq.setMerchantNo(orderInstanceBo.getMerchantNo());
-        statusReq.setMiniType(2);
-        Response<MerchantAppIdRes> appIdResponse = baseApi.getMiniAppIdByMerchantNo(statusReq);
-        if(!appIdResponse.getStatus()){
-            throw new BizException("获取支付appId失败");
-        }
 
-        String appId = appIdResponse.getData().getAppId();
+        PayApply payApply = payApplyService.getByMerchantNoAndType(orderInstanceBo.getMerchantNo(),2);
+        if(null == payApply){
+            throw new BizException("支付宝支付能力为空");
+        }
+//        MerchantAppIdReq statusReq = new MerchantAppIdReq();
+//        statusReq.setMerchantNo(orderInstanceBo.getMerchantNo());
+//        statusReq.setMiniType(2);
+//        Response<MerchantAppIdRes> appIdResponse = baseApi.getMiniAppIdByMerchantNo(statusReq);
+//        if(!appIdResponse.getStatus()){
+//            throw new BizException("获取支付appId失败");
+//        }
+
+        String appId = payApply.getAppId();
         if(StrUtil.isEmpty(appId)){
             throw new BizException("获取支付appId为空");
         }
