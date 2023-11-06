@@ -521,7 +521,7 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
      */
     @PayMapping(method = PayMethods.ISV_APPLY)
     public WxOpenResult fastRegisterApp(PayRequest payRequest) throws PayException {
-        log.info("生成服务商代商户申请小程序参数{}", payRequest);
+        log.info("生成服务商代商户申请小程序参数{}", JSON.toJSONString(payRequest));
         IsvCreateTyBo isvCreateBo = (IsvCreateTyBo) payRequest.getBizModel();
         WxOpenResult response = new WxOpenResult();
         try {
@@ -532,7 +532,7 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
                     , isvCreateBo.getLegalPersonalWechat()
                     , isvCreateBo.getLegalPersonalName()
                     , isvCreateBo.getContactPhone());
-            log.info("服务商代商户申请小程序响应{}", response);
+            log.info("服务商代商户申请小程序响应{}",JSON.toJSONString(response));
         } catch (WxErrorException e) {
             e.printStackTrace();
             throw new PayException(e.getMessage());
