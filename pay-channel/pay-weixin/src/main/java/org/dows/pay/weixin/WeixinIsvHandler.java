@@ -521,10 +521,12 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
      */
     @PayMapping(method = PayMethods.ISV_APPLY)
     public WxOpenResult fastRegisterApp(PayRequest payRequest) throws PayException {
-        log.info("生成服务商代商户申请小程序参数{}", JSON.toJSONString(payRequest));
+        log.info("生成服务商代商户申请小程序参数:"+ payRequest.getAppId());
         IsvCreateTyBo isvCreateBo = (IsvCreateTyBo) payRequest.getBizModel();
         WxOpenResult response = new WxOpenResult();
         try {
+            log.info(isvCreateBo.getCertName()+"#"+isvCreateBo.getCertNo()+"#"+isvCreateBo.getCertType()+"#"+isvCreateBo.getLegalPersonalWechat()+
+        "#"+isvCreateBo.getLegalPersonalName()+"#"+isvCreateBo.getContactPhone());
             response = this.getWxOpenClient(payRequest.getAppId()).getWxOpenComponentService().fastRegisterWeapp(
                     isvCreateBo.getCertName()
                     , isvCreateBo.getCertNo()
