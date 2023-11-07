@@ -90,6 +90,7 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
                 .eq(PayApply::getMerchantNo, request.getMerchantNo())
                 .eq(PayApply::getApplyType, 2)
                 .eq(PayApply::getAccount, request.getAccount())
+                .eq(PayApply::getChecked,false)
                 .eq(PayApply::getDeleted, false);
         PayApply payApply = this.payApplyService.getOne(queryWrapper);
 
@@ -103,6 +104,8 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
             payApply.setAliReq(JSON.toJSONString(request));
             payApply.setUpdateTime(new Date());
             payApplyService.save(payApply);
+        }else{
+            throw new BizException("该商户号已有支付宝当面付能力申请中");
         }
 
         AlipayOpenAgentCreateModel alipayOpenAgentCreateModel = new AlipayOpenAgentCreateModel();
