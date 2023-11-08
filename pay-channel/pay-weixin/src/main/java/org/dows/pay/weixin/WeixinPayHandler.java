@@ -312,7 +312,12 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
             }
             return wxPayMicropayResult;
         } catch (WxPayException e) {
-            throw new BizException(e.getMessage());
+            WxPayMicropayResult wxPayMicropayResult = new WxPayMicropayResult();
+            wxPayMicropayResult.setResultCode(e.getResultCode());
+            wxPayMicropayResult.setReturnCode(e.getReturnCode());
+            wxPayMicropayResult.setReturnMsg(e.getReturnMsg());
+            //throw new BizException(e.getMessage());
+            return wxPayMicropayResult;
         }
 
     }
