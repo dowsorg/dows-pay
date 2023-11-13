@@ -9,6 +9,7 @@ import org.dows.pay.service.PayApplyService;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -37,6 +38,16 @@ public class PayApplyServiceImpl extends MybatisCrudServiceImpl<PayApplyMapper, 
                 .orderByDesc(PayApply::getId)
                 .last(" limit 1");
         return getOne(queryWrapper);
+    }
+
+    @Override
+    public List<PayApply> queryByMerchantNoAndType(String merchantNo, Integer applyType) {
+        LambdaQueryWrapper<PayApply> queryWrapper = new LambdaQueryWrapper<PayApply>()
+                .eq(PayApply::getMerchantNo, merchantNo)
+                .eq(PayApply::getApplyType, applyType)
+                .eq(PayApply::getDeleted, 0)
+                .orderByDesc(PayApply::getId);
+        return this.list(queryWrapper);
     }
 
     @Override

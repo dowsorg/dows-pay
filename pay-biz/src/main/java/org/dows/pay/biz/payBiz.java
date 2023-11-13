@@ -540,6 +540,11 @@ public class payBiz implements PayApi {
         });
     }
 
+    @Override
+    public Response queryPayApply(PayApplyStatusReq req) {
+        return Response.ok(payApplyService.queryByMerchantNoAndType(req.getMerchantNo(),req.getApplyType()));
+    }
+
     private void checkAndSavePayAccount(PayApply payApply) {
         PayAccount payAccount = payAccountService.getByMerchantNo(payApply.getMerchantNo(),payApply.getApplyType());
         Optional.ofNullable(payAccount).map(p -> {

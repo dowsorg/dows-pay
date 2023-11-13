@@ -93,6 +93,13 @@ public interface PayApi {
     Response queryPayApplyStatus(PayApplyStatusReq res);
 
     /**
+     * 查询支付申请记录
+     * @param req
+     * @return
+     */
+    Response queryPayApply(PayApplyStatusReq req);
+
+    /**
      * 上传模版小程序
      * @param request -
      * @return -

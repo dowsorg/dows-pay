@@ -90,6 +90,14 @@ public class IsvRest {
         return alipayAgentHandler.getApplyIsvByMerchantNo(req);
     }
 
+
+    @PostMapping("/isv/queryPayApplyByMerchantNo")
+    @ApiOperation(value = "查询支付能力申请记录")
+    public Response queryPayApplyByMerchantNo(@RequestBody PayApplyStatusReq req) {
+        req.setMerchantNo(SecurityUtils.getMerchantNo());
+        return payApi.queryPayApply(req);
+    }
+
     @PostMapping("/isv/queryIsvMiniStatus")
     @ApiOperation(value = "查询支付宝小程序状态")
     public Response<PayResponse> queryIsvMiniStatus(@RequestBody AppApplyRequest appApplyRequest) {
