@@ -4,12 +4,11 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.cron.timingwheel.SystemTimer;
 import cn.hutool.cron.timingwheel.TimerTask;
-import cn.hutool.http.HttpRequest;
 import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.alipay.service.schema.util.StringUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
@@ -32,7 +31,6 @@ import org.apache.http.util.EntityUtils;
 import org.dows.auth.biz.cache.CacheFactory;
 import org.dows.auth.biz.cache.LocalCache;
 import org.dows.auth.biz.context.SecurityUtils;
-import org.dows.framework.api.Response;
 import org.dows.framework.api.exceptions.BizException;
 import org.dows.order.api.OrderInstanceBizApiService;
 import org.dows.order.bo.OrderInstanceBo;
@@ -45,15 +43,17 @@ import org.dows.pay.api.annotation.PayMapping;
 import org.dows.pay.api.enums.PayMethods;
 import org.dows.pay.api.request.AccountsRequest;
 import org.dows.pay.api.request.AccountsSharingRequest;
-import org.dows.pay.form.PayTransactionForm;
 import org.dows.pay.bo.PayTransactionBo;
 import org.dows.pay.boot.PayClientConfig;
 import org.dows.pay.boot.PayClientFactory;
 import org.dows.pay.entity.PayAccount;
+import org.dows.pay.entity.PayApply;
 import org.dows.pay.entity.PayLedgers;
 import org.dows.pay.entity.PayTransaction;
 import org.dows.pay.form.PayPartnerTransactionsQueryForm;
+import org.dows.pay.form.PayTransactionForm;
 import org.dows.pay.service.PayAccountService;
+import org.dows.pay.service.PayApplyService;
 import org.dows.pay.service.PayLedgersService;
 import org.dows.pay.service.PayTransactionService;
 import org.dows.store.api.StoreCouponApi;
@@ -65,13 +65,8 @@ import org.springframework.util.IdGenerator;
 import org.springframework.util.SimpleIdGenerator;
 
 import java.math.BigDecimal;
-import java.time.LocalTime;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
 
 /**
  * 支付相关业务功能,如：，
@@ -95,6 +90,9 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
     private final StoreInstanceApi storeInstanceApi;
 
     private final StoreCouponApi storeCouponapi;
+
+
+    private final PayApplyService payApplyService;
 
     private final WeixinRoyaltyRelationHandler weixinRoyaltyRelationHandler;
 
@@ -261,12 +259,21 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
         if (payTransaction != null && Objects.equals(payTransaction.getStatus(), OrderPayTypeEnum.pay_finish.getCode())) {
             throw new BizException(String.format("该笔订单id:%s 已支付", payRequest.getOrderId()));
         }
+        OrderInstanceBo preOrder = orderInstanceBizApiService.getOne(payRequest.getOrderId());
+        if (preOrder == null) {
+            throw new BizException("传入订单参数有误");
+        }
+        PayApply payApply = payApplyService.getByMerchantNoAndType(preOrder.getMerchantNo(),1);
+        if(null == payApply || StrUtil.isEmpty(payApply.getAppId())){
+            throw new BizException("微信支付能力为空");
+        }
+        String appId = payApply.getAppId();
         if (payTransaction == null) {
             //先创建交易订单
             payTransaction = BeanUtil.copyProperties(payRequest, PayTransaction.class);
             payTransaction.setPayChannel("weixin");
             payTransaction.setTransactionNo(transactionNo);
-            payTransaction.setAppId(payRequest.getAppId());
+            payTransaction.setAppId(appId);
             payTransaction.setMerchantNo(SecurityUtils.getMerchantNo());
             payTransaction.setDt(new Date());
             payTransaction.setStatus(OrderPayTypeEnum.pay.getCode());
@@ -274,6 +281,7 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
             log.info("WeixinPayHandler.micropay.payTransaction的参数:{}", payTransaction);
         } else {
             payTransaction.setPayChannel("weixin");
+            payTransaction.setAppId(appId);
             payTransaction.setTransactionNo(transactionNo);
             payTransactionService.updateById(payTransaction);
             log.info("WeixinPayHandler.micropay.payTransaction的参数:{}", payTransaction);
