@@ -53,7 +53,7 @@ public class IsvRest {
     }
 
     @PostMapping("/isv/ty/create")
-    @ApiOperation(value = "代商户创建特约商户小程序")
+    @ApiOperation(value = "代商户创建特约商户小程序-重要")
     public Response<PayResponse> create(@Validated @RequestBody IsvCreateTyForm isvCreateTyForm) {
         isvBiz.isvTyCreate(isvCreateTyForm);
         return Response.ok();
@@ -66,7 +66,7 @@ public class IsvRest {
     }
 
     @PostMapping("/isv/createPay")
-    @ApiOperation(value = "支付宝申请支付")
+    @ApiOperation(value = "支付宝申请支付-重要")
     public Response<PayResponse> createpay(@Validated @RequestBody PayCreateIsvRequest appApplyRequest) {
         return payApi.applyForPaymentlsv(appApplyRequest);
     }

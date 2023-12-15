@@ -35,7 +35,7 @@ import java.io.IOException;
 @Slf4j
 public class PayClientBuilder {
 
-    private static String PREFIX_CERTIFICATE_PATH = "/Users/zcbzx/Documents/GitHub/dows-pay/pay-config/src/main/resources/";
+    private static String PREFIX_CERTIFICATE_PATH = "";
 
 //    private static String PREFIX_CERTIFICATE_PATH = "/Users/xx/Downloads/youxing/alipay";
 

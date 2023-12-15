@@ -43,14 +43,14 @@ public class OrderSettleRest {
         return Response.ok(result);
     }
     @PostMapping("/orderpay/topayNoAcc")
-    @ApiOperation(value = "去支付无分账")
+    @ApiOperation(value = "去支付无分账-重要")
     public Response topayNoAcc(@RequestBody PayTransactionForm payTransactionForm) {
         TransactionsResult.JsapiResult result= weixinPayHandler.toPayNoAcc(payTransactionForm);
         return Response.ok(result);
     }
 
     @PostMapping("/orderpay/micropay")
-    @ApiOperation(value = "付款码支付")
+    @ApiOperation(value = "微信付款码支付-重要")
     public Response micropay(@RequestBody PayTransactionForm payTransactionForm) {
         log.info("开始付款码支付");
         WxPayMicropayResult result= weixinPayHandler.micropay(payTransactionForm);

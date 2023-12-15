@@ -40,7 +40,7 @@ public class IsvPayRest {
     }
 
     @PostMapping("/alipay/micropay")
-    @ApiOperation(value = "支付宝付款码支付")
+    @ApiOperation(value = "支付宝付款码支付-重要")
     public Response miacropay(@RequestBody AliPayRequest aliPayRequest) {
         log.info("开始支付宝付款码支付:{}", JSON.toJSONString(aliPayRequest));
         AlipayTradePayResponse result= alipayPayHandler.payByAuthCode(aliPayRequest);

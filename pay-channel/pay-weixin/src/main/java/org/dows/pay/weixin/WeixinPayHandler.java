@@ -481,6 +481,7 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
             log.info("WeixinPayHandler.toPay.response的参数:{}", response);
             transactionsResult = GSON.fromJson(response, TransactionsResult.class);
         } catch (WxPayException e) {
+            log.error("WeixinPayHandler.toPay.error", e);
             throw new BizException(e.getMessage());
         }
         TransactionsResult.JsapiResult jsapiResult = transactionsResult.getPayInfo
