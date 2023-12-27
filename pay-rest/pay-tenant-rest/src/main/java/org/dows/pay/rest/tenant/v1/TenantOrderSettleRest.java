@@ -1,7 +1,6 @@
 package org.dows.pay.rest.tenant.v1;
 
 import com.github.binarywang.wxpay.bean.ecommerce.PartnerTransactionsResult;
-import com.github.binarywang.wxpay.bean.ecommerce.TransactionsResult;
 import com.github.binarywang.wxpay.bean.result.WxPayMicropayResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -26,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/v1")
 @Slf4j
 @RequiredArgsConstructor
-public class OrderSettleRest {
+public class TenantOrderSettleRest {
     private final OrderPayBiz orderPayBiz;
 
     private final WeixinPayHandler weixinPayHandler;
@@ -42,12 +41,12 @@ public class OrderSettleRest {
         String result = weixinPayHandler.toAccounts(accountsRequest);
         return Response.ok(result);
     }
-    @PostMapping("/orderpay/topayNoAcc")
-    @ApiOperation(value = "去支付无分账-重要")
-    public Response topayNoAcc(@RequestBody PayTransactionForm payTransactionForm) {
-        TransactionsResult.JsapiResult result= weixinPayHandler.toPayNoAcc(payTransactionForm);
-        return Response.ok(result);
-    }
+//    @PostMapping("/orderpay/topayNoAcc")
+//    @ApiOperation(value = "去支付无分账-重要")
+//    public Response topayNoAcc(@RequestBody PayTransactionForm payTransactionForm) {
+//        TransactionsResult.JsapiResult result= weixinPayHandler.toPayNoAcc(payTransactionForm);
+//        return Response.ok(result);
+//    }
 
     @PostMapping("/orderpay/micropay")
     @ApiOperation(value = "微信付款码支付-重要")
