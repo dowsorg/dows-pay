@@ -33,6 +33,7 @@ import org.dows.auth.biz.cache.LocalCache;
 import org.dows.auth.biz.context.SecurityUtils;
 import org.dows.framework.api.exceptions.BizException;
 import org.dows.order.api.OrderInstanceBizApiService;
+import org.dows.order.bo.OrderAccountBo;
 import org.dows.order.bo.OrderInstanceBo;
 import org.dows.order.bo.OrderUpdatePaymentStatusBo;
 import org.dows.order.enums.OrderPayTypeEnum;
@@ -314,9 +315,9 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
 
             if("SUCCESS".equals(wxPayMicropayResult.getReturnCode())&&"SUCCESS".equals(wxPayMicropayResult.getResultCode())){
                 log.info("支付成功");
-                updateOrderStateForSucc(payRequest.getOrderId(),wxPayMicropayResult,null);
+                updateOrderStateForSucc(payRequest.getOrderId(),wxPayMicropayResult,null,SecurityUtils.getAccountId());
             }else {
-                delayQueryOrder(payRequest.getOrderId(),transactionNo,1,5000L);
+                delayQueryOrder(payRequest.getOrderId(),transactionNo,1,5000L,SecurityUtils.getAccountId());
             }
             return wxPayMicropayResult;
         } catch (WxPayException e) {
@@ -336,7 +337,7 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
      * @param delayTime
      * @throws WxPayException
      */
-    private void delayQueryOrder(String orderId,String transactionNo,final int times, Long delayTime) throws WxPayException {
+    private void delayQueryOrder(String orderId,String transactionNo,final int times, Long delayTime,String accountId) throws WxPayException {
         SYSTEMTIMER.addTask(new TimerTask(()->{
             try {
                 WxPayOrderQueryResult wxPayOrderQueryResult =   queryOrderPayStatus(transactionNo);
@@ -344,12 +345,12 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
                 if("USERPAYING".equals(wxPayOrderQueryResult.getTradeState())){//支付中
                     int newTimes = times + 10000;
                     if(newTimes<=5){
-                        delayQueryOrder(orderId,transactionNo,newTimes,10000L);
+                        delayQueryOrder(orderId,transactionNo,newTimes,10000L,accountId);
                     }
                 }
                 if("SUCCESS".equals(wxPayOrderQueryResult.getTradeState())){//支付成功
                     log.info("支付成功");
-                    updateOrderStateForSucc(orderId,null,wxPayOrderQueryResult);
+                    updateOrderStateForSucc(orderId,null,wxPayOrderQueryResult,accountId);
                 }
 
             } catch (WxPayException e) {
@@ -363,7 +364,7 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
      * @param orderId
      * @param wxPayOrderQueryResult
      */
-    private void updateOrderStateForSucc(String orderId,WxPayMicropayResult wxPayMicropayResult,WxPayOrderQueryResult wxPayOrderQueryResult){
+    private void updateOrderStateForSucc(String orderId,WxPayMicropayResult wxPayMicropayResult,WxPayOrderQueryResult wxPayOrderQueryResult,String accountId){
         PayTransaction payTransaction = payTransactionService.getByOrderId(orderId);
         ThreadUtil.execAsync(()->{
             ThreadUtil.sleep(70, TimeUnit.SECONDS);
@@ -385,6 +386,10 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
             instanceBo.setTradeType(1);
             instanceBo.setOrderId(payTransaction.getOrderId());
             orderInstanceBizApiService.updateOrderInstance(instanceBo);
+            OrderAccountBo accountBo = new OrderAccountBo();
+            accountBo.setOrderId(payTransaction.getOrderId());
+            accountBo.setPayAccountId(accountId);
+            orderInstanceBizApiService.updateOrderAccountId(accountBo);
         } catch (Exception e) {
             System.out.println("invoke updateOrderInstance error:"+e);
             log.error("invoke updateOrderInstance error :",e);
@@ -490,6 +495,10 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
                         this.getWeixinClient(payClientConfig.getClientConfigs().get(1).getAppId()).getConfig().getPrivateKey());
         if (!StringUtil.isEmpty(transactionsResult.getPrepayId())) {
             ORDER_PAY_CACHE.set(String.join(StringPool.UNDERSCORE, payRequest.getAppId(), payRequest.getOrderId()), "success");
+            OrderAccountBo orderAccountBo = new OrderAccountBo();
+            orderAccountBo.setOrderId(orderInstanceBo.getOrderId());
+            orderAccountBo.setPayAccountId(SecurityUtils.getAccountId());
+            orderInstanceBizApiService.updateOrderAccountId(orderAccountBo);
             log.info("调用成功");
         } else {
             //todo 失败逻辑

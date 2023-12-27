@@ -1,5 +1,5 @@
 server:
-  port: 9000
+  port: 9001
   undertow:
     buffer-size: 1024
     direct-buffers: true
@@ -29,7 +29,7 @@ spring:
   application:
     name: dows-pay
   profiles:
-    include: mysql,mybatis,mvc,redis,alipay
+    include: mysql,mybatis,mvc,redis,alipay,ssh
     active: sit
 #debug: true
 # 图片上传url

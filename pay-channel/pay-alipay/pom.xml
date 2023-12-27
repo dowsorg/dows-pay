@@ -21,6 +21,10 @@
             		<groupId>org.dows.saas</groupId>
             		<artifactId>app-api</artifactId>
             	</exclusion>
+                <exclusion>
+                    <groupId>org.dows.saas</groupId>
+                    <artifactId>pay-biz</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 

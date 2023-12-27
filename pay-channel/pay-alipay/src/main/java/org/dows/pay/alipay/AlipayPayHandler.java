@@ -34,6 +34,7 @@ import org.dows.framework.api.exceptions.BizException;
 import org.dows.framework.oss.api.OssInfo;
 import org.dows.framework.oss.tencent.TencentOssClient;
 import org.dows.order.api.OrderInstanceBizApiService;
+import org.dows.order.bo.OrderAccountBo;
 import org.dows.order.bo.OrderInstanceBo;
 import org.dows.order.bo.OrderUpdatePaymentStatusBo;
 import org.dows.order.form.OrderCashPayForm;
@@ -208,9 +209,14 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
                     .dealTo(response.getTradeNo())
                     .build();
             payTransactionService.updateById(updatePayTransaction);
+            //更新支付人
+            OrderAccountBo orderAccountBo = new OrderAccountBo();
+            orderAccountBo.setOrderId(orderInstanceBo.getOrderId());
+            orderAccountBo.setPayAccountId(SecurityUtils.getAccountId());
+            orderInstanceBizApiService.updateOrderAccountId(orderAccountBo);
         }else if("10003".equals(response.getCode())){
             //等待付款查询支付状态
-            delayQueryOrder(payTransaction,1);
+            delayQueryOrder(payTransaction,1,SecurityUtils.getAccountId());
         } else {
             PayTransaction updatePayTransaction = PayTransaction.builder()
                     .id(payTransaction.getId())
@@ -229,7 +235,7 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
      * @param payTransaction
      * @param times
      */
-    private void delayQueryOrder(PayTransaction payTransaction,final int times) {
+    private void delayQueryOrder(PayTransaction payTransaction,final int times,String accountId) {
         SYSTEMTIMER.addTask(new TimerTask(()->{
             try {
                 AlipayTradeQueryResponse alipayTradeQueryResponse = null;
@@ -239,7 +245,7 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
                 if("WAIT_BUYER_PAY".equals(alipayTradeQueryResponse.getTradeStatus())){//支付中
                     int newTimes = times+1;
                     if(newTimes<=60){
-                        delayQueryOrder(payTransaction,newTimes);
+                        delayQueryOrder(payTransaction,newTimes,accountId);
                     }
                 }
                 if("TRADE_SUCCESS".equals(alipayTradeQueryResponse.getTradeStatus())){//支付成功
@@ -251,6 +257,11 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
                             .dealTo(alipayTradeQueryResponse.getTradeNo())
                             .build();
                     payTransactionService.updateById(updatePayTransaction);
+                    //更新支付人
+                    OrderAccountBo orderAccountBo = new OrderAccountBo();
+                    orderAccountBo.setOrderId(updatePayTransaction.getOrderId());
+                    orderAccountBo.setPayAccountId(accountId);
+                    orderInstanceBizApiService.updateOrderAccountId(orderAccountBo);
                     //更新订单状态
                     updateOrderStatusForSucc(payTransaction);
                 }
@@ -273,6 +284,7 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
         instanceBo.setPayChannel(2);
         instanceBo.setTradeType(1);
         instanceBo.setOrderId(payTransaction.getOrderId());
+        orderInstanceBizApiService.updateOrderInstance(instanceBo);
     }
 
 
