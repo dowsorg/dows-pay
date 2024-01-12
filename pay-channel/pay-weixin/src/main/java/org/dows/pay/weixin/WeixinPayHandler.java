@@ -308,7 +308,7 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
             wxPayMicropayRequest.setAppid("wxcea260a244fa8559");
             wxPayMicropayRequest.setMchId("1604404392");
             wxPayMicropayRequest.setSubMchId(payRequest.getMchId());
-
+            log.info("WeixinPayHandler.micropay.request的参数:{}", GSON.toJson(wxPayMicropayRequest));
             WxPayMicropayResult wxPayMicropayResult =  this.getWeixinClient(payClientConfig.getClientConfigs().get(1).getAppId()).micropay(wxPayMicropayRequest);
 
             log.info("WeixinPayHandler.micropay.response的参数:{}", GSON.toJson(wxPayMicropayResult));
@@ -326,7 +326,7 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
             wxPayMicropayResult.setReturnCode(e.getReturnCode());
             wxPayMicropayResult.setReturnMsg(e.getReturnMsg());
             //throw new BizException(e.getMessage());
-            e.printStackTrace();
+            log.error("WeixinPayHandler.micropay.response的参数:{}", GSON.toJson(wxPayMicropayResult));
             return wxPayMicropayResult;
         }
 
