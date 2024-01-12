@@ -326,6 +326,7 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
             wxPayMicropayResult.setReturnCode(e.getReturnCode());
             wxPayMicropayResult.setReturnMsg(e.getReturnMsg());
             //throw new BizException(e.getMessage());
+            e.printStackTrace();
             return wxPayMicropayResult;
         }
 

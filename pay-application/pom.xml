@@ -18,7 +18,7 @@
 
         <dependency>
             <groupId>org.dows.saas</groupId>
-            <artifactId>pay-rest</artifactId>
+            <artifactId>pay-admin-rest</artifactId>
             <version>20220701-SNAPSHOT</version>
         </dependency>
 
