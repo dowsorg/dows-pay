@@ -49,7 +49,7 @@ public class IsvPayRest {
 
 
     @PostMapping("/scanPay")
-    @ApiOperation(value = "支付宝去支付")
+    @ApiOperation(value = "支付宝去支付-重要")
     public Response scanPay(@RequestBody AliPayRequest payTransactionForm) {
         ScanPayApplyRes result= alipayPayHandler.scanPay(payTransactionForm);
         return Response.ok(result);

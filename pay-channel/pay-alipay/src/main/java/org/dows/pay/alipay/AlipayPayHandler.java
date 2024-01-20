@@ -100,7 +100,7 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
 
     private final PayLedgersService payLedgersService;
 
-    private static final String ALI_PAY_NOTIFY_URL = "https://www.dxzsaas.com/api/user/aliPay/notify";
+    private static final String ALI_PAY_NOTIFY_URL = "https://www.wozth.com/api/user/aliPay/notify";
 
     private final IdGenerator idGenerator = new SimpleIdGenerator();
 
