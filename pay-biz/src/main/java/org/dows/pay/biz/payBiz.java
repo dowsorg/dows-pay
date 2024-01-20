@@ -284,23 +284,25 @@ public class payBiz implements PayApi {
     private PayQueryRes queryWechatOrder(PayTransaction payTransaction) {
         if (Objects.equals(payTransaction.getPayChannel(),"weixin")) {
             Map<String, Object> map = weixinPayHandler.queryWechatOrder(payTransaction.getTransactionNo(),payTransaction.getAppId());
-            Date date = null;
-            Object successTime = map.get("success_time");
-            if(successTime != null){
-                String success_time = successTime.toString();
-                // 解析时间字符串
-                OffsetDateTime offsetDateTime = OffsetDateTime.parse(success_time, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-                // 转换为 Date 类型
-                date = Date.from(offsetDateTime.toInstant());
+            if(map.containsKey("trade_state")){
+                Date date = null;
+                Object successTime = map.get("success_time");
+                if(successTime != null){
+                    String success_time = successTime.toString();
+                    // 解析时间字符串
+                    OffsetDateTime offsetDateTime = OffsetDateTime.parse(success_time, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+                    // 转换为 Date 类型
+                    date = Date.from(offsetDateTime.toInstant());
+                }
+                return PayQueryRes.builder()
+                        .payTime(date)
+                        .payDesc(map.get("trade_state").toString())
+                        .outTradeNo(Optional.ofNullable(map.get("transaction_id")).map(Object::toString).orElse(null))
+                        .payChannel(payTransaction.getPayChannel())
+                        .orderId(payTransaction.getOrderId())
+                        .payAmount(payTransaction.getAmount())
+                        .build();
             }
-            return PayQueryRes.builder()
-                    .payTime(date)
-                    .payDesc(map.get("trade_state").toString())
-                    .outTradeNo(Optional.ofNullable(map.get("transaction_id")).map(Object::toString).orElse(null))
-                    .payChannel(payTransaction.getPayChannel())
-                    .orderId(payTransaction.getOrderId())
-                    .payAmount(payTransaction.getAmount())
-                    .build();
         }
         // todo:支付宝查询
         return PayQueryRes.builder().payDesc("NOTPAY").build();

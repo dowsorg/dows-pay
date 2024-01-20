@@ -193,7 +193,7 @@ public class ExceptionHandler /*implements ResponseBodyAdvice<Object>*/ {
     @org.springframework.web.bind.annotation.ExceptionHandler(value = Exception.class)
     public Object resolveException(HttpServletRequest request, HttpServletResponse response, Exception e) {
         log.error("调用={}服务出现异常了，请求的url是={}，请求的方法是={}，原因={}",
-                serviceName, request.getRequestURL(), request.getMethod(), e.getMessage());
+                serviceName, request.getRequestURL(), request.getMethod(), e.getMessage(),e);
 
         if (isAjax(request)) {
             if (ENV_PROD.equals(profile)) {
