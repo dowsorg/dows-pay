@@ -1,15 +1,14 @@
 package org.dows.pay.weixin;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson.JSON;
 import com.alipay.service.schema.util.StringUtil;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.github.binarywang.wxpay.bean.applyment.WxPayApplyment4SubCreateRequest;
 import com.github.binarywang.wxpay.bean.applyment.WxPayApplymentCreateResult;
 import com.github.binarywang.wxpay.bean.applyment.enums.SalesScenesTypeEnum;
+import com.github.binarywang.wxpay.bean.applyment.enums.SubjectTypeEnum;
 import com.github.binarywang.wxpay.bean.ecommerce.ApplymentsRequest;
 import com.github.binarywang.wxpay.bean.ecommerce.ApplymentsResult;
 import com.github.binarywang.wxpay.bean.ecommerce.ApplymentsStatusResult;
@@ -19,24 +18,17 @@ import com.github.binarywang.wxpay.v3.WechatPayUploadHttpPost;
 import com.github.binarywang.wxpay.v3.util.RsaCryptoUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.error.WxErrorException;
-import me.chanjar.weixin.open.bean.auth.WxOpenAuthorizationInfo;
 import me.chanjar.weixin.open.bean.result.WxOpenQueryAuthResult;
 import me.chanjar.weixin.open.bean.result.WxOpenResult;
-import me.chanjar.weixin.open.util.json.WxOpenGsonBuilder;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.io.FileUtils;
 import org.dows.account.api.AccountTenantApi;
 import org.dows.account.api.AccountUserApi;
-import org.dows.account.bo.AccountTenantBo;
-import org.dows.account.bo.AccountUserBo;
 import org.dows.app.api.mini.AppApplyApi;
 import org.dows.app.api.mini.request.AppApplyRequest;
 import org.dows.app.api.mini.response.AppApplyResponse;
-import org.dows.auth.biz.context.SecurityUtils;
 import org.dows.framework.api.Response;
 import org.dows.framework.api.exceptions.BizException;
 import org.dows.pay.api.PayEvent;
@@ -49,14 +41,12 @@ import org.dows.pay.api.enums.PayMethods;
 import org.dows.pay.api.message.WeixinMessage;
 import org.dows.pay.bo.IsvCreateBo;
 import org.dows.pay.bo.IsvCreateTyBo;
-import org.dows.pay.entity.PayAccount;
+import org.dows.pay.form.Applyment4subFrom;
 import org.dows.pay.service.PayAccountService;
 import org.dows.store.api.StoreInstanceApi;
-import org.dows.store.api.request.StoreInstanceRequest;
 import org.dows.user.api.api.UserCompanyApi;
 import org.dows.user.api.api.UserContactApi;
 import org.dows.user.api.dto.UserCompanyDTO;
-import org.dows.user.api.dto.UserContactDTO;
 import org.dows.user.api.vo.UserCompanyVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -70,7 +60,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URI;
-import java.net.URL;
 import java.util.*;
 
 @Slf4j
@@ -250,6 +239,32 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
         return response;
     }
 
+    public WxPayApplymentCreateResult applyment4sub(Applyment4subFrom applyment4subFrom) throws PayException {
+        String url = String.format("%s/v3/applyment4sub/applyment/", this.getMyWeixinClient().getPayBaseUrl());
+        WxPayApplyment4SubCreateRequest request = new WxPayApplyment4SubCreateRequest();
+        //request.setBusinessCode();
+        WxPayApplyment4SubCreateRequest.ContactInfo contactInfo = new WxPayApplyment4SubCreateRequest.ContactInfo();
+        request.setContactInfo(BeanUtil.copyProperties(applyment4subFrom.getContactInfo(), WxPayApplyment4SubCreateRequest.ContactInfo.class));
+        request.setSubjectInfo(BeanUtil.copyProperties(applyment4subFrom.getSettlementInfo(), WxPayApplyment4SubCreateRequest.SubjectInfo.class));
+        request.setBusinessInfo(BeanUtil.copyProperties(applyment4subFrom.getBusinessInfo(), WxPayApplyment4SubCreateRequest.BusinessInfo.class));
+        request.setSettlementInfo(BeanUtil.copyProperties(applyment4subFrom.getSettlementInfo(), WxPayApplyment4SubCreateRequest.SettlementInfo.class));
+        request.setBankAccountInfo(BeanUtil.copyProperties(applyment4subFrom.getBankAccountInfo(), WxPayApplyment4SubCreateRequest.BankAccountInfo.class));
+        //request.setAdditionInfo();
+        WxPayApplymentCreateResult response = null;
+        try {
+            log.info("createIsvTyMini  加密前字符串{}", GSON.toJson(request));
+            RsaCryptoUtil.encryptFields(request, this.getMyWeixinClient().getConfig().getVerifier().getValidCertificate());
+            String result = this.getMyWeixinClient().postV3WithWechatpaySerial(url, GSON.toJson(request));
+            response = GSON.fromJson(result, WxPayApplymentCreateResult.class);
+        } catch (WxPayException e) {
+            e.printStackTrace();
+            throw new PayException(e.getMessage());
+        }
+        return response;
+
+    }
+
+
     /**
      * 申请/支付
      *
@@ -384,6 +399,17 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
                     });
             request.getAdditionInfo().setBusinessAdditionPics(list);
         }
+        // 结算规则
+        Map<SubjectTypeEnum,String> settlementIdMap = new HashMap<>();
+        settlementIdMap.put(SubjectTypeEnum.SUBJECT_TYPE_INDIVIDUAL,"719");
+        settlementIdMap.put(SubjectTypeEnum.SUBJECT_TYPE_ENTERPRISE,"716");
+        settlementIdMap.put(SubjectTypeEnum.SUBJECT_TYPE_INSTITUTIONS,"799");
+        settlementIdMap.put(SubjectTypeEnum.SUBJECT_TYPE_OTHERS,"725");
+        settlementIdMap.put(SubjectTypeEnum.SUBJECT_TYPE_MICRO,"727");
+        WxPayApplyment4SubCreateRequest.SettlementInfo settlementInfo = new WxPayApplyment4SubCreateRequest.SettlementInfo();
+        settlementInfo.setSettlementId(settlementIdMap.get(request.getSubjectInfo().getSubjectType()));
+        settlementInfo.setQualificationType("餐饮");
+        request.setSettlementInfo(settlementInfo);
         WxPayApplymentCreateResult response = null;
         try {
             log.info("createIsvTyMini  加密前字符串{}", request);

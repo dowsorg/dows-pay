@@ -78,7 +78,7 @@ public class IsvRest {
     }
 
     @PostMapping("/isv/queryPay")
-    @ApiOperation(value = "支付宝申请查询")
+    @ApiOperation(value = "支付宝申请查询-重要")
     public AlipayOpenAgentOrderQueryResponse querypay(@Validated @RequestBody PayQueryIsvRequest payQueryIsvRequest) {
         return alipayAgentHandler.queryAgent(payQueryIsvRequest);
     }
