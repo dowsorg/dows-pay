@@ -11,8 +11,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 
+import cn.hutool.core.collection.CollUtil;
 import org.dows.app.entity.AppApply;
 import org.dows.app.service.AppApplyService;
 import org.dows.auth.api.weixin.WeixinTokenApi;
@@ -508,6 +510,12 @@ public class payBiz implements PayApi {
                 }
                 payApply.setApplymentState(result.getApplymentState());
                 if (Objects.equals("APPLYMENT_STATE_FINISHED", payApply.getApplymentState())) {
+                    List<AppApply> appApplyList = appApplyService.lambdaQuery()
+                            .eq(AppApply::getMerchantNo, res.getMerchantNo())
+                            .eq(AppApply::getPlatform, "WEIXIN").list();
+                    if(!CollUtil.isEmpty(appApplyList)){
+                        payApply.setAppId(CollUtil.getFirst(appApplyList).getAppId());
+                    }
                     payApply.setChecked(true);
                 }
                 payApply.setApplymentStateDesc(result.getApplymentStateDesc());
