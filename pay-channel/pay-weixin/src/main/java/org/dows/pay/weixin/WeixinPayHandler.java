@@ -765,16 +765,16 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
     }
 
     public Map<String, Object> queryWechatOrder(String transactionNo, String appId) {
-        LambdaQueryWrapper<PayAccount> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(PayAccount::getChannelAccount, appId);
-        queryWrapper.eq(PayAccount::getDeleted, false);
-        PayAccount payAccount = payAccountService.getOne(queryWrapper);
+        LambdaQueryWrapper<PayApply> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(PayApply::getAppId, appId);
+        queryWrapper.eq(PayApply::getApplyType, 1);
+        PayApply payApply = payApplyService.getOne(queryWrapper);
 
         CloseableHttpClient httpClient = this.getWeixinClient(payClientConfig.getClientConfigs().get(1)
                 .getAppId()).getConfig().getApiV3HttpClient();
 
         HttpGet httpGet = new HttpGet("https://api.mch.weixin.qq.com/v3/pay/partner/transactions/out-trade-no/" + transactionNo +
-                "?sp_mchid=1604404392&sub_mchid=" + payAccount.getChannelMerchantNo());
+                "?sp_mchid=1604404392&sub_mchid=" + payApply.getSubMchid());
         httpGet.setHeader("Accept", "application/json");
         try {
             CloseableHttpResponse response = httpClient.execute(httpGet);
