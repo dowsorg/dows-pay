@@ -34,6 +34,7 @@ dows:
         signType: RSA2
         format: json
         certModel: 1
+        notifyUrl: https://www.wozth.com/api/sit/user/nztest/payNotify
         #应用公钥证书路径
         privateKeyPath: classpath:weixin/wxapiclient_key.pem
         #微信公钥证书文件路径
