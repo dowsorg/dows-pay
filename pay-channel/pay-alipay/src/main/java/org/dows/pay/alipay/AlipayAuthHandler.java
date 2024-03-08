@@ -65,8 +65,8 @@ public class AlipayAuthHandler extends AbstractAlipayHandler {
         }
 
         // save redis
-        tempRedisApi.setKey(appId, appAuthToken);
-        tempRedisApi.setKey(String.join(StringPool.UNDERSCORE,appId,"authorizer_refresh_token"),appRefreshToken);
+        tempRedisApi.setKey(authAppId, appAuthToken);
+        tempRedisApi.setKey(String.join(StringPool.UNDERSCORE,authAppId,"authorizer_refresh_token"),appRefreshToken);
     }
 
 
