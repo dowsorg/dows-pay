@@ -47,7 +47,7 @@ public class AlipayAuthHandler extends AbstractAlipayHandler {
 
         alipayOpenAuthTokenAppRequest.setBizModel(alipayOpenAuthTokenAppModel);
         AlipayOpenAuthTokenAppResponse alipayOpenAuthTokenAppResponse =
-                getAlipayClient("2021003129694075").execute(alipayOpenAuthTokenAppRequest);
+                getAlipayClient("2021003129694075").certificateExecute(alipayOpenAuthTokenAppRequest);
 
         log.info("支付宝获取授权码返回：{}", JSON.toJSONString(alipayOpenAuthTokenAppResponse));
         String appAuthToken = alipayOpenAuthTokenAppResponse.getAppAuthToken();
