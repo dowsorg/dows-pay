@@ -415,6 +415,88 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
         return this.getWeixinClient(payClientConfig.getClientConfigs().get(1).getAppId()).queryOrder(null,transactionNo);
     }
 
+    public TransactionsResult.JsapiResult toPayStorageCard(PayTransactionForm payRequest){
+        checkRepeatSubmit(payRequest.getAppId(), payRequest.getOrderId());
+        String transactionNo = IdUtil.fastSimpleUUID();
+        log.info("WeixinPayHandler.toPayStorageCard.transactionNo的参数:{}", transactionNo);
+        PayTransaction payTransaction = payTransactionService.getByOrderId(payRequest.getOrderId());
+        if (payTransaction != null && Objects.equals(payTransaction.getStatus(), OrderPayTypeEnum.pay_finish.getCode())) {
+            throw new BizException(String.format("该笔订单id:%s 已支付", payRequest.getOrderId()));
+        }
+        if (payTransaction == null) {
+            //先创建交易订单
+            payTransaction = BeanUtil.copyProperties(payRequest, PayTransaction.class);
+            payTransaction.setPayChannel("weixin");
+            payTransaction.setTransactionNo(transactionNo);
+            payTransaction.setAppId(payRequest.getAppId());
+            payTransaction.setMerchantNo(SecurityUtils.getMerchantNo());
+            payTransaction.setDt(new Date());
+            payTransaction.setStatus(OrderPayTypeEnum.pay.getCode());
+            payTransaction.setTransactionType(2);
+            payTransactionService.save(payTransaction);
+            log.info("WeixinPayHandler.toPayStorageCard.payTransaction的参数:{}", payTransaction);
+        } else {
+            payTransaction.setPayChannel("weixin");
+            payTransaction.setTransactionNo(transactionNo);
+            payTransactionService.updateById(payTransaction);
+            log.info("WeixinPayHandler.toPayStorageCard.payTransaction的参数:{}", payTransaction);
+        }
+        //组装订单逻辑
+        PartnerTransactionsRequest.Amount amount = new PartnerTransactionsRequest.Amount();
+        amount.setCurrency("CNY");
+        amount.setTotal(payRequest.getAmount().multiply(new BigDecimal(100)).intValue());
+        PartnerTransactionsRequest.Payer payer = new PartnerTransactionsRequest.Payer();
+        payer.setSubOpenid(payRequest.getSubOpenid());
+        //获取商户号
+        log.info("WeixinPayHandler.toPayStorageCard.orderInstanceBo的参数:{}", amount);
+        PayAccount payAccount = payAccountService.getOne(Wrappers.lambdaQuery(PayAccount.class).eq(PayAccount::getChannelAccount, payRequest.getAppId()));
+        log.info("WeixinPayHandler.toPayStorageCard.payAccount的参数:{}", payAccount);
+
+        PartnerTransactionsRequest.SceneInfo sceneInfo = new PartnerTransactionsRequest.SceneInfo();
+        sceneInfo.setPayerClientIp(payClientConfig.getClientConfigs().get(1).getIp());
+        PartnerTransactionsRequest partnerTransactionsRequest = PartnerTransactionsRequest.builder()
+                .spAppid("wx1f2863eb6cdee6a1")
+                .spMchid("1604404392")
+                .subAppid(payRequest.getAppId())
+                .amount(amount)
+                .subMchid(payAccount.getChannelMerchantNo())
+                .description(payRequest.getOrderTitle())
+                .outTradeNo(transactionNo)
+                .notifyUrl(payClientConfig.getClientConfigs().get(1).getNotifyUrl())
+                .payer(payer)
+                .sceneInfo(sceneInfo)
+                .build();
+        log.info("WeixinPayHandler.toPayStorageCard.partnerTransactionsRequest的参数:{}", GSON.toJson(partnerTransactionsRequest));
+        TransactionsResult transactionsResult;
+        try {
+            String tradeType = TradeTypeEnum.JSAPI.getPartnerUrl();
+            String url = this.getWeixinClient(payClientConfig.getClientConfigs().get(1).getAppId()).getPayBaseUrl() + tradeType;
+            String response = this.getWeixinClient(payClientConfig.getClientConfigs().get(1).getAppId()).postV3(url, GSON.toJson(partnerTransactionsRequest));
+            log.info("WeixinPayHandler.toPayStorageCard.response的参数:{}", response);
+            transactionsResult = GSON.fromJson(response, TransactionsResult.class);
+        } catch (WxPayException e) {
+            log.error("WeixinPayHandler.toPayStorageCard.error", e);
+            throw new BizException(e.getMessage());
+        }
+        TransactionsResult.JsapiResult jsapiResult = transactionsResult.getPayInfo
+                (TradeTypeEnum.JSAPI, payRequest.getAppId(),
+                        payClientConfig.getClientConfigs().get(1).getMchId(),
+                        this.getWeixinClient(payClientConfig.getClientConfigs().get(1).getAppId()).getConfig().getPrivateKey());
+        if (!StringUtil.isEmpty(transactionsResult.getPrepayId())) {
+            ORDER_PAY_CACHE.set(String.join(StringPool.UNDERSCORE, payRequest.getAppId(), payRequest.getOrderId()), "success");
+            log.info("调用成功");
+        } else {
+            //todo 失败逻辑
+            PayTransaction updatePayTransaction = PayTransaction.builder()
+                    .id(payTransaction.getId())
+                    .status(2) //下单失败
+                    .build();
+            payTransactionService.updateById(updatePayTransaction);
+            throw new RuntimeException("调用失败");
+        }
+        return jsapiResult;
+    }
+
     /**
      * 单笔支付无分账
      *

@@ -172,54 +172,58 @@ public class WeixinPayNotifyController {
                         notifyResult.setResult(transactionsResult);
 
                         PayTransaction payTransaction = payTransactionService.getByTransactionNo(transactionsResult.getOutTradeNo());
-                        ThreadUtil.execAsync(()->{
-                            ThreadUtil.sleep(70, TimeUnit.SECONDS);
-                            weixinRoyaltyRelationHandler.claimProfit(payTransaction.getOrderId(),transactionsResult.getAmount().getTotal(),
-                                    transactionsResult.getTransactionId(),payTransaction.getTransactionNo(),payTransaction.getAppId());
-                        });
-                        payTransactionService.updateStatusByOrderId(transactionsResult.getTransactionId(),transactionsResult.getTradeState(),
-                                transactionsResult.getOutTradeNo(),OrderPayTypeEnum.pay_finish.getCode(),transactionsResult.getAmount().getTotal());
-                        try {
-                            OrderUpdatePaymentStatusBo instanceBo = new OrderUpdatePaymentStatusBo();
-                            instanceBo.setTradeStatus(3);
-                            instanceBo.setPayChannel(1);
-                            instanceBo.setTradeType(1);
-                            instanceBo.setOrderId(payTransaction.getOrderId());
-                            orderInstanceBizApiService.updateOrderInstance(instanceBo);
-                        } catch (Exception e) {
-                            System.out.println("invoke updateOrderInstance error:"+e);
-                            log.error("invoke updateOrderInstance error :",e);
-                        }
+                        if(Integer.valueOf(2).equals(payTransaction.getTransactionType())){ //储存卡支付回调
 
-                        //注销优惠卷
-                        OrderInstanceBo orderInstanceBo = orderInstanceBizApiService.getOne(payTransaction.getOrderId(),true);
-                        String coupon_id = orderInstanceBo.getCouponId();
-                        StoreCouponForm storeCouponForm = storeCouponapi.getFormByCouponId(coupon_id);
-                        storeCouponForm.setStatus("0");
-                        storeCouponapi.updateCouponForm(storeCouponForm);
-                        //30分钟 发订阅消息
-                        scheduledExecutor.schedule(()->{
-                            log.info("scheduledExecutor payTransaction.getOrderId():{}",payTransaction.getOrderId());
-                            MsgEventRequest msgEventRequest= new MsgEventRequest();
-                            msgEventRequest.setAppId(orderInstanceBo.getAppId());
-                            msgEventRequest.setStoreId(orderInstanceBo.getStoreId());
-                            msgEventRequest.setSendTime(DateUtil.now());
-                            msgEventRequest.setSendType(SendType.actual_time);
-                            msgEventRequest.setChannelType(ChannelType.MA_SUBSCRIBE);
-                            msgEventRequest.setMsgType(MsgType.M8);
-                            AccountVo accountVo = acountUserApi.getInfoByAccountId(orderInstanceBo.getAccountId());
-                            MessageParam param = new MessageParam();
-                            param.setAccountId(accountVo.getAccountId());
+                        }else{
+                            ThreadUtil.execAsync(()->{
+                                ThreadUtil.sleep(70, TimeUnit.SECONDS);
+                                weixinRoyaltyRelationHandler.claimProfit(payTransaction.getOrderId(),transactionsResult.getAmount().getTotal(),
+                                        transactionsResult.getTransactionId(),payTransaction.getTransactionNo(),payTransaction.getAppId());
+                            });
+                            payTransactionService.updateStatusByOrderId(transactionsResult.getTransactionId(),transactionsResult.getTradeState(),
+                                    transactionsResult.getOutTradeNo(),OrderPayTypeEnum.pay_finish.getCode(),transactionsResult.getAmount().getTotal());
+                            try {
+                                OrderUpdatePaymentStatusBo instanceBo = new OrderUpdatePaymentStatusBo();
+                                instanceBo.setTradeStatus(3);
+                                instanceBo.setPayChannel(1);
+                                instanceBo.setTradeType(1);
+                                instanceBo.setOrderId(payTransaction.getOrderId());
+                                orderInstanceBizApiService.updateOrderInstance(instanceBo);
+                            } catch (Exception e) {
+                                System.out.println("invoke updateOrderInstance error:"+e);
+                                log.error("invoke updateOrderInstance error :",e);
+                            }
+
+                            //注销优惠卷
+                            OrderInstanceBo orderInstanceBo = orderInstanceBizApiService.getOne(payTransaction.getOrderId(),true);
+                            String coupon_id = orderInstanceBo.getCouponId();
+                            StoreCouponForm storeCouponForm = storeCouponapi.getFormByCouponId(coupon_id);
+                            storeCouponForm.setStatus("0");
+                            storeCouponapi.updateCouponForm(storeCouponForm);
+                            //30分钟 发订阅消息
+                            scheduledExecutor.schedule(()->{
+                                log.info("scheduledExecutor payTransaction.getOrderId():{}",payTransaction.getOrderId());
+                                MsgEventRequest msgEventRequest= new MsgEventRequest();
+                                msgEventRequest.setAppId(orderInstanceBo.getAppId());
+                                msgEventRequest.setStoreId(orderInstanceBo.getStoreId());
+                                msgEventRequest.setSendTime(DateUtil.now());
+                                msgEventRequest.setSendType(SendType.actual_time);
+                                msgEventRequest.setChannelType(ChannelType.MA_SUBSCRIBE);
+                                msgEventRequest.setMsgType(MsgType.M8);
+                                AccountVo accountVo = acountUserApi.getInfoByAccountId(orderInstanceBo.getAccountId());
+                                MessageParam param = new MessageParam();
+                                param.setAccountId(accountVo.getAccountId());
 //                            MaM3ContentModel model = new MaM3ContentModel();
 //                            model.setThing4(couponEntity.getMarketName());
 //                            model.setThing1(m3Notes);
 //                            model.setThing6(m3Prompt);
 //                            param.setContentModel(model);
-                            param.setReceiver(accountVo.getOpenid());
-                            msgEventRequest.setMessageParams(CollUtil.newArrayList(param));
-                            msgApi.sendMsgWithPublish(msgEventRequest);
-                            log.info("msgApi.sendMsgWithPublish:{}",msgEventRequest);
-                        },30,TimeUnit.MINUTES);
+                                param.setReceiver(accountVo.getOpenid());
+                                msgEventRequest.setMessageParams(CollUtil.newArrayList(param));
+                                msgApi.sendMsgWithPublish(msgEventRequest);
+                                log.info("msgApi.sendMsgWithPublish:{}",msgEventRequest);
+                            },30,TimeUnit.MINUTES);
+                        }
                     } catch (Exception e) {
                         log.info("更新状态失败：",e);
                     }

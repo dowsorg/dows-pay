@@ -61,7 +61,7 @@ public class PayTransactionForm implements Serializable, BizForm {
     private String dealTo;
 
     @ApiModelProperty("交易金额")
-    private Object amount;
+    private BigDecimal amount;
 
     @ApiModelProperty("备注")
     private String remark;
@@ -103,6 +103,9 @@ public class PayTransactionForm implements Serializable, BizForm {
 
     @ApiModelProperty(value = "劵信息")
     private List<StoreCouponInfo> couponInfoList;
+
+    @ApiModelProperty(value = "商品类型 1:商品 2:储存卡")
+    private Integer transactionType;
 
     @Data
     public static class StoreCouponInfo {

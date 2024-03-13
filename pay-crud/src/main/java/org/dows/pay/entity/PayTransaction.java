@@ -85,6 +85,9 @@ public class PayTransaction implements CrudEntity {
     @ApiModelProperty("交易时间")
     private Date transactionTime;
 
+    @ApiModelProperty(value = "商品类型 1:商品 2:储存卡")
+    private Integer transactionType;
+
     @ApiModelProperty("时间戳")
     private Date dt;
 
