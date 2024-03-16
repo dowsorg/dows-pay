@@ -52,6 +52,7 @@ import org.dows.order.bo.OrderUpdatePaymentStatusBo;
 import org.dows.order.enums.OrderPayTypeEnum;
 import org.dows.pay.api.request.ProfitReceiverAddReq;
 import org.dows.pay.api.util.HttpRequestUtils;
+import org.dows.pay.boot.PayClientConfig;
 import org.dows.pay.boot.PayClientFactory;
 import org.dows.pay.entity.PayTransaction;
 import org.dows.pay.service.PayTransactionService;
@@ -63,6 +64,7 @@ import org.dows.user.api.api.UserCompanyApi;
 import org.dows.user.api.dto.UserCompanyDTO;
 import org.dows.user.api.vo.UserCompanyVo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -123,6 +125,9 @@ public class WeixinPayNotifyController {
 
     private final WeixinRoyaltyRelationHandler weixinRoyaltyRelationHandler;
 
+    @Lazy
+    private final PayClientConfig payClientConfig;
+
 
     static {
         BUILDER_LOCAL = ThreadLocal.withInitial(() -> {
@@ -159,7 +164,7 @@ public class WeixinPayNotifyController {
             String cipherText = resource.getCiphertext();
             String associatedData = resource.getAssociatedData();
             String nonce = resource.getNonce();
-            String apiV3Key = this.payClientFactory.getWeixinClient("wxdb8634feb22a5ab9").getConfig().getApiV3Key();
+            String apiV3Key = this.payClientFactory.getWeixinClient(payClientConfig.getClientConfigs().get(1).getAppId()).getConfig().getApiV3Key();
 
             try {
                 String result = AesUtils.decryptToString(associatedData, nonce, cipherText, apiV3Key);

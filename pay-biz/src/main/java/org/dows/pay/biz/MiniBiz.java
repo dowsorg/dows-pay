@@ -31,6 +31,7 @@ import org.dows.auth.biz.context.SecurityUtils;
 import org.dows.framework.api.Response;
 import org.dows.pay.bo.AlipayBaseInfoBo;
 import org.dows.pay.bo.AlipayOpenMiniVersionAuditBo;
+import org.dows.pay.boot.PayClientConfig;
 import org.dows.pay.enums.WxSetNickNameExceptionEnum;
 import org.dows.pay.api.PayResponse;
 import org.dows.pay.api.enums.PayMethods;
@@ -41,6 +42,7 @@ import org.dows.pay.enums.WxSetSignatureExceptionEnum;
 import org.dows.pay.form.*;
 import org.dows.pay.gateway.PayDispatcher;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -66,9 +68,11 @@ public class MiniBiz {
 
     private static final String domain_request = "{\"action\":\"set\",\"requestdomain\":[\"https://www.dxzsaas.com\"],\"wsrequestdomain\":[\"wss://www.dxzsaas.com\"],\"uploaddomain\":[\"https://www.dxzsaas.com\"],\"downloaddomain\":[\"https://www.dxzsaas.com\"],\"udpdomain\":[\"udp://www.dxzsaas.com\"],\"tcpdomain\":[\"tcp://www.dxzsaas.com\"]}";
 
-
     @Autowired
     private AppBaseService appBaseService;
+
+    @Lazy
+    private final PayClientConfig payClientConfig;
 
     /**
      * MiniCategory 创建类目
@@ -349,7 +353,7 @@ public class MiniBiz {
      */
     public Response setWxinApplyInfo(SetWxBaseInfoForm setWxBaseInfoForm) {
         log.info("setWxinApplyInfo req is {}",JSON.toJSONString(setWxBaseInfoForm));
-        setWxBaseInfoForm.setAppId("wxdb8634feb22a5ab9");
+        setWxBaseInfoForm.setAppId(payClientConfig.getClientConfigs().get(1).getAppId());
         String merchantNo = SecurityUtils.getMerchantNo();
         if (StringUtils.isBlank(merchantNo)) {
             merchantNo = "xhr0002";

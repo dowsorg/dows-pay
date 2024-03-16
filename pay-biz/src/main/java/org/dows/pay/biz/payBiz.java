@@ -131,7 +131,7 @@ public class payBiz implements PayApi {
             log.info("生成payRequest.setBizModel参数{}", isvCreateTyBo);
             payRequest.setBizModel(isvCreateTyBo);
             payRequest.setChannel("weixin");
-            payRequest.setAppId("wxdb8634feb22a5ab9");
+            payRequest.setAppId(payClientConfig.getClientConfigs().get(1).getAppId());
             try {
                 WxOpenResult wxOpenResult = weixinIsvHandler.fastRegisterApp(payRequest);
                 log.info("生成WxOpenResult参数{}", wxOpenResult);
@@ -171,7 +171,7 @@ public class payBiz implements PayApi {
             log.info("全部申请微信生成payRequest.setBizModel参数{}", isvCreateTyBo);
             payRequest.setBizModel(isvCreateTyBo);
             payRequest.setChannel("weixin");
-            payRequest.setAppId("wxdb8634feb22a5ab9");
+            payRequest.setAppId(payClientConfig.getClientConfigs().get(1).getAppId());
             try {
                 WxOpenResult wxOpenResult = weixinIsvHandler.fastRegisterApp(payRequest);
                 log.info("全部申请微信生成WxOpenResult参数{}", wxOpenResult);
@@ -223,7 +223,7 @@ public class payBiz implements PayApi {
             log.info("生成payRequest.setBizModel参数{}", isvCreateTyBo);
             payRequest.setBizModel(isvCreateTyBo);
             payRequest.setChannel("weixin");
-            payRequest.setAppId("wxdb8634feb22a5ab9");
+            payRequest.setAppId(payClientConfig.getClientConfigs().get(1).getAppId());
             try {
                 // 申请小程序
                 WxOpenResult wxOpenResult = weixinIsvHandler.fastRegisterApp(payRequest);
@@ -324,7 +324,7 @@ public class payBiz implements PayApi {
             log.info("生成payRequest.setBizModel参数{}", isvCreateTyBo);
             payRequest.setBizModel(isvCreateTyBo);
             payRequest.setChannel("weixin");
-            payRequest.setAppId("wxdb8634feb22a5ab9");
+            payRequest.setAppId(payClientConfig.getClientConfigs().get(1).getAppId());
             try {
                 // 小程序申请支付权限
                 log.info("生成WxPayApplymentCreateResult参数payRequest：{}", payRequest);
@@ -433,7 +433,7 @@ public class payBiz implements PayApi {
     public Response getNickNameStatus(PayApplyStatusReq res) {
         String authorizerAccessToken = weixinTokenApi.getAuthorizerAccessToken(res.getAppId());
         WxBaseInfoForm wxBaseInfoForm = new WxBaseInfoForm();
-        wxBaseInfoForm.setAppId("wxdb8634feb22a5ab9");
+        wxBaseInfoForm.setAppId(payClientConfig.getClientConfigs().get(1).getAppId());
         wxBaseInfoForm.setAuditId(res.getAuditId());
         wxBaseInfoForm.setAuthorizerAccessToken(authorizerAccessToken);
         Response nickNameStatus = miniBiz.getNickNameStatus(wxBaseInfoForm);
@@ -455,7 +455,7 @@ public class payBiz implements PayApi {
     public WxOpenQueryAuthResult apiQueryAuth(String authorizationCode) {
         PayRequest payRequest = new PayIsvRequest();
         payRequest.setChannel("weixin");
-        payRequest.setAppId("wxdb8634feb22a5ab9");
+        payRequest.setAppId(payClientConfig.getClientConfigs().get(1).getAppId());
         IsvCreateTyBo isvCreateTyBo = new IsvCreateTyBo();
         isvCreateTyBo.setAuthorizationCode(authorizationCode);
         payRequest.setBizModel(isvCreateTyBo);
@@ -465,7 +465,7 @@ public class payBiz implements PayApi {
 
     private MiniUploadRequest convertUploadReq(WechatMiniUploadRequest request) {
         MiniUploadRequest miniUploadRequest = new MiniUploadRequest();
-        String appId = Optional.ofNullable(payClientConfig.getClientConfigs().get(1).getAppId()).orElse("wxdb8634feb22a5ab9");
+        String appId = Optional.ofNullable(payClientConfig.getClientConfigs().get(1).getAppId()).orElse(payClientConfig.getClientConfigs().get(1).getAppId());
         miniUploadRequest.setAppId(appId);
         miniUploadRequest.setAuthorizerAppid(request.getAppId());
         miniUploadRequest.setTemplateId(request.getTemplateId());
@@ -581,7 +581,7 @@ public class payBiz implements PayApi {
     public Response queryApplymentStatus(String applymentId) {
         PayRequest payRequest = new PayIsvRequest();
         payRequest.setChannel("weixin");
-        payRequest.setAppId("wxdb8634feb22a5ab9");
+        payRequest.setAppId(payClientConfig.getClientConfigs().get(1).getAppId());
         IsvCreateBo isvCreateBo = new IsvCreateBo();
         isvCreateBo.setOutOrderNo(applymentId);
         payRequest.setBizModel(isvCreateBo);
