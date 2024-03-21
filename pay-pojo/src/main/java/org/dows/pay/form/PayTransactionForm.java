@@ -107,6 +107,9 @@ public class PayTransactionForm implements Serializable, BizForm {
     @ApiModelProperty(value = "商品类型 1:商品 2:储存卡")
     private Integer transactionType;
 
+    @ApiModelProperty("折扣8.8")
+    private BigDecimal discount;
+
     @Data
     public static class StoreCouponInfo {
 

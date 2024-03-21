@@ -19,6 +19,7 @@ import com.alipay.api.request.*;
 import com.alipay.api.response.*;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
+import com.github.binarywang.wxpay.bean.result.WxPayMicropayResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dows.account.api.AccountInstanceApi;
@@ -181,14 +182,21 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
         request.setNotifyUrl(ALI_PAY_NOTIFY_URL);
 
          //计算优惠金额
-        if(null!=aliPayRequest.getCouponInfoList()&& CollUtil.isNotEmpty(aliPayRequest.getCouponInfoList())) {
+        if(!CollUtil.isEmpty(aliPayRequest.getCouponInfoList()) || aliPayRequest.getDiscount() != null) {
             OrderCashPayForm orderCashPayForm = new OrderCashPayForm();
             orderCashPayForm.setOrderId(aliPayRequest.getOrderId());
             List<OrderCashPayForm.StoreCouponInfo> couponInfoList = BeanUtil.copyToList(aliPayRequest.getCouponInfoList(), OrderCashPayForm.StoreCouponInfo.class);
             orderCashPayForm.setCouponInfoList(couponInfoList);
+            orderCashPayForm.setDiscount(aliPayRequest.getDiscount());
             OrderPayCodeVo orderPayCodeVo = orderInstanceBizApiService.paymentCode(orderCashPayForm);
             log.info("AliPayHandler.micropay calc result:{}"+JSON.toJSONString(orderPayCodeVo));
             bizContent.put("total_amount", orderPayCodeVo.getAmount());
+            if(Integer.valueOf(1).equals(orderPayCodeVo.getStatus())){
+                AlipayTradePayResponse alipayTradePayResponse = new AlipayTradePayResponse();
+                alipayTradePayResponse.setCode("10000");
+                alipayTradePayResponse.setMsg("Success");
+                return alipayTradePayResponse;
+            }
         }else{
             bizContent.put("total_amount", orderInstanceBo.getAgreeAmout());
         }

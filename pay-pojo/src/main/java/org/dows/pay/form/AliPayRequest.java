@@ -34,6 +34,9 @@ public class AliPayRequest implements Serializable {
     @ApiModelProperty(value = "劵信息")
     private List<PayTransactionForm.StoreCouponInfo> couponInfoList;
 
+    @ApiModelProperty("折扣8.8")
+    private BigDecimal discount;
+
     @Data
     public static class StoreCouponInfo {
 

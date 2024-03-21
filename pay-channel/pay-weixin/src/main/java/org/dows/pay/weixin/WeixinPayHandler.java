@@ -288,13 +288,21 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
             log.info("WeixinPayHandler.micropay.payTransaction的参数:{}", payTransaction);
         }
 
-        if(null!=payRequest.getCouponInfoList()&& CollUtil.isNotEmpty(payRequest.getCouponInfoList())) {
+        if(!CollUtil.isEmpty(payRequest.getCouponInfoList()) || payRequest.getDiscount() != null) {
             OrderCashPayForm orderCashPayForm = new OrderCashPayForm();
             orderCashPayForm.setOrderId(payRequest.getOrderId());
             List<OrderCashPayForm.StoreCouponInfo> couponInfoList = BeanUtil.copyToList(payRequest.getCouponInfoList(), OrderCashPayForm.StoreCouponInfo.class);
             orderCashPayForm.setCouponInfoList(couponInfoList);
+            orderCashPayForm.setDiscount(payRequest.getDiscount());
             OrderPayCodeVo orderPayCodeVo = orderInstanceBizApiService.paymentCode(orderCashPayForm);
             log.info("WeixinPayHandler.micropay calc result:{}"+GSON.toJson(orderPayCodeVo));
+            if(Integer.valueOf(1).equals(orderPayCodeVo.getStatus())){
+                WxPayMicropayResult wxPayMicropayResult = new WxPayMicropayResult();
+                wxPayMicropayResult.setResultCode("SUCCESS");
+                wxPayMicropayResult.setReturnCode("SUCCESS");
+                wxPayMicropayResult.setReturnMsg("ok");
+                return wxPayMicropayResult;
+            }
         }
         //组装订单逻辑
         OrderInstanceBo orderInstanceBo = orderInstanceBizApiService.getOne(payRequest.getOrderId(),true);
