@@ -190,16 +190,16 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
             orderCashPayForm.setDiscount(aliPayRequest.getDiscount());
             OrderPayCodeVo orderPayCodeVo = orderInstanceBizApiService.paymentCode(orderCashPayForm);
             log.info("AliPayHandler.micropay calc result:{}"+JSON.toJSONString(orderPayCodeVo));
-            bizContent.put("total_amount", orderPayCodeVo.getAmount());
             if(Integer.valueOf(1).equals(orderPayCodeVo.getStatus())){
                 AlipayTradePayResponse alipayTradePayResponse = new AlipayTradePayResponse();
                 alipayTradePayResponse.setCode("10000");
                 alipayTradePayResponse.setMsg("Success");
                 return alipayTradePayResponse;
             }
-        }else{
-            bizContent.put("total_amount", orderInstanceBo.getAgreeAmout());
         }
+        //组装订单逻辑
+        OrderInstanceBo orderInstance = orderInstanceBizApiService.getOne(orderInstanceBo.getOrderId(),true);
+        bizContent.put("total_amount", orderInstance.getAgreeAmout());
         log.info("付款码支付传入支付宝参数:{}",bizContent.toJSONString());
         request.setBizContent(bizContent.toString());
         AlipayTradePayResponse response;
@@ -215,6 +215,8 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
             PayTransaction updatePayTransaction = PayTransaction.builder()
                     .id(payTransaction.getId())
                     .dealTo(response.getTradeNo())
+                    .status(1)
+                    .amount(orderInstance.getAgreeAmout())
                     .build();
             payTransactionService.updateById(updatePayTransaction);
             //更新支付人
@@ -261,7 +263,7 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
                     PayTransaction updatePayTransaction = PayTransaction.builder()
                             .id(payTransaction.getId())
                             .amount(new BigDecimal(alipayTradeQueryResponse.getPayAmount()))
-                            .status(2)
+                            .status(1)
                             .dealTo(alipayTradeQueryResponse.getTradeNo())
                             .build();
                     payTransactionService.updateById(updatePayTransaction);
