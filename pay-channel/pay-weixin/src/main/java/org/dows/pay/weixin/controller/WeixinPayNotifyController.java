@@ -177,16 +177,11 @@ public class WeixinPayNotifyController {
                         notifyResult.setResult(transactionsResult);
 
                         PayTransaction payTransaction = payTransactionService.getByTransactionNo(transactionsResult.getOutTradeNo());
+                        payTransactionService.updateStatusByOrderId(transactionsResult.getTransactionId(),transactionsResult.getTradeState(),
+                                transactionsResult.getOutTradeNo(),OrderPayTypeEnum.pay_finish.getCode(),transactionsResult.getAmount().getTotal());
                         if(Integer.valueOf(2).equals(payTransaction.getTransactionType())){ //储存卡支付回调
 
                         }else{
-                            ThreadUtil.execAsync(()->{
-                                ThreadUtil.sleep(70, TimeUnit.SECONDS);
-                                weixinRoyaltyRelationHandler.claimProfit(payTransaction.getOrderId(),transactionsResult.getAmount().getTotal(),
-                                        transactionsResult.getTransactionId(),payTransaction.getTransactionNo(),payTransaction.getAppId());
-                            });
-                            payTransactionService.updateStatusByOrderId(transactionsResult.getTransactionId(),transactionsResult.getTradeState(),
-                                    transactionsResult.getOutTradeNo(),OrderPayTypeEnum.pay_finish.getCode(),transactionsResult.getAmount().getTotal());
                             try {
                                 OrderUpdatePaymentStatusBo instanceBo = new OrderUpdatePaymentStatusBo();
                                 instanceBo.setTradeStatus(3);
@@ -229,6 +224,11 @@ public class WeixinPayNotifyController {
                                 log.info("msgApi.sendMsgWithPublish:{}",msgEventRequest);
                             },30,TimeUnit.MINUTES);
                         }
+                        ThreadUtil.execAsync(()->{
+                            ThreadUtil.sleep(70, TimeUnit.SECONDS);
+                            weixinRoyaltyRelationHandler.claimProfit(payTransaction.getOrderId(),transactionsResult.getAmount().getTotal(),
+                                    transactionsResult.getTransactionId(),payTransaction.getTransactionNo(),payTransaction.getAppId());
+                        });
                     } catch (Exception e) {
                         log.info("更新状态失败：",e);
                     }
