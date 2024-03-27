@@ -56,6 +56,7 @@ import org.dows.pay.boot.PayClientConfig;
 import org.dows.pay.boot.PayClientFactory;
 import org.dows.pay.entity.PayTransaction;
 import org.dows.pay.service.PayTransactionService;
+import org.dows.pay.weixin.MarketCardService;
 import org.dows.pay.weixin.WeixinRoyaltyRelationHandler;
 import org.dows.store.api.StoreCouponApi;
 import org.dows.store.api.StoreInstanceApi;
@@ -82,11 +83,10 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * @author tqhuang
  * @ClassName: WeixinPayNotifyController
  * @Description: 微信支付回调
- *
  * @Date 2022年11月10日
- * @author tqhuang
  */
 @RestController
 @RequestMapping("/nztest")
@@ -95,6 +95,10 @@ import java.util.concurrent.TimeUnit;
 public class WeixinPayNotifyController {
     @Autowired
     private PayClientFactory payClientFactory;
+
+    @Autowired
+    private MarketCardService marketCardService;
+
 
     @Autowired
     private MsgApi msgApi;
@@ -171,17 +175,17 @@ public class WeixinPayNotifyController {
                 PartnerTransactionsResult transactionsResult = (PartnerTransactionsResult) GSON.fromJson(result, PartnerTransactionsResult.class);
                 log.info("wx pay notify result is {}", JSON.toJSONString(result));
                 PartnerTransactionsNotifyResult notifyResult = new PartnerTransactionsNotifyResult();
-                if (Objects.equals(transactionsResult.getTradeState(),"SUCCESS")) {
+                if (Objects.equals(transactionsResult.getTradeState(), "SUCCESS")) {
                     try {
                         notifyResult.setRawData(notifyResponse);
                         notifyResult.setResult(transactionsResult);
 
                         PayTransaction payTransaction = payTransactionService.getByTransactionNo(transactionsResult.getOutTradeNo());
-                        payTransactionService.updateStatusByOrderId(transactionsResult.getTransactionId(),transactionsResult.getTradeState(),
-                                transactionsResult.getOutTradeNo(),OrderPayTypeEnum.pay_finish.getCode(),transactionsResult.getAmount().getTotal());
-                        if(Integer.valueOf(2).equals(payTransaction.getTransactionType())){ //储存卡支付回调
-
-                        }else{
+                        payTransactionService.updateStatusByOrderId(transactionsResult.getTransactionId(), transactionsResult.getTradeState(),
+                                transactionsResult.getOutTradeNo(), OrderPayTypeEnum.pay_finish.getCode(), transactionsResult.getAmount().getTotal());
+                        if (Integer.valueOf(2).equals(payTransaction.getTransactionType())) { //储存卡支付回调
+                            marketCardService.callBack(transactionsResult.getOutTradeNo());
+                        } else {
                             try {
                                 OrderUpdatePaymentStatusBo instanceBo = new OrderUpdatePaymentStatusBo();
                                 instanceBo.setTradeStatus(3);
@@ -190,20 +194,20 @@ public class WeixinPayNotifyController {
                                 instanceBo.setOrderId(payTransaction.getOrderId());
                                 orderInstanceBizApiService.updateOrderInstance(instanceBo);
                             } catch (Exception e) {
-                                System.out.println("invoke updateOrderInstance error:"+e);
-                                log.error("invoke updateOrderInstance error :",e);
+                                System.out.println("invoke updateOrderInstance error:" + e);
+                                log.error("invoke updateOrderInstance error :", e);
                             }
 
                             //注销优惠卷
-                            OrderInstanceBo orderInstanceBo = orderInstanceBizApiService.getOne(payTransaction.getOrderId(),true);
+                            OrderInstanceBo orderInstanceBo = orderInstanceBizApiService.getOne(payTransaction.getOrderId(), true);
                             String coupon_id = orderInstanceBo.getCouponId();
                             StoreCouponForm storeCouponForm = storeCouponapi.getFormByCouponId(coupon_id);
                             storeCouponForm.setStatus("0");
                             storeCouponapi.updateCouponForm(storeCouponForm);
                             //30分钟 发订阅消息
-                            scheduledExecutor.schedule(()->{
-                                log.info("scheduledExecutor payTransaction.getOrderId():{}",payTransaction.getOrderId());
-                                MsgEventRequest msgEventRequest= new MsgEventRequest();
+                            scheduledExecutor.schedule(() -> {
+                                log.info("scheduledExecutor payTransaction.getOrderId():{}", payTransaction.getOrderId());
+                                MsgEventRequest msgEventRequest = new MsgEventRequest();
                                 msgEventRequest.setAppId(orderInstanceBo.getAppId());
                                 msgEventRequest.setStoreId(orderInstanceBo.getStoreId());
                                 msgEventRequest.setSendTime(DateUtil.now());
@@ -221,16 +225,16 @@ public class WeixinPayNotifyController {
                                 param.setReceiver(accountVo.getOpenid());
                                 msgEventRequest.setMessageParams(CollUtil.newArrayList(param));
                                 msgApi.sendMsgWithPublish(msgEventRequest);
-                                log.info("msgApi.sendMsgWithPublish:{}",msgEventRequest);
-                            },30,TimeUnit.MINUTES);
+                                log.info("msgApi.sendMsgWithPublish:{}", msgEventRequest);
+                            }, 30, TimeUnit.MINUTES);
                         }
-                        ThreadUtil.execAsync(()->{
+                        ThreadUtil.execAsync(() -> {
                             ThreadUtil.sleep(70, TimeUnit.SECONDS);
-                            weixinRoyaltyRelationHandler.claimProfit(payTransaction.getOrderId(),transactionsResult.getAmount().getTotal(),
-                                    transactionsResult.getTransactionId(),payTransaction.getTransactionNo(),payTransaction.getAppId());
+                            weixinRoyaltyRelationHandler.claimProfit(payTransaction.getOrderId(), transactionsResult.getAmount().getTotal(),
+                                    transactionsResult.getTransactionId(), payTransaction.getTransactionNo(), payTransaction.getAppId());
                         });
                     } catch (Exception e) {
-                        log.info("更新状态失败：",e);
+                        log.info("更新状态失败：", e);
                     }
                 }
                 return notifyResult;

@@ -53,9 +53,11 @@
             <artifactId>pay-crud</artifactId>
             <version>20220701-SNAPSHOT</version>
         </dependency>
-
-
-
+        <dependency>
+            <groupId>org.dows.saas</groupId>
+            <artifactId>marketing-biz</artifactId>
+            <version>20220701-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
 </project>
