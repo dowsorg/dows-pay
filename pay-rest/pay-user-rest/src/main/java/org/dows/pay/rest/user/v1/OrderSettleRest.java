@@ -48,13 +48,13 @@ public class OrderSettleRest {
      */
     @ApiOperation("储值卡充值")
     @PostMapping("card/charge")
-    public Response charge(@RequestBody MarketChargeCardRecordReq cardRecordReq,PayTransactionForm payTransactionForm) {
+    public Response charge(@RequestBody MarketChargeCardRecordReq cardRecordReq) {
 
         MarketChargeCardRecord marketChargeCardRecord = new MarketChargeCardRecord();
         BeanUtil.copyProperties(cardRecordReq,marketChargeCardRecord);
         //todo String accountId = "1610967398052057089";
         String accountId = SecurityUtils.getAccountId();
-        return Response.ok(marketCardService.charge(payTransactionForm,cardRecordReq.getRuleId(),Long.valueOf(accountId),marketChargeCardRecord));
+        return Response.ok(marketCardService.charge(cardRecordReq.getPayTransactionForm(),cardRecordReq.getRuleId(),Long.valueOf(accountId),marketChargeCardRecord));
     }
 
 }
