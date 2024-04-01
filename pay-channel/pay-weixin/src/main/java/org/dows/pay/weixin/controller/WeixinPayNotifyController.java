@@ -45,6 +45,7 @@ import org.dows.amp.model.ma.MessageParam;
 import org.dows.amp.request.MsgEventRequest;
 import org.dows.app.api.mini.AppLicenseApi;
 import org.dows.app.api.mini.request.AppLicenseRequest;
+import org.dows.auth.biz.redis.RedisServiceBiz;
 import org.dows.framework.api.Response;
 import org.dows.order.api.OrderInstanceBizApiService;
 import org.dows.order.bo.OrderInstanceBo;
@@ -132,6 +133,9 @@ public class WeixinPayNotifyController {
     @Lazy
     private final PayClientConfig payClientConfig;
 
+    @Autowired
+    private RedisServiceBiz redisService;
+
 
     static {
         BUILDER_LOCAL = ThreadLocal.withInitial(() -> {
@@ -192,6 +196,8 @@ public class WeixinPayNotifyController {
                                 instanceBo.setPayChannel(1);
                                 instanceBo.setTradeType(1);
                                 instanceBo.setOrderId(payTransaction.getOrderId());
+                                String tableId = redisService.getCacheObject("emptyTableIdOrderId:" + payTransaction.getOrderId());
+                                instanceBo.setTableId(tableId);
                                 orderInstanceBizApiService.updateOrderInstance(instanceBo);
                             } catch (Exception e) {
                                 System.out.println("invoke updateOrderInstance error:" + e);
