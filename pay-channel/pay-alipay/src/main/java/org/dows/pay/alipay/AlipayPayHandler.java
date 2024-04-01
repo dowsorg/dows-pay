@@ -29,6 +29,7 @@ import org.dows.app.api.mini.request.MerchantAppIdReq;
 import org.dows.app.api.mini.response.MerchantAppIdRes;
 import org.dows.auth.api.TempRedisApi;
 import org.dows.auth.biz.context.SecurityUtils;
+import org.dows.auth.biz.redis.RedisServiceBiz;
 import org.dows.auth.entity.TempRedis;
 import org.dows.framework.api.Response;
 import org.dows.framework.api.exceptions.BizException;
@@ -92,6 +93,8 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
     private final PayApplyService payApplyService;
 
     private final AppBaseApi baseApi;
+    @Autowired
+    private RedisServiceBiz redisService;
 
     private static final SystemTimer SYSTEMTIMER = new SystemTimer().start();
 
@@ -223,6 +226,8 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
             OrderAccountBo orderAccountBo = new OrderAccountBo();
             orderAccountBo.setOrderId(orderInstanceBo.getOrderId());
             orderAccountBo.setPayAccountId(SecurityUtils.getAccountId());
+            String tableId = redisService.getCacheObject("emptyTableIdOrderId:" + payTransaction.getOrderId());
+            orderAccountBo.setTableId(tableId);
             orderInstanceBizApiService.updateOrderAccountId(orderAccountBo);
         }else if("10003".equals(response.getCode())){
             //等待付款查询支付状态
@@ -271,6 +276,8 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
                     OrderAccountBo orderAccountBo = new OrderAccountBo();
                     orderAccountBo.setOrderId(updatePayTransaction.getOrderId());
                     orderAccountBo.setPayAccountId(accountId);
+                    String tableId = redisService.getCacheObject("emptyTableIdOrderId:" + payTransaction.getOrderId());
+                    orderAccountBo.setTableId(tableId);
                     orderInstanceBizApiService.updateOrderAccountId(orderAccountBo);
                     //更新订单状态
                     updateOrderStatusForSucc(payTransaction);

@@ -31,6 +31,7 @@ import org.apache.http.util.EntityUtils;
 import org.dows.auth.biz.cache.CacheFactory;
 import org.dows.auth.biz.cache.LocalCache;
 import org.dows.auth.biz.context.SecurityUtils;
+import org.dows.auth.biz.redis.RedisServiceBiz;
 import org.dows.framework.api.exceptions.BizException;
 import org.dows.order.api.OrderInstanceBizApiService;
 import org.dows.order.bo.OrderAccountBo;
@@ -60,6 +61,7 @@ import org.dows.pay.service.PayTransactionService;
 import org.dows.store.api.StoreCouponApi;
 import org.dows.store.api.StoreInstanceApi;
 import org.dows.store.form.StoreCouponForm;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 import org.springframework.util.IdGenerator;
@@ -106,6 +108,8 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
     private static final SystemTimer SYSTEMTIMER = new SystemTimer().start();
 
     private final PayLedgersService payLedgersService;
+    @Autowired
+    private RedisServiceBiz redisService;
 
 
     private static LocalCache<String, String> ORDER_PAY_CACHE = CacheFactory.build(5L, TimeUnit.SECONDS);
@@ -398,6 +402,8 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
             OrderAccountBo accountBo = new OrderAccountBo();
             accountBo.setOrderId(payTransaction.getOrderId());
             accountBo.setPayAccountId(accountId);
+            String tableId = redisService.getCacheObject("emptyTableIdOrderId:" + payTransaction.getOrderId());
+            instanceBo.setTableId(tableId);
             orderInstanceBizApiService.updateOrderAccountId(accountBo);
         } catch (Exception e) {
             System.out.println("invoke updateOrderInstance error:"+e);

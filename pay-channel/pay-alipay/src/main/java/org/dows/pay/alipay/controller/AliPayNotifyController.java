@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.dows.auth.biz.redis.RedisServiceBiz;
 import org.dows.framework.api.Response;
 import org.dows.order.api.OrderInstanceBizApiService;
 import org.dows.order.bo.OrderUpdatePaymentStatusBo;
@@ -14,6 +15,7 @@ import org.dows.pay.api.response.PayQueryRes;
 import org.dows.pay.api.util.HttpRequestUtils;
 import org.dows.pay.entity.PayTransaction;
 import org.dows.pay.service.PayTransactionService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,6 +42,9 @@ public class AliPayNotifyController {
     private final OrderInstanceBizApiService orderInstanceBizApiService;
 
     private final AlipayAuthHandler alipayAuthHandler;
+
+    @Autowired
+    private RedisServiceBiz redisService;
 
 
     /**
@@ -106,6 +111,8 @@ public class AliPayNotifyController {
         instanceBo.setTradeType(1);
         instanceBo.setOrderId(payTransaction.getOrderId());
         log.info("aliPay notify order req is {}",JSON.toJSONString(instanceBo));
+        String tableId = redisService.getCacheObject("emptyTableIdOrderId:" + payTransaction.getOrderId());
+        instanceBo.setTableId(tableId);
         orderInstanceBizApiService.updateOrderInstance(instanceBo);
         return new ResponseEntity<>("success", HttpStatus.OK);
     }
