@@ -403,7 +403,7 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
             accountBo.setOrderId(payTransaction.getOrderId());
             accountBo.setPayAccountId(accountId);
             String tableId = redisService.getCacheObject("emptyTableIdOrderId:" + payTransaction.getOrderId());
-            instanceBo.setTableId(tableId);
+            accountBo.setTableId(tableId);
             orderInstanceBizApiService.updateOrderAccountId(accountBo);
         } catch (Exception e) {
             System.out.println("invoke updateOrderInstance error:"+e);
@@ -595,6 +595,8 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
             OrderAccountBo orderAccountBo = new OrderAccountBo();
             orderAccountBo.setOrderId(orderInstanceBo.getOrderId());
             orderAccountBo.setPayAccountId(SecurityUtils.getAccountId());
+            String tableId = redisService.getCacheObject("emptyTableIdOrderId:" + orderInstanceBo.getOrderId());
+            orderAccountBo.setTableId(tableId);
             orderInstanceBizApiService.updateOrderAccountId(orderAccountBo);
             log.info("调用成功");
         } else {
