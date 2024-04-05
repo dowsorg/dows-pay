@@ -11,9 +11,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollStreamUtil;
 import cn.hutool.core.collection.CollUtil;
 import org.dows.app.entity.AppApply;
 import org.dows.app.service.AppApplyService;
@@ -37,6 +40,7 @@ import org.dows.pay.api.request.ScanPayReq;
 import org.dows.pay.api.request.WechatMiniUploadRequest;
 import org.dows.pay.api.request.uboInfoListRequest;
 import org.dows.pay.api.response.PayQueryRes;
+import org.dows.pay.api.response.PayTransactionRes;
 import org.dows.pay.bo.IsvCreateBo;
 import org.dows.pay.bo.IsvCreateTyBo;
 import org.dows.pay.boot.PayClientConfig;
@@ -449,6 +453,13 @@ public class payBiz implements PayApi {
         aliPayRequest.setAmount(req.getAmount());
         aliPayRequest.setAppId(req.getAppId());
         return  alipayPayHandler.scanPay(aliPayRequest);
+    }
+
+    @Override
+    public Map<String, PayTransactionRes> getPaymentTranAmount(List<String> orderIds) {
+        List<PayTransaction> list = payTransactionService.lambdaQuery().in(PayTransaction::getOrderId, orderIds).list();
+        Map<String, PayTransactionRes> map = CollStreamUtil.toMap(list, PayTransaction::getOrderId, e-> BeanUtil.copyProperties(e,PayTransactionRes.class));
+        return map;
     }
 
     @Override

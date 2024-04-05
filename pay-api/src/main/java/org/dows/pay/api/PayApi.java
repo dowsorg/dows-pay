@@ -11,6 +11,10 @@ import org.dows.pay.api.request.WechatMiniUploadRequest;
 import org.dows.pay.api.response.PayQueryRes;
 
 import me.chanjar.weixin.open.bean.result.WxOpenQueryAuthResult;
+import org.dows.pay.api.response.PayTransactionRes;
+
+import java.util.List;
+import java.util.Map;
 
 public interface PayApi {
 
@@ -121,5 +125,8 @@ public interface PayApi {
     WxOpenQueryAuthResult apiQueryAuth(String authorizationCode);
 
     ScanPayApplyRes scanPay(ScanPayReq req);
+
+
+    Map<String, PayTransactionRes> getPaymentTranAmount(List<String> orderIds);
 
 }
