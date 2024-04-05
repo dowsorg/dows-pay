@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.dows.pay.api.ChannelBizModel;
 
+import java.math.BigDecimal;
+
 /**
  * 支付交易Bo
  *
@@ -30,7 +32,7 @@ public class PayTransactionRes implements ChannelBizModel {
 
     private String dealTo;
 
-    private Object amount;
+    private BigDecimal amount;
 
     private String remark;
 

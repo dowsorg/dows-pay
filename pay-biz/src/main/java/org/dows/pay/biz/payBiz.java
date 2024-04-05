@@ -457,7 +457,8 @@ public class payBiz implements PayApi {
 
     @Override
     public Map<String, PayTransactionRes> getPaymentTranAmount(List<String> orderIds) {
-        List<PayTransaction> list = payTransactionService.lambdaQuery().in(PayTransaction::getOrderId, orderIds).list();
+        List<PayTransaction> list = payTransactionService.lambdaQuery()
+                .eq(PayTransaction::getStatus,1).in(PayTransaction::getOrderId, orderIds).list();
         Map<String, PayTransactionRes> map = CollStreamUtil.toMap(list, PayTransaction::getOrderId, e-> BeanUtil.copyProperties(e,PayTransactionRes.class));
         return map;
     }
