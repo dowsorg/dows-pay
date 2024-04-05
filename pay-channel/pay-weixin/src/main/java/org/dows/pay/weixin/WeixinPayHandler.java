@@ -593,10 +593,6 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
                         this.getWeixinClient(payClientConfig.getClientConfigs().get(1).getAppId()).getConfig().getPrivateKey());
         if (!StringUtil.isEmpty(transactionsResult.getPrepayId())) {
             ORDER_PAY_CACHE.set(String.join(StringPool.UNDERSCORE, payRequest.getAppId(), payRequest.getOrderId()), "success");
-            OrderAccountBo orderAccountBo = new OrderAccountBo();
-            orderAccountBo.setOrderId(orderInstanceBo.getOrderId());
-            orderAccountBo.setPayAccountId(SecurityUtils.getAccountId());
-            orderInstanceBizApiService.updateOrderAccountId(orderAccountBo);
             Map<String,Object> dataMap = Maps.newHashMap();
             dataMap.put("payAccountId",SecurityUtils.getAccountId());
             redisService.setCacheMap("prepayPayData:"+orderInstanceBo.getOrderId(),dataMap);
