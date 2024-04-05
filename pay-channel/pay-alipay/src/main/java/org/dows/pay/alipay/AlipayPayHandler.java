@@ -19,19 +19,15 @@ import com.alipay.api.request.*;
 import com.alipay.api.response.*;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
-import com.github.binarywang.wxpay.bean.result.WxPayMicropayResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dows.account.api.AccountInstanceApi;
 import org.dows.account.vo.AccountInstanceVo;
 import org.dows.app.api.mini.AppBaseApi;
-import org.dows.app.api.mini.request.MerchantAppIdReq;
-import org.dows.app.api.mini.response.MerchantAppIdRes;
 import org.dows.auth.api.TempRedisApi;
 import org.dows.auth.biz.context.SecurityUtils;
 import org.dows.auth.biz.redis.RedisServiceBiz;
 import org.dows.auth.entity.TempRedis;
-import org.dows.framework.api.Response;
 import org.dows.framework.api.exceptions.BizException;
 import org.dows.framework.oss.api.OssInfo;
 import org.dows.framework.oss.tencent.TencentOssClient;
@@ -225,13 +221,13 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
             //更新支付人
             OrderAccountBo orderAccountBo = new OrderAccountBo();
             orderAccountBo.setOrderId(orderInstanceBo.getOrderId());
-            orderAccountBo.setPayAccountId(SecurityUtils.getAccountId());
+            orderAccountBo.setPayAccountId("用户");
             String tableId = redisService.getCacheObject("emptyTableIdOrderId:" + payTransaction.getOrderId());
             orderAccountBo.setTableId(tableId);
             orderInstanceBizApiService.updateOrderAccountId(orderAccountBo);
         }else if("10003".equals(response.getCode())){
             //等待付款查询支付状态
-            delayQueryOrder(payTransaction,1,SecurityUtils.getAccountId());
+            delayQueryOrder(payTransaction,1,"用户");
         } else {
             PayTransaction updatePayTransaction = PayTransaction.builder()
                     .id(payTransaction.getId())

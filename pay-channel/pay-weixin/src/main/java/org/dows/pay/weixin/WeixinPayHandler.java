@@ -20,6 +20,7 @@ import com.github.binarywang.wxpay.bean.result.WxPayMicropayResult;
 import com.github.binarywang.wxpay.bean.result.WxPayOrderQueryResult;
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.github.binarywang.wxpay.v3.util.RsaCryptoUtil;
+import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.RequiredArgsConstructor;
@@ -401,7 +402,7 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
             orderInstanceBizApiService.updateOrderInstance(instanceBo);
             OrderAccountBo accountBo = new OrderAccountBo();
             accountBo.setOrderId(payTransaction.getOrderId());
-            accountBo.setPayAccountId(accountId);
+            accountBo.setPayAccountId("用户");
             String tableId = redisService.getCacheObject("emptyTableIdOrderId:" + payTransaction.getOrderId());
             accountBo.setTableId(tableId);
             orderInstanceBizApiService.updateOrderAccountId(accountBo);
@@ -596,6 +597,9 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
             orderAccountBo.setOrderId(orderInstanceBo.getOrderId());
             orderAccountBo.setPayAccountId(SecurityUtils.getAccountId());
             orderInstanceBizApiService.updateOrderAccountId(orderAccountBo);
+            Map<String,Object> dataMap = Maps.newHashMap();
+            dataMap.put("payAccountId",SecurityUtils.getAccountId());
+            redisService.setCacheMap("prepayPayData:"+orderInstanceBo.getOrderId(),dataMap);
             log.info("调用成功");
         } else {
             //todo 失败逻辑

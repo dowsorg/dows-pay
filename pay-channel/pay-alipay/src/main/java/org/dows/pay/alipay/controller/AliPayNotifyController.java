@@ -113,6 +113,7 @@ public class AliPayNotifyController {
         log.info("aliPay notify order req is {}",JSON.toJSONString(instanceBo));
         String tableId = redisService.getCacheObject("emptyTableIdOrderId:" + payTransaction.getOrderId());
         instanceBo.setTableId(tableId);
+        instanceBo.setPayAccountId("用户");
         orderInstanceBizApiService.updateOrderInstance(instanceBo);
         return new ResponseEntity<>("success", HttpStatus.OK);
     }

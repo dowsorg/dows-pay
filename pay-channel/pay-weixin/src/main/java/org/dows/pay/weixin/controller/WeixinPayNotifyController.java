@@ -79,6 +79,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.util.Date;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -198,6 +199,11 @@ public class WeixinPayNotifyController {
                                 instanceBo.setOrderId(payTransaction.getOrderId());
                                 String tableId = redisService.getCacheObject("emptyTableIdOrderId:" + payTransaction.getOrderId());
                                 instanceBo.setTableId(tableId);
+                                Map<String, Object> cacheMap = redisService.getCacheMap("prepayPayData:" + payTransaction.getOrderId());
+                                if(cacheMap.containsKey("payAccountId")){
+                                    String payAccountId = (String) cacheMap.get("payAccountId");
+                                    instanceBo.setPayAccountId(payAccountId);
+                                }
                                 orderInstanceBizApiService.updateOrderInstance(instanceBo);
                             } catch (Exception e) {
                                 System.out.println("invoke updateOrderInstance error:" + e);
