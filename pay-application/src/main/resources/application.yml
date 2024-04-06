@@ -40,11 +40,12 @@ order:
   url: http://81.69.171.79:9011/order
 # 微信配置
 wx:
+  appApplyCallbackUrl: https://www.wozth.com/api/prd/user
   miniapp:
     configs:
       #      - appid: wx30b441ca0d8beb3c #微信小程序的appid
       #        secret: 624b9a69f61e5abf7bd47b07f6134a8b #微信小程序的Secret
-      - appid: wx910b869b1a2a2ab2 #微信小程序的appid
+        appid: wx910b869b1a2a2ab2 #微信小程序的appid
         secret: 40cad8214a4c74c9e2c7e9b30eeb6289 #微信小程序的Secret
         token: #微信小程序消息服务器配置的token
         aesKey: #微信小程序消息服务器配置的EncodingAESKey

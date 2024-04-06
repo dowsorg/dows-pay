@@ -95,7 +95,7 @@ public class MiniRest {
     }
 
     @PostMapping("/mini/setWxinApplyInfo")
-    @ApiOperation(value = "设置小程序相关信息(微信or支付宝)")
+    @ApiOperation(value = "设置小程序相关信息(微信or支付宝)-重要")
     public Response<PayResponse> setWxinApplyInfo(@Validated @RequestBody SetWxBaseInfoForm setWxBaseInfoForm) {
         try {
             if (setWxBaseInfoForm.getMerchantAppId() == null) {

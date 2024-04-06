@@ -21,23 +21,20 @@ import org.dows.amp.api.MsgTemplateApi;
 import org.dows.app.api.mini.AppApplyApi;
 import org.dows.app.api.mini.request.AppApplyRequest;
 import org.dows.app.api.mini.request.HttpResult;
-import org.dows.app.api.mini.request.PayApplyStatusReq;
-import org.dows.app.api.mini.response.AppApplyAndItemResponse;
-import org.dows.app.entity.AppApplyItem;
 import org.dows.app.entity.AppBase;
 import org.dows.app.service.AppBaseService;
 import org.dows.auth.api.weixin.WeixinTokenApi;
 import org.dows.auth.biz.context.SecurityUtils;
 import org.dows.framework.api.Response;
-import org.dows.pay.bo.AlipayBaseInfoBo;
-import org.dows.pay.bo.AlipayOpenMiniVersionAuditBo;
-import org.dows.pay.boot.PayClientConfig;
-import org.dows.pay.enums.WxSetNickNameExceptionEnum;
 import org.dows.pay.api.PayResponse;
 import org.dows.pay.api.enums.PayMethods;
 import org.dows.pay.api.request.PayIsvRequest;
+import org.dows.pay.bo.AlipayBaseInfoBo;
+import org.dows.pay.bo.AlipayOpenMiniVersionAuditBo;
 import org.dows.pay.bo.WxBaseInfoBo;
 import org.dows.pay.bo.WxFastMaCategoryBo;
+import org.dows.pay.boot.PayClientConfig;
+import org.dows.pay.enums.WxSetNickNameExceptionEnum;
 import org.dows.pay.enums.WxSetSignatureExceptionEnum;
 import org.dows.pay.form.*;
 import org.dows.pay.gateway.PayDispatcher;
@@ -45,8 +42,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -361,7 +356,7 @@ public class MiniBiz {
         log.info("获取商户信息，merchantNo：{}", merchantNo);
         String channel = setWxBaseInfoForm.getChannel();
         try {
-            AppBase appBase = saveOrUpdateAppBase(setWxBaseInfoForm, merchantNo);
+            AppBase appBase = saveOrUpdateAppBase(setWxBaseInfoForm, "1721374398630068225");
             log.info("setWxinApplyInfo，appBase信息：{}", appBase);
             WxBaseInfoForm wxBaseInfoForm = BeanUtil.copyProperties(setWxBaseInfoForm, WxBaseInfoForm.class);
             // 获取access_token使用authorizer_access_token
@@ -723,6 +718,7 @@ public class MiniBiz {
         }
         if (StringUtils.isNotEmpty(merchantNo)) {
             queryWrapper.eq(AppBase::getMerchantNo, merchantNo);
+            queryWrapper.ne(AppBase::getCategoryAuditStatus, 3);
         }
         appBase.setAppName(setWxBaseInfoForm.getNickName());
         appBase.setBrief(setWxBaseInfoForm.getSignature());
