@@ -356,7 +356,7 @@ public class MiniBiz {
         log.info("获取商户信息，merchantNo：{}", merchantNo);
         String channel = setWxBaseInfoForm.getChannel();
         try {
-            AppBase appBase = saveOrUpdateAppBase(setWxBaseInfoForm, "1721374398630068225");
+            AppBase appBase = saveOrUpdateAppBase(setWxBaseInfoForm, merchantNo);
             log.info("setWxinApplyInfo，appBase信息：{}", appBase);
             WxBaseInfoForm wxBaseInfoForm = BeanUtil.copyProperties(setWxBaseInfoForm, WxBaseInfoForm.class);
             // 获取access_token使用authorizer_access_token
