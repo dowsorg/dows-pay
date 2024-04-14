@@ -42,6 +42,9 @@ public class PayApply implements CrudEntity {
     @ApiModelProperty("商户号")
     private String merchantNo;
 
+    @ApiModelProperty("门店id")
+    private String storeId;
+
     @ApiModelProperty("全局唯一应用ID")
     private String appId;
 

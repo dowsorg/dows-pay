@@ -336,13 +336,13 @@ public class payBiz implements PayApi {
                 log.info("生成WxPayApplymentCreateResult返回结果：{}", isvMini);
                 if (!StringUtil.isEmpty(isvMini.getApplymentId())) {
                     // 申请支付权限并保存payAppl表
-                    PayApply byMerchantNoAndType = payApplyService.getByMerchantNoAndType(appApplyRequest.getMerchantNo(), 1);
+                    PayApply byMerchantNoAndType = payApplyService.getByMerchantNoAndType(appApplyRequest.getMerchantNo(),appApplyRequest.getStoreId(), 1);
                     if (byMerchantNoAndType != null) {
                         byMerchantNoAndType.setApplyNo(isvMini.getApplymentId());
                         byMerchantNoAndType.setUpdateTime(new Date());
                         payApplyService.updateById(byMerchantNoAndType);
                     } else {
-                        payApplyService.createPayApply(appApplyRequest.getMerchantNo(), appApply.getAppId(), isvMini.getApplymentId());
+                        payApplyService.createPayApply(appApplyRequest.getMerchantNo(),appApplyRequest.getStoreId(),appApply.getAppId(), isvMini.getApplymentId());
                     }
                     // todo 申请成功的操作
                     return Response.ok(true, "申请微信小程序支付权限成功");
@@ -497,7 +497,7 @@ public class payBiz implements PayApi {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Response queryPayApplyStatus(PayApplyStatusReq res) {
-        PayApply payApply = payApplyService.getByMerchantNoAndType(res.getMerchantNo(), res.getApplyType());
+        PayApply payApply = payApplyService.getByMerchantNoAndType(res.getMerchantNo(),res.getStoreId(), res.getApplyType());
         return Optional.ofNullable(payApply).map(p -> {
             Response response;
             if (p.getChecked()) {

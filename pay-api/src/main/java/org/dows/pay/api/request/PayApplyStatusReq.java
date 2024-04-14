@@ -23,6 +23,9 @@ public class PayApplyStatusReq implements Serializable {
      */
     String appId;
 
+    @ApiModelProperty("门店id")
+    private String storeId;
+
     /**
      * 是否已注册小程序
      */

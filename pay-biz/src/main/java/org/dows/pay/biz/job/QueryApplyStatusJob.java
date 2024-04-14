@@ -96,6 +96,7 @@ public class QueryApplyStatusJob {
         }else {
             PayApplyStatusReq payApplyStatusReq = new PayApplyStatusReq();
             payApplyStatusReq.setMerchantNo(p.getMerchantNo());
+            payApplyStatusReq.setStoreId(p.getStoreId());
             try {
                 payApi.queryPayApplyStatus(payApplyStatusReq);
             } catch (Exception e) {

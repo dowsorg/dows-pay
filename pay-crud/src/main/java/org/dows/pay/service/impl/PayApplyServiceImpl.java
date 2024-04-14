@@ -1,6 +1,7 @@
 package org.dows.pay.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import org.apache.commons.lang3.StringUtils;
 import org.dows.framework.api.exceptions.BizException;
 import org.dows.framework.crud.mybatis.MybatisCrudServiceImpl;
 import org.dows.pay.mapper.PayApplyMapper;
@@ -34,6 +35,18 @@ public class PayApplyServiceImpl extends MybatisCrudServiceImpl<PayApplyMapper, 
         LambdaQueryWrapper<PayApply> queryWrapper = new LambdaQueryWrapper<PayApply>()
                 .eq(PayApply::getMerchantNo, merchantNo)
                 .eq(PayApply::getApplyType, applyType)
+                .eq(PayApply::getDeleted, 0)
+                .orderByDesc(PayApply::getId)
+                .last(" limit 1");
+        return getOne(queryWrapper);
+    }
+
+    @Override
+    public PayApply getByMerchantNoAndType(String merchantNo, String storeId, Integer applyType) {
+        LambdaQueryWrapper<PayApply> queryWrapper = new LambdaQueryWrapper<PayApply>()
+                .eq(PayApply::getMerchantNo, merchantNo)
+                .eq(PayApply::getApplyType, applyType)
+                .eq(!StringUtils.isBlank(storeId),PayApply::getStoreId, storeId)
                 .eq(PayApply::getDeleted, 0)
                 .orderByDesc(PayApply::getId)
                 .last(" limit 1");
@@ -75,24 +88,26 @@ public class PayApplyServiceImpl extends MybatisCrudServiceImpl<PayApplyMapper, 
     }
 
     @Override
-    public Long createPayApply(String merchantNo, String appId, String applyId) {
+    public Long createPayApply(String merchantNo,String storeId, String appId, String applyId) {
         PayApply payApply = getOne(new LambdaQueryWrapper<PayApply>()
                 .eq(PayApply::getMerchantNo, merchantNo)
                 .eq(PayApply::getApplyType,1)
                 .eq(PayApply::getAppId, appId)
+                .eq(!StringUtils.isBlank(storeId),PayApply::getStoreId, storeId)
                 .eq(PayApply::getDeleted, 0)
                 .last(" limit 1"));
-       return Optional.ofNullable(payApply).map(PayApply::getId).orElseGet(()->getPayApplyId(merchantNo,appId,applyId));
+       return Optional.ofNullable(payApply).map(PayApply::getId).orElseGet(()->getPayApplyId(merchantNo,storeId,appId,applyId));
 
     }
 
-    private Long getPayApplyId(String merchantNo,String appId,String applyId) {
+    private Long getPayApplyId(String merchantNo,String storeId,String appId,String applyId) {
         PayApply  payApply = new PayApply();
         payApply.setMerchantNo(merchantNo);
         payApply.setChecked(false);
         payApply.setApplyNo(applyId);
         payApply.setApplyType(1);
         payApply.setAppId(appId);
+        payApply.setStoreId(storeId);
         payApply.setBizName("申请微信支付能力");
         payApply.setDeleted(false);
         payApply.setDt(new Date());

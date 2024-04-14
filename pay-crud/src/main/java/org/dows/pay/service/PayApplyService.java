@@ -14,11 +14,12 @@ import java.util.List;
  */
 public interface PayApplyService extends MybatisCrudService<PayApply> {
 
-    Long createPayApply(String merchantNo, String appId, String applyId);
+    Long createPayApply(String merchantNo,String storeId, String appId, String applyId);
 
     void updateApplyNoById(Long payApplyId, String applyId);
 
     PayApply getByMerchantNoAndType(String merchantNo, Integer applyType);
+    PayApply getByMerchantNoAndType(String merchantNo,String storeId, Integer applyType);
 
     List<PayApply> queryByMerchantNoAndType(String merchantNo, Integer applyType);
 

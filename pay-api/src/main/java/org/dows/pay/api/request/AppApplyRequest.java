@@ -23,6 +23,9 @@ public class AppApplyRequest implements Serializable {
     @ApiModelProperty("申请类型--ALL 支付宝：ALIPAY  微信：WEIXIN")
     private String applyType;
 
+    @ApiModelProperty("门店id")
+    private String storeId;
+
     @ApiModelProperty("商家小程序appid")
     private String merchantAppid;
 
