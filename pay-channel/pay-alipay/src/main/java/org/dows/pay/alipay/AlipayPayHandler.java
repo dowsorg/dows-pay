@@ -104,7 +104,7 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
     @Value("${wx.appApplyCallbackUrl}")
     private String callbackUrl;
 
-    private static final String ALI_PAY_NOTIFY_URL = "https://www.wozth.com/api/prd/user/aliPay/notify";
+    private static final String ALI_PAY_NOTIFY_URL = "https://www.wozth.com/api/prd/tenant/aliPay/notify";
 
     private final IdGenerator idGenerator = new SimpleIdGenerator();
 
@@ -725,7 +725,7 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
         bizContent.put("subject", "支付宝扫码下单");
         // 商户实际经营主体的小程序应用的appid
         bizContent.put("product_code", "FACE_TO_FACE_PAYMENT");
-        request.setNotifyUrl(callbackUrl+"/aliPay/notify");
+        request.setNotifyUrl(ALI_PAY_NOTIFY_URL);
         request.setBizContent(bizContent.toString());
         log.info("支付宝扫码下单 data:{}", bizContent.toJSONString());
         AlipayTradePrecreateResponse response;
