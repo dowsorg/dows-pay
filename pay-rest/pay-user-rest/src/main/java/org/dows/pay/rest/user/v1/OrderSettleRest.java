@@ -37,7 +37,7 @@ public class OrderSettleRest {
     private MarketCardService marketCardService;
 
     @PostMapping("/orderpay/topayNoAcc")
-    @ApiOperation(value = "去支付无分账")
+    @ApiOperation(value = "去支付分账-重要")
     public Response topayNoAcc(@RequestBody PayTransactionForm payTransactionForm) {
         TransactionsResult.JsapiResult result= weixinPayHandler.toPayNoAcc(payTransactionForm);
         return Response.ok(result);

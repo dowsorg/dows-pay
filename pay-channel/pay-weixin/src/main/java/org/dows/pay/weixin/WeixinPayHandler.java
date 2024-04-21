@@ -431,7 +431,17 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
     }
 
     public TransactionsResult.JsapiResult toPayStorageCard(PayTransactionForm payRequest){
-        checkRepeatSubmit(payRequest.getAppId(), payRequest.getOrderId());
+        //checkRepeatSubmit(payRequest.getAppId(), payRequest.getOrderId());
+        String cacheObject = redisService.getCacheObject(String.join(StringPool.UNDERSCORE, payRequest.getAppId(), payRequest.getOrderId()));
+        if(!StrUtil.isBlank(cacheObject)){
+            log.info("预交号 toPayNoAcc.params... payRequest:{}", JSONUtil.toJsonStr(payRequest));
+            return JSONUtil.toBean(cacheObject,TransactionsResult.JsapiResult.class);
+        }
+        Boolean orderIfAbsent = redisService.setCacheObjectIfAbsent(String.join(StringPool.UNDERSCORE, payRequest.getAppId(), payRequest.getOrderId()),
+                payRequest.getOrderId(), 1L, TimeUnit.MINUTES);
+        if(!orderIfAbsent){
+            throw new RuntimeException("储存卡下单重复");
+        }
         String transactionNo = IdUtil.fastSimpleUUID();
         log.info("WeixinPayHandler.toPayStorageCard.transactionNo的参数:{}", transactionNo);
         PayTransaction payTransaction = payTransactionService.getByOrderId(payRequest.getOrderId());
@@ -498,7 +508,9 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
                         payClientConfig.getClientConfigs().get(1).getMchId(),
                         this.getWeixinClient(payClientConfig.getClientConfigs().get(1).getAppId()).getConfig().getPrivateKey());
         if (!StringUtil.isEmpty(transactionsResult.getPrepayId())) {
-            ORDER_PAY_CACHE.set(String.join(StringPool.UNDERSCORE, payRequest.getAppId(), payRequest.getOrderId()), "success");
+            //ORDER_PAY_CACHE.set(String.join(StringPool.UNDERSCORE, payRequest.getAppId(), payRequest.getOrderId()), "success");
+            redisService.setCacheObject(String.join(StringPool.UNDERSCORE, payRequest.getAppId(), payRequest.getOrderId()),
+                    JSONUtil.toJsonStr(jsapiResult),1L,TimeUnit.MINUTES);
             log.info("调用成功");
         } else {
             //todo 失败逻辑
@@ -522,7 +534,18 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
     public TransactionsResult.JsapiResult toPayNoAcc(PayTransactionForm payRequest) {
 //        PayTransactionBo payTransactionBo = (PayTransactionBo) payRequest.getBizModel();
 
-        checkRepeatSubmit(payRequest.getAppId(), payRequest.getOrderId());
+        //checkRepeatSubmit(payRequest.getAppId(), payRequest.getOrderId());
+        String cacheObject = redisService.getCacheObject(String.join(StringPool.UNDERSCORE, payRequest.getAppId(), payRequest.getOrderId()));
+        if(!StrUtil.isBlank(cacheObject)){
+            log.info("预交号 toPayNoAcc.params... payRequest:{}", JSONUtil.toJsonStr(payRequest));
+            return JSONUtil.toBean(cacheObject,TransactionsResult.JsapiResult.class);
+        }
+        Boolean orderIfAbsent = redisService.setCacheObjectIfAbsent(String.join(StringPool.UNDERSCORE, payRequest.getAppId(), payRequest.getOrderId()),
+                payRequest.getOrderId(), 1L, TimeUnit.MINUTES);
+        if(!orderIfAbsent){
+            log.info("toPayNoAcc.params... payRequest:{}", JSONUtil.toJsonStr(payRequest));
+            throw new RuntimeException("下单重复提交");
+        }
         String transactionNo = IdUtil.fastSimpleUUID();
         log.info("WeixinPayHandler.toPay.transactionNo的参数:{}", transactionNo);
         PayTransaction payTransaction;
@@ -545,7 +568,7 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
             payTransaction.setPayChannel("weixin");
             payTransaction.setTransactionNo(transactionNo);
             payTransactionService.updateById(payTransaction);
-            log.info("WeixinPayHandler.toPay.payTransaction的参数:{}", payTransaction);
+            log.info("updateById WeixinPayHandler.toPay.payTransaction的参数:{}", payTransaction);
         }
         //组装订单逻辑
         OrderInstanceBo orderInstanceBo = orderInstanceBizApiService.getOne(payRequest.getOrderId(),true);
@@ -592,7 +615,9 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
                         payClientConfig.getClientConfigs().get(1).getMchId(),
                         this.getWeixinClient(payClientConfig.getClientConfigs().get(1).getAppId()).getConfig().getPrivateKey());
         if (!StringUtil.isEmpty(transactionsResult.getPrepayId())) {
-            ORDER_PAY_CACHE.set(String.join(StringPool.UNDERSCORE, payRequest.getAppId(), payRequest.getOrderId()), "success");
+            //ORDER_PAY_CACHE.set(String.join(StringPool.UNDERSCORE, payRequest.getAppId(), payRequest.getOrderId()), "success");
+            redisService.setCacheObject(String.join(StringPool.UNDERSCORE, payRequest.getAppId(), payRequest.getOrderId()),
+                    JSONUtil.toJsonStr(jsapiResult),1L,TimeUnit.MINUTES);
             Map<String,Object> dataMap = Maps.newHashMap();
             dataMap.put("payAccountId",SecurityUtils.getAccountId());
             redisService.setCacheMap("prepayPayData:"+orderInstanceBo.getOrderId(),dataMap);
