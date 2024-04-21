@@ -1,6 +1,8 @@
 package org.dows.pay.alipay.controller;
 
+import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson.JSON;
+import com.google.common.base.Splitter;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,16 +13,21 @@ import org.dows.order.bo.OrderUpdatePaymentStatusBo;
 import org.dows.pay.alipay.AlipayAuthHandler;
 import org.dows.pay.alipay.AlipayPayHandler;
 import org.dows.pay.api.request.AliRelationBindReq;
-import org.dows.pay.api.response.PayQueryRes;
 import org.dows.pay.api.util.HttpRequestUtils;
 import org.dows.pay.entity.PayTransaction;
 import org.dows.pay.service.PayTransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -59,10 +66,21 @@ public class AliPayNotifyController {
      * @return
      */
     @PostMapping( "/notify")
-    public ResponseEntity<Object> notify(HttpServletRequest request) {
-
+    public ResponseEntity<Object> notify(HttpServletRequest request) throws IOException {
         log.info("收到支付宝异步回调：{}", JSON.toJSONString(request.getParameterMap().toString()));
         // 获取支付宝POST过来反馈信息
+        // 使用BufferedReader来读取参数
+        BufferedReader reader = new BufferedReader(new InputStreamReader(request.getInputStream()));
+        StringBuffer sb = new StringBuffer();
+        String line = null;
+        while ((line = reader.readLine()) != null) {
+            sb.append(line);
+        }
+        String streamStr = sb.toString();
+        Map<String,String> targetOrderObj = Splitter.on("&")
+                .withKeyValueSeparator("=")
+                .split(streamStr);
+        log.info("notify.params... request:{}", JSONUtil.toJsonStr(targetOrderObj));
         Map<String, String> params = new HashMap<>();
         Map<String, String[]> requestParams = request.getParameterMap();
 
@@ -77,7 +95,6 @@ public class AliPayNotifyController {
         }
         log.info("notify params=={}",JSON.toJSONString(params));
 //        boolean signVerified= AlipaySignature.rsaCertCheckV1(params, "", "UTF-8","RSA2");
-
         String tradeStatus = getRequestParameter(request, "trade_status");
         // 商户订单号
         String outTradeNo = getRequestParameter(request, "out_trade_no");
@@ -91,20 +108,23 @@ public class AliPayNotifyController {
 
         String notifyData = HttpRequestUtils.getRequestParam(request).toString();
         log.info("notifyData=={}",notifyData);
-
-        PayTransaction payTransaction = payTransactionService.getByTransactionNo(outTradeNo);
+        String outTradeNo1 = targetOrderObj.get("out_trade_no");
+        String tradeStatus1 = targetOrderObj.get("trade_status");
+        String tradeNo1 = targetOrderObj.get("trade_no");
+        String totalAmount1 = targetOrderObj.get("total_amount");
+        PayTransaction payTransaction = payTransactionService.getByTransactionNo(outTradeNo1);
         PayTransaction updatePay = new PayTransaction();
         updatePay.setId(payTransaction.getId());
-        updatePay.setTradeState(tradeStatus);
-        updatePay.setDealTo(tradeNo);
+        updatePay.setTradeState(tradeStatus1);
+        updatePay.setDealTo(tradeNo1);
         OrderUpdatePaymentStatusBo instanceBo = new OrderUpdatePaymentStatusBo();
-        if (Objects.equals(tradeStatus,"TRADE_SUCCESS")) {
+        if (Objects.equals(tradeStatus1,"TRADE_SUCCESS")) {
             updatePay.setStatus(1);
             instanceBo.setTradeStatus(3);
         } else {
             instanceBo.setTradeStatus(2);
         }
-        updatePay.setAmount(new BigDecimal(totalAmount));
+        updatePay.setAmount(new BigDecimal(totalAmount1));
         payTransactionService.updateById(updatePay);
 
         instanceBo.setPayChannel(2);
