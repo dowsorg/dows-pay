@@ -437,7 +437,7 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
             log.info("预交号 toPayNoAcc.params... payRequest:{}", JSONUtil.toJsonStr(payRequest));
             return JSONUtil.toBean(cacheObject,TransactionsResult.JsapiResult.class);
         }
-        Boolean orderIfAbsent = redisService.setCacheObjectIfAbsent(String.join(StringPool.UNDERSCORE, payRequest.getAppId(), payRequest.getOrderId()),
+        Boolean orderIfAbsent = redisService.setCacheObjectIfAbsent("repeat_"+String.join(StringPool.UNDERSCORE, payRequest.getAppId(), payRequest.getOrderId()),
                 payRequest.getOrderId(), 1L, TimeUnit.MINUTES);
         if(!orderIfAbsent){
             throw new BizException("储存卡下单重复");
@@ -537,10 +537,10 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
         //checkRepeatSubmit(payRequest.getAppId(), payRequest.getOrderId());
         String cacheObject = redisService.getCacheObject(String.join(StringPool.UNDERSCORE, payRequest.getAppId(), payRequest.getOrderId()));
         if(!StrUtil.isBlank(cacheObject)){
-            log.info("预交号 toPayNoAcc.params... payRequest:{}", JSONUtil.toJsonStr(payRequest));
+            log.info("预交号 toPayNoAcc.params... cacheObject:{}", cacheObject);
             return JSONUtil.toBean(cacheObject,TransactionsResult.JsapiResult.class);
         }
-        Boolean orderIfAbsent = redisService.setCacheObjectIfAbsent(String.join(StringPool.UNDERSCORE, payRequest.getAppId(), payRequest.getOrderId()),
+        Boolean orderIfAbsent = redisService.setCacheObjectIfAbsent("repeat_"+String.join(StringPool.UNDERSCORE, payRequest.getAppId(), payRequest.getOrderId()),
                 payRequest.getOrderId(), 1L, TimeUnit.MINUTES);
         if(!orderIfAbsent){
             log.info("toPayNoAcc.params... payRequest:{}", JSONUtil.toJsonStr(payRequest));
