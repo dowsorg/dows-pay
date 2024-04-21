@@ -104,7 +104,7 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
     @Value("${wx.appApplyCallbackUrl}")
     private String callbackUrl;
 
-    private static final String ALI_PAY_NOTIFY_URL = "https://www.wozth.com/api/prd/tenant/aliPay/notify";
+    private static final String ALI_PAY_NOTIFY_URL = "https://www.wozth.com/api/prd/user/aliPay/notify";
 
     private final IdGenerator idGenerator = new SimpleIdGenerator();
 
