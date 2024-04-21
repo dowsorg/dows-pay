@@ -440,7 +440,7 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
         Boolean orderIfAbsent = redisService.setCacheObjectIfAbsent(String.join(StringPool.UNDERSCORE, payRequest.getAppId(), payRequest.getOrderId()),
                 payRequest.getOrderId(), 1L, TimeUnit.MINUTES);
         if(!orderIfAbsent){
-            throw new RuntimeException("储存卡下单重复");
+            throw new BizException("储存卡下单重复");
         }
         String transactionNo = IdUtil.fastSimpleUUID();
         log.info("WeixinPayHandler.toPayStorageCard.transactionNo的参数:{}", transactionNo);
@@ -544,7 +544,7 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
                 payRequest.getOrderId(), 1L, TimeUnit.MINUTES);
         if(!orderIfAbsent){
             log.info("toPayNoAcc.params... payRequest:{}", JSONUtil.toJsonStr(payRequest));
-            throw new RuntimeException("下单重复提交");
+            throw new BizException("下单重复提交");
         }
         String transactionNo = IdUtil.fastSimpleUUID();
         log.info("WeixinPayHandler.toPay.transactionNo的参数:{}", transactionNo);
