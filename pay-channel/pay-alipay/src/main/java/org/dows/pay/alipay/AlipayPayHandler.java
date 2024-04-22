@@ -301,6 +301,8 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
         instanceBo.setPayChannel(2);
         instanceBo.setTradeType(1);
         instanceBo.setOrderId(payTransaction.getOrderId());
+        String tableId = redisService.getCacheObject("emptyTableIdOrderId:" + payTransaction.getOrderId());
+        instanceBo.setTableId(tableId);
         orderInstanceBizApiService.updateOrderInstance(instanceBo);
     }
 
