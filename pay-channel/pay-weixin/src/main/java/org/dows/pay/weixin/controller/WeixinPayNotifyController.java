@@ -59,6 +59,8 @@ import org.dows.pay.entity.PayTransaction;
 import org.dows.pay.service.PayTransactionService;
 import org.dows.pay.weixin.MarketCardService;
 import org.dows.pay.weixin.WeixinRoyaltyRelationHandler;
+import org.dows.printer.api.PrinterApi;
+import org.dows.printer.bo.PrintOrderBO;
 import org.dows.store.api.StoreCouponApi;
 import org.dows.store.api.StoreInstanceApi;
 import org.dows.store.form.StoreCouponForm;
@@ -137,6 +139,8 @@ public class WeixinPayNotifyController {
     @Autowired
     private RedisServiceBiz redisService;
 
+    @Autowired
+    private PrinterApi printerApi;
 
     static {
         BUILDER_LOCAL = ThreadLocal.withInitial(() -> {
@@ -192,6 +196,7 @@ public class WeixinPayNotifyController {
                             marketCardService.callBack(transactionsResult.getOutTradeNo());
                         } else {
                             try {
+
                                 OrderUpdatePaymentStatusBo instanceBo = new OrderUpdatePaymentStatusBo();
                                 instanceBo.setTradeStatus(3);
                                 instanceBo.setPayChannel(1);
@@ -205,6 +210,17 @@ public class WeixinPayNotifyController {
                                     instanceBo.setPayAccountId(payAccountId);
                                 }
                                 orderInstanceBizApiService.updateOrderInstance(instanceBo);
+                                Boolean orderIfAbsent = redisService.setCacheObjectIfAbsent("printOrderId:"
+                                        + instanceBo.getOrderId(), instanceBo.getOrderId(), 1L, TimeUnit.DAYS);
+                                if(orderIfAbsent){
+                                    ThreadUtil.execAsync(() -> {
+                                        PrintOrderBO printOrderBO = new PrintOrderBO();
+                                        printOrderBO.setOrderId(instanceBo.getOrderId());
+                                        printOrderBO.setIsManual(0);
+                                        printOrderBO.setType(2);
+                                        printerApi.printMasterOrder(printOrderBO);
+                                    });
+                                }
                             } catch (Exception e) {
                                 System.out.println("invoke updateOrderInstance error:" + e);
                                 log.error("invoke updateOrderInstance error :", e);

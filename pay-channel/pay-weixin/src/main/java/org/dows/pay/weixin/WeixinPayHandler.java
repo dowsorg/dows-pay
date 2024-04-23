@@ -35,7 +35,6 @@ import org.dows.auth.biz.context.SecurityUtils;
 import org.dows.auth.biz.redis.RedisServiceBiz;
 import org.dows.framework.api.exceptions.BizException;
 import org.dows.order.api.OrderInstanceBizApiService;
-import org.dows.order.bo.OrderAccountBo;
 import org.dows.order.bo.OrderInstanceBo;
 import org.dows.order.bo.OrderUpdatePaymentStatusBo;
 import org.dows.order.enums.OrderPayTypeEnum;
@@ -401,12 +400,8 @@ public class WeixinPayHandler extends AbstractWeixinHandler {
             instanceBo.setTradeType(1);
             instanceBo.setOrderId(payTransaction.getOrderId());
             instanceBo.setTableId(tableId);
+            instanceBo.setPayAccountId("用户");
             orderInstanceBizApiService.updateOrderInstance(instanceBo);
-            OrderAccountBo accountBo = new OrderAccountBo();
-            accountBo.setOrderId(payTransaction.getOrderId());
-            accountBo.setPayAccountId("用户");
-            accountBo.setTableId(tableId);
-            orderInstanceBizApiService.updateOrderAccountId(accountBo);
         } catch (Exception e) {
             System.out.println("invoke updateOrderInstance error:"+e);
             log.error("invoke updateOrderInstance error :",e);

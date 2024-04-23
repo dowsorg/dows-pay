@@ -32,7 +32,6 @@ import org.dows.framework.api.exceptions.BizException;
 import org.dows.framework.oss.api.OssInfo;
 import org.dows.framework.oss.tencent.TencentOssClient;
 import org.dows.order.api.OrderInstanceBizApiService;
-import org.dows.order.bo.OrderAccountBo;
 import org.dows.order.bo.OrderInstanceBo;
 import org.dows.order.bo.OrderUpdatePaymentStatusBo;
 import org.dows.order.form.OrderCashPayForm;
@@ -223,12 +222,17 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
                     .build();
             payTransactionService.updateById(updatePayTransaction);
             //更新支付人
-            OrderAccountBo orderAccountBo = new OrderAccountBo();
-            orderAccountBo.setOrderId(orderInstanceBo.getOrderId());
-            orderAccountBo.setPayAccountId("用户");
+
             String tableId = redisService.getCacheObject("emptyTableIdOrderId:" + payTransaction.getOrderId());
-            orderAccountBo.setTableId(tableId);
-            orderInstanceBizApiService.updateOrderAccountId(orderAccountBo);
+            OrderUpdatePaymentStatusBo instanceBo = new OrderUpdatePaymentStatusBo();
+            instanceBo.setTradeStatus(3);
+            instanceBo.setPayChannel(2);
+            instanceBo.setTradeType(1);
+            instanceBo.setOrderId(orderInstanceBo.getOrderId());
+            instanceBo.setTableId(tableId);
+            instanceBo.setPayAccountId("用户");
+            orderInstanceBizApiService.updateOrderInstance(instanceBo);
+
         }else if("10003".equals(response.getCode())){
             //等待付款查询支付状态
             delayQueryOrder(payTransaction,1,"用户");
@@ -272,15 +276,16 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
                             .dealTo(alipayTradeQueryResponse.getTradeNo())
                             .build();
                     payTransactionService.updateById(updatePayTransaction);
-                    //更新支付人
-                    OrderAccountBo orderAccountBo = new OrderAccountBo();
-                    orderAccountBo.setOrderId(updatePayTransaction.getOrderId());
-                    orderAccountBo.setPayAccountId(accountId);
+                    //更新更新订单状态和支付人
                     String tableId = redisService.getCacheObject("emptyTableIdOrderId:" + payTransaction.getOrderId());
-                    orderAccountBo.setTableId(tableId);
-                    orderInstanceBizApiService.updateOrderAccountId(orderAccountBo);
-                    //更新订单状态
-                    updateOrderStatusForSucc(payTransaction);
+                    OrderUpdatePaymentStatusBo instanceBo = new OrderUpdatePaymentStatusBo();
+                    instanceBo.setPayAccountId(accountId);
+                    instanceBo.setTradeStatus(3);
+                    instanceBo.setPayChannel(2);
+                    instanceBo.setTradeType(1);
+                    instanceBo.setOrderId(payTransaction.getOrderId());
+                    instanceBo.setTableId(tableId);
+                    orderInstanceBizApiService.updateOrderInstance(instanceBo);
                 }
 
 
@@ -290,24 +295,6 @@ public class AlipayPayHandler extends AbstractAlipayHandler {
             }
         }, 60000));
     }
-
-    /**
-     * 更新订单状态
-     * @param payTransaction
-     */
-    private void updateOrderStatusForSucc(PayTransaction payTransaction){
-        OrderUpdatePaymentStatusBo instanceBo = new OrderUpdatePaymentStatusBo();
-        instanceBo.setTradeStatus(3);
-        instanceBo.setPayChannel(2);
-        instanceBo.setTradeType(1);
-        instanceBo.setOrderId(payTransaction.getOrderId());
-        String tableId = redisService.getCacheObject("emptyTableIdOrderId:" + payTransaction.getOrderId());
-        instanceBo.setTableId(tableId);
-        orderInstanceBizApiService.updateOrderInstance(instanceBo);
-    }
-
-
-
 
     /**
      * 查询订单支付状态
