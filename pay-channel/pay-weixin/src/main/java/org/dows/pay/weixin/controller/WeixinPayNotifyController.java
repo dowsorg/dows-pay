@@ -15,7 +15,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.thread.ThreadUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.alipay.api.kms.aliyun.utils.StringUtils;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.github.binarywang.wxpay.bean.ecommerce.*;
 import com.github.binarywang.wxpay.bean.notify.CombineNotifyResult;
 import com.github.binarywang.wxpay.bean.profitsharingV3.ProfitSharingNotifyData;
@@ -212,7 +212,7 @@ public class WeixinPayNotifyController {
                                 orderInstanceBizApiService.updateOrderInstance(instanceBo);
                                 Boolean orderIfAbsent = redisService.setCacheObjectIfAbsent("printOrderId:"
                                         + instanceBo.getOrderId(), instanceBo.getOrderId(), 1L, TimeUnit.DAYS);
-                                if(orderIfAbsent){
+                                if(StringUtils.isNotBlank(tableId) && orderIfAbsent){
                                     ThreadUtil.execAsync(() -> {
                                         PrintOrderBO printOrderBO = new PrintOrderBO();
                                         printOrderBO.setOrderId(instanceBo.getOrderId());

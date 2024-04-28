@@ -1,27 +1,19 @@
 package org.dows.pay.weixin;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.io.resource.InputStreamResource;
 import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.http.HttpRequest;
-import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
-import com.github.binarywang.wxpay.bean.ecommerce.ApplymentsRequest;
 import com.github.binarywang.wxpay.bean.media.ImageUploadResult;
-import com.github.binarywang.wxpay.service.WxPayService;
 import com.github.binarywang.wxpay.v3.WechatPayUploadHttpPost;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.error.WxErrorException;
-import me.chanjar.weixin.open.api.WxOpenMaBasicService;
 import me.chanjar.weixin.open.bean.ma.WxFastMaCategory;
 import me.chanjar.weixin.open.bean.message.WxOpenMaSubmitAuditMessage;
 import me.chanjar.weixin.open.bean.result.*;
@@ -40,7 +32,6 @@ import org.dows.pay.bo.Categories;
 import org.dows.pay.bo.UploadBo;
 import org.dows.pay.bo.WxBaseInfoBo;
 import org.dows.pay.bo.WxFastMaCategoryBo;
-import org.dows.pay.form.WxFastMaCategoryForm;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpEntity;
@@ -50,14 +41,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.*;
@@ -215,16 +203,7 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
                 WxFastMaCategory.Certificate certificate = new WxFastMaCategory.Certificate();
                 certificate.setKey(x.getKey());
                 if (!ObjectUtil.isEmpty(x.getValue())) {
-                    File uboIdDocCopyFile;
-                    if (x.getValue().startsWith("http")) {
-                        String path = x.getValue();
-                        String substringPath = path.substring(path.lastIndexOf(StringPool.SLASH, path.lastIndexOf(StringPool.SLASH) - 1));
-                        uboIdDocCopyFile = new File("/opt/dows/tenant/image" + substringPath);
-
-                    } else {
-                        String filePath = getFilePath(x.getValue());
-                        uboIdDocCopyFile = new File(filePath);
-                    }
+                    File uboIdDocCopyFile = getFileByUrl(x.getValue());
                     String uploadimg = uploadimg(uboIdDocCopyFile, payRequest.getAuthorizerAccessToken());
                     log.info("新增类目MediaId：{}", uploadimg);
                     if (null != uploadimg) {
@@ -324,8 +303,7 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
         String namingOtherStuff1MediaId = null;
         String namingOtherStuff2MediaId = null;
         if (wxBaseInfoBo.getLicense() != null) {
-            String filePath = getFilePath(wxBaseInfoBo.getLicense());
-            File financeLicensePicsFile = new File(filePath);
+            File financeLicensePicsFile = getFileByUrl(wxBaseInfoBo.getLicense());
             if (!financeLicensePicsFile.exists()) {
                 System.out.println("financeLicensePicsFile不存在");
             }
@@ -333,16 +311,16 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
             log.info("设置名称===licenseMediaId：{}", licenseMediaId);
         }
         if (wxBaseInfoBo.getIdCard() != null) {
-            File financeLicensePicsFile = new File(getFilePath(wxBaseInfoBo.getIdCard()));
+            File financeLicensePicsFile = getFileByUrl(wxBaseInfoBo.getIdCard());
             idCardMediaId = upload(financeLicensePicsFile, payRequest).getMediaId();
         }
         if (wxBaseInfoBo.getNamingOtherStuff1() != null) {
-            File financeLicensePicsFile = new File(getFilePath(wxBaseInfoBo.getNamingOtherStuff1()));
+            File financeLicensePicsFile = getFileByUrl(wxBaseInfoBo.getNamingOtherStuff1());
             namingOtherStuff1MediaId = upload(financeLicensePicsFile, payRequest).getMediaId();
         }
 
         if (wxBaseInfoBo.getNamingOtherStuff2() != null) {
-            File financeLicensePicsFile = new File(getFilePath(wxBaseInfoBo.getNamingOtherStuff2()));
+            File financeLicensePicsFile = getFileByUrl(wxBaseInfoBo.getNamingOtherStuff2());
             namingOtherStuff2MediaId = upload(financeLicensePicsFile, payRequest).getMediaId();
         }
 //        WxOpenMaBasicService basicService = this.getWxOpenMaClient(payRequest.getAppId()).getBasicService();
@@ -492,25 +470,26 @@ public class WeixinMiniHandler extends AbstractWeixinHandler {
         return restTemplate.postForObject(uri, requestEntity, String.class);
     }
 
-//    public static String getFilePath(String path) {
-//        String arrPath[] = path.split(DateUtil.formatDate(DateUtil.date()));
-//        if (ObjectUtil.isNotEmpty(arrPath) && arrPath.length > 1) {
-//            path = arrPath[1];
-//            path = "E:\\有星科技相关\\image\\" + path;
-//        }
-//        return path;
-//    }
-
-    /**
-     * 获取文件路径
-     */
-    public static String getFilePath(String path) {
-//        String arrPath[] = path.split(DateUtil.formatDate(DateUtil.date()));
-//        if (ObjectUtil.isNotEmpty(arrPath) && arrPath.length > 1) {
-//            path = arrPath[1];
-//        }
-        String jPath = "/opt/dows/tenant/image" + path;
-        log.info("图片绝对路径 ：{}", jPath);
-        return jPath;
+    public static File getFileByUrl(String path) {
+        File file = null;
+        try {
+            URL url = new URL(path);
+            String substringPath = path.substring(path.lastIndexOf(StringPool.SLASH, path.lastIndexOf(StringPool.SLASH) - 1));
+            file = new File("/opt/dows/tenant/image" + substringPath);
+            if (!file.exists()) {
+                FileUtils.copyURLToFile(url, file);
+            }
+        } catch (Exception e) {
+            log.error("url convert error:", e);
+        } finally {
+//                try {
+//                    if (file != null) {
+//                        file.delete();
+//                    }
+//                } catch (Exception ex) {
+//                    ex.printStackTrace();
+//                }
+        }
+        return file;
     }
 }

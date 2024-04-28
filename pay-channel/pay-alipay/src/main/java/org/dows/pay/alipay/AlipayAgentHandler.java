@@ -1,6 +1,5 @@
 package org.dows.pay.alipay;
 
-import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.alipay.api.AlipayApiException;
@@ -14,8 +13,6 @@ import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
-import org.dows.app.entity.AppApply;
-import org.dows.app.entity.AppApplyItem;
 import org.dows.app.service.AppApplyItemService;
 import org.dows.app.service.AppApplyService;
 import org.dows.framework.api.Response;
@@ -26,18 +23,15 @@ import org.dows.pay.api.enums.PayMethods;
 import org.dows.pay.api.request.PayApplyStatusReq;
 import org.dows.pay.api.request.PayCreateIsvRequest;
 import org.dows.pay.api.request.PayQueryIsvRequest;
-import org.dows.pay.bo.IsvCreateBo;
 import org.dows.pay.entity.PayApply;
 import org.dows.pay.service.PayApplyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
 import java.io.File;
 import java.net.URL;
 import java.util.Date;
 import java.util.Objects;
-import java.util.UUID;
 
 /**
  * 小程序相关业务功能
@@ -151,18 +145,18 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
         request.setRate("0.38");
         request.setSignAndAuth(true);
         request.setLongTerm(payCreateIsvRequest.isLong_term());
-        FileItem BusinessShopPic = getPicFile(payCreateIsvRequest.getShop_scene_pic());
+        FileItem BusinessShopPic = getPicFileItemByUrl(payCreateIsvRequest.getShop_scene_pic());
         request.setShopScenePic(BusinessShopPic);
 
-        FileItem BusinessShopSignPic = getPicFile(payCreateIsvRequest.getShop_sign_board_pic());
+        FileItem BusinessShopSignPic = getPicFileItemByUrl(payCreateIsvRequest.getShop_sign_board_pic());
         request.setShopSignBoardPic(BusinessShopSignPic);
         if (StrUtil.isNotBlank(payCreateIsvRequest.getBusiness_license_auth_pic())) {
-            request.setBusinessLicenseAuthPic(getPicFile(payCreateIsvRequest.getBusiness_license_auth_pic()));
+            request.setBusinessLicenseAuthPic(getPicFileItemByUrl(payCreateIsvRequest.getBusiness_license_auth_pic()));
         }
 
         request.setShopName(payCreateIsvRequest.getShop_name());
         if(payCreateIsvRequest.getIsPerson()==0){
-            FileItem BusinessLicensePic = getPicFile(payCreateIsvRequest.getBusiness_license_pic());
+            FileItem BusinessLicensePic = getPicFileItemByUrl(payCreateIsvRequest.getBusiness_license_pic());
             request.setBusinessLicensePic(BusinessLicensePic);
         }
         if (!StringUtil.isEmpty(payCreateIsvRequest.getBusiness_license_mobile())) {
@@ -267,20 +261,29 @@ public class AlipayAgentHandler extends AbstractAlipayHandler {
         return Response.ok(new PayCreateIsvRequest());
     }
 
-    public static FileItem getPicFile(String path) {
-        FileItem file;
-        if (path.startsWith("http")) {
-            try {
-                String substringPath = path.substring(path.lastIndexOf(StringPool.SLASH, path.lastIndexOf(StringPool.SLASH) - 1));
-                String patrol = "/opt/dows/tenant/image"+substringPath;
-                file = new FileItem(patrol);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+    public static FileItem getPicFileItemByUrl(String path) {
+        FileItem fileItem = null;
+        File tempFile = null;
+        try {
+            URL url = new URL(path);
+            String substringPath = path.substring(path.lastIndexOf(StringPool.SLASH, path.lastIndexOf(StringPool.SLASH) - 1));
+            tempFile = new File("/opt/dows/tenant/image" + substringPath);
+            if (!tempFile.exists()) {
+                FileUtils.copyURLToFile(url, tempFile);
             }
-        } else {
-            file = new FileItem(path);
+            return new FileItem(tempFile);
+        } catch (Exception e) {
+            log.error("url convert error:", e);
+        } finally {
+//                try {
+//                    if (tempFile != null) {
+//                        tempFile.delete();
+//                    }
+//                } catch (Exception ex) {
+//                    ex.printStackTrace();
+//                }
         }
-        return file;
+        return fileItem;
     }
 
 }

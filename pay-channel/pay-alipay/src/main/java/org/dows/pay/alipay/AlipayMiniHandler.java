@@ -1,6 +1,5 @@
 package org.dows.pay.alipay;
 
-import cn.hutool.core.bean.BeanUtil;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.FileItem;
 import com.alipay.api.domain.*;
@@ -9,19 +8,19 @@ import com.alipay.api.response.*;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dows.pay.api.PayRequest;
 import org.dows.pay.api.annotation.PayMapping;
 import org.dows.pay.api.enums.PayMethods;
-import org.dows.pay.bo.AlipayBaseInfoBo;
 import org.dows.pay.bo.AlipayOpenMiniVersionAuditBo;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.List;
 
 /**
@@ -253,7 +252,7 @@ public class AlipayMiniHandler extends AbstractAlipayHandler {
         if (StringUtils.isNotEmpty(alipayOpenMiniVersionAuditBo.getAppLogo())) {
 //            FileItem appLogo = new FileItem(alipayOpenMiniVersionAuditBo.getAppLogo());
 //            request.setAppLogo(appLogo);
-            File appLogoFile = getFile(alipayOpenMiniVersionAuditBo.getAppLogo());
+            File appLogoFile = getFileByUrl(alipayOpenMiniVersionAuditBo.getAppLogo());
             FileItem imageContent = new FileItem(appLogoFile.getPath());
             request.setAppLogo(imageContent);
         }
@@ -273,7 +272,7 @@ public class AlipayMiniHandler extends AbstractAlipayHandler {
             List<String> firstLicensePicList = Arrays.asList(firstLicensePicUrls.split(","));
             if (!CollectionUtils.isEmpty(firstLicensePicList)) {
                 for (int i = 0; i < firstLicensePicList.size() && i < 5; i++) {
-                    File uboIdDocCopyFile = getFile(firstLicensePicList.get(i));
+                    File uboIdDocCopyFile = getFileByUrl(firstLicensePicList.get(i));
                     FileItem imageContent = new FileItem(uboIdDocCopyFile.getPath());
                     licensePics.add(imageContent);
                 }
@@ -321,7 +320,7 @@ public class AlipayMiniHandler extends AbstractAlipayHandler {
             if (!CollectionUtils.isEmpty(firstScreenShotList)) {
                 licensePics.clear();
                 for (int i = 0; i < firstScreenShotList.size() && i < 5; i++) {
-                    File uboIdDocCopyFile = getFile(firstScreenShotList.get(i));
+                    File uboIdDocCopyFile = getFileByUrl(firstScreenShotList.get(i));
                     FileItem imageContent = new FileItem(uboIdDocCopyFile.getPath());
                     licensePics.add(imageContent);
                 }
@@ -364,7 +363,7 @@ public class AlipayMiniHandler extends AbstractAlipayHandler {
 //        }
         // 门头照
         if (StringUtils.isNotEmpty(alipayOpenMiniVersionAuditBo.getOutDoorPic())) {
-            File outDoorPicFile = getFile(alipayOpenMiniVersionAuditBo.getOutDoorPic());
+            File outDoorPicFile = getFileByUrl(alipayOpenMiniVersionAuditBo.getOutDoorPic());
             FileItem outDoorPic = new FileItem(outDoorPicFile.getPath());
             request.setOutDoorPic(outDoorPic);
         }
@@ -390,7 +389,7 @@ public class AlipayMiniHandler extends AbstractAlipayHandler {
             if (!CollectionUtils.isEmpty(firstSpecialLicenseList)) {
                 licensePics.clear();
                 for (int i = 0; i < firstSpecialLicenseList.size() && i < 5; i++) {
-                    File uboIdDocCopyFile = getFile(firstSpecialLicenseList.get(i));
+                    File uboIdDocCopyFile = getFileByUrl(firstSpecialLicenseList.get(i));
                     FileItem imageContent = new FileItem(uboIdDocCopyFile.getPath());
                     licensePics.add(imageContent);
                 }
@@ -421,7 +420,7 @@ public class AlipayMiniHandler extends AbstractAlipayHandler {
         request.setTestPassword(alipayOpenMiniVersionAuditBo.getTestPassword());
         // 测试附件
         if (StringUtils.isNotEmpty(alipayOpenMiniVersionAuditBo.getTestFileName())) {
-            File testFileName = getFile(alipayOpenMiniVersionAuditBo.getTestFileName());
+            File testFileName = getFileByUrl(alipayOpenMiniVersionAuditBo.getTestFileName());
             FileItem testFileItem = new FileItem(testFileName.getPath());
             request.setTestFileName(testFileItem);
         }
@@ -443,39 +442,27 @@ public class AlipayMiniHandler extends AbstractAlipayHandler {
 
     }
 
-    public static File getFile(String path) {
+    public static File getFileByUrl(String path) {
         File file = null;
-        if (path.startsWith("http")) {
+        try {
+            URL url = new URL(path);
             String substringPath = path.substring(path.lastIndexOf(StringPool.SLASH, path.lastIndexOf(StringPool.SLASH) - 1));
-            return new File("/opt/dows/tenant/image" + substringPath);
-//            String replacePath = path.replaceAll("https:/", "https://");
-//            log.info("replacePath===={}",replacePath);
-//            URL url;
-//            try {
-//                url = new URL(replacePath);
-//                String tempPath = path.substring(path.lastIndexOf('/'));
-//                File mediaFile = new File("/opt/dows/tenant/image" + tempPath);
-//                FileUtils.copyURLToFile(url, mediaFile);
-//            } catch (Exception e) {
-//                System.out.println("url convert error:" + e);
-//                log.error("url convert error:", e);
-//            }
-        } else {
-            String filePath = getFilePath(path);
-            file = new File(filePath);
-            return file;
+            file = new File("/opt/dows/tenant/image" + substringPath);
+            if (!file.exists()) {
+                FileUtils.copyURLToFile(url, file);
+            }
+        } catch (Exception e) {
+            log.error("url convert error:", e);
+        } finally {
+//                try {
+//                    if (file != null) {
+//                        file.delete();
+//                    }
+//                } catch (Exception ex) {
+//                    ex.printStackTrace();
+//                }
         }
-
+        return file;
     }
 
-
-    public static String getFilePath(String path) {
-//        String arrPath[] = path.split(DateUtil.formatDate(DateUtil.date()));
-//        if (ObjectUtil.isNotEmpty(arrPath) && arrPath.length > 1) {
-//            path = arrPath[1];
-//        }
-        String jPath = "/opt/dows/tenant" + path;
-        log.info("图片绝对路径 ：{}", jPath);
-        return jPath;
-    }
 }

@@ -24,6 +24,7 @@ import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.open.bean.result.WxOpenQueryAuthResult;
 import me.chanjar.weixin.open.bean.result.WxOpenResult;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.io.FileUtils;
 import org.dows.account.api.AccountTenantApi;
 import org.dows.account.api.AccountUserApi;
 import org.dows.app.api.mini.AppApplyApi;
@@ -60,6 +61,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URL;
 import java.util.*;
 
 @Slf4j
@@ -575,49 +577,41 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
         Map<String, ImageUploadResult> map = new HashMap<>();
         IsvCreateBo isvCreateBo = (IsvCreateBo) payRequest.getBizModel();
         //营业执照扫描件
-//        File businessLicenseFile = new File(getFilePath(isvCreateBo.getBusinessLicenseInfo().getBusinessLicenseCopy()));
-        File businessLicenseFile = getFile(isvCreateBo.getBusinessLicenseInfo().getBusinessLicenseCopy());
+        File businessLicenseFile = getFileByUrl(isvCreateBo.getBusinessLicenseInfo().getBusinessLicenseCopy());
         map.put("businessLicenseFile", upload(businessLicenseFile, payRequest));
         //金融机构许可证图片
         if (!ObjectUtil.isEmpty(isvCreateBo.getFinanceInstitutionInfo()) && !StringUtil.isEmpty(isvCreateBo.getFinanceInstitutionInfo().getFinanceLicensePics())) {
-//           File financeLicensePicsFile = new File(getFilePath(isvCreateBo.getFinanceInstitutionInfo().getFinanceLicensePics()));
-            File financeLicensePicsFile = getFile(isvCreateBo.getFinanceInstitutionInfo().getFinanceLicensePics());
+            File financeLicensePicsFile = getFileByUrl(isvCreateBo.getFinanceInstitutionInfo().getFinanceLicensePics());
             map.put("financeLicensePicsFile", upload(financeLicensePicsFile, payRequest));
         }
         //身份证人像面照片
         if (!ObjectUtil.isEmpty(isvCreateBo.getIdCardInfo()) && !StringUtil.isEmpty(isvCreateBo.getIdCardInfo().getIdCardCopy())) {
-//            File idCardCopyFile = new File(getFilePath(isvCreateBo.getIdCardInfo().getIdCardCopy()));
-            File idCardCopyFile = getFile(isvCreateBo.getIdCardInfo().getIdCardCopy());
+            File idCardCopyFile = getFileByUrl(isvCreateBo.getIdCardInfo().getIdCardCopy());
             map.put("idCardCopyFile", upload(idCardCopyFile, payRequest));
         }
         //身份证国徽面照片
         if (!ObjectUtil.isEmpty(isvCreateBo.getIdCardInfo()) && !StringUtil.isEmpty(isvCreateBo.getIdCardInfo().getIdCardNational())) {
-//            File idCardNationalFile = new File(getFilePath(isvCreateBo.getIdCardInfo().getIdCardNational()));
-            File idCardNationalFile = getFile(isvCreateBo.getIdCardInfo().getIdCardNational());
+            File idCardNationalFile = getFileByUrl(isvCreateBo.getIdCardInfo().getIdCardNational());
             map.put("idCardNationalFile", upload(idCardNationalFile, payRequest));
         }
         //经营者/法人身份证信息 正面照片
         if (!ObjectUtil.isEmpty(isvCreateBo.getIdDocInfo()) && !StringUtil.isEmpty(isvCreateBo.getIdDocInfo().getIdDocCopy())) {
-//            File idDocCopyFile = new File(getFilePath(isvCreateBo.getIdDocInfo().getIdDocCopy()));
-            File idDocCopyFile = getFile(isvCreateBo.getIdDocInfo().getIdDocCopy());
+            File idDocCopyFile = getFileByUrl(isvCreateBo.getIdDocInfo().getIdDocCopy());
             map.put("idDocCopyFile", upload(idDocCopyFile, payRequest));
         }
         //经营者/法人身份证信息 反面照片
         if (!ObjectUtil.isEmpty(isvCreateBo.getIdDocInfo()) && !StringUtil.isEmpty(isvCreateBo.getIdDocInfo().getIdDocCopyBack())) {
-//            File idDocCopyBackFile = new File(getFilePath(isvCreateBo.getIdDocInfo().getIdDocCopyBack()));
-            File idDocCopyBackFile = getFile(isvCreateBo.getIdDocInfo().getIdDocCopyBack());
+            File idDocCopyBackFile = getFileByUrl(isvCreateBo.getIdDocInfo().getIdDocCopyBack());
             map.put("idDocCopyBackFile", upload(idDocCopyBackFile, payRequest));
         }
         //超级管理员身份证信息 正面照片
         if (!ObjectUtil.isEmpty(isvCreateBo.getContactInfo()) && !StringUtil.isEmpty(isvCreateBo.getContactInfo().getContactIdDocCopy())) {
-//            File contactIdDocCopyFile = new File(getFilePath(isvCreateBo.getContactInfo().getContactIdDocCopy()));
-            File contactIdDocCopyFile = getFile(isvCreateBo.getContactInfo().getContactIdDocCopy());
+            File contactIdDocCopyFile = getFileByUrl(isvCreateBo.getContactInfo().getContactIdDocCopy());
             map.put("contactIdDocCopyFile", upload(contactIdDocCopyFile, payRequest));
         }
         //超级管理员身份证信息 反面照片
         if (!ObjectUtil.isEmpty(isvCreateBo.getContactInfo()) && !StringUtil.isEmpty(isvCreateBo.getContactInfo().getContactIdDocCopyBack())) {
-//            File contactIdDocCopyBackFile = new File(getFilePath(isvCreateBo.getContactInfo().getContactIdDocCopyBack()));
-            File contactIdDocCopyBackFile = getFile(isvCreateBo.getContactInfo().getContactIdDocCopyBack());
+            File contactIdDocCopyBackFile = getFileByUrl(isvCreateBo.getContactInfo().getContactIdDocCopyBack());
             map.put("contactIdDocCopyBackFile", upload(contactIdDocCopyBackFile, payRequest));
         }
         //受益人列表 受益人正反面照片
@@ -625,13 +619,11 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
         if (!ObjectUtil.isEmpty(uboInfoList)) {
             uboInfoList.forEach(x -> {
                 if (!ObjectUtil.isEmpty(x.getUboIdDocCopy())) {
-//                    File uboIdDocCopyFile = new File(getFilePath(x.getUboIdDocCopy()));
-                    File uboIdDocCopyFile = getFile(x.getUboIdDocCopy());
+                    File uboIdDocCopyFile = getFileByUrl(x.getUboIdDocCopy());
                     map.put("uboIdDocCopyFile" + x.getUboIdDocNumber(), upload(uboIdDocCopyFile, payRequest));
                 }
                 if (!ObjectUtil.isEmpty(x.getUboIdDocCopyBack())) {
-//                    File UboIdDocCopyBackFile = new File(getFilePath(x.getUboIdDocCopyBack()));
-                    File UboIdDocCopyBackFile = getFile(x.getUboIdDocCopyBack());
+                    File UboIdDocCopyBackFile = getFileByUrl(x.getUboIdDocCopyBack());
                     map.put("UboIdDocCopyBackFile" + x.getUboIdDocNumber(), upload(UboIdDocCopyBackFile, payRequest));
                 }
             });
@@ -648,10 +640,8 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
         if (!ObjectUtil.isEmpty(isvCreateTyBo.getContactInfo())) {
             //超级管理员证件照正面
             if (!StringUtil.isEmpty(isvCreateTyBo.getContactInfo().getContactIdDocCopy())) {
-//                String filePath = getFilePath(isvCreateTyBo.getContactInfo().getContactIdDocCopy());
-//                File contactIdDocCopyFile = new File(filePath);
                 String filePath = isvCreateTyBo.getContactInfo().getContactIdDocCopy();
-                File contactIdDocCopyFile = getFile(filePath);
+                File contactIdDocCopyFile = getFileByUrl(filePath);
                 if (!contactIdDocCopyFile.exists()) {
                     System.out.println("contactIdDocCopyFile文件不存在");
                 }
@@ -661,7 +651,7 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
             if (!StringUtil.isEmpty(isvCreateTyBo.getContactInfo().getContactIdDocCopyBack())) {
                 String filePath = isvCreateTyBo.getContactInfo().getContactIdDocCopyBack();
 //                File contactIdDocCopyBackFile = new File(filePath);
-                File contactIdDocCopyBackFile = getFile(filePath);
+                File contactIdDocCopyBackFile = getFileByUrl(filePath);
                 if (!contactIdDocCopyBackFile.exists()) {
                     System.out.println("contactIdDocCopyBackFile文件不存在");
                 }
@@ -670,8 +660,7 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
             //业务办理授权函
             if (!StringUtil.isEmpty(isvCreateTyBo.getContactInfo().getBusinessAuthorizationLetter())) {
                 String filePath = isvCreateTyBo.getContactInfo().getBusinessAuthorizationLetter();
-//                File businessAuthorizationLetterFile = new File(filePath);
-                File businessAuthorizationLetterFile = getFile(filePath);
+                File businessAuthorizationLetterFile = getFileByUrl(filePath);
                 if (!businessAuthorizationLetterFile.exists()) {
                     System.out.println("businessAuthorizationLetterFile文件不存在");
                 }
@@ -683,8 +672,7 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
                 && !ObjectUtil.isEmpty(isvCreateTyBo.getSubjectInfo().getBusinessLicenseInfo())
                 && !StringUtil.isEmpty(isvCreateTyBo.getSubjectInfo().getBusinessLicenseInfo().getLicenseCopy())) {
             String filePath = isvCreateTyBo.getSubjectInfo().getBusinessLicenseInfo().getLicenseCopy();
-//            File licenseCopyFile = new File(filePath);
-            File licenseCopyFile = getFile(filePath);
+            File licenseCopyFile = getFileByUrl(filePath);
             if (!licenseCopyFile.exists()) {
                 System.out.println("licenseCopyFile文件不存在");
             }
@@ -696,8 +684,7 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
             //经营者/法人身份证信息 正面照片
             if (!StringUtil.isEmpty(isvCreateTyBo.getSubjectInfo().getIdentityInfo().getIdCardInfo().getIdCardCopy())) {
                 String filePath = isvCreateTyBo.getSubjectInfo().getIdentityInfo().getIdCardInfo().getIdCardCopy();
-//                File idCardCopyFile = new File(filePath);
-                File idCardCopyFile = getFile(filePath);
+                File idCardCopyFile = getFileByUrl(filePath);
                 if (!idCardCopyFile.exists()) {
                     System.out.println("licenseCopyFile文件不存在");
                 }
@@ -707,8 +694,7 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
             //经营者/法人身份证信息 反面照片
             if (!StringUtil.isEmpty(isvCreateTyBo.getSubjectInfo().getIdentityInfo().getIdCardInfo().getIdCardNational())) {
                 String filePath = isvCreateTyBo.getSubjectInfo().getIdentityInfo().getIdCardInfo().getIdCardNational();
-//                File idCardNationalFile = new File(filePath);
-                File idCardNationalFile = getFile(filePath);
+                File idCardNationalFile = getFileByUrl(filePath);
                 if (!idCardNationalFile.exists()) {
                     System.out.println("licenseCopyFile文件不存在");
                 }
@@ -731,15 +717,13 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
                 List<String> indoorPics = bizStoreInfo.getIndoorPic();
                 if (!CollectionUtils.isEmpty(storeEntrancePics)) {
                     storeEntrancePics.forEach(x -> {
-//                        File storeEntrancePicsFile = new File(getFilePath(x));
-                        File storeEntrancePicsFile = getFile(x);
+                        File storeEntrancePicsFile = getFileByUrl(x);
                         map.put(x, upload(storeEntrancePicsFile, payRequest));
                     });
                 }
                 if (!CollectionUtils.isEmpty(indoorPics)) {
                     indoorPics.forEach(x -> {
-//                        File indoorPicsFile = new File(getFilePath(x));
-                        File indoorPicsFile = getFile(x);
+                        File indoorPicsFile = getFileByUrl(x);
                         map.put(x, upload(indoorPicsFile, payRequest));
                     });
                 }
@@ -750,8 +734,7 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
                 List<String> miniProgramPics = isvCreateTyBo.getBusinessInfo().getSalesInfo().getMiniProgramInfo().getMiniProgramPics();
                 if (!CollectionUtils.isEmpty(miniProgramPics)) {
                     miniProgramPics.forEach(x -> {
-//                        File miniProgramPicFile = new File(getFilePath(x));
-                        File miniProgramPicFile = getFile(x);
+                        File miniProgramPicFile = getFileByUrl(x);
                         map.put(x, upload(miniProgramPicFile, payRequest));
                     });
                 }
@@ -764,13 +747,11 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
             if (!CollectionUtils.isEmpty(uboInfoList)) {
                 uboInfoList.forEach(x -> {
                     if (!ObjectUtil.isEmpty(x.getUboIdDocCopy())) {
-//                        File uboIdDocCopyFile = new File(getFilePath(x.getUboIdDocCopy()));
-                        File uboIdDocCopyFile = getFile(x.getUboIdDocCopy());
+                        File uboIdDocCopyFile = getFileByUrl(x.getUboIdDocCopy());
                         map.put("uboIdDocCopyFile" + x.getUboIdDocNumber(), upload(uboIdDocCopyFile, payRequest));
                     }
                     if (!ObjectUtil.isEmpty(x.getUboIdDocCopyBack())) {
-//                        File UboIdDocCopyBackFile = new File(getFilePath(x.getUboIdDocCopyBack()));
-                        File UboIdDocCopyBackFile = getFile(x.getUboIdDocCopyBack());
+                        File UboIdDocCopyBackFile = getFileByUrl(x.getUboIdDocCopyBack());
                         map.put("UboIdDocCopyBackFile" + x.getUboIdDocNumber(), upload(UboIdDocCopyBackFile, payRequest));
                     }
                 });
@@ -782,8 +763,7 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
             List<String> businessAdditionPics = isvCreateTyBo.getAdditionInfo().getBusinessAdditionPics();
             if (!CollectionUtils.isEmpty(businessAdditionPics)) {
                 businessAdditionPics.forEach(x -> {
-//                    File businessAdditionPicFile = new File(getFilePath(x));
-                    File businessAdditionPicFile = getFile(x);
+                    File businessAdditionPicFile = getFileByUrl(x);
                     map.put(x, upload(businessAdditionPicFile, payRequest));
                 });
             }
@@ -812,70 +792,29 @@ public class WeixinIsvHandler extends AbstractWeixinHandler {
     }
 
     /**
-     * 获取文件路径
-     */
-//    public static String getFilePath(String path) {
-//        String arrPath[] = path.split(DateUtil.formatDate(DateUtil.date()));
-//        if (ObjectUtil.isNotEmpty(arrPath) && arrPath.length > 1) {
-//            path = arrPath[1];
-//            path = "E:\\有星科技相关\\image\\" + path;
-//        }
-//        return path;
-//    }
-
-    /**
-     * 获取文件路径 第二版
-     */
-//    public static String getFilePath(String path) {
-////        String arrPath[] = path.split(DateUtil.formatDate(DateUtil.date()));
-////        if (ObjectUtil.isNotEmpty(arrPath) && arrPath.length > 1) {
-////            path = arrPath[1];
-////        }
-//        String jPath = "/opt/dows/tenant" + path;
-//        log.info("图片绝对路径：{}", jPath);
-//        return jPath;
-//    }
-
-    /**
      * 获取文件路径 第三版
      */
-    public static File getFile(String path) {
+    public static File getFileByUrl(String path) {
         File file = null;
-        if (path.startsWith("http")) {
+        try {
+            URL url = new URL(path);
             String substringPath = path.substring(path.lastIndexOf(StringPool.SLASH, path.lastIndexOf(StringPool.SLASH) - 1));
-            System.out.println("包含http图片路径：" + substringPath);
             file = new File("/opt/dows/tenant/image" + substringPath);
-            System.out.println(file);
-            return file;
-//            String replacePath = path.replaceAll("https:/", "https://");
-//            log.info("replacePath===={}",replacePath);
-//            URL url;
-//            try {
-//                url = new URL(replacePath);
-//                String tempPath = path.substring(path.lastIndexOf('/'));
-//                File mediaFile = new File("/opt/dows/tenant/image" + tempPath);
-//                FileUtils.copyURLToFile(url, mediaFile);
-//            } catch (Exception e) {
-//                System.out.println("url convert error:" + e);
-//                log.error("url convert error:", e);
-//            }
-        } else {
-            String filePath = getFilePath(path);
-            System.out.println("不包含http图片路径：" + filePath);
-            file = new File(filePath);
-            System.out.println(file);
-            return file;
+            if (!file.exists()) {
+                FileUtils.copyURLToFile(url, file);
+            }
+        } catch (Exception e) {
+            log.error("url convert error:", e);
+        } finally {
+//                try {
+//                    if (file != null) {
+//                        file.delete();
+//                    }
+//                } catch (Exception ex) {
+//                    ex.printStackTrace();
+//                }
         }
-
+        return file;
     }
 
-    public static String getFilePath(String path) {
-//        String arrPath[] = path.split(DateUtil.formatDate(DateUtil.date()));
-//        if (ObjectUtil.isNotEmpty(arrPath) && arrPath.length > 1) {
-//            path = arrPath[1];
-//        }
-        String jPath = "/opt/dows/tenant" + path;
-        log.info("图片绝对路径 ：{}", jPath);
-        return jPath;
-    }
 }
