@@ -5,26 +5,25 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.serializer.ValueFilter;
 import com.alipay.api.AlipayApiException;
-import com.alipay.api.FileItem;
 import com.alipay.api.domain.*;
-import com.alipay.api.request.*;
-import com.alipay.api.response.*;
+import com.alipay.api.request.AlipayOpenMiniCategoryQueryRequest;
+import com.alipay.api.request.AlipayOpenMiniIsvCreateRequest;
+import com.alipay.api.request.AlipayOpenMiniIsvQueryRequest;
+import com.alipay.api.response.AlipayOpenMiniCategoryQueryResponse;
+import com.alipay.api.response.AlipayOpenMiniIsvCreateResponse;
+import com.alipay.api.response.AlipayOpenMiniIsvQueryResponse;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.dows.app.biz.AppApplyBiz;
 import org.dows.app.entity.AppApply;
 import org.dows.app.service.AppApplyService;
 import org.dows.auth.api.TempRedisApi;
-import org.dows.framework.api.Response;
 import org.dows.pay.api.PayEvent;
 import org.dows.pay.api.PayHandler;
 import org.dows.pay.api.PayMessage;
 import org.dows.pay.api.PayRequest;
 import org.dows.pay.api.annotation.PayMapping;
-import org.dows.pay.api.enums.PayChannels;
 import org.dows.pay.api.enums.PayMethods;
 import org.dows.pay.api.message.AlipayMessage;
 import org.dows.pay.api.message.alipay.MiniConfirmed;
@@ -40,8 +39,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.IdGenerator;
 import org.springframework.util.SimpleIdGenerator;
 
-import java.util.UUID;
-
 /**
  * 代理商户作业相关业务逻辑，如：代开通或代创建小程序，其他等...
  */
@@ -49,8 +46,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Service
 public class AlipayIsvHandler extends AbstractAlipayHandler {
-
-    private final AppApplyBiz appApplyBiz;
 
     private final UserCompanyBiz userCompanyBiz;
     @Autowired
