@@ -8,10 +8,19 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.dows.saas</groupId>
+    <groupId>org.dows.cloud</groupId>
     <artifactId>dows-pay</artifactId>
-    <version>20220701-SNAPSHOT</version>
+    <version>${revision}</version>
     <packaging>pom</packaging>
+
+    <properties>
+        <revision>1.0.0-SNAPSHOT</revision>
+        <hrm.version>${revision}</hrm.version>
+        <uim.version>1.0.0-SNAPSHOT</uim.version>
+        <mybatis-flex.ext.version>1.10.8.110</mybatis-flex.ext.version>
+        <jdk.version>23</jdk.version>
+    </properties>
+
 
     <modules>
         <module>pay-api</module>
@@ -21,11 +30,24 @@
         <module>pay-crud</module>
         <module>pay-gateway</module>
         <module>pay-boot</module>
+        <module>pay-feign</module>
         <module>pay-rest</module>
         <module>pay-application</module>
         <module>pay-biz</module>
         <module>pay-pojo</module>
+        <module>pay-service</module>
     </modules>
+
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.tangzc</groupId>
+                <artifactId>mybatis-flex-ext-spring-boot3-starter</artifactId>
+                <version>${mybatis-flex.ext.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <distributionManagement>
         <repository>
